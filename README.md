@@ -6,3 +6,10 @@ Grupo Vegetal:
   * Juan Ignacio Díaz (@Nacho-Dz)
   * Kailásh Aquista (@Aquista)
   * Ailín Yelén Braccelarghe (@ailinyelen)
+
+
+## Instalar dependencias
+Ejecutar
+```
+install.sh
+```
