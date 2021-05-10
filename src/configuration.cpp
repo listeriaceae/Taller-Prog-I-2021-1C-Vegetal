@@ -1,7 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <jsoncpp/json/json.h>
-
 #include "configuration.hpp"
 
 namespace configuration
@@ -32,11 +30,22 @@ namespace configuration
         std::ifstream json_file(configuration_filename);
         json_file >> json_root;
 
+        // Get configuration
+        auto configuration = getJsonValue(json_root, "configuration");
+
+        // Get log
+        auto log = getJsonValue(configuration, "log");
+        
         // Get log level
-        log_level = json_root["configuration"]["log"]["level"].asString();
-      
+        log_level = getJsonValue(log, "level").asString();
+        // TODO: Assert valid log level?
+
+        // Get game
+        auto game = getJsonValue(configuration, "game");
+
         // Get enemies
-        auto enemies = json_root["configuration"]["game"]["enemies"];
+        // TODO: Assert valid type and quantity
+        auto enemies = getJsonValue(game, "enemies");
         for (auto enemy: enemies)
         {
             auto e = configuration::Enemy(enemy["type"].asString(), enemy["quantity"].asUInt());
@@ -44,9 +53,10 @@ namespace configuration
         }
 
         // Get stages
-        auto stages = json_root["configuration"]["game"]["stages"];
+        auto stages = getJsonValue(game, "stages");
         for (auto stage: stages)
         {
+            // Get backgrounds for each stage
             std::vector<std::string> backgrounds;
             for (auto background: stage)
             {
@@ -59,5 +69,15 @@ namespace configuration
 
     Configuration::~Configuration()
     {
+    }
+
+    const Json::Value Configuration::getJsonValue(const Json::Value& root, const std::string& name)
+    {
+        auto value = root[name];
+        if (value.empty())
+        {
+            throw std::runtime_error(std::string("ERROR: JSON value not found: ") + name);
+        }
+        return value;
     }
 }
