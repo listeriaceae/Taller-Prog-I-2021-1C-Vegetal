@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <jsoncpp/json/json.h>
 
 namespace configuration
 {
@@ -46,5 +47,7 @@ namespace configuration
         std::string log_level;
         std::vector<Enemy> enemies;
         std::vector<Stage> stages;
+
+        static const Json::Value getJsonValue(const Json::Value& root, const std::string& name);
     };
 }
