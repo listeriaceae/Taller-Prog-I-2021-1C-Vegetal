@@ -7,7 +7,7 @@
             "enemies": [
                 {
                     "type": "class-1",
-                    "quantity": "5"
+                    "quantity": 5
                 }
             ],
             "stages": [
