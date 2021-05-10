@@ -25,7 +25,7 @@ namespace configuration
         else
         {
             configuration_filename = "default_configuration.json";
-            std::cout << "Configuration file not found, using default: " << configuration_filename << std::endl;
+            std::cerr << "Configuration file not found, using default: " << configuration_filename << std::endl;
         }
 
         Json::Value json_root;
@@ -34,20 +34,26 @@ namespace configuration
 
         // Get log level
         log_level = json_root["configuration"]["log"]["level"].asString();
-        std::cout << "Log level = " << log_level << std::endl;
-    
+      
         // Get enemies
         auto enemies = json_root["configuration"]["game"]["enemies"];
         for (auto enemy: enemies)
         {
-            std::cout << "Enemy " << enemy << std::endl;
+            auto e = configuration::Enemy(enemy["type"].asString(), enemy["quantity"].asUInt());
+            this->enemies.emplace_back(e);
         }
 
         // Get stages
         auto stages = json_root["configuration"]["game"]["stages"];
         for (auto stage: stages)
         {
-            std::cout << "Stage " << stage << std::endl;
+            std::vector<std::string> backgrounds;
+            for (auto background: stage)
+            {
+                backgrounds.emplace_back(background.asString());
+            }
+            auto s = configuration::Stage(backgrounds);
+            this->stages.emplace_back(s);
         }
     }
 
