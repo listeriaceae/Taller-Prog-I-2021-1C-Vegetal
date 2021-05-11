@@ -4,10 +4,8 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
-#define MARIO_WIDTH 12
+#define MARIO_WIDTH 15
 #define MARIO_HEIGHT 16
-#define MARIO_REST_X 245
-#define MARIO_REST_Y 20
 
 int main(void)
 {
@@ -21,7 +19,7 @@ int main(void)
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, render_flags);
 
-    SDL_Surface *surface = IMG_Load("resources/sprites_dk2.png");
+    SDL_Surface *surface = IMG_Load("resources/mario.png");
     Uint32 pixel = *(Uint32*)(surface->pixels);
     SDL_SetColorKey(surface, SDL_TRUE, pixel);
 
@@ -29,8 +27,8 @@ int main(void)
     SDL_FreeSurface(surface);
 
     SDL_Rect srcrect;
-    srcrect.x = MARIO_REST_X;
-    srcrect.y = MARIO_REST_Y;
+    srcrect.x = 0;
+    srcrect.y = 0;
     srcrect.w = MARIO_WIDTH;
     srcrect.h = MARIO_HEIGHT;
 
