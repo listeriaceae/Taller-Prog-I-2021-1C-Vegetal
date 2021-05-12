@@ -1,9 +1,8 @@
+#pragma once
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "../model/mario.h"
-
-#ifndef MARIOVIEW_H
-#define MARIOVIEW_H
+#include "../model/mario.hpp"
 
 #define MARIO_WIDTH 16
 #define MARIO_HEIGHT 16
@@ -30,5 +29,3 @@ class MarioView {
         void renderCopy();
         void free();
 };
-
-#endif

@@ -1,4 +1,4 @@
-#include "mario.h"
+#include "mario.hpp"
 
 #define INIT_X 10
 #define INIT_Y 240

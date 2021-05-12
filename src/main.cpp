@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "model/mario.h"
-#include "view/marioView.h"
+#include "model/mario.hpp"
+#include "view/marioView.hpp"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600

@@ -1,4 +1,4 @@
-#include "marioView.h"
+#include "marioView.hpp"
 
 MarioView::MarioView(SDL_Renderer *renderer, Mario mario) {
 
