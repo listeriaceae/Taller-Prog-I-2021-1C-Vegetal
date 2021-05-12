@@ -44,11 +44,14 @@ namespace configuration
         auto game = getJsonValue(configuration, "game");
 
         // Get enemies
-        // TODO: Assert valid type and quantity
+        // TODO: Assert valid type and quantity?
         auto enemies = getJsonValue(game, "enemies");
         for (auto enemy: enemies)
         {
-            auto e = configuration::Enemy(enemy["type"].asString(), enemy["quantity"].asUInt());
+            auto enemy_type = getJsonValue(enemy, "type").asString();
+            auto enemy_quantity = getJsonValue(enemy, "quantity").asUInt();
+
+            auto e = configuration::Enemy(enemy_type, enemy_quantity);
             this->enemies.emplace_back(e);
         }
 
@@ -65,10 +68,6 @@ namespace configuration
             auto s = configuration::Stage(backgrounds);
             this->stages.emplace_back(s);
         }
-    }
-
-    Configuration::~Configuration()
-    {
     }
 
     const Json::Value Configuration::getJsonValue(const Json::Value& root, const std::string& name)
