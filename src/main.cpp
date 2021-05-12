@@ -24,5 +24,6 @@ int main(void)
             std::cout << "    Background = " << background << std::endl;
         }
     }
+    
     return EXIT_SUCCESS;
 } 
