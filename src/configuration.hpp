@@ -9,9 +9,9 @@ namespace configuration
     class Enemy
     {
     public:
-        Enemy() {};
+        Enemy() = default;
         Enemy(const std::string& t, const unsigned int q) : type(t), quantity(q) {};
-        ~Enemy() {};
+        ~Enemy() = default;;
 
         const std::string getType() const { return type; };
         const unsigned int getQuantity() const { return quantity; };
@@ -24,7 +24,7 @@ namespace configuration
     class Stage
     {
     public:
-        Stage() {};
+        Stage() = default;
         Stage(const std::vector<std::string> bgs) : backgrounds(bgs) {};
 
         const std::vector<std::string> getBackgrounds() const { return backgrounds; };
@@ -37,7 +37,7 @@ namespace configuration
     {
     public:
         Configuration(const std::string& json_filename);
-        ~Configuration();
+        ~Configuration() = default;;
 
         const std::string getLogLevel() const { return log_level; };
         const std::vector<configuration::Enemy> getEnemies() const { return enemies; };
