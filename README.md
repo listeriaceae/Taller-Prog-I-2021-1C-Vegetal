@@ -7,8 +7,12 @@ Grupo Vegetal:
   * Kailásh Aquista (@Aquista)
   * Ailín Yelén Braccelarghe (@ailinyelen)
 
-Cómo correr el test
 
-    Instalar SDL-image (simplifica la carga de la imagen)
+## Instalar dependencias
+Ejecutar
+```
+install.sh
+```
 
-sudo apt-get install libsdl2-image-2.0-0 libsdl2-image-dev
+## Donkey Kong video
+[Donkey Kong 2 Gameplay YouTube Video](https://www.youtube.com/watch?v=y4xnoOdqmMU)
