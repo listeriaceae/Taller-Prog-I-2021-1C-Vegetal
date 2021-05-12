@@ -1,17 +1,29 @@
-#include <SDL2/SDL.h>
+#include <iostream>
+#include "configuration.hpp"
 
 int main(void)
 {
-    SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window *window = SDL_CreateWindow("Window Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
-    SDL_Surface *window_surface = SDL_GetWindowSurface(window); 
+    auto configuration = configuration::Configuration("asd.json");
 
-    SDL_FillRect(window_surface, nullptr, SDL_MapRGB(window_surface->format, 0, 0, 0));
-    SDL_UpdateWindowSurface(window);
-    SDL_Delay(5000);
+    auto log_level = configuration.getLogLevel();
+    std::cout << "Log level = " << log_level << std::endl;
 
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    auto enemies = configuration.getEnemies();
+    for (auto enemy: enemies)
+    {
+        std::cout << "Enemy type = " << enemy.getType() << std::endl;
+        std::cout << "Enemy quantity = " << enemy.getQuantity() << std::endl;
+    }
 
+    auto stages = configuration.getStages();
+    for (auto stage: stages)
+    {
+        std::cout << "Stage:" << std::endl;
+        for (auto background: stage.getBackgrounds())
+        {
+            std::cout << "    Background = " << background << std::endl;
+        }
+    }
+    
     return EXIT_SUCCESS;
 } 
