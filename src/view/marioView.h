@@ -2,6 +2,9 @@
 #include <SDL2/SDL_image.h>
 #include "../model/mario.h"
 
+#ifndef MARIOVIEW_H
+#define MARIOVIEW_H
+
 #define MARIO_WIDTH 16
 #define MARIO_HEIGHT 16
 #define MARIO_SPRITE_SIZE 24
@@ -27,3 +30,5 @@ class MarioView {
         void renderCopy();
         void free();
 };
+
+#endif

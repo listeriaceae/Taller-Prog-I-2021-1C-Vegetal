@@ -1,7 +1,7 @@
-#define STILL 0
-#define WALK 1
-#define CLIMB 3
-#define JUMP 14
+#ifndef MODEL_MARIO_H
+#define MODEL_MARIO_H
+
+enum {STILL = 0, WALK = 1, JUMP = 14, CLIMB = 3};
 
 class Mario
 {
@@ -12,3 +12,5 @@ class Mario
 
         Mario();
 };
+
+#endif
