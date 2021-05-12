@@ -1,4 +1,7 @@
-enum {STILL=0, WALK=1, CLIMB=3, JUMP=14};
+#define STILL 0
+#define WALK 1
+#define CLIMB 3
+#define JUMP 14
 
 class Mario
 {
