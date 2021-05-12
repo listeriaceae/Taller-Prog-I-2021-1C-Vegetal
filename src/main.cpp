@@ -1,11 +1,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "model/mario.h"
+#include "view/marioView.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-
-#define MARIO_WIDTH 15
-#define MARIO_HEIGHT 16
 
 int main(void)
 {
@@ -19,34 +18,23 @@ int main(void)
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, render_flags);
 
-    SDL_Surface *surface = IMG_Load("resources/mario.png");
-    Uint32 pixel = *(Uint32*)(surface->pixels);
-    SDL_SetColorKey(surface, SDL_TRUE, pixel);
+    Mario mario = Mario();
+    MarioView marioView = MarioView(renderer, mario);
 
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
+    int close = 0;
+    SDL_Event event;
 
-    SDL_Rect srcrect;
-    srcrect.x = 0;
-    srcrect.y = 0;
-    srcrect.w = MARIO_WIDTH;
-    srcrect.h = MARIO_HEIGHT;
+    while (!close) {
+        while (SDL_PollEvent(&event)) close = (event.type == SDL_QUIT);
 
-    SDL_Rect dstrect;
-    dstrect.w = MARIO_WIDTH * 10;
-    dstrect.h = MARIO_HEIGHT * 10;
-    dstrect.x = (WINDOW_WIDTH - dstrect.w) >> 1;
-    dstrect.y = (WINDOW_HEIGHT - dstrect.h) >> 1;
+        SDL_RenderClear(renderer);
+        marioView.renderCopy();
+        SDL_RenderPresent(renderer);
+        SDL_Delay(1000/60);
+    }
 
-    SDL_RenderClear(renderer);
-
-    SDL_RendererFlip flip_horiz = SDL_FLIP_HORIZONTAL;
-    SDL_RenderCopyEx(renderer, texture, &srcrect, &dstrect, 0., NULL, flip_horiz);
-    SDL_RenderPresent(renderer);
-    SDL_Delay(5000);
-
+    marioView.free();
     SDL_DestroyRenderer(renderer);
-    SDL_DestroyTexture(texture);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
