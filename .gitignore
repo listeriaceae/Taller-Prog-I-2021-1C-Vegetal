@@ -1,3 +1,7 @@
 # Exclude Vagrant files
 .vagrant/
 ubuntu-xenial-16.04-cloudimg-console.log
+
+sudo apt-get install libsdl2-2.0 libsdl2-dev
+src/main
+main.d
