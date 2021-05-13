@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "configuration.hpp"
+#include "logger.h"
 
 namespace configuration
 {
@@ -12,7 +13,6 @@ namespace configuration
 
     Configuration::Configuration(const std::string& json_filename)
     {
-        // TODO: Use logger!
         std::string configuration_filename;
         
         // Get configuration file name
@@ -23,7 +23,7 @@ namespace configuration
         else
         {
             configuration_filename = "default_configuration.json";
-            std::cerr << "Configuration file not found, using default: " << configuration_filename << std::endl;
+            logger::Logger::getInstance().logError(std::string("Configuration file not found, using default: ") + configuration_filename);
         }
 
         Json::Value json_root;
@@ -75,7 +75,9 @@ namespace configuration
         auto value = root[name];
         if (value.empty())
         {
-            throw std::runtime_error(std::string("ERROR: JSON value not found: ") + name);
+            std::string error_message = std::string("ERROR: JSON value not found: ") + name;
+            logger::Logger::getInstance().logError(error_message);
+            throw std::runtime_error(error_message);
         }
         return value;
     }
