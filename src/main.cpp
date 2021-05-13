@@ -1,5 +1,6 @@
 #include <iostream>
 #include "configuration.hpp"
+#include "logger.h"
 
 int main(void)
 {
@@ -24,6 +25,12 @@ int main(void)
             std::cout << "    Background = " << background << std::endl;
         }
     }
-    
+
+    logger::Logger::getInstance().logNewGame();
+    logger::Logger::getInstance().setDebugLevel("ERROR");
+    logger::Logger::getInstance().logError("error 123");
+    logger::Logger::getInstance().logInformation("info 123");
+    logger::Logger::getInstance().logDebug("debug 123");
+
     return EXIT_SUCCESS;
 } 
