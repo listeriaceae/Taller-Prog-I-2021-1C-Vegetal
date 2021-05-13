@@ -1,5 +1,7 @@
 #include "marioView.hpp"
 
+#define LANDING (JUMPING + 1)
+
 MarioView::MarioView(SDL_Renderer *renderer, Mario mario) {
 
     MarioView::mario = mario;
@@ -8,7 +10,7 @@ MarioView::MarioView(SDL_Renderer *renderer, Mario mario) {
     srcRect.y = 0;
     srcRect.w = MARIO_WIDTH;
     srcRect.h = MARIO_HEIGHT;
-
+                                // TODO: Agregar resizing
     dstRect.x = (int)mario.x;
     dstRect.y = (int)mario.y;
     dstRect.w = MARIO_WIDTH;
@@ -33,13 +35,13 @@ void MarioView::renderCopy() {
         case STILL:
             updateSpriteStill();
             break;
-        case WALK:
+        case WALKING:
             updateSpriteWalk();
             break;
-        case JUMP:
+        case JUMPING:
             updateSpriteJump();
             break;
-        case CLIMB:
+        case CLIMBING:
             updateSpriteClimb();
             break;
         default:
@@ -52,25 +54,24 @@ void MarioView::renderCopy() {
 }
 
 void MarioView::updateSpriteStill() {
-    sprite_index = jumping;
-    srcRect.x = (jumping * JUMP + sprite_index) * MARIO_SPRITE_SIZE;
+    srcRect.x = jumping * LANDING * MARIO_SPRITE_SIZE;
     jumping = 0;
 }
 
 void MarioView::updateSpriteWalk() {
     if (jumping) {
-        srcRect.x = (JUMP + 1) * MARIO_SPRITE_SIZE;
+        srcRect.x = LANDING * MARIO_SPRITE_SIZE;
         jumping = 0;
     } else {
     flip = (SDL_RendererFlip)(dstRect.x < (int)mario.x);
-    srcRect.x = ((sprite_index & 2) >> ((sprite_index & 4) >> 2)) * MARIO_SPRITE_SIZE;
-    sprite_index = (sprite_index + 1) % 8;
+    srcRect.x = ((sprite_index & 2) >> ((sprite_index & 4) >> 2)) * MARIO_SPRITE_SIZE;  // 0, 2, 0, 1...
+    sprite_index++;
     }
 }
 
 void MarioView::updateSpriteJump() {
     jumping = 1;
-    srcRect.x = JUMP * MARIO_SPRITE_SIZE;
+    srcRect.x = JUMPING * MARIO_SPRITE_SIZE;
 }
 
 void MarioView::updateSpriteClimb() {

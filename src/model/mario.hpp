@@ -1,6 +1,6 @@
 #pragma once
 
-enum {STILL = 0, WALK = 1, JUMP = 14, CLIMB = 3};
+enum {STILL = 0, WALKING = 1, JUMPING = 14, CLIMBING = 3};
 
 class Mario
 {
