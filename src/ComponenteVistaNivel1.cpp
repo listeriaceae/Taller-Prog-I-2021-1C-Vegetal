@@ -4,6 +4,8 @@
 #include "ComponenteVistaNivel1.h"
 #include "Nivel1.h"
 
+const std::string IMG_DEFAULT = "res/default.png";
+
 ComponenteVistaNivel1::ComponenteVistaNivel1(SDL_Renderer* renderer) {
     this->renderer = renderer;
 }
@@ -11,6 +13,9 @@ ComponenteVistaNivel1::ComponenteVistaNivel1(SDL_Renderer* renderer) {
 void ComponenteVistaNivel1::mostrar(Nivel1* nivel1) {
     if(textura == NULL) {
         SDL_Surface* surface = IMG_Load(nivel1->rutaImagen.c_str());
+        if(surface == NULL) {
+            surface = IMG_Load(IMG_DEFAULT.c_str());
+        }
         textura = SDL_CreateTextureFromSurface(renderer, surface);
     }
 

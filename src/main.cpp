@@ -8,13 +8,17 @@
 #include "Fuego.h"
 #include "PlataformaMovil.h"
 #include "EnemigoFuego.h"
+#include "Peach.h"
 
+const int ANCHO_PANTALLA = 800;
+const int ALTO_PANTALLA = 600;
+const int FRAMES_POR_SEG = 60;
 int main(void)
 {
     // TODO: Handle errors...
 
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window* window = SDL_CreateWindow("Window Title1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow("Window Title1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     SDL_Init(SDL_INIT_VIDEO);
     bool terminarPrograma = false;
@@ -35,11 +39,11 @@ int main(void)
 
     EnemigoFuego e1(400, 437, 1, 32, 32);
     EnemigoFuego e2(617, 171, -1, 32, 32);
-    Barril b1(300, 0, 0, 10);
-    Barril b2(200, 0, 0, 7);
+    //Barril b1(300, 0, 0, 10);
+    //Barril b2(200, 0, 0, 7);
 
+    Peach p1(314, 76, 40, 55);
 
-    
     while(!terminarPrograma) {
         while( SDL_PollEvent(&event) != 0 ) {
             if(event.type == SDL_QUIT ) {
@@ -49,14 +53,14 @@ int main(void)
         int inicio = SDL_GetTicks();
         SDL_RenderClear(renderer);
         
-        n1.actualizarVista();
-        
+        n1.actualizarVista(); 
+        /*
         b1.mover();
         b2.mover();
 
         b1.mostrar(renderer);
         b2.mostrar(renderer);
-
+        */
         e1.mover();
         e2.mover();
 
@@ -77,11 +81,13 @@ int main(void)
         f2.mostrar(renderer);
         f3.mostrar(renderer);
         f4.mostrar(renderer);
+
+        p1.mostrar(renderer);
         SDL_RenderPresent(renderer);
 
         int fin = SDL_GetTicks();
-        if((fin - inicio) < 1000/60)
-            SDL_Delay((1000 - (fin - inicio))/60);
+        if((fin - inicio) < 1000/FRAMES_POR_SEG)
+            SDL_Delay((1000 - (fin - inicio))/FRAMES_POR_SEG);
     }
 
     SDL_DestroyWindow(window);
