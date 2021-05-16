@@ -11,4 +11,7 @@ class ComponenteVistaNivel1 {
     private:
     SDL_Renderer* renderer = NULL;
     SDL_Texture* textura = NULL;
+
+    void mostrarFondo(Nivel1* nivel1);
+    void mostrarObjetos(Nivel1* nivel1);
 };

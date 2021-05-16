@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "Entidad.h"
 #include "PlataformaMovil.h"
+#include "Rendereable.h"
 #include "ComponenteVistaEntidadEstatica.h"
 
 const int LIMITE_IZQ = 56;

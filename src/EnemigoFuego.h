@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
 #include "Entidad.h"
+#include "Rendereable.h"
 #include "ComponenteVistaEntidadEstatica.h"
 
-class EnemigoFuego : public Entidad {
+class EnemigoFuego : public Entidad, public Rendereable {
     public: 
     EnemigoFuego(int posX, int posY, int velX, int ancho, int alto);
     void mostrar(SDL_Renderer* renderer);

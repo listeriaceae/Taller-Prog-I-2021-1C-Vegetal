@@ -2,9 +2,11 @@
 
 #include <string>
 #include "Entidad.h"
+#include "Rendereable.h"
 #include "ComponenteVistaEntidadEstatica.h"
 
-class PlataformaMovil : public Entidad {
+
+class PlataformaMovil : public Entidad, public Rendereable {
     public:
 
     PlataformaMovil(int posX, int posY, int velX, int ancho, int alto);

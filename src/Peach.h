@@ -2,9 +2,10 @@
 
 #include <string>
 #include "Entidad.h"
+#include "Rendereable.h"
 #include "ComponenteVistaEntidadEstatica.h"
 
-class Peach : public Entidad {
+class Peach : public Entidad, public Rendereable {
     public:
 
     Peach(int posX, int posY, int ancho, int alto);

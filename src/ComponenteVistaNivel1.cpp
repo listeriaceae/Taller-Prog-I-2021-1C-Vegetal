@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -11,6 +12,11 @@ ComponenteVistaNivel1::ComponenteVistaNivel1(SDL_Renderer* renderer) {
 }
 
 void ComponenteVistaNivel1::mostrar(Nivel1* nivel1) {
+    mostrarFondo(nivel1);
+    mostrarObjetos(nivel1);
+}
+
+void ComponenteVistaNivel1::mostrarFondo(Nivel1* nivel1) {
     if(textura == NULL) {
         SDL_Surface* surface = IMG_Load(nivel1->rutaImagen.c_str());
         if(surface == NULL) {
@@ -20,4 +26,12 @@ void ComponenteVistaNivel1::mostrar(Nivel1* nivel1) {
     }
 
     SDL_RenderCopy(renderer, textura, NULL, NULL);
+}
+void ComponenteVistaNivel1::mostrarObjetos(Nivel1* nivel1) {
+    std::list<Rendereable*>::iterator it;
+    std::list<Rendereable*>* objetos = nivel1->getObjetos();
+    
+    for (it = objetos->begin(); it != objetos->end(); ++it){
+        (*it)->mostrar(renderer);
+    }
 }

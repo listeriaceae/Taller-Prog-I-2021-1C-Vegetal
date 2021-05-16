@@ -26,7 +26,7 @@ int main(void)
     SDL_Event event;
     
     Nivel1 n1(renderer);
-
+    
     PlataformaMovil m1(200, 288, -4, 60, 19);
     PlataformaMovil m2(400, 307, 4, 60, 19);
     PlataformaMovil m3(250, 382, -4, 60, 19);
@@ -39,11 +39,27 @@ int main(void)
 
     EnemigoFuego e1(400, 437, 1, 32, 32);
     EnemigoFuego e2(617, 171, -1, 32, 32);
+
     //Barril b1(300, 0, 0, 10);
     //Barril b2(200, 0, 0, 7);
 
     Peach p1(314, 76, 40, 55);
 
+    n1.agregarObjeto(&m1);
+    n1.agregarObjeto(&m2);
+    n1.agregarObjeto(&m3);
+    n1.agregarObjeto(&m4);
+
+    n1.agregarObjeto(&f1);
+    n1.agregarObjeto(&f2);
+    n1.agregarObjeto(&f3);
+    n1.agregarObjeto(&f4);
+
+    n1.agregarObjeto(&e1);
+    n1.agregarObjeto(&e2);
+
+    n1.agregarObjeto(&p1);
+    
     while(!terminarPrograma) {
         while( SDL_PollEvent(&event) != 0 ) {
             if(event.type == SDL_QUIT ) {
@@ -61,28 +77,14 @@ int main(void)
         b1.mostrar(renderer);
         b2.mostrar(renderer);
         */
-        e1.mover();
-        e2.mover();
-
-        e1.mostrar(renderer);
-        e2.mostrar(renderer);
-        
         m1.mover();
         m2.mover();
         m3.mover();
         m4.mover();
 
-        m1.mostrar(renderer);
-        m2.mostrar(renderer);
-        m3.mostrar(renderer);
-        m4.mostrar(renderer);
+        e1.mover();
+        e2.mover();
 
-        f1.mostrar(renderer);
-        f2.mostrar(renderer);
-        f3.mostrar(renderer);
-        f4.mostrar(renderer);
-
-        p1.mostrar(renderer);
         SDL_RenderPresent(renderer);
 
         int fin = SDL_GetTicks();
