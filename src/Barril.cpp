@@ -1,30 +1,22 @@
-#include <iostream>
-#include <string.h>
+#include <string>
 #include <SDL2/SDL.h>
+#include "Entidad.h"
 #include "Barril.h"
+#include "ComponenteVistaEntidadEstatica.h"
 
 using namespace std;
 
-Barril::Barril(int posX, int posY, int velX, int velY, string rutaImagen) {
-    this->posX = posX;
-    this->posY = posY;
+const int ANCHO_PANTALLA = 800;
+const int ALTO_PANTALLA = 600;
+
+Barril::Barril(int posX, int posY, int velX, int velY) 
+: Entidad(posX, posY, 40, 40){
     this->velX = velX;
     this->velY = velY;
-    this->rutaImagen = rutaImagen;
-}
-
-Barril::~Barril() {
-    SDL_DestroyTexture(this->imagen);
-}
-
-void Barril::inicializarImagen(SDL_Renderer* renderer) {
-    surface = SDL_LoadBMP(this->rutaImagen.c_str());
-    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 255, 0)); //Hace que el fondo sea transparente
-    imagen = SDL_CreateTextureFromSurface(renderer, surface);
 }
 
 void Barril::mover() {
-    if((SDL_GetTicks() - this->tickUltimoMovimiento) < 60) //Solo se mueve cada 60 frames
+    if((SDL_GetTicks() - tickUltimoMovimiento) < 60) //Solo se mueve cada 60 ticks
         return;
     
     posY += velY;
@@ -33,18 +25,9 @@ void Barril::mover() {
         posY -= velY;
     }
 
-    this->tickUltimoMovimiento = SDL_GetTicks();
+    tickUltimoMovimiento = SDL_GetTicks();
 }
 
 void Barril::mostrar(SDL_Renderer* renderer) {
-    SDL_Rect rect = {this->posX, this->posY, ancho, alto};
-    SDL_RenderCopy(renderer, this->imagen, NULL, &rect);
-}
-
-int Barril::getX() {
-    return posX;
-}
-
-int Barril::getY() {
-    return posY;
+    compVista->mostrar(this, rutaImagen, renderer);
 }
