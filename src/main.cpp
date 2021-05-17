@@ -7,6 +7,7 @@
 #include "PlataformaMovil.h"
 #include "EnemigoFuego.h"
 #include "Peach.h"
+#include "Mario.h"
 
 const int ANCHO_PANTALLA = 800;
 const int ALTO_PANTALLA = 600;
@@ -16,7 +17,7 @@ int main(void)
     // TODO: Handle errors...
 
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window* window = SDL_CreateWindow("Window Title1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow("Donkey Kong 2 Jumpman Returns", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     SDL_Init(SDL_INIT_VIDEO);
     bool terminarPrograma = false;
@@ -42,6 +43,8 @@ int main(void)
     //Barril b2(200, 0, 0, 7);
 
     Peach p1(314, 76, 40, 55);
+    
+    Mario mario(3, 525, 1, 40, 55);
 
     n1.agregarObjeto(&m1);
     n1.agregarObjeto(&m2);
@@ -57,6 +60,8 @@ int main(void)
     n1.agregarObjeto(&e2);
 
     n1.agregarObjeto(&p1);
+
+    n1.agregarObjeto(&mario);
     
     while(!terminarPrograma) {
         while( SDL_PollEvent(&event) != 0 ) {
