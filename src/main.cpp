@@ -9,6 +9,7 @@
 #include "PlataformaMovil.h"
 #include "EnemigoFuego.h"
 #include "Peach.h"
+#include "DonkeyKong.h"
 
 const int ANCHO_PANTALLA = 800;
 const int ALTO_PANTALLA = 600;
@@ -44,6 +45,7 @@ int main(void)
     //Barril b2(200, 0, 0, 7);
 
     Peach p1(314, 76, 40, 55);
+    DonkeyKong d1(129, 115, 100, 82);
 
     n1.agregarObjeto(&m1);
     n1.agregarObjeto(&m2);
@@ -59,6 +61,7 @@ int main(void)
     n1.agregarObjeto(&e2);
 
     n1.agregarObjeto(&p1);
+    n1.agregarObjeto(&d1);
     
     while(!terminarPrograma) {
         while( SDL_PollEvent(&event) != 0 ) {
