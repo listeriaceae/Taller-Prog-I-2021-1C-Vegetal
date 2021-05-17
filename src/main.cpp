@@ -48,7 +48,7 @@ int main(void)
 
     Peach p1(314, 76, 40, 55);
     
-    Mario mario(3, 525, 1, 40, 55);
+    Mario mario(3, 529, 0, 40, 55);
 
     n1.agregarObjeto(&m1);
     n1.agregarObjeto(&m2);
@@ -78,8 +78,6 @@ int main(void)
             mario.handleEvent( event );
         }
 
-        mario.mover();
-
         int inicio = SDL_GetTicks();
         SDL_RenderClear(renderer);
         
@@ -98,6 +96,8 @@ int main(void)
 
         e1.mover();
         e2.mover();
+
+        mario.mover();
 
         SDL_RenderPresent(renderer);
 

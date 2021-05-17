@@ -18,6 +18,7 @@ void Nivel1::actualizarVista() { //Por ahora solo carga el fondo
 void Nivel1::agregarObjeto(Rendereable* objeto) {
     (this->objetos).push_front(objeto);
 }
+
 list<Rendereable*>* Nivel1::getObjetos() {
     return &objetos;
 }

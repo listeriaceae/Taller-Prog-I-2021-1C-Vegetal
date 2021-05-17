@@ -20,7 +20,9 @@ Mario::Mario(int posX, int posY, int velX, int ancho, int alto)
 
 void Mario::mover()
 {
-    posX = velX;
+    std::cout << "*** *** MOVIENDO MARIO posX i "<< posX << std::endl;
+    posX += this->velX;
+    std::cout << "*** *** MOVIENDO MARIO posX f "<< posX << std::endl;
     // if(velX < 0 && posX < (posXInicial - MAX_DESPLAZAMIENTO_PIXELES))
     //     velX = -1 * velX; //cambio de dirección
     // if(velX > 0 && posX > (posXInicial + MAX_DESPLAZAMIENTO_PIXELES))
@@ -29,6 +31,7 @@ void Mario::mover()
 
 void Mario::mostrar(SDL_Renderer* renderer)
 {
+    std::cout << "*** MOSTRANDO MARIO" << std::endl;
     compVista->mostrar(this, rutaImagen, renderer);
 }
 
