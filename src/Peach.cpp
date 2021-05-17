@@ -12,3 +12,6 @@ Peach::Peach(int posX, int posY, int ancho, int alto)
 void Peach::mostrar(SDL_Renderer* renderer) {
     compVista->mostrar(this, rutaImagen, renderer);
 }
+void Peach::mover() {
+
+}

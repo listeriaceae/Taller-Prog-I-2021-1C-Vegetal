@@ -69,22 +69,8 @@ int main(void)
         int inicio = SDL_GetTicks();
         SDL_RenderClear(renderer);
         
-        n1.actualizarVista(); 
-        /*
-        b1.mover();
-        b2.mover();
-
-        b1.mostrar(renderer);
-        b2.mostrar(renderer);
-        */
-        m1.mover();
-        m2.mover();
-        m3.mover();
-        m4.mover();
-
-        e1.mover();
-        e2.mover();
-
+        n1.actualizarNivel();
+        
         SDL_RenderPresent(renderer);
 
         int fin = SDL_GetTicks();
