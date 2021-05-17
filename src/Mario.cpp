@@ -6,9 +6,10 @@
 #include <iostream>
 
 const int MAX_DESPLAZAMIENTO_PIXELES = 10;
+const int MAX_DESPLAZAMIENTO_X = 763;
 
-//Maximum axis velocity of the dot
-static const int MARIO_VEL = 10;
+//Maximum axis velocity of Mario
+static const int MARIO_VEL = 4;
 
 Mario::Mario(int posX, int posY, int velX, int ancho, int alto) 
 : Entidad(posX, posY, ancho, alto)
@@ -23,10 +24,12 @@ void Mario::mover()
     std::cout << "*** *** MOVIENDO MARIO posX i "<< posX << std::endl;
     posX += this->velX;
     std::cout << "*** *** MOVIENDO MARIO posX f "<< posX << std::endl;
-    // if(velX < 0 && posX < (posXInicial - MAX_DESPLAZAMIENTO_PIXELES))
-    //     velX = -1 * velX; //cambio de dirección
-    // if(velX > 0 && posX > (posXInicial + MAX_DESPLAZAMIENTO_PIXELES))
-    //     velX = -1 * velX; //cambio de dirección
+    //If the dot went too far to the left or right
+    if( ( posX < 0 ) || ( posX > MAX_DESPLAZAMIENTO_X ) )
+    {
+        //Move back
+        posX -= velX;
+    }
 }
 
 void Mario::mostrar(SDL_Renderer* renderer)
