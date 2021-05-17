@@ -14,13 +14,9 @@ void ComponenteVistaMario::mostrar(Entidad* entidad, std::string rutaImagen, SDL
             surface = IMG_Load(IMG_DEFAULT.c_str());
         }
         // std::cout << "surface->format=" << surface->format << std::endl;
-        
-        // Uint32 colorkey = SDL_MapRGB(surface->format, 255, 255, 255);
-        // SDL_SetColorKey(surface, SDL_TRUE, colorkey);
 
         SDL_SetColorKey(surface, SDL_TRUE, *(Uint32*)(surface->pixels));
 
-        // SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 255, 0)); //Hace que el fondo sea transparente
         textura = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
     }
@@ -28,6 +24,5 @@ void ComponenteVistaMario::mostrar(Entidad* entidad, std::string rutaImagen, SDL
     SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
 
     SDL_Rect rect = {entidad->posX, entidad->posY, entidad->ancho, entidad->alto};
-    // SDL_RenderCopy(renderer, textura, NULL, &rect);
     SDL_RenderCopyEx(renderer, textura, NULL, &rect, 0, NULL, flip);
 }

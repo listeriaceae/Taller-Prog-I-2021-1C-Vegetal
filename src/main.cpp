@@ -8,16 +8,20 @@
 #include "EnemigoFuego.h"
 #include "Peach.h"
 #include "Mario.h"
+#include <string>
 
 const int ANCHO_PANTALLA = 800;
 const int ALTO_PANTALLA = 600;
 const int FRAMES_POR_SEG = 60;
+
+const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
+
 int main(void)
 {
     // TODO: Handle errors...
 
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window* window = SDL_CreateWindow("Donkey Kong 2 Jumpman Returns", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     SDL_Init(SDL_INIT_VIDEO);
     bool terminarPrograma = false;
