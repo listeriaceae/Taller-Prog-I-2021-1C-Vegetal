@@ -10,6 +10,8 @@ class Mario : public Entidad, public Rendereable {
         void mostrar(SDL_Renderer* renderer);
         void mover();
         std::string getRutaImagen();
+         //Takes key presses and adjusts the dot's velocity
+        void handleEvent( SDL_Event& e );
 
     private: 
         ComponenteVistaMario* compVista = new ComponenteVistaMario();

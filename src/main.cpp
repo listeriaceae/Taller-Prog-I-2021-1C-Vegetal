@@ -72,7 +72,14 @@ int main(void)
             if(event.type == SDL_QUIT ) {
                 terminarPrograma = true;
             }
+
+            //Handle input for mario
+            std::cout << "Handeling event" << std::endl;
+            mario.handleEvent( event );
         }
+
+        mario.mover();
+
         int inicio = SDL_GetTicks();
         SDL_RenderClear(renderer);
         
