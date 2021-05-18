@@ -8,11 +8,13 @@
 
 class Nivel1 {
     public:
-    std::string rutaImagen = "res/Nivel1.png";
+    std::string rutaImagen = "res/default.png";
 
     Nivel1(SDL_Renderer* renderer);
     void actualizarNivel();
     void agregarObjeto(Entidad* objeto);
+    void setFondo(std::string rutaImagen);
+    void inicializarObjetos();
     std::list<Entidad*>* getObjetos();
 
     private:
