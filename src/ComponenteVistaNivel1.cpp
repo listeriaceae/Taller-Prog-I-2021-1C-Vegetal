@@ -28,8 +28,8 @@ void ComponenteVistaNivel1::mostrarFondo(Nivel1* nivel1) {
     SDL_RenderCopy(renderer, textura, NULL, NULL);
 }
 void ComponenteVistaNivel1::mostrarObjetos(Nivel1* nivel1) {
-    std::list<Rendereable*>::iterator it;
-    std::list<Rendereable*>* objetos = nivel1->getObjetos();
+    std::list<Entidad*>::iterator it;
+    std::list<Entidad*>* objetos = nivel1->getObjetos();
     
     for (it = objetos->begin(); it != objetos->end(); ++it){
         (*it)->mostrar(renderer);
