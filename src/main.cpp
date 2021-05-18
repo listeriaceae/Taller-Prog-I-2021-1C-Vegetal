@@ -10,6 +10,8 @@
 #include "PlataformaMovil.h"
 #include "EnemigoFuego.h"
 #include "Peach.h"
+#include "Mario.hpp"
+#include <string>
 #include "DonkeyKong.h"
 #include "configuration.hpp"
 #include "logger.h"
@@ -17,6 +19,9 @@
 const int ANCHO_PANTALLA = 800;
 const int ALTO_PANTALLA = 600;
 const int FRAMES_POR_SEG = 60;
+
+const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
+
 int main(void)
 {
     auto configuration = configuration::Configuration("archivo.json");
@@ -28,7 +33,7 @@ int main(void)
     // TODO: Handle errors...
     srand(time(NULL));
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window* window = SDL_CreateWindow("Window Title1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     SDL_Init(SDL_INIT_VIDEO);
     bool terminarPrograma = false;
@@ -37,7 +42,9 @@ int main(void)
     
     Nivel1 n1(renderer);
 
-    
+    Mario mario(3, 529, 0, 56, 56);
+    n1.agregarObjeto(&mario);
+
     logger::Logger::getInstance().logInformation("Log level = " + log_level);
 
     auto enemies = configuration.getEnemies();
@@ -77,7 +84,11 @@ int main(void)
             if(event.type == SDL_QUIT ) {
                 terminarPrograma = true;
             }
+
+            // Handle input for mario
+            mario.handleEvent( event );
         }
+
         int inicio = SDL_GetTicks();
         SDL_RenderClear(renderer);
         

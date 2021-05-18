@@ -32,6 +32,7 @@ void ComponenteVistaFuego::mostrar(Entidad* entidad, SDL_Renderer* renderer) {
     }
     SDL_RenderCopy(renderer, textura, &rectSpritesheet, &rectRender);
 }
+
 void ComponenteVistaFuego::inicializarTextura(SDL_Renderer* renderer) {
     SDL_Surface* surface = IMG_Load("res/Fuego.png");
     if(surface == NULL) {
