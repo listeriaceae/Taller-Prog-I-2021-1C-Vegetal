@@ -20,6 +20,9 @@ const int FRAMES_POR_SEG = 60;
 int main(void)
 {
     auto configuration = configuration::Configuration("archivo.json");
+    auto log_level = configuration.getLogLevel();
+    logger::Logger::getInstance().setDebugLevel(log_level);
+
     logger::Logger::getInstance().logNewGame();
 
     // TODO: Handle errors...
@@ -34,7 +37,7 @@ int main(void)
     
     Nivel1 n1(renderer);
 
-    auto log_level = configuration.getLogLevel();
+    
     logger::Logger::getInstance().logInformation("Log level = " + log_level);
 
     auto enemies = configuration.getEnemies();
