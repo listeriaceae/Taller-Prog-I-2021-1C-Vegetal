@@ -26,6 +26,7 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
     }
 
     tiempo++;
+
     if(tiempo >= TIEMPO_POR_FRAME * CANT_FRAMES)
     {
         tiempo = 0;
@@ -40,8 +41,16 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
     {
         rectSpritesheet.x = posXTextura[0];
         rectSpritesheet.y = posYTextura;
+        rectSpritesheet.w = anchoTextura;
+        rectSpritesheet.h = altoTextura;
+
+        rectRender.x = mario->posX;
+        rectRender.y = mario->posY;
+        rectRender.w = mario->ancho;
+        rectRender.h = mario->alto;
     } 
-    else
+    else if (estado == CORRIENDO_DERECHA 
+    || estado == CORRIENDO_IZQUIERDA)
     {
         if((frameTextura != frameActual) || frameActual == 0)
         {
@@ -57,6 +66,11 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
             rectRender.h = mario->alto;
         }
     }
+    else if (estado == SALTANDO_DERECHA 
+    || estado == SALTANDO_IZQUIERDA)
+    {
+        // COMPLETAR
+    }
 
     SDL_RendererFlip flip;
 
@@ -64,6 +78,7 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
     {
         case REPOSO_DERECHA:
         case CORRIENDO_DERECHA:
+        case SALTANDO_DERECHA:
             flip = SDL_FLIP_HORIZONTAL;
             break;
 
@@ -72,6 +87,6 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
             break;
     }
 
-    SDL_Rect rect = {mario->posX, mario->posY, mario->ancho, mario->alto};
+    //SDL_Rect rect = {mario->posX, mario->posY, mario->ancho, mario->alto};
     SDL_RenderCopyEx(renderer, textura, &rectSpritesheet, &rectRender, 0, NULL, flip);
 }
