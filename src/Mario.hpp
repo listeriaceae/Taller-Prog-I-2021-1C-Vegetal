@@ -34,6 +34,6 @@ class Mario : public Entidad, public Rendereable {
         int velX;
         int posXInicial;
         int posYInicial;
-        std::string rutaImagen = "res/Mario-3.png";
+        std::string rutaImagen = "res/Mario.png";
         MarioEstado estado;
 };

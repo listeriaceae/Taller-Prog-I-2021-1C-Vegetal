@@ -48,7 +48,9 @@ int main(void)
 
     Peach p1(314, 76, 40, 55);
     
-    Mario mario(3, 529, 0, 40, 55);
+    //  Mario(int posX, int posY, int velX, int ancho, int alto);
+    // Mario mario(3, 529, 0, 40, 55);
+    Mario mario(3, 529, 0, 56, 56);
 
     n1.agregarObjeto(&m1);
     n1.agregarObjeto(&m2);
