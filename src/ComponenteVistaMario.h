@@ -20,6 +20,4 @@ class ComponenteVistaMario
         int posYTextura = 0;
         int anchoTextura = 16;
         int altoTextura = 16;
-
-        void inicializarTextura(SDL_Renderer* renderer);
 };

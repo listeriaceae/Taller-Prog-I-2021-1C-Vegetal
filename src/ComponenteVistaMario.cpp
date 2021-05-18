@@ -8,8 +8,8 @@
 
 const std::string IMG_DEFAULT = "res/default.png";
 
-const int TIEMPO_POR_FRAME = 10;
-const int CANT_FRAMES = 4;
+const int TIEMPO_POR_FRAME = 5;
+const int CANT_FRAMES = 3;
 
 void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_Renderer* renderer) 
 { 
@@ -32,26 +32,35 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
     }
 
     int frameActual = tiempo / TIEMPO_POR_FRAME;
-    
-    if((frameTextura != frameActual) || frameActual == 0)
-    {
-        frameTextura = frameActual;
-        rectSpritesheet.x = posXTextura[frameTextura];
-        rectSpritesheet.y = posYTextura;
-        rectSpritesheet.w = anchoTextura;
-        rectSpritesheet.h = altoTextura;
 
-        rectRender.x = mario->posX;
-        rectRender.y = mario->posY;
-        rectRender.w = mario->ancho;
-        rectRender.h = mario->alto;    
+    MarioEstado estado = ((Mario *) mario)->getEstado();
+
+    if(estado == REPOSO_DERECHA 
+    || estado == REPOSO_IZQUIERDA) 
+    {
+        rectSpritesheet.x = posXTextura[0];
+        rectSpritesheet.y = posYTextura;
+    } 
+    else
+    {
+        if((frameTextura != frameActual) || frameActual == 0)
+        {
+            frameTextura = frameActual;
+            rectSpritesheet.x = posXTextura[frameTextura];
+            rectSpritesheet.y = posYTextura;
+            rectSpritesheet.w = anchoTextura;
+            rectSpritesheet.h = altoTextura;
+
+            rectRender.x = mario->posX;
+            rectRender.y = mario->posY;
+            rectRender.w = mario->ancho;
+            rectRender.h = mario->alto;
+        }
     }
-    
-    // SDL_RenderCopy(renderer, textura, &rectSpritesheet, &rectRender);
 
     SDL_RendererFlip flip;
 
-    switch (((Mario *) mario)->getEstado())
+    switch (estado)
     {
         case REPOSO_DERECHA:
         case CORRIENDO_DERECHA:
@@ -65,13 +74,4 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
 
     SDL_Rect rect = {mario->posX, mario->posY, mario->ancho, mario->alto};
     SDL_RenderCopyEx(renderer, textura, &rectSpritesheet, &rectRender, 0, NULL, flip);
-}
-
-void ComponenteVistaMario::inicializarTextura(SDL_Renderer* renderer) {
-    SDL_Surface* surface = IMG_Load("res/Fuego.png");
-    if(surface == NULL) {
-        surface = IMG_Load(IMG_DEFAULT.c_str());
-    }
-    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 255, 0));
-    textura = SDL_CreateTextureFromSurface(renderer, surface);
 }

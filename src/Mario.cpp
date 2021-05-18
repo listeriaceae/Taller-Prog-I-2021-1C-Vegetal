@@ -6,7 +6,7 @@
 #include <iostream>
 
 const int MAX_DESPLAZAMIENTO_PIXELES = 10;
-const int MAX_DESPLAZAMIENTO_X = 763;
+const int MAX_DESPLAZAMIENTO_X = 750;
 
 //Maximum axis velocity of Mario
 static const int MARIO_VEL = 4;
@@ -45,7 +45,7 @@ void Mario::handleEvent( SDL_Event& e )
     //If a key was pressed
     if( e.type == SDL_KEYDOWN && e.key.repeat == 0 )
     {
-        std::cout << "SDL_KEYDOWN ";
+        std::cout << "KEYDOWN ";
         //Adjust the velocity
         switch( e.key.keysym.sym )
         {
@@ -81,6 +81,7 @@ void Mario::handleEvent( SDL_Event& e )
     //If a key was released
     else if( e.type == SDL_KEYUP && e.key.repeat == 0 )
     {
+        std::cout << "KEYUP ";
         //Adjust the velocity
         switch( e.key.keysym.sym )
         {
@@ -91,13 +92,27 @@ void Mario::handleEvent( SDL_Event& e )
                 //mVelY -= MARIO_VEL;
                 break;
             case SDLK_LEFT: 
-                velX += MARIO_VEL;
+                // velX += MARIO_VEL;
+                this->detenerIzquierda();
                 break;
             case SDLK_RIGHT:
-                velX -= MARIO_VEL;
+                // velX -= MARIO_VEL;
+                this->detenerDerecha();
                 break;
         }
     }
+}
+
+void Mario::detenerDerecha() 
+{
+    this->velX -= MARIO_VEL;
+    this->estado = REPOSO_DERECHA;
+}
+
+void Mario::detenerIzquierda() 
+{
+    this->velX += MARIO_VEL;
+    this->estado = REPOSO_IZQUIERDA;
 }
 
 void Mario::moverDerecha() 

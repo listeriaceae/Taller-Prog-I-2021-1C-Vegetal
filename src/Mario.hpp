@@ -28,6 +28,10 @@ class Mario : public Entidad, public Rendereable {
 
         MarioEstado getEstado();
 
+        void detenerDerecha();
+
+        void detenerIzquierda();
+
     private: 
         ComponenteVistaMario* compVista = new ComponenteVistaMario();
         
