@@ -1,5 +1,5 @@
 #pragma once
-#include "Entidad.h"
+#include "../model/Entidad.h"
 class ComponenteVistaEntidadEstatica {
     public:
     

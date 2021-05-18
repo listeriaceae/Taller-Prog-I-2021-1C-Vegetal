@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "ComponenteVistaPolea.h"
-#include "Entidad.h"
+#include "../model/Entidad.h"
 #include <iostream>
 
 const std::string IMG_DEFAULT = "res/default.png";

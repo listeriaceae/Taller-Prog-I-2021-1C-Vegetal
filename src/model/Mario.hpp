@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "Entidad.h"
-#include "ComponenteVistaMario.h"
+#include "../view/ComponenteVistaMario.h"
 
 enum MarioEstado {
     REPOSO_DERECHA,

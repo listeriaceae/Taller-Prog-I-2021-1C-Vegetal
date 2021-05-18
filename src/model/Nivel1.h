@@ -3,7 +3,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "ComponenteVistaNivel1.h"
+#include "../view/ComponenteVistaNivel1.h"
 #include "Entidad.h"
 
 class Nivel1 {

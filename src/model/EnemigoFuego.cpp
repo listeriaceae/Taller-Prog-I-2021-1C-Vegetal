@@ -2,7 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "Entidad.h"
 #include "EnemigoFuego.h"
-#include "ComponenteVistaEntidadEstatica.h"
+#include "../view/ComponenteVistaEntidadEstatica.h"
 
 const int MAX_DESPLAZAMIENTO_PIXELES = 10;
 EnemigoFuego::EnemigoFuego(int posX, int posY, int velX, int ancho, int alto) 

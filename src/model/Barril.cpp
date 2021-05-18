@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include "Entidad.h"
 #include "Barril.h"
-#include "ComponenteVistaEntidadEstatica.h"
+#include "../view/ComponenteVistaEntidadEstatica.h"
 
 using namespace std;
 

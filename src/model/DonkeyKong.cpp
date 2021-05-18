@@ -1,17 +1,17 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "Entidad.h"
-#include "Peach.h"
-#include "ComponenteVistaEntidadEstatica.h"
+#include "DonkeyKong.h"
+#include "../view/ComponenteVistaEntidadEstatica.h"
 
-Peach::Peach(int posX, int posY, int ancho, int alto) 
+DonkeyKong::DonkeyKong(int posX, int posY, int ancho, int alto) 
 : Entidad(posX, posY, ancho, alto){
     compVista = new ComponenteVistaEntidadEstatica();
 }
 
-void Peach::mostrar(SDL_Renderer* renderer) {
+void DonkeyKong::mostrar(SDL_Renderer* renderer) {
     compVista->mostrar(this, rutaImagen, renderer);
 }
-void Peach::mover() {
+void DonkeyKong::mover() {
 
 }

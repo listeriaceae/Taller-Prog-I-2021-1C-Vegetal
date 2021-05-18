@@ -2,7 +2,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "ComponenteVistaFuego.h"
+#include "../view/ComponenteVistaFuego.h"
 
 Fuego::Fuego(int posX, int posY, int ancho, int alto) 
 : Entidad(posX, posY, ancho, alto){

@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "ComponenteVistaNivel1.h"
-#include "Nivel1.h"
+#include "../model/Nivel1.h"
 
 const std::string IMG_DEFAULT = "res/default.png";
 

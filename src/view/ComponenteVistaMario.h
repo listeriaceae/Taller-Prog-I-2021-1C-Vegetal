@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <string>
-#include "Entidad.h"
+#include "../model/Entidad.h"
 
 
 class ComponenteVistaMario 

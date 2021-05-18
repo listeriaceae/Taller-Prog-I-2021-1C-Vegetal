@@ -1,8 +1,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "ComponenteVistaMario.h"
-#include "Entidad.h"
-#include "Mario.hpp"
+#include "../model/Entidad.h"
+#include "../model/Mario.hpp"
 #include <string>
 #include <iostream>
 
