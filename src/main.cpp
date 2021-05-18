@@ -12,12 +12,16 @@
 #include "Peach.h"
 #include "DonkeyKong.h"
 #include "configuration.hpp"
+#include "logger.h"
 
 const int ANCHO_PANTALLA = 800;
 const int ALTO_PANTALLA = 600;
 const int FRAMES_POR_SEG = 60;
 int main(void)
 {
+    auto configuration = configuration::Configuration("archivo.json");
+    logger::Logger::getInstance().logNewGame();
+
     // TODO: Handle errors...
     srand(time(NULL));
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -29,11 +33,9 @@ int main(void)
     SDL_Event event;
     
     Nivel1 n1(renderer);
-    
-    auto configuration = configuration::Configuration("archivo.json");
 
     auto log_level = configuration.getLogLevel();
-    std::cout << "Log level = " << log_level << std::endl;
+    logger::Logger::getInstance().logInformation("Log level = " + log_level);
 
     auto enemies = configuration.getEnemies();
     for (auto enemy: enemies)
@@ -52,15 +54,15 @@ int main(void)
                 n1.agregarObjeto(fuego);
             }
         }
-        std::cout << "Enemy type = " << enemy.getType() << std::endl;
-        std::cout << "Enemy quantity = " << enemy.getQuantity() << std::endl;
+        logger::Logger::getInstance().logDebug("Enemy type = " + enemy.getType());
+        logger::Logger::getInstance().logDebug("Enemy quantity = " + enemy.getQuantity());
     }
     
     auto stages = configuration.getStages();
     for (unsigned int i = 0; i < stages.size(); ++i)
     {
         if(i == 0) {
-            std::cout << "Stage 1 background img = " << stages[i].getBackgrounds()[0] << std::endl;
+            logger::Logger::getInstance().logDebug("Stage 1 background img = " + stages[i].getBackgrounds()[0]);
             n1.setFondo(stages[i].getBackgrounds()[0]);
         }
     }
