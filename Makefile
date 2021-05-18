@@ -5,7 +5,7 @@
 # Compiler settings - Can be customized.
 CC = g++
 CXXFLAGS = -std=c++11 -Wall -g
-LDFLAGS = -lSDL2 -ljsoncpp
+LDFLAGS = -lSDL2 -lSDL2_image -ljsoncpp
 
 # Makefile settings - Can be customized.
 APPNAME = myapp
