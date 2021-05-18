@@ -84,7 +84,7 @@ int main(void)
 
         int fin = SDL_GetTicks();
         if((fin - inicio) < 1000/FRAMES_POR_SEG)
-            SDL_Delay((1000 - (fin - inicio))/FRAMES_POR_SEG);
+            SDL_Delay((1000/FRAMES_POR_SEG) - (fin - inicio));
     }
 
     SDL_DestroyWindow(window);
