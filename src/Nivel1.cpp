@@ -10,6 +10,7 @@
 #include "EnemigoFuego.h"
 #include "Peach.h"
 #include "DonkeyKong.h"
+#include "Polea.h"
 
 using namespace std;
 
@@ -58,6 +59,10 @@ void Nivel1::inicializarObjetos() {
 
     //Barril b1(300, 0, 0, 10);
     //Barril b2(200, 0, 0, 7);
+    Polea* polea1 = new Polea(35, 300, 22, 21, "derecha");
+    Polea* polea2 = new Polea(35, 394, 22, 21, "derecha");
+    Polea* polea3 = new Polea(743, 300, 22, 21, "izquierda");
+    Polea* polea4 = new Polea(743, 394, 22, 21, "izquierda");
 
     Peach* p1 = new Peach(314, 76, 40, 55);
     DonkeyKong* d1 = new DonkeyKong(129, 115, 100, 82);
@@ -71,6 +76,11 @@ void Nivel1::inicializarObjetos() {
     agregarObjeto(f2);
     agregarObjeto(f3);
     agregarObjeto(f4);
+
+    agregarObjeto(polea1);
+    agregarObjeto(polea2);
+    agregarObjeto(polea3);
+    agregarObjeto(polea4);
 
     agregarObjeto(p1);
     agregarObjeto(d1);
