@@ -6,7 +6,7 @@
 #include <iostream>
 
 const std::string IMG_DEFAULT = "res/default.png";
-const int TIEMPO_POR_FRAME = 20;
+const int TIEMPO_POR_FRAME = 10;
 const int CANT_FRAMES = 4;
 
 void ComponenteVistaFuego::mostrar(Entidad* entidad, SDL_Renderer* renderer) {
@@ -32,6 +32,7 @@ void ComponenteVistaFuego::mostrar(Entidad* entidad, SDL_Renderer* renderer) {
     }
     SDL_RenderCopy(renderer, textura, &rectSpritesheet, &rectRender);
 }
+
 void ComponenteVistaFuego::inicializarTextura(SDL_Renderer* renderer) {
     SDL_Surface* surface = IMG_Load("res/Fuego.png");
     if(surface == NULL) {

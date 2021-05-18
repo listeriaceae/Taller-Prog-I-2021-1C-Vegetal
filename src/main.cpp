@@ -7,7 +7,7 @@
 #include "PlataformaMovil.h"
 #include "EnemigoFuego.h"
 #include "Peach.h"
-#include "Mario.h"
+#include "Mario.hpp"
 #include <string>
 
 const int ANCHO_PANTALLA = 800;
@@ -74,7 +74,7 @@ int main(void)
             }
 
             //Handle input for mario
-            std::cout << "Handeling event" << std::endl;
+            // std::cout << "Handeling event" << std::endl;
             mario.handleEvent( event );
         }
 
