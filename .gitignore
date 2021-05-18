@@ -8,3 +8,6 @@ myapp
 *.d
 /.vscode/
 /obj/
+
+# Logs
+log.txt
