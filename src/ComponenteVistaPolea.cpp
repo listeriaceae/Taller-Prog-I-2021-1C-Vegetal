@@ -6,7 +6,7 @@
 #include <iostream>
 
 const std::string IMG_DEFAULT = "res/default.png";
-const int TIEMPO_POR_FRAME = 10;
+const int TIEMPO_POR_FRAME = 7;
 const int CANT_FRAMES = 3;
 
 ComponenteVistaPolea::ComponenteVistaPolea(std::string direccion) {
@@ -45,5 +45,7 @@ void ComponenteVistaPolea::inicializarTextura(SDL_Renderer* renderer) {
     textura = SDL_CreateTextureFromSurface(renderer, surface);
     if(direccion.compare("izquierda") == 0) {
         flip = SDL_FLIP_HORIZONTAL;
+    } else if(direccion.compare("derecha") == 0) {
+        flip = SDL_FLIP_VERTICAL; //Para que giren todas las poleas en el mismo sentido
     }
 }
