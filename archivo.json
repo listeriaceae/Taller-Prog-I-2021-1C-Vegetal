@@ -1,0 +1,27 @@
+{
+    "configuration": {
+        "log": {
+            "level": "ERROR"
+        },
+        "game": {
+            "enemies": [
+                {
+                    "type": "Fuego",
+                    "quantity": 3
+                }
+            ],
+            "stages": [
+                {
+                    "fondo1": "res/Nivel1.png",
+                    "fondo2": "/home/file22.bmp",
+                    "fondo3": "/home/file23.bmp"
+                },
+                {
+                    "fondo1": "/home/file31.bmp",
+                    "fondo2": "/home/file32.bmp",
+                    "fondo3": "/home/file33.bmp"
+                }
+            ]
+        }
+    }
+}

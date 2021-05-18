@@ -12,3 +12,7 @@ Fuego::Fuego(int posX, int posY, int ancho, int alto)
 void Fuego::mostrar(SDL_Renderer* renderer) {
     compVista->mostrar(this, renderer);
 }
+
+void Fuego::mover() {
+    
+}

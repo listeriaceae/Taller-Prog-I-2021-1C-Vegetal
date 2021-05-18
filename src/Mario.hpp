@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include "Entidad.h"
-#include "Rendereable.h"
 #include "ComponenteVistaMario.h"
 
 enum MarioEstado {
@@ -14,7 +13,8 @@ enum MarioEstado {
     ESCALANDO
 };
 
-class Mario : public Entidad, public Rendereable {
+class Mario : public Entidad 
+{
     public: 
         Mario(int posX, int posY, int velX, int ancho, int alto);
         void mostrar(SDL_Renderer* renderer);
