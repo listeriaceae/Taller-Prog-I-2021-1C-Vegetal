@@ -1,6 +1,9 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <stdlib.h>
+#include <time.h>
+#include "Entidad.h"
 #include "Nivel1.h"
 #include "Barril.h"
 #include "Fuego.h"
@@ -8,6 +11,7 @@
 #include "EnemigoFuego.h"
 #include "Peach.h"
 #include "DonkeyKong.h"
+#include "configuration.hpp"
 
 const int ANCHO_PANTALLA = 800;
 const int ALTO_PANTALLA = 600;
@@ -15,7 +19,7 @@ const int FRAMES_POR_SEG = 60;
 int main(void)
 {
     // TODO: Handle errors...
-
+    srand(time(NULL));
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_Window* window = SDL_CreateWindow("Window Title1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
@@ -26,40 +30,42 @@ int main(void)
     
     Nivel1 n1(renderer);
     
-    PlataformaMovil m1(200, 288, -4, 60, 19);
-    PlataformaMovil m2(400, 307, 4, 60, 19);
-    PlataformaMovil m3(250, 382, -4, 60, 19);
-    PlataformaMovil m4(300, 401, 4, 60, 19);
+    auto configuration = configuration::Configuration("archivo.json");
 
-    Fuego f1(172, 544, 56, 56);
-    Fuego f2(314, 544, 56, 56);
-    Fuego f3(458, 544, 56, 56);
-    Fuego f4(600, 544, 56, 56);
+    auto log_level = configuration.getLogLevel();
+    std::cout << "Log level = " << log_level << std::endl;
 
-    EnemigoFuego e1(400, 437, 1, 32, 32);
-    EnemigoFuego e2(617, 171, -1, 32, 32);
+    auto enemies = configuration.getEnemies();
+    for (auto enemy: enemies)
+    {
+        if(enemy.getType().compare("Fuego") == 0) {
+            for(unsigned int i = 0; i < enemy.getQuantity(); i++) {
+                int posX = rand() % (ANCHO_PANTALLA - 32);
+                int posY = rand() % (ALTO_PANTALLA - 32);
+                int numRandom = (rand() % 2);
+                int velX;
+                if(numRandom == 0)
+                    velX = -1;
+                else
+                    velX = 1;
+                EnemigoFuego* fuego = new EnemigoFuego(posX, posY, velX, 32, 32);
+                n1.agregarObjeto(fuego);
+            }
+        }
+        std::cout << "Enemy type = " << enemy.getType() << std::endl;
+        std::cout << "Enemy quantity = " << enemy.getQuantity() << std::endl;
+    }
+    
+    auto stages = configuration.getStages();
+    for (unsigned int i = 0; i < stages.size(); ++i)
+    {
+        if(i == 0) {
+            std::cout << "Stage 1 background img = " << stages[i].getBackgrounds()[0] << std::endl;
+            n1.setFondo(stages[i].getBackgrounds()[0]);
+        }
+    }
 
-    //Barril b1(300, 0, 0, 10);
-    //Barril b2(200, 0, 0, 7);
-
-    Peach p1(314, 76, 40, 55);
-    DonkeyKong d1(129, 115, 100, 82);
-
-    n1.agregarObjeto(&m1);
-    n1.agregarObjeto(&m2);
-    n1.agregarObjeto(&m3);
-    n1.agregarObjeto(&m4);
-
-    n1.agregarObjeto(&f1);
-    n1.agregarObjeto(&f2);
-    n1.agregarObjeto(&f3);
-    n1.agregarObjeto(&f4);
-
-    n1.agregarObjeto(&e1);
-    n1.agregarObjeto(&e2);
-
-    n1.agregarObjeto(&p1);
-    n1.agregarObjeto(&d1);
+    n1.inicializarObjetos();
     
     while(!terminarPrograma) {
         while( SDL_PollEvent(&event) != 0 ) {
@@ -76,7 +82,7 @@ int main(void)
 
         int fin = SDL_GetTicks();
         if((fin - inicio) < 1000/FRAMES_POR_SEG)
-            SDL_Delay((1000 - (fin - inicio))/FRAMES_POR_SEG);
+            SDL_Delay((1000/FRAMES_POR_SEG) - (fin - inicio));
     }
 
     SDL_DestroyWindow(window);
