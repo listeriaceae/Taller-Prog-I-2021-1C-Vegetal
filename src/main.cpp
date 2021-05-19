@@ -19,20 +19,18 @@
 #include "utils/window.hpp"
 #include "utils/ Constants.hpp"
 
-const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
-
 int main(void)
 {
-    auto configuration = configuration::Configuration("archivo.json");
+    logger::Logger::getInstance().logNewGame();
+    
+    auto configuration = configuration::Configuration(Constants::CONFIG_FILE);
     auto log_level = configuration.getLogLevel();
     logger::Logger::getInstance().setDebugLevel(log_level);
-
-    logger::Logger::getInstance().logNewGame();
 
     // TODO: Handle errors...
     srand(time(NULL));
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow(Constants::NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     SDL_Init(SDL_INIT_VIDEO);
     bool terminarPrograma = false;
