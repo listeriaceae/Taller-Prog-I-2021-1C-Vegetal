@@ -5,6 +5,7 @@
 #include <time.h>
 #include "model/Entidad.h"
 #include "model/Nivel1.h"
+#include "model/Nivel2.h"
 #include "model/Barril.h"
 #include "model/Fuego.h"
 #include "model/PlataformaMovil.h"
@@ -81,6 +82,12 @@ int main(void)
             if(event.type == SDL_QUIT ) {
                 terminarPrograma = true;
             }
+            
+            // Cambio de nivel
+            if( event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
+                logger::Logger::getInstance().logInformation("End of Level 1");
+                goto nivel2;
+            }
 
             // Handle input for mario
             mario.handleEvent( event );
@@ -93,10 +100,47 @@ int main(void)
         
         SDL_RenderPresent(renderer);
 
+
         int fin = SDL_GetTicks();
         if((fin - inicio) < 1000/FRAMES_POR_SEG)
             SDL_Delay((1000/FRAMES_POR_SEG) - (fin - inicio));
     }
+
+    nivel2:
+        SDL_RenderClear(renderer);
+        Nivel2 n2(renderer); 
+        logger::Logger::getInstance().logInformation("Level 2 starts");
+        mario = Mario(45, 529, 0, 56, 56);
+        n2.addElement(&mario);
+
+        while(!terminarPrograma) {
+        while( SDL_PollEvent(&event) != 0 ) {
+            if(event.type == SDL_QUIT ) {
+                terminarPrograma = true;
+            }
+
+            if( event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
+                logger::Logger::getInstance().logInformation("End of Level 2");
+                goto fin;
+            }
+
+            // Handle input for mario
+            mario.handleEvent( event );
+        }
+
+        int inicio = SDL_GetTicks();
+
+        SDL_RenderClear(renderer);
+        n2.updateView();
+        SDL_RenderPresent(renderer);
+
+        int fin = SDL_GetTicks();
+        if((fin - inicio) < 1000/FRAMES_POR_SEG)
+        SDL_Delay((1000/FRAMES_POR_SEG) - (fin - inicio));
+    };
+
+    fin:
+        logger::Logger::getInstance().logInformation("Game over");
 
     SDL_DestroyWindow(window);
     IMG_Quit();
