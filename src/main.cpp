@@ -17,6 +17,7 @@
 #include "configuration.hpp"
 #include "logger.h"
 #include "window.hpp"
+#include "utils/ Constants.hpp"
 
 const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
 
@@ -40,7 +41,10 @@ int main(void)
     
     Nivel1 n1(renderer);
 
-    Mario mario(3, 529, 0, 56, 56);
+    Mario mario( Constants::N1_MARIO_POS_X, 
+                 Constants::N1_MARIO_POS_Y,
+                 Constants::MARIO_ANCHO,
+                 Constants::MARIO_ALTO);
     n1.agregarObjeto(&mario);
 
     logger::Logger::getInstance().logInformation("Log level = " + log_level);
@@ -89,7 +93,7 @@ int main(void)
                 goto nivel2;
             }
 
-            // Handle input for mario
+            // Handle input for Mario
             mario.handleEvent( event );
         }
 
@@ -103,14 +107,21 @@ int main(void)
 
         int fin = SDL_GetTicks();
         if((fin - inicio) < 1000/FRAMES_POR_SEG)
+        {
             SDL_Delay((1000/FRAMES_POR_SEG) - (fin - inicio));
+        }
     }
 
     nivel2:
         SDL_RenderClear(renderer);
         Nivel2 n2(renderer); 
         logger::Logger::getInstance().logInformation("Level 2 starts");
-        mario = Mario(45, 529, 0, 56, 56);
+        
+        mario = Mario( Constants::N2_MARIO_POS_X, 
+                       Constants::N2_MARIO_POS_Y,
+                       Constants::MARIO_ANCHO,
+                       Constants::MARIO_ALTO);
+        
         n2.addElement(&mario);
 
         while(!terminarPrograma) {
