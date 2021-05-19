@@ -14,7 +14,7 @@ namespace configuration
         ~Enemy() = default;;
 
         const std::string getType() const { return type; };
-        const unsigned int getQuantity() const { return quantity; };
+        unsigned int getQuantity() const { return quantity; };
 
     private:
         std::string type;
