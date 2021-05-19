@@ -10,19 +10,34 @@ const int MAX_DESPLAZAMIENTO_PIXELES = 10;
 const int MAX_DESPLAZAMIENTO_X = 750;
 
 //Maximum axis velocity of Mario
-static const int MARIO_VEL = 4;
+static const int MARIO_VELX = 4;
+static const int MARIO_VEL_SALTO = 4;
+static const float MARIO_ACC = -0.2;
 
 Mario::Mario(int posX, int posY, int ancho, int alto) 
 : Entidad(posX, posY, ancho, alto)
 {
     this->velX = 0;
+    this->velEnSuelo = 0;
+    this->velY = 0.;
     this->posXInicial = posX;
     this->posYInicial = posY;
+    this->marioPosY = posY;
     this->estado = REPOSO_DERECHA;
 }
 
 void Mario::mover()
 {
+    this->marioPosY -= this->velY;
+    this->velY += MARIO_ACC * (this->estado == SALTANDO_IZQUIERDA || this->estado == SALTANDO_DERECHA);
+    if (this->marioPosY > this->posYInicial) {
+        this->estado = (this->estado == SALTANDO_IZQUIERDA);
+        this->velX = this->velEnSuelo;
+        this->estado += (velX != 0) << 1;
+        this->marioPosY = posYInicial;
+        this->velY = 0.;
+    }
+    posY = round(this->marioPosY);
     posX += this->velX;
     //If the dot went too far to the left or right
     if( ( posX < 0 ) || ( posX > MAX_DESPLAZAMIENTO_X ) )
@@ -60,6 +75,7 @@ void Mario::handleEvent( SDL_Event& e )
                 break;
             case SDLK_SPACE:
                 logger::Logger::getInstance().logDebug("event[KEYDOWN] SPACE");
+                this->saltar();
                 break;
             default:
                 logger::Logger::getInstance().logDebug("event[KEYDOWN] UNKOWN KEY");
@@ -91,29 +107,48 @@ void Mario::handleEvent( SDL_Event& e )
 
 void Mario::detenerDerecha() 
 {
-    this->velX -= MARIO_VEL;
+    this->velEnSuelo -= MARIO_VELX;
+    if (!this->velY) {
+    this->velX -= MARIO_VELX;
     this->estado = REPOSO_DERECHA;
+    }
 }
 
 void Mario::detenerIzquierda() 
 {
-    this->velX += MARIO_VEL;
+    this->velEnSuelo += MARIO_VELX;
+    if (!this->velY) {
+    this->velX += MARIO_VELX;
     this->estado = REPOSO_IZQUIERDA;
+    }
 }
 
 void Mario::moverDerecha() 
 {
-    this->velX += MARIO_VEL;
+    this->velEnSuelo += MARIO_VELX;
+    if (!this->velY) {
+    this->velX += MARIO_VELX;
     this->estado = CORRIENDO_DERECHA;
+    }
 }
 
 void Mario::moverIzquierda() 
 {
-    this->velX -= MARIO_VEL;
+    this->velEnSuelo -= MARIO_VELX;
+    if (!this->velY) {
+    this->velX -= MARIO_VELX;
     this->estado = CORRIENDO_IZQUIERDA;
+    }
 }
 
-MarioEstado Mario::getEstado()
+void Mario::saltar()
+{
+    if (this->velY) return;
+    this->velY = MARIO_VEL_SALTO;
+    this->estado = SALTANDO_DERECHA + (estado % 2);
+}
+
+int Mario::getEstado()
 {
     return this->estado;
 }
