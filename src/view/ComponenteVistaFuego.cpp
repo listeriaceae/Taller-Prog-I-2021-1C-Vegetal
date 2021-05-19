@@ -4,8 +4,10 @@
 #include "ComponenteVistaFuego.h"
 #include "../model/Entidad.h"
 #include <iostream>
+#include "../logger.h"
 
 const std::string IMG_DEFAULT = "res/default.png";
+const std::string IMG_FUEGO = "res/Fuego.png";
 const int TIEMPO_POR_FRAME = 3;
 const int CANT_FRAMES = 4;
 
@@ -34,8 +36,10 @@ void ComponenteVistaFuego::mostrar(Entidad* entidad, SDL_Renderer* renderer) {
 }
 
 void ComponenteVistaFuego::inicializarTextura(SDL_Renderer* renderer) {
-    SDL_Surface* surface = IMG_Load("res/Fuego.png");
+    SDL_Surface* surface = IMG_Load(IMG_FUEGO.c_str());
     if(surface == NULL) {
+        logger::Logger::getInstance().logError("Image not found: " + IMG_FUEGO);
+        logger::Logger::getInstance().logDebug("Loading default image: " + IMG_DEFAULT);
         surface = IMG_Load(IMG_DEFAULT.c_str());
     }
     SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 255, 0));

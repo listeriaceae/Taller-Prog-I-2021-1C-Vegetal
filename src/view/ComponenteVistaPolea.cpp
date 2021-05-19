@@ -4,8 +4,10 @@
 #include "ComponenteVistaPolea.h"
 #include "../model/Entidad.h"
 #include <iostream>
+#include "../logger.h"
 
 const std::string IMG_DEFAULT = "res/default.png";
+const std::string IMG_POLEAS = "res/Polea.png";
 const int TIEMPO_POR_FRAME = 7;
 const int CANT_FRAMES = 3;
 
@@ -37,8 +39,11 @@ void ComponenteVistaPolea::mostrar(Entidad* entidad, SDL_Renderer* renderer) {
     SDL_RenderCopyEx(renderer, textura, &rectSpritesheet, &rectRender, 0, NULL, flip);
 }
 void ComponenteVistaPolea::inicializarTextura(SDL_Renderer* renderer) {
-    SDL_Surface* surface = IMG_Load("res/Polea.png");
+
+    SDL_Surface* surface = IMG_Load(IMG_POLEAS.c_str());
     if(surface == NULL) {
+        logger::Logger::getInstance().logError("Image not found: " + IMG_POLEAS);
+        logger::Logger::getInstance().logDebug("Loading default image: " + IMG_DEFAULT);
         surface = IMG_Load(IMG_DEFAULT.c_str());
     }
     SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 255, 0));
