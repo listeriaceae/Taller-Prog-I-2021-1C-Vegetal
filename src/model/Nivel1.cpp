@@ -11,6 +11,7 @@
 #include "Peach.h"
 #include "DonkeyKong.h"
 #include "Polea.h"
+#include "../utils/ Constants.hpp"
 
 using namespace std;
 
@@ -47,10 +48,10 @@ void Nivel1::setFondo(std::string rutaImagen) {
 }
 
 void Nivel1::inicializarObjetos() {
-    PlataformaMovil* m1 = new PlataformaMovil(200, 288, -4, 60, 19);
-    PlataformaMovil* m2 = new PlataformaMovil(400, 307, 4, 60, 19);
-    PlataformaMovil* m3 = new PlataformaMovil(250, 382, -4, 60, 19);
-    PlataformaMovil* m4 = new PlataformaMovil(300, 401, 4, 60, 19);
+    PlataformaMovil* m1 = new PlataformaMovil(200, 288, -Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
+    PlataformaMovil* m2 = new PlataformaMovil(400, 307, Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
+    PlataformaMovil* m3 = new PlataformaMovil(250, 382, -Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
+    PlataformaMovil* m4 = new PlataformaMovil(300, 401, Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
 
     Fuego* f1 = new Fuego(172, 544, 56, 56);
     Fuego* f2 = new Fuego(314, 544, 56, 56);

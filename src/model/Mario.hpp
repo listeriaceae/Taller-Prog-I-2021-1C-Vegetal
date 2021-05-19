@@ -16,7 +16,7 @@ enum MarioEstado {
 class Mario : public Entidad 
 {
     public: 
-        Mario(int posX, int posY, int velX, int ancho, int alto);
+        Mario(int posX, int posY, int ancho, int alto);
         void mostrar(SDL_Renderer* renderer);
         void mover();
         std::string getRutaImagen();

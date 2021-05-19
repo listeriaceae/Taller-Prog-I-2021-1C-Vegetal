@@ -6,7 +6,7 @@
 #include <iostream>
 
 const std::string IMG_DEFAULT = "res/default.png";
-const int TIEMPO_POR_FRAME = 10;
+const int TIEMPO_POR_FRAME = 3;
 const int CANT_FRAMES = 4;
 
 void ComponenteVistaFuego::mostrar(Entidad* entidad, SDL_Renderer* renderer) {

@@ -12,10 +12,10 @@ const int MAX_DESPLAZAMIENTO_X = 750;
 //Maximum axis velocity of Mario
 static const int MARIO_VEL = 4;
 
-Mario::Mario(int posX, int posY, int velX, int ancho, int alto) 
+Mario::Mario(int posX, int posY, int ancho, int alto) 
 : Entidad(posX, posY, ancho, alto)
 {
-    this->velX = velX;
+    this->velX = 0;
     this->posXInicial = posX;
     this->posYInicial = posY;
     this->estado = REPOSO_DERECHA;
