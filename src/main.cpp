@@ -3,22 +3,21 @@
 #include <SDL2/SDL_image.h>
 #include <stdlib.h>
 #include <time.h>
-#include "Entidad.h"
-#include "Nivel1.h"
-#include "Barril.h"
-#include "Fuego.h"
-#include "PlataformaMovil.h"
-#include "EnemigoFuego.h"
-#include "Peach.h"
-#include "Mario.hpp"
+#include "model/Entidad.h"
+#include "model/Nivel1.h"
+#include "model/Nivel2.h"
+#include "model/Barril.h"
+#include "model/Fuego.h"
+#include "model/PlataformaMovil.h"
+#include "model/EnemigoFuego.h"
+#include "model/Peach.h"
+#include "model/Mario.hpp"
 #include <string>
-#include "DonkeyKong.h"
+#include "model/DonkeyKong.h"
 #include "configuration.hpp"
 #include "logger.h"
-
-const int ANCHO_PANTALLA = 800;
-const int ALTO_PANTALLA = 600;
-const int FRAMES_POR_SEG = 60;
+#include "window.hpp"
+#include "utils/ Constants.hpp"
 
 const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
 
@@ -42,7 +41,10 @@ int main(void)
     
     Nivel1 n1(renderer);
 
-    Mario mario(3, 529, 0, 56, 56);
+    Mario mario( Constants::N1_MARIO_POS_X, 
+                 Constants::N1_MARIO_POS_Y,
+                 Constants::MARIO_ANCHO,
+                 Constants::MARIO_ALTO);
     n1.agregarObjeto(&mario);
 
     logger::Logger::getInstance().logInformation("Log level = " + log_level);
@@ -84,8 +86,14 @@ int main(void)
             if(event.type == SDL_QUIT ) {
                 terminarPrograma = true;
             }
+            
+            // Cambio de nivel
+            if( event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
+                logger::Logger::getInstance().logInformation("End of Level 1");
+                goto nivel2;
+            }
 
-            // Handle input for mario
+            // Handle input for Mario
             mario.handleEvent( event );
         }
 
@@ -96,10 +104,54 @@ int main(void)
         
         SDL_RenderPresent(renderer);
 
+
         int fin = SDL_GetTicks();
         if((fin - inicio) < 1000/FRAMES_POR_SEG)
+        {
             SDL_Delay((1000/FRAMES_POR_SEG) - (fin - inicio));
+        }
     }
+
+    nivel2:
+        SDL_RenderClear(renderer);
+        Nivel2 n2(renderer); 
+        logger::Logger::getInstance().logInformation("Level 2 starts");
+        
+        mario = Mario( Constants::N2_MARIO_POS_X, 
+                       Constants::N2_MARIO_POS_Y,
+                       Constants::MARIO_ANCHO,
+                       Constants::MARIO_ALTO);
+        
+        n2.addElement(&mario);
+
+        while(!terminarPrograma) {
+        while( SDL_PollEvent(&event) != 0 ) {
+            if(event.type == SDL_QUIT ) {
+                terminarPrograma = true;
+            }
+
+            if( event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
+                logger::Logger::getInstance().logInformation("End of Level 2");
+                goto fin;
+            }
+
+            // Handle input for mario
+            mario.handleEvent( event );
+        }
+
+        int inicio = SDL_GetTicks();
+
+        SDL_RenderClear(renderer);
+        n2.updateView();
+        SDL_RenderPresent(renderer);
+
+        int fin = SDL_GetTicks();
+        if((fin - inicio) < 1000/FRAMES_POR_SEG)
+        SDL_Delay((1000/FRAMES_POR_SEG) - (fin - inicio));
+    };
+
+    fin:
+        logger::Logger::getInstance().logInformation("Game over");
 
     SDL_DestroyWindow(window);
     IMG_Quit();
