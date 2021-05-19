@@ -13,20 +13,40 @@ namespace configuration
 
     Configuration::Configuration(const std::string& json_filename)
     {
+        bool useDefaultConfig = true;
         std::string configuration_filename;
-        
+        Json::Value json_root;
+
         // Get configuration file name
         if (exists(json_filename))
         {
             configuration_filename = json_filename;
+            try
+            {
+                // Try it
+                std::ifstream json_file(configuration_filename);
+                json_file >> json_root;
+                auto configuration = getJsonValue(json_root, "configuration");
+
+                useDefaultConfig = false;
+            }
+            catch(const std::exception& e)
+            {
+                logger::Logger::getInstance().logError(std::string("Configuration file corrupted: ") + e.what());
+            }
         }
-        else
+        else 
         {
-            configuration_filename = "default_configuration.json";
-            logger::Logger::getInstance().logError(std::string("Configuration file not found, using default: ") + configuration_filename);
+            logger::Logger::getInstance().logError("Configuration file not found: " + json_filename);
         }
 
-        Json::Value json_root;
+        if (useDefaultConfig) 
+        {
+            logger::Logger::getInstance().logInformation("Using defaul configuration");
+            configuration_filename = "default.json";
+        }
+
+        
         std::ifstream json_file(configuration_filename);
         json_file >> json_root;
 

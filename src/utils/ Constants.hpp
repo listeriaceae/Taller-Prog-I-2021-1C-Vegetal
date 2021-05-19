@@ -1,5 +1,13 @@
+#include <string>
+
 namespace Constants
 {
+    // Game
+    const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
+
+    // Config
+    const std::string CONFIG_FILE = "archivo.json";
+
     // Mario
     const int MARIO_ANCHO = 40;
     const int MARIO_ALTO = 40;
