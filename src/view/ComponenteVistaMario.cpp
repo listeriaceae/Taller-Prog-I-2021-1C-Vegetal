@@ -41,7 +41,7 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
 
     int frameActual = tiempo / TIEMPO_POR_FRAME;
 
-    MarioEstado estado = ((Mario *) mario)->getEstado();
+    int estado = ((Mario *) mario)->getEstado();
 
     if(estado == REPOSO_DERECHA 
     || estado == REPOSO_IZQUIERDA) 
@@ -76,7 +76,15 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
     else if (estado == SALTANDO_DERECHA 
     || estado == SALTANDO_IZQUIERDA)
     {
-        // COMPLETAR
+        rectSpritesheet.x = posXTextura[3];
+        rectSpritesheet.y = posYTextura;
+        rectSpritesheet.w = anchoTextura;
+        rectSpritesheet.h = altoTextura;
+
+        rectRender.x = mario->posX;
+        rectRender.y = mario->posY;
+        rectRender.w = mario->ancho;
+        rectRender.h = mario->alto;
     }
 
     SDL_RendererFlip flip;

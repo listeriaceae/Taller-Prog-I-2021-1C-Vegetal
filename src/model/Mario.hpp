@@ -3,7 +3,7 @@
 #include "Entidad.h"
 #include "../view/ComponenteVistaMario.h"
 
-enum MarioEstado {
+enum {
     REPOSO_DERECHA,
     REPOSO_IZQUIERDA,
     CORRIENDO_DERECHA,
@@ -27,18 +27,22 @@ class Mario : public Entidad
 
         void moverIzquierda();
 
-        MarioEstado getEstado();
+        int getEstado();
 
         void detenerDerecha();
 
         void detenerIzquierda();
 
+        void saltar();
+
     private: 
         ComponenteVistaMario* compVista = new ComponenteVistaMario();
-        
         int velX;
+        int velEnSuelo;
+        float velY;
         int posXInicial;
         int posYInicial;
+        float marioPosY;
         std::string rutaImagen = "res/Mario.png";
-        MarioEstado estado;
+        int estado;
 };

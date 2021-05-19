@@ -16,7 +16,7 @@
 #include "model/DonkeyKong.h"
 #include "configuration.hpp"
 #include "logger.h"
-#include "window.hpp"
+#include "utils/window.hpp"
 #include "utils/ Constants.hpp"
 
 int main(void)
