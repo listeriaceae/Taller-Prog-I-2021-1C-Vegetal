@@ -31,9 +31,8 @@ void Mario::mover()
     this->marioPosY -= this->velY;
     this->velY += MARIO_ACC * (this->estado == SALTANDO_IZQUIERDA || this->estado == SALTANDO_DERECHA);
     if (this->marioPosY > this->posYInicial) {
-        this->estado = (this->estado == SALTANDO_IZQUIERDA);
         this->velX = this->velEnSuelo;
-        this->estado += (velX != 0) << 1;
+        this->estado = this->enstadoEnSuelo;
         this->marioPosY = posYInicial;
         this->velY = 0.;
     }
@@ -108,6 +107,7 @@ void Mario::handleEvent( SDL_Event& e )
 void Mario::detenerDerecha() 
 {
     this->velEnSuelo -= MARIO_VELX;
+    this->enstadoEnSuelo = REPOSO_DERECHA;
     if (!this->velY) {
     this->velX -= MARIO_VELX;
     this->estado = REPOSO_DERECHA;
@@ -117,6 +117,7 @@ void Mario::detenerDerecha()
 void Mario::detenerIzquierda() 
 {
     this->velEnSuelo += MARIO_VELX;
+    this->enstadoEnSuelo = REPOSO_IZQUIERDA;
     if (!this->velY) {
     this->velX += MARIO_VELX;
     this->estado = REPOSO_IZQUIERDA;
@@ -126,6 +127,7 @@ void Mario::detenerIzquierda()
 void Mario::moverDerecha() 
 {
     this->velEnSuelo += MARIO_VELX;
+    this->enstadoEnSuelo = CORRIENDO_DERECHA;
     if (!this->velY) {
     this->velX += MARIO_VELX;
     this->estado = CORRIENDO_DERECHA;
@@ -135,6 +137,7 @@ void Mario::moverDerecha()
 void Mario::moverIzquierda() 
 {
     this->velEnSuelo -= MARIO_VELX;
+    this->enstadoEnSuelo = CORRIENDO_IZQUIERDA;
     if (!this->velY) {
     this->velX -= MARIO_VELX;
     this->estado = CORRIENDO_IZQUIERDA;

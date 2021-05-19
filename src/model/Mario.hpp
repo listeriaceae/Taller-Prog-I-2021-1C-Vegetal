@@ -38,11 +38,12 @@ class Mario : public Entidad
     private: 
         ComponenteVistaMario* compVista = new ComponenteVistaMario();
         int velX;
-        int velEnSuelo;
         float velY;
         int posXInicial;
         int posYInicial;
         float marioPosY;
         std::string rutaImagen = "res/Mario.png";
         int estado;
+        int velEnSuelo;
+        int enstadoEnSuelo;
 };
