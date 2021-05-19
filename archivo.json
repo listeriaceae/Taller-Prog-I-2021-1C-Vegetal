@@ -7,19 +7,15 @@
             "enemies": [
                 {
                     "type": "Fuego",
-                    "quantity": 3
+                    "quantity": 10
                 }
             ],
             "stages": [
                 {
-                    "fondo1": "res/Nivel1.png",
-                    "fondo2": "/home/file22.bmp",
-                    "fondo3": "/home/file23.bmp"
+                    "fondo1": "res/Nivel1.png"
                 },
                 {
-                    "fondo1": "res/Nivel2.png",
-                    "fondo2": "/home/file32.bmp",
-                    "fondo3": "/home/file33.bmp"
+                    "fondo1": "res/Nivel2.png"
                 }
             ]
         }

@@ -67,21 +67,21 @@ int main(void)
                 n1.agregarObjeto(fuego);
             }
         }
-        logger::Logger::getInstance().logDebug("Enemy type = " + enemy.getType());
-        logger::Logger::getInstance().logDebug("Enemy quantity = " + enemy.getQuantity());
+        logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
+        logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
     }
     
     auto stages = configuration.getStages();
     for (unsigned int i = 0; i < stages.size(); ++i)
     {
-        if(i == 0) {
-            logger::Logger::getInstance().logDebug("Stage 1 background img = " + stages[i].getBackgrounds()[0]);
+        if(i == 0) 
+        {
+            logger::Logger::getInstance().logDebug("Stage 1 background img: " + stages[i].getBackgrounds()[0]);
             n1.setFondo(stages[i].getBackgrounds()[0]);
-            std::cout << stages[i].getBackgrounds()[0] << std::endl;
         }
         else if(i == 1) {
-            n2.setBackground(stages[i].getBackgrounds()[0]);
-            std::cout << stages[i].getBackgrounds()[0] << std::endl;
+            logger::Logger::getInstance().logDebug("Stage 2 background img: " + stages[i].getBackgrounds()[0]);
+            n2.setBackground(stages[i].getBackgrounds()[0]);;
         }
     }
 
