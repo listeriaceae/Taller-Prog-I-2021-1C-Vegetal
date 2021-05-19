@@ -15,7 +15,8 @@
 using namespace std;
 
 Nivel1::Nivel1(SDL_Renderer* renderer) {
-    this->compVista = new ComponenteVistaNivel1(renderer);
+    this->renderer = renderer;
+    this->compVista = new ComponenteVistaNivel1(renderer, rutaImagen);
 }
 
 void Nivel1::actualizarNivel() {
@@ -31,7 +32,7 @@ void Nivel1::actualizarPosicionesObjetos() {
 }
 
 void Nivel1::actualizarVista() { //Por ahora solo carga el fondo
-    compVista->mostrar(this);
+    compVista->mostrar(&objetos);
 }
 
 void Nivel1::agregarObjeto(Entidad* objeto) {
@@ -43,7 +44,7 @@ list<Entidad*>* Nivel1::getObjetos() {
 }
 
 void Nivel1::setFondo(std::string rutaImagen) {
-    this->rutaImagen = rutaImagen;
+    compVista->setFondo(rutaImagen);
 }
 
 void Nivel1::inicializarObjetos() {
@@ -52,10 +53,10 @@ void Nivel1::inicializarObjetos() {
     PlataformaMovil* m3 = new PlataformaMovil(250, 382, -4, 60, 19);
     PlataformaMovil* m4 = new PlataformaMovil(300, 401, 4, 60, 19);
 
-    Fuego* f1 = new Fuego(172, 544, 56, 56);
-    Fuego* f2 = new Fuego(314, 544, 56, 56);
-    Fuego* f3 = new Fuego(458, 544, 56, 56);
-    Fuego* f4 = new Fuego(600, 544, 56, 56);
+    Fuego* f1 = new Fuego(48, 240, renderer);
+    Fuego* f2 = new Fuego(88, 240, renderer);
+    Fuego* f3 = new Fuego(128, 240, renderer);
+    Fuego* f4 = new Fuego(168, 240, renderer);
 
     //Barril b1(300, 0, 0, 10);
     //Barril b2(200, 0, 0, 7);

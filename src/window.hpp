@@ -1,4 +1,7 @@
 #pragma once
-const int ANCHO_PANTALLA = 800;
-const int ALTO_PANTALLA = 600;
-const int FRAMES_POR_SEG = 60;
+#define ANCHO_PANTALLA 800
+#define ALTO_PANTALLA 600
+#define FRAMES_POR_SEG 60
+
+#define ANCHO_NIVEL 224
+#define ALTO_NIVEL 256

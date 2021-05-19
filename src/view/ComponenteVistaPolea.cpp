@@ -31,7 +31,7 @@ void ComponenteVistaPolea::mostrar(Entidad* entidad, SDL_Renderer* renderer) {
         rectRender.x = entidad->posX;
         rectRender.y = entidad->posY;
         rectRender.w = entidad->ancho;
-        rectRender.h = entidad->alto;    
+        rectRender.h = entidad->alto;
     }
 
     SDL_RenderCopyEx(renderer, textura, &rectSpritesheet, &rectRender, 0, NULL, flip);

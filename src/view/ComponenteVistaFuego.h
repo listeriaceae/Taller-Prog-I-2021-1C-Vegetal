@@ -3,21 +3,20 @@
 #include <string>
 #include "../model/Entidad.h"
 
+#define ANCHO_FUEGO 16
+#define ALTO_FUEGO 16
+#define SPRITE_INDEX 24
+
 class ComponenteVistaFuego {
     public:
-    
-    void mostrar(Entidad* entidad, SDL_Renderer* renderer);
+        void mostrar(SDL_Renderer* renderer);
+        ComponenteVistaFuego(int x, int y, SDL_Renderer* renderer);
     
     private:
-    SDL_Texture* textura = NULL;
-    SDL_Rect rectSpritesheet; //Rectangulo que determina que parte de la imagen cargar
-    SDL_Rect rectRender; //Rectangulo que determina donde se va a renderear el objeto
-    int frameTextura = 0;
-    int tiempo = 0;
-    int posXTextura[4] = {0, 24, 46, 70};
-    int posYTextura = 0;
-    int anchoTextura = 16;
-    int altoTextura = 16;
-
-    void inicializarTextura(SDL_Renderer* renderer);
+        static SDL_Texture* texture;
+        static SDL_Rect rectSpritesheet; //Rectangulo que determina que parte de la imagen cargar
+        static int tiempo;
+        static int total_fuegos;
+        static int fue_actualizado;
+        SDL_Rect rectRender; //Rectangulo que determina donde se va a renderear el objeto
 };

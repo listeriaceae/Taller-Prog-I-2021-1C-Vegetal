@@ -1,17 +1,20 @@
 #pragma once
 #include <SDL2/SDL.h>
-class Nivel1;
+#include <list>
+#include <string>
+#include "../model/Entidad.h"
 
 class ComponenteVistaNivel1 {
     public:
     
-    ComponenteVistaNivel1(SDL_Renderer* renderer);
-    void mostrar(Nivel1* nivel1);
+    ComponenteVistaNivel1(SDL_Renderer* renderer, std::string rutaImagen);
+    void setFondo(std::string rutaImagen);
+    void mostrar(std::list<Entidad*>* objetos);
     
     private:
     SDL_Renderer* renderer = NULL;
     SDL_Texture* textura = NULL;
 
-    void mostrarFondo(Nivel1* nivel1);
-    void mostrarObjetos(Nivel1* nivel1);
+    void mostrarFondo();
+    void mostrarObjetos(std::list<Entidad*>* objetos);
 };

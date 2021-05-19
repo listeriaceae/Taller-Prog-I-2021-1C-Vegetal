@@ -20,6 +20,7 @@ class Nivel1 {
     private:
     ComponenteVistaNivel1* compVista = NULL;
     std::list<Entidad*> objetos;
+    SDL_Renderer* renderer;
 
     void actualizarVista();
     void actualizarPosicionesObjetos();

@@ -6,12 +6,12 @@
 class Fuego : public Entidad{
     public:
     
-    Fuego(int posX, int posY, int ancho, int alto);
+    Fuego(int posX, int posY, SDL_Renderer* renderer);
 
     void mostrar(SDL_Renderer* renderer);
-
     void mover();
-    
+    void destruir();
+
     private:
     ComponenteVistaFuego* compVista;
 };
