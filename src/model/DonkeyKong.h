@@ -2,7 +2,7 @@
 
 #include <string>
 #include "Entidad.h"
-#include "ComponenteVistaEntidadEstatica.h"
+#include "../view/ComponenteVistaEntidadEstatica.h"
 
 class DonkeyKong : public Entidad {
     public:

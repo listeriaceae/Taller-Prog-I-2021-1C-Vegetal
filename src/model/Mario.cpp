@@ -4,7 +4,7 @@
 #include "Mario.hpp"
 #include <string>
 #include <iostream>
-#include "logger.h"
+#include "../logger.h"
 
 const int MAX_DESPLAZAMIENTO_PIXELES = 10;
 const int MAX_DESPLAZAMIENTO_X = 750;

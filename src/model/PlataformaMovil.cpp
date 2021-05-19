@@ -2,7 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "Entidad.h"
 #include "PlataformaMovil.h"
-#include "ComponenteVistaEntidadEstatica.h"
+#include "../view/ComponenteVistaEntidadEstatica.h"
 
 const int LIMITE_IZQ = 56;
 const int LIMITE_DER = 743;

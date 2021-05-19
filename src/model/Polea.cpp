@@ -2,7 +2,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "ComponenteVistaPolea.h"
+#include "../view/ComponenteVistaPolea.h"
 
 Polea::Polea(int posX, int posY, int ancho, int alto, std::string direccion) 
 : Entidad(posX, posY, ancho, alto){

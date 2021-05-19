@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "Entidad.h"
-#include "ComponenteVistaNivel1.h"
+#include "../view/ComponenteVistaNivel1.h"
 #include "Barril.h"
 #include "Fuego.h"
 #include "PlataformaMovil.h"
