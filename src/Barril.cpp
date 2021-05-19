@@ -1,5 +1,6 @@
 #include <string>
 #include <SDL2/SDL.h>
+#include <stdexcept> 
 #include "Entidad.h"
 #include "Barril.h"
 #include "ComponenteVistaEntidadEstatica.h"
@@ -13,6 +14,7 @@ Barril::Barril(int posX, int posY, int velX, int velY)
 : Entidad(posX, posY, 40, 40){
     this->velX = velX;
     this->velY = velY;
+    compVista = new ComponenteVistaEntidadEstatica();
 }
 
 void Barril::mover() {
@@ -22,7 +24,7 @@ void Barril::mover() {
     posY += velY;
 
     if((posY < 0) || ((posY + alto) > ALTO_PANTALLA)) {
-        posY -= velY;
+        throw out_of_range ("El barril termino su recorrido");
     }
 
     tickUltimoMovimiento = SDL_GetTicks();

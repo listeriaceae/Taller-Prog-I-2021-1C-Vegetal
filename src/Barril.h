@@ -14,7 +14,7 @@ public:
     void mover();
     void mostrar(SDL_Renderer* renderer);
 private:
-    ComponenteVistaEntidadEstatica* compVista = new ComponenteVistaEntidadEstatica();
+    ComponenteVistaEntidadEstatica* compVista;
     std::string rutaImagen = "res/Barril.bmp";
     Uint32 tickUltimoMovimiento = 0;
     int velX = 0;
