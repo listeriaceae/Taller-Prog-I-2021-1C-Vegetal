@@ -65,7 +65,6 @@ int main(void)
                     velX = 1;
                 EnemigoFuego* fuego = new EnemigoFuego(posX, posY, velX, 32, 32);
                 n1.agregarObjeto(fuego);
-                n2.addElement(fuego);
             }
         }
         logger::Logger::getInstance().logDebug("Enemy type = " + enemy.getType());
@@ -120,6 +119,7 @@ int main(void)
     }
 
     nivel2:
+        n2.addElement(&mario);
         n2.initialize();
         SDL_RenderClear(renderer);
         logger::Logger::getInstance().logInformation("Level 2 starts");
@@ -129,7 +129,7 @@ int main(void)
                        Constants::MARIO_ANCHO,
                        Constants::MARIO_ALTO);
         
-        n2.addElement(&mario);
+        
 
         while(!terminarPrograma) {
         while( SDL_PollEvent(&event) != 0 ) {
