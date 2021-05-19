@@ -2,7 +2,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include "Entidad.h"
-#include "ComponenteVistaEntidadEstatica.h"
+#include "../view/ComponenteVistaEntidadEstatica.h"
 
 class Barril : public Entidad {
 public:

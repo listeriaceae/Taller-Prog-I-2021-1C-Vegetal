@@ -1,7 +1,7 @@
 #pragma once
-#include "Entidad.h"
 #include <SDL2/SDL.h>
 #include <string>
+#include "../model/Entidad.h"
 
 class ComponenteVistaFuego {
     public:

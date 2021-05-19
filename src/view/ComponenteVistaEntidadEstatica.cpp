@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "ComponenteVistaEntidadEstatica.h"
-#include "Entidad.h"
+#include "../model/Entidad.h"
 
 const std::string IMG_DEFAULT = "res/default.png";
 

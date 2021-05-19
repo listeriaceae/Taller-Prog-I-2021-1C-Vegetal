@@ -3,23 +3,20 @@
 #include <SDL2/SDL_image.h>
 #include <stdlib.h>
 #include <time.h>
-#include "Entidad.h"
-#include "Nivel1.h"
-#include "level2.h"
-#include "Barril.h"
-#include "Fuego.h"
-#include "PlataformaMovil.h"
-#include "EnemigoFuego.h"
-#include "Peach.h"
-#include "Mario.hpp"
+#include "model/Entidad.h"
+#include "model/Nivel1.h"
+#include "model/Nivel2.h"
+#include "model/Barril.h"
+#include "model/Fuego.h"
+#include "model/PlataformaMovil.h"
+#include "model/EnemigoFuego.h"
+#include "model/Peach.h"
+#include "model/Mario.hpp"
 #include <string>
-#include "DonkeyKong.h"
+#include "model/DonkeyKong.h"
 #include "configuration.hpp"
 #include "logger.h"
-
-const int ANCHO_PANTALLA = 800;
-const int ALTO_PANTALLA = 600;
-const int FRAMES_POR_SEG = 60;
+#include "window.hpp"
 
 const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
 
@@ -111,7 +108,7 @@ int main(void)
 
     nivel2:
         SDL_RenderClear(renderer);
-        Level2 n2(renderer); 
+        Nivel2 n2(renderer); 
         logger::Logger::getInstance().logInformation("Level 2 starts");
         mario = Mario(45, 529, 0, 56, 56);
         n2.addElement(&mario);

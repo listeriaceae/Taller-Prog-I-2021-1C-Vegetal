@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "Entidad.h"
-#include "ComponenteVistaEntidadEstatica.h"
+#include "../view/ComponenteVistaEntidadEstatica.h"
 
 class EnemigoFuego : public Entidad{
     public: 

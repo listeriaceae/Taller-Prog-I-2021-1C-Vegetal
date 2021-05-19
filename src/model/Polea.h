@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include "Entidad.h"
-#include "ComponenteVistaPolea.h"
+#include "../view/ComponenteVistaPolea.h"
 
 class Polea : public Entidad{
     public:
