@@ -6,13 +6,17 @@
 
 using namespace std;
 const int MAX_BARRELS = 15;
+const std::string DEFAULT_IMAGE = "res/default.png";
 
 class Nivel2 {
     public:
         Nivel2(SDL_Renderer*);
         void updateView ();
         void addElement (Entidad*);
+        void setBackground (std::string background);
+        void initialize();
     private:
+        std::string backgroundImage = DEFAULT_IMAGE;
         vector<Barril> barrels;
         list<Entidad*> elements;
         Uint32 tickLastBarrel;
