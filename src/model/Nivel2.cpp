@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <iostream>
 #include <stdlib.h>
 #include <string>
@@ -8,20 +9,15 @@
 #include "Fuego.h"
 #include "FireBarrel.h"
 
-
-const char * BACKGROUND_IMAGE = "res/level2.bmp";
-
 using namespace std;
 
 Nivel2::Nivel2 (SDL_Renderer* window_renderer) {
     this->tickLastBarrel = 0;
     this->renderer = window_renderer;
-    this->loadBackground();
-    this->loadElements();
 }
 
 void Nivel2::loadBackground () {
-    this->background_surface = SDL_LoadBMP(BACKGROUND_IMAGE);
+    this->background_surface = IMG_Load(backgroundImage.c_str());
     this->background_texture = SDL_CreateTextureFromSurface(this->renderer, this->background_surface);
     SDL_RenderCopy(this->renderer, this->background_texture, NULL, NULL);
 }
@@ -73,6 +69,10 @@ void Nivel2::updateBarrels () {
         }
     } 
 }
+void Nivel2::initialize() {
+    this->loadBackground();
+    this->loadElements();
+}
 
 void Nivel2::updateView () {
     
@@ -84,4 +84,7 @@ void Nivel2::updateView () {
     this->updateBackground();
     this->updateElements();
     this->updateBarrels();
+}
+void Nivel2::setBackground(std::string background) {
+    this->backgroundImage = background;
 }

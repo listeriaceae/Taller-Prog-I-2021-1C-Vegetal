@@ -40,6 +40,7 @@ int main(void)
     SDL_Event event;
     
     Nivel1 n1(renderer);
+    Nivel2 n2(renderer);
 
     Mario mario( Constants::N1_MARIO_POS_X, 
                  Constants::N1_MARIO_POS_Y,
@@ -64,6 +65,7 @@ int main(void)
                     velX = 1;
                 EnemigoFuego* fuego = new EnemigoFuego(posX, posY, velX, 32, 32);
                 n1.agregarObjeto(fuego);
+                n2.addElement(fuego);
             }
         }
         logger::Logger::getInstance().logDebug("Enemy type = " + enemy.getType());
@@ -76,6 +78,11 @@ int main(void)
         if(i == 0) {
             logger::Logger::getInstance().logDebug("Stage 1 background img = " + stages[i].getBackgrounds()[0]);
             n1.setFondo(stages[i].getBackgrounds()[0]);
+            std::cout << stages[i].getBackgrounds()[0] << std::endl;
+        }
+        else if(i == 1) {
+            n2.setBackground(stages[i].getBackgrounds()[0]);
+            std::cout << stages[i].getBackgrounds()[0] << std::endl;
         }
     }
 
@@ -113,8 +120,8 @@ int main(void)
     }
 
     nivel2:
+        n2.initialize();
         SDL_RenderClear(renderer);
-        Nivel2 n2(renderer); 
         logger::Logger::getInstance().logInformation("Level 2 starts");
         
         mario = Mario( Constants::N2_MARIO_POS_X, 

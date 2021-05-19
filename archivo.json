@@ -17,7 +17,7 @@
                     "fondo3": "/home/file23.bmp"
                 },
                 {
-                    "fondo1": "/home/file31.bmp",
+                    "fondo1": "res/Nivel2.png",
                     "fondo2": "/home/file32.bmp",
                     "fondo3": "/home/file33.bmp"
                 }
