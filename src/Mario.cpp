@@ -61,9 +61,6 @@ void Mario::handleEvent( SDL_Event& e )
             case SDLK_SPACE:
                 logger::Logger::getInstance().logDebug("event[KEYDOWN] SPACE");
                 break;
-            case SDLK_l:
-                logger::Logger::getInstance().logDebug("event[KEYDOWN] L");
-                break;
             default:
                 logger::Logger::getInstance().logDebug("event[KEYDOWN] UNKOWN KEY");
                 break;

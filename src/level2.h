@@ -11,9 +11,10 @@ class Level2 {
     public:
         Level2(SDL_Renderer*);
         void updateView ();
+        void addElement (Entidad*);
     private:
         vector<Barril> barrels;
-        list<Entidad*> components;
+        list<Entidad*> elements;
         Uint32 tickLastBarrel;
         string path;
         SDL_Renderer* renderer;
@@ -21,8 +22,8 @@ class Level2 {
         SDL_Texture* background_texture;
         void loadBackground ();
         void updateBackground ();
-        void loadComponents ();
-        void updateComponents ();
+        void loadElements ();
+        void updateElements ();
         void addBarrel ();
         void updateBarrels ();
 };
