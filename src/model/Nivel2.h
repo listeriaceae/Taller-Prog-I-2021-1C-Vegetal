@@ -7,9 +7,9 @@
 using namespace std;
 const int MAX_BARRELS = 15;
 
-class Level2 {
+class Nivel2 {
     public:
-        Level2(SDL_Renderer*);
+        Nivel2(SDL_Renderer*);
         void updateView ();
         void addElement (Entidad*);
     private:

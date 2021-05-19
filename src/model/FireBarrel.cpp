@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Entidad.h"
 #include "FireBarrel.h"
-#include "ComponenteVistaEntidadEstatica.h"
+#include "../view/ComponenteVistaEntidadEstatica.h"
 
 FireBarrel::FireBarrel(int posX, int posY, int ancho, int alto) 
 : Entidad(posX, posY, ancho, alto){

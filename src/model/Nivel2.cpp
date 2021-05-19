@@ -2,7 +2,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
-#include "level2.h"
+#include "Nivel2.h"
 #include "Peach.h"
 #include "DonkeyKong.h"
 #include "Fuego.h"
@@ -13,24 +13,24 @@ const char * BACKGROUND_IMAGE = "res/level2.bmp";
 
 using namespace std;
 
-Level2::Level2 (SDL_Renderer* window_renderer) {
+Nivel2::Nivel2 (SDL_Renderer* window_renderer) {
     this->tickLastBarrel = 0;
     this->renderer = window_renderer;
     this->loadBackground();
     this->loadElements();
 }
 
-void Level2::loadBackground () {
+void Nivel2::loadBackground () {
     this->background_surface = SDL_LoadBMP(BACKGROUND_IMAGE);
     this->background_texture = SDL_CreateTextureFromSurface(this->renderer, this->background_surface);
     SDL_RenderCopy(this->renderer, this->background_texture, NULL, NULL);
 }
 
-void Level2::updateBackground () {
+void Nivel2::updateBackground () {
     SDL_RenderCopy(this->renderer, this->background_texture, NULL, NULL);
 }
 
-void Level2::loadElements () {
+void Nivel2::loadElements () {
     Peach* girl = new Peach(314, 76, 40, 55);
     this->elements.push_front(girl);
 
@@ -44,11 +44,11 @@ void Level2::loadElements () {
     this->elements.push_front(barrel);
 }
 
-void Level2::addElement (Entidad* element) {
+void Nivel2::addElement (Entidad* element) {
     this->elements.push_front(element);
 }
 
-void Level2::updateElements () {
+void Nivel2::updateElements () {
     list<Entidad*>::iterator it;
     for (it = this->elements.begin(); it != this->elements.end(); ++it){
         (*it)->mover();
@@ -57,13 +57,13 @@ void Level2::updateElements () {
 }
 
 
-void Level2::addBarrel () {
+void Nivel2::addBarrel () {
     int posX = rand() % 750 + 10;
     this->barrels.push_back(Barril(posX, 150, 0, 10));
 }
 
-void Level2::updateBarrels () {
-    for (int i = 0; i < this->barrels.size(); i++) {
+void Nivel2::updateBarrels () {
+    for (uint i = 0; i < this->barrels.size(); i++) {
         try {
             this->barrels.at(i).mover();
             this->barrels.at(i).mostrar(this->renderer);
@@ -74,7 +74,7 @@ void Level2::updateBarrels () {
     } 
 }
 
-void Level2::updateView () {
+void Nivel2::updateView () {
     
     if (SDL_GetTicks() - this->tickLastBarrel > 1500) {
         this->tickLastBarrel = SDL_GetTicks();
