@@ -18,6 +18,9 @@ Nivel2::Nivel2 (SDL_Renderer* window_renderer) {
 
 void Nivel2::loadBackground () {
     this->background_surface = IMG_Load(backgroundImage.c_str());
+    if(this->background_surface == NULL) {
+        this->background_surface = IMG_Load(DEFAULT_IMAGE.c_str());
+    }
     this->background_texture = SDL_CreateTextureFromSurface(this->renderer, this->background_surface);
     SDL_RenderCopy(this->renderer, this->background_texture, NULL, NULL);
 }

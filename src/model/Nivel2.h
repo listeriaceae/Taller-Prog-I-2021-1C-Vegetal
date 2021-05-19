@@ -22,7 +22,7 @@ class Nivel2 {
         Uint32 tickLastBarrel;
         string path;
         SDL_Renderer* renderer;
-        SDL_Surface* background_surface;
+        SDL_Surface* background_surface = NULL;
         SDL_Texture* background_texture;
         void loadBackground ();
         void updateBackground ();
