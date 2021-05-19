@@ -15,14 +15,18 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
 { 
     if(textura == NULL) {
         SDL_Surface* surface = IMG_Load(rutaImagen.c_str());
+        
         if(surface == NULL) {
             surface = IMG_Load(IMG_DEFAULT.c_str());
+            textura = SDL_CreateTextureFromSurface(renderer, surface);
+            SDL_FreeSurface(surface);
+        } 
+        else
+        {
+            SDL_SetColorKey(surface, SDL_TRUE, *(Uint32*)(surface->pixels));
+            textura = SDL_CreateTextureFromSurface(renderer, surface);
+            SDL_FreeSurface(surface);
         }
-
-        SDL_SetColorKey(surface, SDL_TRUE, *(Uint32*)(surface->pixels));
-
-        textura = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_FreeSurface(surface);
     }
 
     tiempo++;
