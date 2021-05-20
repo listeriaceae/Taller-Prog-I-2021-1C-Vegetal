@@ -27,8 +27,10 @@ namespace configuration
                 std::ifstream json_file(configuration_filename);
                 json_file >> json_root;
                 auto configuration = getJsonValue(json_root, "configuration");
-
-                useDefaultConfig = false;
+                bool valid = this->loadFromFile(configuration_filename);
+                if (valid) {
+                    useDefaultConfig = false;
+                }
             }
             catch(const std::exception& e)
             {
@@ -44,33 +46,46 @@ namespace configuration
         {
             logger::Logger::getInstance().logInformation("Using defaul configuration");
             configuration_filename = "default.json";
+            bool valid = this->loadFromFile(configuration_filename);
+            if (valid) {
+                logger::Logger::getInstance().logInformation("Succesfully loaded defaul configuration");
+            }
+            else
+            {
+                logger::Logger::getInstance().logError("[FATAL] Unable to load defaul configuration");
+            }
         }
+    }
 
-        
-        std::ifstream json_file(configuration_filename);
-        json_file >> json_root;
+    bool Configuration::loadFromFile(std::string configFileName)
+    {
+        Json::Value jsonRoot;
+        std::ifstream jsonFile(configFileName);
+        jsonFile >> jsonRoot;
 
         // Get configuration
-        auto configuration = getJsonValue(json_root, "configuration");
+        auto configuration = getJsonValue(jsonRoot, "configuration");
 
         // Get log
         auto log = getJsonValue(configuration, "log");
         
         // Get log level
-        log_level = getJsonValue(log, "level").asString();
-        // TODO: Assert valid log level?
+        this->logLevel = getJsonValue(log, "level").asString();
 
         // Get game
         auto game = getJsonValue(configuration, "game");
 
         // Get enemies
-        // TODO: Assert valid type and quantity?
         auto enemies = getJsonValue(game, "enemies");
         for (auto enemy: enemies)
         {
             auto enemy_type = getJsonValue(enemy, "type").asString();
-            auto enemy_quantity = getJsonValue(enemy, "quantity").asUInt();
+            auto enemy_quantity = getJsonValue(enemy, "quantity").asInt();
 
+            if (enemy_quantity < 0) {
+                logger::Logger::getInstance().logError("Enemy quantity must be positive or zero");
+                return false;
+            }
             auto e = configuration::Enemy(enemy_type, enemy_quantity);
             this->enemies.emplace_back(e);
         }
@@ -88,6 +103,8 @@ namespace configuration
             auto s = configuration::Stage(backgrounds);
             this->stages.emplace_back(s);
         }
+
+        return true;
     }
 
     const Json::Value Configuration::getJsonValue(const Json::Value& root, const std::string& name)
