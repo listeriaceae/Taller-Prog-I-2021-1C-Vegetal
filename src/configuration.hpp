@@ -33,20 +33,22 @@ namespace configuration
             std::vector<std::string> backgrounds;
     };
 
-    class Configuration
+    class GameConfiguration
     {
         public:
-            Configuration(const std::string& json_filename);
-            ~Configuration() = default;;
+            GameConfiguration(const std::string& json_filename);
+            ~GameConfiguration() = default;;
 
             const std::string getLogLevel() const { return logLevel; };
             const std::vector<configuration::Enemy> getEnemies() const { return enemies; };
             const std::vector<configuration::Stage> getStages() const { return stages; };
+            bool getDefaultConfigFlag();
 
         private:
             std::string logLevel;
             std::vector<Enemy> enemies;
             std::vector<Stage> stages;
+            bool useDefaultConfig;
 
             static const Json::Value getJsonValue(const Json::Value& root, const std::string& name);
             bool loadFromFile(std::string configFileName);
