@@ -1,32 +1,35 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include "Entidad.h"
 #include "PlataformaMovil.h"
-#include "../view/ComponenteVistaEntidadEstatica.h"
 
-const int LIMITE_IZQ = 56;
-const int LIMITE_DER = 743;
-const int DESPLAZAMIENTO_VERTICAL = 19;
-PlataformaMovil::PlataformaMovil(int posX, int posY, int velX, int ancho, int alto) 
-: Entidad(posX, posY, ancho, alto){
-    this->velX = velX;
+#define MIN_X 17
+#define MAX_X 191
+#define MIN_Y_PLATAFORMA 124
+
+#define INDICE_X_PLAT 58
+#define INDICE_Y_PLAT 40
+#define PLATAFORMAS_POR_NIVEL 3
+#define VELOCIDAD_PLAT 1
+
+PlataformaMovil::PlataformaMovil(int plataforma, int nivel, SDL_Renderer *renderer)
+: Entidad(0, 0, ANCHO_PLATAFORMA, ALTO_PLATAFORMA) {
+    this->direccion = (((nivel + 1) & 2) - 1);
+    this->limite = ((MAX_X + MIN_X) >> 1) + direccion * ((MAX_X - MIN_X) >> 1);
+
+    posX = this->limite + direccion * plataforma * INDICE_X_PLAT;
+    posY = MIN_Y_PLATAFORMA + (nivel >> 1) * INDICE_Y_PLAT + (nivel & 1) * ALTO_PLATAFORMA;
+
+    compVista = new ComponenteVistaPlataformaMovil(posY, renderer);
 }
 
 void PlataformaMovil::mover() {
-    if(posX <= LIMITE_IZQ) {
-        posX = LIMITE_IZQ + 1;
-        posY += DESPLAZAMIENTO_VERTICAL;
-        velX = -velX;
-    } else if(posX >= (LIMITE_DER - ancho)) {
-        posX = LIMITE_DER - 1 - ancho;
-        posY -= DESPLAZAMIENTO_VERTICAL;
-        velX = -velX;
-    }
-    else {
-        posX += velX;
-    }
+    posX += this->direccion * VELOCIDAD_PLAT;
+    posX += this->direccion * PLATAFORMAS_POR_NIVEL * INDICE_X_PLAT * (posX * this->direccion > this->limite * this->direccion);
 }
 
-void PlataformaMovil::mostrar(SDL_Renderer* renderer) {
-    compVista->mostrar(this, rutaImagen, renderer);
+void PlataformaMovil::mostrar(Uint32 frames) {
+    compVista->mover(posX);
+    compVista->mostrar(frames);
+}
+
+std::string PlataformaMovil::getRutaImagen() {
+    return compVista->getRuteImagen();
 }

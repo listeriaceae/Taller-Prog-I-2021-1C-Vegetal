@@ -3,13 +3,12 @@
 #include "Entidad.h"
 #include "../view/ComponenteVistaFuego.h"
 
-class Fuego : public Entidad{
+class Fuego : public Entidad {
     public:
     
-    Fuego(int posX, int posY, SDL_Renderer* renderer);
-
-    void mostrar(SDL_Renderer* renderer);
+    Fuego(int posX, int posY, double resize, SDL_Renderer* renderer);
     void mover();
+    void mostrar(Uint32 frames);
     void destruir();
 
     private:

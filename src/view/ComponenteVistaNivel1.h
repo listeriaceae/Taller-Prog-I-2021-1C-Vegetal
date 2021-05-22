@@ -9,12 +9,9 @@ class ComponenteVistaNivel1 {
     
     ComponenteVistaNivel1(SDL_Renderer* renderer, std::string rutaImagen);
     void setFondo(std::string rutaImagen);
-    void mostrar(std::list<Entidad*>* objetos);
+    void mostrar(std::list<Entidad*>* objetos, Uint32 frames);
     
     private:
     SDL_Renderer* renderer = NULL;
     SDL_Texture* textura = NULL;
-
-    void mostrarFondo();
-    void mostrarObjetos(std::list<Entidad*>* objetos);
 };

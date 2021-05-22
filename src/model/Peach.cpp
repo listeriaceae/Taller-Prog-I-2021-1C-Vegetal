@@ -4,14 +4,21 @@
 #include "Peach.h"
 #include "../view/ComponenteVistaEntidadEstatica.h"
 
-Peach::Peach(int posX, int posY, int ancho, int alto) 
-: Entidad(posX, posY, ancho, alto){
-    compVista = new ComponenteVistaEntidadEstatica();
+#define PEACH_POSX 88
+#define PEACH_POSY 32
+#define PEACH_ANCHO 16
+#define PEACH_ALTO 22
+
+std::string Peach::rutaImagen = "res/Peach.png";
+
+Peach::Peach(SDL_Renderer *renderer) 
+: Entidad(PEACH_POSX, PEACH_POSY, PEACH_ANCHO, PEACH_ALTO) {
+    SDL_Rect rect = {PEACH_POSX, PEACH_POSY, PEACH_ANCHO, PEACH_ALTO};
+    compVista = new ComponenteVistaEntidadEstatica(rutaImagen, rect, renderer);
 }
 
-void Peach::mostrar(SDL_Renderer* renderer) {
-    compVista->mostrar(this, rutaImagen, renderer);
-}
-void Peach::mover() {
+void Peach::mover() {}
 
+void Peach::mostrar(Uint32 frames) {
+    compVista->mostrar(frames);
 }

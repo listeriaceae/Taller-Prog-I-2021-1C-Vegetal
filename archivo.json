@@ -1,7 +1,7 @@
 {
     "configuration": {
         "log": {
-            "level": "ERROR"
+            "level": "DEBUG"
         },
         "game": {
             "enemies": [
@@ -12,14 +12,10 @@
             ],
             "stages": [
                 {
-                    "fondo1": "res/Nivel1.png",
-                    "fondo2": "/home/file22.bmp",
-                    "fondo3": "/home/file23.bmp"
+                    "fondo1": "res/Nivel1.png"
                 },
                 {
-                    "fondo1": "/home/file31.bmp",
-                    "fondo2": "/home/file32.bmp",
-                    "fondo3": "/home/file33.bmp"
+                    "fondo1": "res/Nivel2.png"
                 }
             ]
         }

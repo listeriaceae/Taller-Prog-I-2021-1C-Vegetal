@@ -1,18 +1,15 @@
-#include <string>
 #include <SDL2/SDL.h>
-#include "Entidad.h"
+#include <stdexcept> 
 #include "Barril.h"
-#include "../view/ComponenteVistaEntidadEstatica.h"
+#include "../utils/window.hpp"
 
 using namespace std;
 
-const int ANCHO_PANTALLA = 800;
-const int ALTO_PANTALLA = 600;
-
-Barril::Barril(int posX, int posY, int velX, int velY) 
+Barril::Barril(int posX, int posY)
 : Entidad(posX, posY, 40, 40){
-    this->velX = velX;
-    this->velY = velY;
+    this->velX = 0;
+    this->velY = 0;
+    compVista = new ComponenteVistaBarril();
 }
 
 void Barril::mover() {
@@ -22,12 +19,12 @@ void Barril::mover() {
     posY += velY;
 
     if((posY < 0) || ((posY + alto) > ALTO_PANTALLA)) {
-        posY -= velY;
+        throw out_of_range ("El barril termino su recorrido");
     }
 
     tickUltimoMovimiento = SDL_GetTicks();
 }
 
-void Barril::mostrar(SDL_Renderer* renderer) {
-    compVista->mostrar(this, rutaImagen, renderer);
+void Barril::mostrar() {
+    compVista->mostrar();
 }

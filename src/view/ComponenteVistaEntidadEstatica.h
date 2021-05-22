@@ -1,11 +1,16 @@
 #pragma once
+#include <string>
 #include "../model/Entidad.h"
+#include "../utils/window.hpp"
+
 class ComponenteVistaEntidadEstatica {
     public:
-    
-    void mostrar(Entidad* entidad, std::string rutaImagen, SDL_Renderer* renderer);
+    ComponenteVistaEntidadEstatica::ComponenteVistaEntidadEstatica(std::string rutaImagen, SDL_Rect rect, SDL_Renderer* renderer);
+    void mostrar(Uint32 frames);
     
     private:
-    SDL_Texture* textura = NULL;
+    static SDL_Renderer* renderer;
+    SDL_Texture* texture;
+    SDL_Rect rect;
 
 };

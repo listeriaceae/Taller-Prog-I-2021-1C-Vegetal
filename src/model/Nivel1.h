@@ -12,16 +12,13 @@ class Nivel1 {
 
     Nivel1(SDL_Renderer* renderer);
     void actualizarNivel();
+    void actualizarVista(Uint32 frames);
     void agregarObjeto(Entidad* objeto);
-    void setFondo(std::string rutaImagen);
-    void inicializarObjetos();
     std::list<Entidad*>* getObjetos();
+    void setFondo(std::string rutaImagen);
+    void inicializarObjetos(SDL_Renderer* renderer);
 
     private:
     ComponenteVistaNivel1* compVista = NULL;
     std::list<Entidad*> objetos;
-    SDL_Renderer* renderer;
-
-    void actualizarVista();
-    void actualizarPosicionesObjetos();
 };

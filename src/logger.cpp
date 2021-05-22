@@ -17,7 +17,7 @@ namespace logger {
 
     Logger::Logger() {
         debug_level = defaultLogLevel;
-        filepath = "log.txt";
+        filepath = "game.log";
     }
 
     void Logger::setDebugLevel(const std::string& debug_level) {
@@ -55,9 +55,9 @@ namespace logger {
     void Logger::logNewGame(void) {
     std::ofstream file(filepath, std::ofstream::app);
     file << std::endl;
-    file << " ---------------- " << std::endl;
-    file << "  DONKEY KONG II  " << std::endl;
-    file << " ---------------- " << std::endl;
+    file << "-------------------------" << std::endl;
+    file << " STARTING DONKEY KONG II " << std::endl;
+    file << "-------------------------" << std::endl;
     file.close();
     }
 }

@@ -1,6 +1,4 @@
 #pragma once
-#include <SDL2/SDL.h>
-#include <string>
 #include "../model/Entidad.h"
 
 #define ANCHO_FUEGO 16
@@ -9,14 +7,15 @@
 
 class ComponenteVistaFuego {
     public:
-        void mostrar(SDL_Renderer* renderer);
-        ComponenteVistaFuego(int x, int y, SDL_Renderer* renderer);
+        ComponenteVistaFuego(int x, int y, double resize, SDL_Renderer* renderer);
+        void mostrar(Uint32 frames);
     
     private:
+        static SDL_Renderer* renderer;
         static SDL_Texture* texture;
-        static SDL_Rect rectSpritesheet; //Rectangulo que determina que parte de la imagen cargar
+        static SDL_Rect rectSrc; //Rectangulo que determina que parte de la imagen cargar
         static int tiempo;
-        static int total_fuegos;
-        static int fue_actualizado;
-        SDL_Rect rectRender; //Rectangulo que determina donde se va a renderear el objeto
+        static int totalFuegos;
+        static int fueActualizado;
+        SDL_Rect rectDst; //Rectangulo que determina donde se va a renderear el objeto
 };

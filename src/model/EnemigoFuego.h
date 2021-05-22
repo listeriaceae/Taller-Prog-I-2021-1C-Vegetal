@@ -1,19 +1,17 @@
 #pragma once
 #include <string>
 #include "Entidad.h"
-#include "../view/ComponenteVistaEntidadEstatica.h"
+#include "../view/ComponenteVistaEnemigoFuego.h"
 
 class EnemigoFuego : public Entidad{
     public: 
-    EnemigoFuego(int posX, int posY, int velX, int ancho, int alto);
-    void mostrar(SDL_Renderer* renderer);
+    EnemigoFuego(float x, float y, int velX, SDL_Renderer *renderer);
     void mover();
+    void mostrar(Uint32 frames);
     std::string getRutaImagen();
 
     private: 
-    ComponenteVistaEntidadEstatica* compVista = new ComponenteVistaEntidadEstatica();
+    ComponenteVistaEnemigoFuego* compVista;
     int velX;
     int posXInicial;
-    int posYInicial;
-    std::string rutaImagen = "res/EnemigoFuego.png";
 };

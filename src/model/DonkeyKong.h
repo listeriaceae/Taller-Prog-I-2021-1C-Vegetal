@@ -7,12 +7,12 @@
 class DonkeyKong : public Entidad {
     public:
 
-    DonkeyKong(int posX, int posY, int ancho, int alto);
-    void mostrar(SDL_Renderer* renderer);
-    void mover();
-    std::string getRutaImagen();
+        DonkeyKong(SDL_Renderer *renderer);
+        void mover();
+        void mostrar(Uint32 frames);
+        std::string getRutaImagen();
 
     private:
-    ComponenteVistaEntidadEstatica* compVista = new ComponenteVistaEntidadEstatica();
-    std::string rutaImagen = "res/DonkeyKong.png";
+        ComponenteVistaEntidadEstatica* compVista;
+        static std::string rutaImagen;
 };

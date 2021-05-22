@@ -4,14 +4,21 @@
 #include "DonkeyKong.h"
 #include "../view/ComponenteVistaEntidadEstatica.h"
 
-DonkeyKong::DonkeyKong(int posX, int posY, int ancho, int alto) 
-: Entidad(posX, posY, ancho, alto){
-    compVista = new ComponenteVistaEntidadEstatica();
+#define DONKEYKONG_POSX 36
+#define DONKEYKONG_POSY 49
+#define DONKEYKONG_ANCHO 40
+#define DONKEYKONG_ALTO 34
+
+std::string DonkeyKong::rutaImagen = "res/DonkeyKong.png"
+
+DonkeyKong::DonkeyKong(SDL_Renderer *renderer)
+: Entidad(DONKEYKONG_POSX, DONKEYKONG_POSY, DONKEYKONG_ANCHO, DONKEYKONG_ALTO) {
+    SDL_Rect rect = {DONKEYKONG_POSX, DONKEYKONG_POSY, DONKEYKONG_ANCHO, DONKEYKONG_ALTO};
+    compVista = new ComponenteVistaEntidadEstatica(rutaImagen, rect, renderer);
 }
 
-void DonkeyKong::mostrar(SDL_Renderer* renderer) {
-    compVista->mostrar(this, rutaImagen, renderer);
-}
-void DonkeyKong::mover() {
+void DonkeyKong::mover() {}
 
+void DonkeyKong::mostrar(Uint32 frames) {
+    compVista->mostrar(frames);
 }

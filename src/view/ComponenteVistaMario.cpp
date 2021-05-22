@@ -1,30 +1,27 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include "ComponenteVistaMario.h"
-#include "../model/Entidad.h"
 #include "../model/Mario.hpp"
-#include <string>
-#include <iostream>
-
-const std::string IMG_DEFAULT = "res/default.png";
+#include "../logger.h"
 
 const int TIEMPO_POR_FRAME = 5;
 const int CANT_FRAMES = 3;
 
-void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_Renderer* renderer) 
-{ 
-    if(textura == NULL) {
-        SDL_Surface* surface = IMG_Load(rutaImagen.c_str());
-        if(surface == NULL) {
-            surface = IMG_Load(IMG_DEFAULT.c_str());
-        }
+std::string ComponenteVistaMario::rutaImagen = "res/Mario.png";
 
-        SDL_SetColorKey(surface, SDL_TRUE, *(Uint32*)(surface->pixels));
+ComponenteVistaMario::ComponenteVistaMario(SDL_Renderer *renderer) {
+    this->renderer = renderer;
+    SDL_Surface* surface = IMG_Load(rutaImagen.c_str());
 
-        textura = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_FreeSurface(surface);
-    }
+    if(surface == NULL) {
+        logger::Logger::getInstance().logError("Mario image not found: " + rutaImagen);
+        logger::Logger::getInstance().logDebug("Loading Mario default image: " + IMG_DEFAULT);
+        surface = IMG_Load(IMG_DEFAULT.c_str());
+    } else SDL_SetColorKey(surface, SDL_TRUE, *(Uint32*)(surface->pixels));
+    textura = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
 
+}
+
+void ComponenteVistaMario::mostrar(Uint32 frames) {
     tiempo++;
 
     if(tiempo >= TIEMPO_POR_FRAME * CANT_FRAMES)
@@ -34,7 +31,7 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
 
     int frameActual = tiempo / TIEMPO_POR_FRAME;
 
-    MarioEstado estado = ((Mario *) mario)->getEstado();
+    int estado = ((Mario *) mario)->getEstado();
 
     if(estado == REPOSO_DERECHA 
     || estado == REPOSO_IZQUIERDA) 
@@ -69,7 +66,15 @@ void ComponenteVistaMario::mostrar(Entidad* mario, std::string rutaImagen, SDL_R
     else if (estado == SALTANDO_DERECHA 
     || estado == SALTANDO_IZQUIERDA)
     {
-        // COMPLETAR
+        rectSpritesheet.x = posXTextura[3];
+        rectSpritesheet.y = posYTextura;
+        rectSpritesheet.w = anchoTextura;
+        rectSpritesheet.h = altoTextura;
+
+        rectRender.x = mario->posX;
+        rectRender.y = mario->posY;
+        rectRender.w = mario->ancho;
+        rectRender.h = mario->alto;
     }
 
     SDL_RendererFlip flip;

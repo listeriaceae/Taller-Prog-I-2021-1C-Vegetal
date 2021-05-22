@@ -1,18 +1,12 @@
 #include "Polea.h"
-#include <string>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include "../view/ComponenteVistaPolea.h"
 
-Polea::Polea(int posX, int posY, int ancho, int alto, std::string direccion) 
-: Entidad(posX, posY, ancho, alto){
-    compVista = new ComponenteVistaPolea(direccion);
+Polea::Polea(int x, int y, int direccion, SDL_Renderer *renderer) 
+: Entidad(x, y, ANCHO_POLEA, ALTO_POLEA){
+    compVista = new ComponenteVistaPolea(x, y, direccion, renderer);
 }
 
-void Polea::mostrar(SDL_Renderer* renderer) {
-    compVista->mostrar(this, renderer);
-}
+void Polea::mover() {}
 
-void Polea::mover() {
-    
+void Polea::mostrar(Uint32 frames) {
+    compVista->mostrar(frames);
 }
