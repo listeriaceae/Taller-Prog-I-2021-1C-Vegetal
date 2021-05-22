@@ -12,11 +12,13 @@
 #include "DonkeyKong.h"
 #include "Polea.h"
 #include "../utils/ Constants.hpp"
+#include "DefaultConfig.h"
 
 using namespace std;
 
-Nivel1::Nivel1(SDL_Renderer* renderer) {
+Nivel1::Nivel1(SDL_Renderer* renderer, bool useDefaultConfig) {
     this->compVista = new ComponenteVistaNivel1(renderer);
+    this->useDefaultConfig = useDefaultConfig;
 }
 
 void Nivel1::actualizarNivel() {
@@ -67,7 +69,13 @@ void Nivel1::inicializarObjetos() {
 
     Peach* p1 = new Peach(314, 76, 40, 55);
     DonkeyKong* d1 = new DonkeyKong(129, 115, 100, 82);
-    
+
+    if(this->getDefaultConfigFlag())
+    {
+        DefaultConfig* defaultConfig = new DefaultConfig(290, 40, 200, 20);
+        agregarObjeto(defaultConfig);
+    }
+
     agregarObjeto(m1);
     agregarObjeto(m2);
     agregarObjeto(m3);

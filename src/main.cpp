@@ -23,7 +23,7 @@ int main(void)
 {
     logger::Logger::getInstance().logNewGame();
     
-    auto configuration = configuration::Configuration(Constants::CONFIG_FILE);
+    auto configuration = configuration::GameConfiguration(Constants::CONFIG_FILE);
     auto log_level = configuration.getLogLevel();
     logger::Logger::getInstance().setDebugLevel(log_level);
 
@@ -37,8 +37,8 @@ int main(void)
 
     SDL_Event event;
     
-    Nivel1 n1(renderer);
-    Nivel2 n2(renderer);
+    Nivel1 n1(renderer, configuration.getDefaultConfigFlag());
+    Nivel2 n2(renderer, configuration.getDefaultConfigFlag());
 
     Mario mario( Constants::N1_MARIO_POS_X, 
                  Constants::N1_MARIO_POS_Y,

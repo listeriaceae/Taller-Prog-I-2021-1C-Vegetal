@@ -8,12 +8,14 @@
 #include "DonkeyKong.h"
 #include "Fuego.h"
 #include "FireBarrel.h"
+#include "DefaultConfig.h"
 
 using namespace std;
 
-Nivel2::Nivel2 (SDL_Renderer* window_renderer) {
+Nivel2::Nivel2 (SDL_Renderer* window_renderer, bool useDefaultConfig) {
     this->tickLastBarrel = 0;
     this->renderer = window_renderer;
+    this->useDefaultConfig = useDefaultConfig;
 }
 
 void Nivel2::loadBackground () {
@@ -41,6 +43,12 @@ void Nivel2::loadElements () {
 
     FireBarrel* barrel = new FireBarrel(10, 560, 30, 30);
     this->elements.push_front(barrel);
+
+    if(this->getDefaultConfigFlag())
+    {
+        DefaultConfig* defaultConfig = new DefaultConfig(290, 40, 200, 20);
+        this->elements.push_front(defaultConfig);
+    }
 }
 
 void Nivel2::addElement (Entidad* element) {

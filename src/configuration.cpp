@@ -11,25 +11,25 @@ namespace configuration
         return f.good();
     }
 
-    Configuration::Configuration(const std::string& json_filename)
+    GameConfiguration::GameConfiguration(const std::string& jsonFileName)
     {
-        bool useDefaultConfig = true;
-        std::string configuration_filename;
+        this->useDefaultConfig = true;
+        std::string configurationFileName;
         Json::Value json_root;
 
         // Get configuration file name
-        if (exists(json_filename))
+        if (exists(jsonFileName))
         {
-            configuration_filename = json_filename;
+            configurationFileName = jsonFileName;
             try
             {
                 // Try it
-                std::ifstream json_file(configuration_filename);
+                std::ifstream json_file(configurationFileName);
                 json_file >> json_root;
                 auto configuration = getJsonValue(json_root, "configuration");
-                bool valid = this->loadFromFile(configuration_filename);
+                bool valid = this->loadFromFile(configurationFileName);
                 if (valid) {
-                    useDefaultConfig = false;
+                    this->useDefaultConfig = false;
                 }
             }
             catch(const std::exception& e)
@@ -39,14 +39,14 @@ namespace configuration
         }
         else 
         {
-            logger::Logger::getInstance().logError("Configuration file not found: " + json_filename);
+            logger::Logger::getInstance().logError("Configuration file not found: " + jsonFileName);
         }
 
-        if (useDefaultConfig) 
+        if (this->useDefaultConfig) 
         {
             logger::Logger::getInstance().logInformation("Using defaul configuration");
-            configuration_filename = "default.json";
-            bool valid = this->loadFromFile(configuration_filename);
+            configurationFileName = "default.json";
+            bool valid = this->loadFromFile(configurationFileName);
             if (valid) {
                 logger::Logger::getInstance().logInformation("Succesfully loaded defaul configuration");
             }
@@ -57,7 +57,12 @@ namespace configuration
         }
     }
 
-    bool Configuration::loadFromFile(std::string configFileName)
+    bool GameConfiguration::getDefaultConfigFlag()
+    {
+        return this->useDefaultConfig;
+    };
+
+    bool GameConfiguration::loadFromFile(std::string configFileName)
     {
         Json::Value jsonRoot;
         std::ifstream jsonFile(configFileName);
@@ -107,7 +112,7 @@ namespace configuration
         return true;
     }
 
-    const Json::Value Configuration::getJsonValue(const Json::Value& root, const std::string& name)
+    const Json::Value GameConfiguration::getJsonValue(const Json::Value& root, const std::string& name)
     {
         auto value = root[name];
         if (value.empty())
