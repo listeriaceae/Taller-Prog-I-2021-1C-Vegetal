@@ -15,7 +15,7 @@ void DefaultConfigVista::mostrar(Entidad* entidad, std::string rutaImagen, SDL_R
             logger::Logger::getInstance().logDebug("Loading default image: " + IMG_DEFAULT);
             surface = IMG_Load(IMG_DEFAULT.c_str());
         }
-        SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 255, 0));
+        SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 0, 0));
         textura = SDL_CreateTextureFromSurface(renderer, surface);
     }
 
