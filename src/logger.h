@@ -1,7 +1,5 @@
 #include <string>
 
-const std::string IMG_DEFAULT = "res/default.png";
-
 namespace logger {
     class Logger {
         private:

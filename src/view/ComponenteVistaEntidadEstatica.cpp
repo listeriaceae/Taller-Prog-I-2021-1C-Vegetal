@@ -1,6 +1,7 @@
 #include <SDL2/SDL_image.h>
 #include "ComponenteVistaEntidadEstatica.h"
 #include "../logger.h"
+#include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
 SDL_Renderer *ComponenteVistaEntidadEstatica::renderer = NULL;

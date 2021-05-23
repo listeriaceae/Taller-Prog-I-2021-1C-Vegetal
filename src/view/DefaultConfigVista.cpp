@@ -3,6 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include "DefaultConfigVista.h"
 #include "../logger.h"
+#include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
 const std::string IMG_DEFAULT_CONFIG = "res/default-config.png";

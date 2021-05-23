@@ -1,6 +1,7 @@
 #include <SDL2/SDL_image.h>
 #include "ComponenteVistaEnemigoFuego.h"
 #include "../logger.h"
+#include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
 const std::string IMG_ENEMIGO_FUEGO = "res/Enemy1.png";

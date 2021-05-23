@@ -2,12 +2,9 @@
 
 #include <string>
 
-#define MARIO_ANCHO 40
-#define MARIO_ALTO 40
-
 // Nivel 1
-#define N1_MARIO_POS_X 3
-#define N1_MARIO_POS_Y 542
+#define N1_MARIO_POS_X 2
+#define N1_MARIO_POS_Y 232
 
 #define N1_POSX_FUEGO1 48
 #define N1_POSX_FUEGO2 88
@@ -23,15 +20,16 @@
 #define N1_POSY2_POLEA 168
 
 // Nive 2
-#define N2_MARIO_POS_X 45
-#define N2_MARIO_POS_Y 547
+#define N2_MARIO_POS_X 34
+#define N2_MARIO_POS_Y 232
 
 
 #define N2_POSX_FUEGO 16
 #define N2_POSY_FUEGO 216
 
-// Game
+// Name
 const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
-
 // Config
 const std::string CONFIG_FILE = "archivo.json";
+// Default
+const std::string IMG_DEFAULT = "res/default.png";

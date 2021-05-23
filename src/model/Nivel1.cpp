@@ -6,7 +6,7 @@
 #include "DonkeyKong.h"
 #include "Polea.h"
 #include "DefaultConfig.h"
-#include "../utils/ Constants.hpp"
+#include "../utils/Constants.hpp"
 #include "../logger.h"
 
 using namespace std;

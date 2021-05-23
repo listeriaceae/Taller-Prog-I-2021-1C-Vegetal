@@ -17,7 +17,7 @@
 #include "configuration.hpp"
 #include "logger.h"
 #include "utils/window.hpp"
-#include "utils/ Constants.hpp"
+#include "utils/Constants.hpp"
 #include "controller/MarioController.h"
 
 int main(void)

@@ -1,6 +1,7 @@
 #include <SDL2/SDL_image.h>
 #include "ComponenteVistaNivel.h"
 #include "../logger.h"
+#include "../utils/Constants.hpp"
 
 ComponenteVistaNivel::ComponenteVistaNivel(SDL_Renderer* renderer, std::string rutaImagen) {
     this->renderer = renderer;

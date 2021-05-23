@@ -3,6 +3,7 @@
 #include "ComponenteVistaMario.h"
 #include "../model/Mario.hpp"
 #include "../logger.h"
+#include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
 #define MARIO_SPRITE_INDEX_SIZE 24

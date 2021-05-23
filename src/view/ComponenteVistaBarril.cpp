@@ -1,6 +1,7 @@
 #include <SDL2/SDL_image.h>
 #include "ComponenteVistaBarril.h"
 #include "../logger.h"
+#include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
 #define TIEMPO_POR_FRAME 3

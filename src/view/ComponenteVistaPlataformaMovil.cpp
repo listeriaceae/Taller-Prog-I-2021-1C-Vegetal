@@ -1,6 +1,7 @@
 #include <SDL2/SDL_image.h>
 #include "ComponenteVistaPlataformaMovil.h"
 #include "../logger.h"
+#include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
 const std::string IMG_PLATAFORMA_MOVIL = "res/PlataformaMovil.png";

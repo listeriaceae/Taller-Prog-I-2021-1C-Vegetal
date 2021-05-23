@@ -1,8 +1,9 @@
 #include <string>
 #include <SDL2/SDL_image.h>
 #include "ComponenteVistaFuego.h"
-#include "../utils/window.hpp"
 #include "../logger.h"
+#include "../utils/Constants.hpp"
+#include "../utils/window.hpp"
 
 #define TIEMPO_POR_FRAME 4
 #define CANT_FRAMES 4
@@ -18,7 +19,7 @@ int ComponenteVistaFuego::tiempo, ComponenteVistaFuego::totalFuegos, ComponenteV
 ComponenteVistaFuego::ComponenteVistaFuego(int x, int y, SDL_Renderer* renderer) {
     if (texture == NULL) {
         this->renderer = renderer;
-        SDL_Surface* surface = IMG_Load("res/Fuego.png");
+        SDL_Surface* surface = IMG_Load(IMG_FUEGO.c_str());
         if (surface == NULL) {
             logger::Logger::getInstance().logError("Image not found: " + IMG_FUEGO);
             logger::Logger::getInstance().logDebug("Loading default image: " + IMG_DEFAULT);
