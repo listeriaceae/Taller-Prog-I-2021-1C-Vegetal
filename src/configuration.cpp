@@ -11,46 +11,86 @@ namespace configuration
         return f.good();
     }
 
-    Configuration::Configuration(const std::string& json_filename)
+    GameConfiguration::GameConfiguration(const std::string& jsonFileName)
     {
-        std::string configuration_filename;
-        
+        this->useDefaultConfig = true;
+        std::string configurationFileName;
+        Json::Value json_root;
+
         // Get configuration file name
-        if (exists(json_filename))
+        if (exists(jsonFileName))
         {
-            configuration_filename = json_filename;
+            configurationFileName = jsonFileName;
+            try
+            {
+                // Try it
+                std::ifstream json_file(configurationFileName);
+                json_file >> json_root;
+                auto configuration = getJsonValue(json_root, "configuration");
+                bool valid = this->loadFromFile(configurationFileName);
+                if (valid) {
+                    this->useDefaultConfig = false;
+                }
+            }
+            catch(const std::exception& e)
+            {
+                logger::Logger::getInstance().logError(std::string("Configuration file corrupted: ") + e.what());
+            }
         }
-        else
+        else 
         {
-            configuration_filename = "default_configuration.json";
-            logger::Logger::getInstance().logError(std::string("Configuration file not found, using default: ") + configuration_filename);
+            logger::Logger::getInstance().logError("Configuration file not found: " + jsonFileName);
         }
 
-        Json::Value json_root;
-        std::ifstream json_file(configuration_filename);
-        json_file >> json_root;
+        if (this->useDefaultConfig) 
+        {
+            logger::Logger::getInstance().logInformation("Using defaul configuration");
+            configurationFileName = "default.json";
+            bool valid = this->loadFromFile(configurationFileName);
+            if (valid) {
+                logger::Logger::getInstance().logInformation("Succesfully loaded defaul configuration");
+            }
+            else
+            {
+                logger::Logger::getInstance().logError("[FATAL] Unable to load defaul configuration");
+            }
+        }
+    }
+
+    bool GameConfiguration::getDefaultConfigFlag()
+    {
+        return this->useDefaultConfig;
+    };
+
+    bool GameConfiguration::loadFromFile(std::string configFileName)
+    {
+        Json::Value jsonRoot;
+        std::ifstream jsonFile(configFileName);
+        jsonFile >> jsonRoot;
 
         // Get configuration
-        auto configuration = getJsonValue(json_root, "configuration");
+        auto configuration = getJsonValue(jsonRoot, "configuration");
 
         // Get log
         auto log = getJsonValue(configuration, "log");
         
         // Get log level
-        log_level = getJsonValue(log, "level").asString();
-        // TODO: Assert valid log level?
+        this->logLevel = getJsonValue(log, "level").asString();
 
         // Get game
         auto game = getJsonValue(configuration, "game");
 
         // Get enemies
-        // TODO: Assert valid type and quantity?
         auto enemies = getJsonValue(game, "enemies");
         for (auto enemy: enemies)
         {
             auto enemy_type = getJsonValue(enemy, "type").asString();
-            auto enemy_quantity = getJsonValue(enemy, "quantity").asUInt();
+            auto enemy_quantity = getJsonValue(enemy, "quantity").asInt();
 
+            if (enemy_quantity < 0) {
+                logger::Logger::getInstance().logError("Enemy quantity must be positive or zero");
+                return false;
+            }
             auto e = configuration::Enemy(enemy_type, enemy_quantity);
             this->enemies.emplace_back(e);
         }
@@ -68,9 +108,11 @@ namespace configuration
             auto s = configuration::Stage(backgrounds);
             this->stages.emplace_back(s);
         }
+
+        return true;
     }
 
-    const Json::Value Configuration::getJsonValue(const Json::Value& root, const std::string& name)
+    const Json::Value GameConfiguration::getJsonValue(const Json::Value& root, const std::string& name)
     {
         auto value = root[name];
         if (value.empty())

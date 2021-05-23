@@ -30,7 +30,10 @@ void Mario::mover() {
     }
     posX += this->velX;
 
-    if ((posX < 0) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) posX -= velX;
+    if ((posX < 0) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
+        posX -= velX;
+        velX -= 2 * velX * (posY < MAX_DESPLAZAMIENTO_Y);
+        }
 }
 
 void Mario::mostrar(Uint32 frames) {

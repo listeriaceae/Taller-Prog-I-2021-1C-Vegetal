@@ -6,10 +6,11 @@
 #include <vector>
 #include "Barril.h"
 #include "../view/ComponenteVistaNivel.h"
+#include "NivelBase.h"
 
-class Nivel2 {
+class Nivel2: public NivelBase {
     public:
-        Nivel2(SDL_Renderer *renderer);
+        Nivel2(SDL_Renderer *renderer, bool useDefaultConfig);
         void actualizarNivel();
         void actualizarVista(Uint32 frames);
         void agregarObjeto(Entidad *objeto);

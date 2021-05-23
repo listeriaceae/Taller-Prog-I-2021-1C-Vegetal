@@ -20,29 +20,25 @@
 #include "utils/ Constants.hpp"
 #include "controller/MarioController.h"
 
-const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
-
 int main(void)
 {
-    auto configuration = configuration::Configuration("archivo.json");
+    logger::Logger::getInstance().logNewGame();
+    
+    auto configuration = configuration::GameConfiguration(CONFIG_FILE);
     auto log_level = configuration.getLogLevel();
     logger::Logger::getInstance().setDebugLevel(log_level);
-
-    logger::Logger::getInstance().logNewGame();
-    logger::Logger::getInstance().logInformation("Log level = " + log_level);
 
     // TODO: Handle errors...
     srand(time(NULL));
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                                                ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     bool terminarPrograma = false;
 
     SDL_Event event;
-
-    Nivel1 n1(renderer);
-    Nivel2 n2(renderer);
+    
+    Nivel1 n1(renderer, configuration.getDefaultConfigFlag());
+    Nivel2 n2(renderer, configuration.getDefaultConfigFlag());
 
     auto enemies = configuration.getEnemies();
     for (auto enemy: enemies) {

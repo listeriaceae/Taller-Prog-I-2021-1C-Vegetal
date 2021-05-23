@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #define MARIO_ANCHO 40
 #define MARIO_ALTO 40
 
@@ -27,3 +29,9 @@
 
 #define N2_POSX_FUEGO 16
 #define N2_POSY_FUEGO 216
+
+// Game
+const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
+
+// Config
+const std::string CONFIG_FILE = "archivo.json";

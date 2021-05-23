@@ -4,6 +4,7 @@
 #include "Fuego.h"
 #include "Peach.h"
 #include "DonkeyKong.h"
+#include "DefaultConfig.h"
 #include "../utils/ Constants.hpp"
 #include "../logger.h"
 
@@ -11,10 +12,11 @@ using namespace std;
 
 std::string Nivel2::rutaImagen = IMG_DEFAULT;
 
-Nivel2::Nivel2 (SDL_Renderer* renderer) {
+Nivel2::Nivel2 (SDL_Renderer* renderer, bool useDefaultConfig) {
     this->renderer = renderer;
     this->tick = 0;
     this->compVista = new ComponenteVistaNivel(renderer, rutaImagen);
+    this->useDefaultConfig = useDefaultConfig;
 }
 
 void Nivel2::actualizarNivel() {
@@ -49,6 +51,10 @@ void Nivel2::inicializarObjetos(SDL_Renderer *renderer) {
     agregarObjeto(new Peach(renderer));
 
     agregarObjeto(new DonkeyKong(renderer));
+
+    if(this->getDefaultConfigFlag()) {
+        this->objetos.push_front(new DefaultConfig(renderer));
+    }
 }
 
 void Nivel2::agregarBarril() {

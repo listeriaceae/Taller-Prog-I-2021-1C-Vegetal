@@ -5,6 +5,7 @@
 #include "Peach.h"
 #include "DonkeyKong.h"
 #include "Polea.h"
+#include "DefaultConfig.h"
 #include "../utils/ Constants.hpp"
 #include "../logger.h"
 
@@ -12,8 +13,9 @@ using namespace std;
 
 std::string Nivel1::rutaImagen = IMG_DEFAULT;
 
-Nivel1::Nivel1(SDL_Renderer* renderer) {
+Nivel1::Nivel1(SDL_Renderer* renderer, bool useDefaultConfig) {
     this->compVista = new ComponenteVistaNivel(renderer, rutaImagen);
+    this->useDefaultConfig = useDefaultConfig;
 }
 
 void Nivel1::actualizarNivel() {
@@ -58,12 +60,10 @@ void Nivel1::inicializarObjetos(SDL_Renderer* renderer) {
     agregarObjeto(new Fuego(N1_POSX_FUEGO2, N1_POSY_FUEGO, renderer));
     agregarObjeto(new Fuego(N1_POSX_FUEGO3, N1_POSY_FUEGO, renderer));
     agregarObjeto(new Fuego(N1_POSX_FUEGO4, N1_POSY_FUEGO, renderer));
-
-    agregarObjeto(new Polea(N1_POSX1_POLEA, N1_POSY1_POLEA, 0, renderer));
-    agregarObjeto(new Polea(N1_POSX2_POLEA, N1_POSY1_POLEA, 1, renderer));
-    agregarObjeto(new Polea(N1_POSX1_POLEA, N1_POSY2_POLEA, 0, renderer));
-    agregarObjeto(new Polea(N1_POSX2_POLEA, N1_POSY2_POLEA, 1, renderer));
-
     agregarObjeto(new Peach(renderer));
     agregarObjeto(new DonkeyKong(renderer));
+
+    if(this->getDefaultConfigFlag()) {
+        agregarObjeto(new DefaultConfig(renderer));
+    }
 }
