@@ -8,7 +8,7 @@ const std::string IMG_PLATAFORMA_MOVIL = "res/PlataformaMovil.png";
 SDL_Texture *ComponenteVistaPlataformaMovil::texture = NULL;
 SDL_Renderer *ComponenteVistaPlataformaMovil::renderer = NULL;
 
-ComponenteVistaPlataformaMovil::ComponenteVistaPlataformaMovil(int y, SDL_Renderer *renderer) {
+ComponenteVistaPlataformaMovil::ComponenteVistaPlataformaMovil(float y, SDL_Renderer *renderer) {
     if (this->texture == NULL) {
         this->renderer = renderer;
         SDL_Surface* surface = IMG_Load(IMG_PLATAFORMA_MOVIL.c_str());

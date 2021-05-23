@@ -24,8 +24,8 @@ class Mario : public Entidad
 
     private:
         ComponenteVistaMario* compVista;
-        char velX;
-        char velEnSuelo;
+        float velX;
+        float velEnSuelo;
         float velY;
         char estado;
         char estadoEnSuelo;

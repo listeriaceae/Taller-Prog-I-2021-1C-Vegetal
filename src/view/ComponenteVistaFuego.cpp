@@ -4,7 +4,7 @@
 #include "../utils/window.hpp"
 #include "../logger.h"
 
-#define TIEMPO_POR_FRAME 3
+#define TIEMPO_POR_FRAME 4
 #define CANT_FRAMES 4
 #define SPRITE_INDEX_SIZE 24
 

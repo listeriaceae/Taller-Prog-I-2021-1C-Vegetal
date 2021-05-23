@@ -6,7 +6,7 @@
 #include "../utils/window.hpp"
 
 #define MARIO_SPRITE_INDEX_SIZE 24
-#define MARIO_SALTO_INDEX 15
+#define MARIO_SALTO_INDEX 14
 #define TIEMPO_POR_FRAME 4
 #define CANT_FRAMES 4
 

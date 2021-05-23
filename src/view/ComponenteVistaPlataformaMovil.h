@@ -7,7 +7,7 @@
 
 class ComponenteVistaPlataformaMovil {
     public:
-        ComponenteVistaPlataformaMovil(int y, SDL_Renderer *renderer);
+        ComponenteVistaPlataformaMovil(float y, SDL_Renderer *renderer);
         void mover(float x);
         void mostrar(Uint32 frames);
 

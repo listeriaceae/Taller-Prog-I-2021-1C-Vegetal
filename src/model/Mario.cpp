@@ -4,10 +4,10 @@
 #include "../logger.h"
 
 #define MAX_DESPLAZAMIENTO_X 224
-#define MAX_DESPLAZAMIENTO_Y 240
-#define MARIO_VELX 2
-#define MARIO_VEL_SALTO 4
-#define MARIO_ACC -0.2
+#define MAX_DESPLAZAMIENTO_Y 232
+#define MARIO_VELX 0.5
+#define MARIO_VEL_SALTO 1
+#define MARIO_ACC -0.03125
 
 Mario::Mario(float x, float y, SDL_Renderer *renderer)
 : Entidad(x, y, ANCHO_MARIO, ALTO_MARIO) {
