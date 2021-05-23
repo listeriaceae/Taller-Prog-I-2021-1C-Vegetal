@@ -23,9 +23,10 @@
 #define N2_MARIO_POS_X 34
 #define N2_MARIO_POS_Y 232
 
-
 #define N2_POSX_FUEGO 16
 #define N2_POSY_FUEGO 216
+
+#define MAX_X_BARRILES 208
 
 // Name
 const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";

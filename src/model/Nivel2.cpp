@@ -58,7 +58,7 @@ void Nivel2::inicializarObjetos(SDL_Renderer *renderer) {
 }
 
 void Nivel2::agregarBarril() {
-    int x = rand() % 208;
+    int x = rand() % MAX_X_BARRILES;
     this->barriles.push_back(new Barril(x, 30, this->renderer));
 }
 
