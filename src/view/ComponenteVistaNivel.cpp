@@ -1,17 +1,13 @@
-#include <iostream>
-#include <string>
-#include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "ComponenteVistaNivel1.h"
-#include "../model/Nivel1.h"
+#include "ComponenteVistaNivel.h"
 #include "../logger.h"
 
-ComponenteVistaNivel1::ComponenteVistaNivel1(SDL_Renderer* renderer, std::string rutaImagen) {
+ComponenteVistaNivel::ComponenteVistaNivel(SDL_Renderer* renderer, std::string rutaImagen) {
     this->renderer = renderer;
     setFondo(rutaImagen);
 }
 
-void ComponenteVistaNivel1::setFondo(std::string rutaImagen) {
+void ComponenteVistaNivel::setFondo(std::string rutaImagen) {
     SDL_Surface* surface = IMG_Load(rutaImagen.c_str());
     if(surface == NULL) {
         logger::Logger::getInstance().logError("Image not found: " + rutaImagen);
@@ -22,7 +18,7 @@ void ComponenteVistaNivel1::setFondo(std::string rutaImagen) {
     SDL_FreeSurface(surface);
 }
 
-void ComponenteVistaNivel1::mostrar(std::list<Entidad*>* objetos, Uint32 frames) {
+void ComponenteVistaNivel::mostrar(std::list<Entidad*>* objetos, Uint32 frames) {
     SDL_RenderCopy(renderer, textura, NULL, NULL);
     
     std::list<Entidad*>::iterator it;

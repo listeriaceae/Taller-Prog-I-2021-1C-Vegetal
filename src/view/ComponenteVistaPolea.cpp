@@ -1,15 +1,18 @@
 #include <string>
+#include <SDL2/SDL_image.h>
 #include "ComponenteVistaPolea.h"
 #include "../logger.h"
 #include "../utils/window.hpp"
 
 #define TIEMPO_POR_FRAME 7
 #define CANT_FRAMES 3
+#define SPRITE_INDEX 24
 
-const std::string IMG_DEFAULT = "res/default.png";
 const std::string IMG_POLEAS = "res/Polea.png";
 
-SDL_Texture* ComponenteVistaPolea::texture = NULL;
+SDL_Texture *ComponenteVistaPolea::texture = NULL;
+SDL_Renderer *ComponenteVistaPolea::renderer = NULL;
+SDL_Rect ComponenteVistaPolea::rectSrc;
 int ComponenteVistaPolea::fueActualizado, ComponenteVistaPolea::tiempo, ComponenteVistaPolea::totalPoleas = 0;
 
 ComponenteVistaPolea::ComponenteVistaPolea(int x, int y, int direccion, SDL_Renderer *renderer) {
@@ -37,7 +40,7 @@ ComponenteVistaPolea::ComponenteVistaPolea(int x, int y, int direccion, SDL_Rend
     
     flip = (SDL_RendererFlip)((direccion << 1) | direccion);
 
-    totalPoleas++;
+    ++totalPoleas;
 }
 
 void ComponenteVistaPolea::mostrar(Uint32 frames) {

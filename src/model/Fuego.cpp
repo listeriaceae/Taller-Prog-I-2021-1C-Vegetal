@@ -4,9 +4,9 @@
 #include <SDL2/SDL_image.h>
 #include "../view/ComponenteVistaFuego.h"
 
-Fuego::Fuego(int posX, int posY, double resize, SDL_Renderer* renderer) 
+Fuego::Fuego(int posX, int posY, SDL_Renderer* renderer) 
 : Entidad(posX, posY, ANCHO_FUEGO, ALTO_FUEGO) {
-    compVista = new ComponenteVistaFuego(posX, posY, resize, renderer);
+    compVista = new ComponenteVistaFuego(posX, posY, renderer);
 }
 
 void Fuego::mover() {}

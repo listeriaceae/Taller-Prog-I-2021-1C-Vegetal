@@ -1,30 +1,33 @@
 #include <SDL2/SDL.h>
-#include <stdexcept> 
+#include <vector> 
 #include "Barril.h"
 #include "../utils/window.hpp"
 
+#define VELOCIDAD_BARRIL 1
+
 using namespace std;
 
-Barril::Barril(int posX, int posY)
-: Entidad(posX, posY, 40, 40){
+Barril::Barril(float x, float y, SDL_Renderer *renderer)
+: Entidad(x, y, ANCHO_BARRIL, ALTO_BARRIL) {
     this->velX = 0;
-    this->velY = 0;
-    compVista = new ComponenteVistaBarril();
+    this->velY = VELOCIDAD_BARRIL;
+    compVista = new ComponenteVistaBarril(renderer);
+}
+
+void Barril::mover(vector<Barril*> *barriles, int i) {
+    mover();
+    if (posY > ALTO_NIVEL) {
+        barriles->erase(barriles->begin() + i);
+        compVista->free();
+        delete this;
+    }
 }
 
 void Barril::mover() {
-    if((SDL_GetTicks() - tickUltimoMovimiento) < 60) //Solo se mueve cada 60 ticks
-        return;
-    
     posY += velY;
-
-    if((posY < 0) || ((posY + alto) > ALTO_PANTALLA)) {
-        throw out_of_range ("El barril termino su recorrido");
-    }
-
-    tickUltimoMovimiento = SDL_GetTicks();
 }
 
-void Barril::mostrar() {
-    compVista->mostrar();
+void Barril::mostrar(Uint32 frames) {
+    compVista->mover(posX, posY);
+    compVista->mostrar(frames);
 }

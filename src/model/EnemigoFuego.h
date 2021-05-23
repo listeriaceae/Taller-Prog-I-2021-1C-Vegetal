@@ -8,7 +8,6 @@ class EnemigoFuego : public Entidad{
     EnemigoFuego(float x, float y, int velX, SDL_Renderer *renderer);
     void mover();
     void mostrar(Uint32 frames);
-    std::string getRutaImagen();
 
     private: 
     ComponenteVistaEnemigoFuego* compVista;

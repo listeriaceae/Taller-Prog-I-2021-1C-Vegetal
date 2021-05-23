@@ -7,8 +7,8 @@ class MarioController {
         void handleEvent(SDL_Event *e);
     private:
         Mario *mario;
-        char up;
-        char down;
-        char left;
-        char right;
+        char up = 0;
+        char down = 0;
+        char left = 0;
+        char right = 0;
 };

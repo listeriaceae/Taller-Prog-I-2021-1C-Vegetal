@@ -1,9 +1,9 @@
 #pragma once
-#include "../model/Entidad.h"
+
+#include <SDL2/SDL.h>
 
 #define ANCHO_POLEA 11
 #define ALTO_POLEA 10
-#define SPRITE_INDEX 24
 
 class ComponenteVistaPolea {
     public:

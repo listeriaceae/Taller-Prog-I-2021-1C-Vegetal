@@ -4,10 +4,10 @@
 #include <string>
 #include "../model/Entidad.h"
 
-class ComponenteVistaNivel1 {
+class ComponenteVistaNivel {
     public:
     
-    ComponenteVistaNivel1(SDL_Renderer* renderer, std::string rutaImagen);
+    ComponenteVistaNivel(SDL_Renderer* renderer, std::string rutaImagen);
     void setFondo(std::string rutaImagen);
     void mostrar(std::list<Entidad*>* objetos, Uint32 frames);
     

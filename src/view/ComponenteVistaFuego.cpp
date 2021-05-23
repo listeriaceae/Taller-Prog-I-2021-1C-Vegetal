@@ -1,16 +1,21 @@
 #include <string>
+#include <SDL2/SDL_image.h>
 #include "ComponenteVistaFuego.h"
 #include "../utils/window.hpp"
 #include "../logger.h"
 
-const std::string IMG_FUEGO = "res/Fuego.png";
 #define TIEMPO_POR_FRAME 3
 #define CANT_FRAMES 4
+#define SPRITE_INDEX_SIZE 24
 
-SDL_Texture* ComponenteVistaFuego::texture = NULL;
+const std::string IMG_FUEGO = "res/Fuego.png";
+
+SDL_Texture *ComponenteVistaFuego::texture = NULL;
+SDL_Renderer *ComponenteVistaFuego::renderer = NULL;
+SDL_Rect ComponenteVistaFuego::rectSrc;
 int ComponenteVistaFuego::tiempo, ComponenteVistaFuego::totalFuegos, ComponenteVistaFuego::fueActualizado = 0;
 
-ComponenteVistaFuego::ComponenteVistaFuego(int x, int y, double resize, SDL_Renderer* renderer) {
+ComponenteVistaFuego::ComponenteVistaFuego(int x, int y, SDL_Renderer* renderer) {
     if (texture == NULL) {
         this->renderer = renderer;
         SDL_Surface* surface = IMG_Load("res/Fuego.png");
@@ -30,15 +35,15 @@ ComponenteVistaFuego::ComponenteVistaFuego(int x, int y, double resize, SDL_Rend
 
     rectDst.x = round(x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     rectDst.y = round(y * ALTO_PANTALLA / (float)ALTO_NIVEL);
-    rectDst.w = round(resize * ANCHO_FUEGO * ANCHO_PANTALLA / ANCHO_NIVEL);
-    rectDst.h = round(resize * ALTO_FUEGO * ALTO_PANTALLA / ALTO_NIVEL);
+    rectDst.w = round(ANCHO_FUEGO * ANCHO_PANTALLA / ANCHO_NIVEL);
+    rectDst.h = round(ALTO_FUEGO * ALTO_PANTALLA / ALTO_NIVEL);
 
-    totalFuegos++;
+    ++totalFuegos;
 }
 
 void ComponenteVistaFuego::mostrar(Uint32 frames) {
     tiempo = (tiempo + (!fueActualizado) * frames) % (TIEMPO_POR_FRAME * CANT_FRAMES);
-    rectSrc.x = (tiempo / TIEMPO_POR_FRAME) * SPRITE_INDEX;
+    rectSrc.x = (tiempo / TIEMPO_POR_FRAME) * SPRITE_INDEX_SIZE;
     fueActualizado = (fueActualizado + 1) % totalFuegos;
 
     SDL_RenderCopy(renderer, texture, &rectSrc, &rectDst);

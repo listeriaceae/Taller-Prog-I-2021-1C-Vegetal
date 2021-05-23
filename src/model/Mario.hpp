@@ -7,29 +7,28 @@ enum {
     REPOSO,
     CORRIENDO,
     SALTANDO,
-    ESCALANDO
+    TREPANDO
 };
 
 class Mario : public Entidad 
 {
     public: 
-        Mario(int posX, int posY, int ancho, int alto);
+        Mario(float x, float y, SDL_Renderer *renderer);
         void mover();
         void mostrar(Uint32 frames);
-        void set_estado(char up, char down, char left, char right);
-
+        void setEstado(char up, char down, char left, char right);
+        void getEstado(float *x, float *y, char *estado);
+        void setStartPos(float x, float y);
         void saltar();
-        int getEstado();
+        void free();
 
     private:
-        ComponenteVistaMario* compVista = new ComponenteVistaMario();
+        ComponenteVistaMario* compVista;
         char velX;
         char velEnSuelo;
         float velY;
         char estado;
-        char enstadoEnSuelo;
-        char sentido;
-        char sentidoEnSuelo;
+        char estadoEnSuelo;
 
         void trepar(char up);
         void caminar(char right);

@@ -1,6 +1,10 @@
 #include "MarioController.h"
 #include "../logger.h"
 
+MarioController::MarioController(Mario *mario) {
+    this->mario = mario;
+}
+
 void MarioController::handleEvent(SDL_Event *e) {
     // If a key was pressed
     if(e->type == SDL_KEYDOWN && e->key.repeat == 0) {
@@ -31,5 +35,5 @@ void MarioController::handleEvent(SDL_Event *e) {
         left &= (key != SDLK_LEFT);
         right &= (key != SDLK_RIGHT);
     } else return;
-    mario->set_estado(up, down, left, right);
+    mario->setEstado(up, down, left, right);
 }

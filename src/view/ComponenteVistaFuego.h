@@ -1,13 +1,12 @@
 #pragma once
-#include "../model/Entidad.h"
+#include <SDL2/SDL.h>
 
 #define ANCHO_FUEGO 16
 #define ALTO_FUEGO 16
-#define SPRITE_INDEX 24
 
 class ComponenteVistaFuego {
     public:
-        ComponenteVistaFuego(int x, int y, double resize, SDL_Renderer* renderer);
+        ComponenteVistaFuego(int x, int y, SDL_Renderer* renderer);
         void mostrar(Uint32 frames);
     
     private:

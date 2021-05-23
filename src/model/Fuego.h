@@ -6,7 +6,7 @@
 class Fuego : public Entidad {
     public:
     
-    Fuego(int posX, int posY, double resize, SDL_Renderer* renderer);
+    Fuego(int posX, int posY, SDL_Renderer* renderer);
     void mover();
     void mostrar(Uint32 frames);
     void destruir();

@@ -29,7 +29,3 @@ void PlataformaMovil::mostrar(Uint32 frames) {
     compVista->mover(posX);
     compVista->mostrar(frames);
 }
-
-std::string PlataformaMovil::getRutaImagen() {
-    return compVista->getRuteImagen();
-}

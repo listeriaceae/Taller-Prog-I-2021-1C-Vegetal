@@ -25,5 +25,5 @@
 #define N2_MARIO_POS_Y 547
 
 
-#define N2_POSX_FUEGO 3
-#define N2_POSY_FUEGO 230
+#define N2_POSX_FUEGO 16
+#define N2_POSY_FUEGO 216
