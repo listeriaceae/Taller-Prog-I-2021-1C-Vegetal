@@ -6,10 +6,10 @@
 
 const int MAX_DESPLAZAMIENTO_PIXELES = 10;
 EnemigoFuego::EnemigoFuego(int posX, int posY, int velX, int ancho, int alto) 
-: Entidad(posX, posY, ancho, alto){
+: Entidad(posX, posY - alto, ancho, alto){
     this->velX = velX;
     this->posXInicial = posX;
-    this->posYInicial = posY;
+    this->posYInicial = posY - alto; //se resta el alto ya que se toma la posicion desde arriba a la izq.
 }
 
 void EnemigoFuego::mover() {

@@ -11,6 +11,7 @@
 #include "Peach.h"
 #include "DonkeyKong.h"
 #include "Polea.h"
+#include "PlataformaEstatica.h"
 #include "../utils/ Constants.hpp"
 #include "DefaultConfig.h"
 
@@ -48,8 +49,30 @@ list<Entidad*>* Nivel1::getObjetos() {
 void Nivel1::setFondo(std::string rutaImagen) {
     this->rutaImagen = rutaImagen;
 }
+void Nivel1::inicializarPlataformasEstaticas() {
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(314, 131, 172, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(86, 196, 428, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(571, 204, 115, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(743, 206, 57, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 281, 57, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(743, 281, 57, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 375, 57, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(743, 375, 57, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 469, 171, 18));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(229, 469, 85, 18));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(372, 469, 86, 18));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(515, 469, 86, 18));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(657, 469, 143, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 581, 171, 18));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(229, 581, 85, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(372, 581, 86, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(515, 581, 86, 19));
+    this->plataformasEstaticas.push_back(new PlataformaEstatica(657, 581, 143, 19));
+}
 
 void Nivel1::inicializarObjetos() {
+    inicializarPlataformasEstaticas();
+
     PlataformaMovil* m1 = new PlataformaMovil(200, 288, -Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
     PlataformaMovil* m2 = new PlataformaMovil(400, 307, Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
     PlataformaMovil* m3 = new PlataformaMovil(250, 382, -Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
@@ -93,4 +116,17 @@ void Nivel1::inicializarObjetos() {
 
     agregarObjeto(p1);
     agregarObjeto(d1);
+}
+
+punto_t Nivel1::getPosicionAleatoria() {
+    int numeroPlataformaAleatoria = rand() % plataformasEstaticas.size();
+    PlataformaEstatica* plataforma = this->plataformasEstaticas[numeroPlataformaAleatoria];
+    int posXAleatoria = plataforma->posX + rand() % plataforma->ancho;
+    int posYAleatoria = plataforma->posY;
+
+    punto_t posAleatoria;
+    posAleatoria.x = posXAleatoria;
+    posAleatoria.y = posYAleatoria;
+
+    return posAleatoria;
 }

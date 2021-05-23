@@ -14,6 +14,7 @@
 #include "model/Mario.hpp"
 #include <string>
 #include "model/DonkeyKong.h"
+#include "model/FactoryEnemigos.h"
 #include "configuration.hpp"
 #include "logger.h"
 #include "utils/window.hpp"
@@ -48,27 +49,6 @@ int main(void)
 
     logger::Logger::getInstance().logInformation("Log level = " + log_level);
 
-    auto enemies = configuration.getEnemies();
-    for (auto enemy: enemies)
-    {
-        if(enemy.getType().compare("Fuego") == 0) {
-            for(unsigned int i = 0; i < enemy.getQuantity(); i++) {
-                int posX = rand() % (ANCHO_PANTALLA - 32);
-                int posY = rand() % (ALTO_PANTALLA - 32);
-                int numRandom = (rand() % 2);
-                int velX;
-                if(numRandom == 0)
-                    velX = -1;
-                else
-                    velX = 1;
-                EnemigoFuego* fuego = new EnemigoFuego(posX, posY, velX, 32, 32);
-                n1.agregarObjeto(fuego);
-            }
-        }
-        logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
-        logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
-    }
-    
     auto stages = configuration.getStages();
     for (unsigned int i = 0; i < stages.size(); ++i)
     {
@@ -85,6 +65,22 @@ int main(void)
 
     n1.inicializarObjetos();
     
+    FactoryEnemigos factoryEnem;
+    auto enemies = configuration.getEnemies();
+    for (auto enemy: enemies)
+    {
+        for(unsigned int i = 0; i < enemy.getQuantity(); i++) {
+            punto_t punto = n1.getPosicionAleatoria();
+            Entidad* enemigo = factoryEnem.crearEnemigo(enemy.getType(), punto.x, punto.y);
+            
+            if(enemigo != NULL)
+                n1.agregarObjeto(enemigo);  
+        }
+
+        logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
+        logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
+    }
+
     while(!terminarPrograma) {
         while( SDL_PollEvent(&event) != 0 ) {
             if(event.type == SDL_QUIT ) {
