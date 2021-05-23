@@ -10,7 +10,12 @@ class ComponenteVistaBarril {
         ComponenteVistaBarril(SDL_Renderer *renderer);
         void mover(float x, float y);
         void mostrar(Uint32 frames);
-        void free();
+        virtual ~ComponenteVistaBarril() {
+            if (!(--totalBarriles)) {
+                SDL_DestroyTexture(texture);
+                texture = NULL;
+            }
+        };
 
     private:
         static SDL_Renderer *renderer;

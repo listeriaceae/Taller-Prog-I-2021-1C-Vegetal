@@ -1,8 +1,8 @@
 #include "Polea.h"
 
-Polea::Polea(int x, int y, int direccion, SDL_Renderer *renderer) 
+Polea::Polea(int x, int y, int direccion, int nivel, SDL_Renderer *renderer) 
 : Entidad(x, y, ANCHO_POLEA, ALTO_POLEA){
-    compVista = new ComponenteVistaPolea(x, y, direccion, renderer);
+    compVista = new ComponenteVistaPolea(x, y, direccion, nivel, renderer);
 }
 
 void Polea::mover() {}

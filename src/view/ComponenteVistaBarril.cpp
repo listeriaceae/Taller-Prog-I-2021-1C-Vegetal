@@ -45,11 +45,3 @@ void ComponenteVistaBarril::mostrar(Uint32 frames) {
 
     SDL_RenderCopy(renderer, texture, &rectSrc, &rectDst);
 }
-
-void ComponenteVistaBarril::free() {
-    if (!(--totalBarriles)) {
-        SDL_DestroyTexture(texture);
-        texture = NULL;
-    }
-    delete this;
-}

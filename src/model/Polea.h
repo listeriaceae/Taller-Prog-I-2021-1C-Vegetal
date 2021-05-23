@@ -4,7 +4,7 @@
 
 class Polea : public Entidad {
     public:
-        Polea(int x, int y, int direccion, SDL_Renderer *renderer);
+        Polea(int x, int y, int direccion, int nivel, SDL_Renderer *renderer);
         void mover();
         void mostrar(Uint32 frames);
     

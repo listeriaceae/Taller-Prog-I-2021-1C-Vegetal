@@ -8,8 +8,11 @@ class Barril : public Entidad {
     public:
         Barril(float x, float y, SDL_Renderer *renderer);
         void mover();
-        void mover(std::vector<Barril*> *barriles, int i);
         void mostrar(Uint32 frames);
+        bool estaEnNivel();
+        virtual ~Barril() {
+            delete compVista;
+        };
 
     private:
         ComponenteVistaBarril* compVista;

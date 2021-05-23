@@ -2,6 +2,7 @@
 #include <vector> 
 #include "Barril.h"
 #include "../utils/window.hpp"
+#include <stdio.h>
 
 #define VELOCIDAD_BARRIL 1
 
@@ -14,17 +15,12 @@ Barril::Barril(float x, float y, SDL_Renderer *renderer)
     compVista = new ComponenteVistaBarril(renderer);
 }
 
-void Barril::mover(vector<Barril*> *barriles, int i) {
-    mover();
-    if (posY > ALTO_NIVEL) {
-        barriles->erase(barriles->begin() + i);
-        compVista->free();
-        delete this;
-    }
-}
-
 void Barril::mover() {
     posY += velY;
+}
+
+bool Barril::estaEnNivel() {
+    return (posY < ALTO_NIVEL);
 }
 
 void Barril::mostrar(Uint32 frames) {

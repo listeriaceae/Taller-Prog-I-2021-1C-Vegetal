@@ -63,8 +63,15 @@ void Nivel2::agregarBarril() {
 }
 
 void Nivel2::updateBarriles() {
-    for (int i = this->barriles.size() - 1; i >= 0; --i)
-        this->barriles.at(i)->mover(&barriles, i);
+    Barril *barril;
+    for (int i = this->barriles.size() - 1; i >= 0; --i) {
+        barril = this->barriles.at(i);
+        barril->mover();
+        if (!barril->estaEnNivel()) {
+        this->barriles.erase(this->barriles.begin() + i);
+        delete barril;
+        }
+    }
 }
 
 void Nivel2::mostrarBarriles(Uint32 frames) {

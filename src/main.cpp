@@ -103,7 +103,7 @@ int main(void)
         while (lag >= MS_PER_UPDATE) {
             n1.actualizarNivel();
             lag -= MS_PER_UPDATE;
-            frames++;
+            ++frames;
         }
 
         // Update View and render

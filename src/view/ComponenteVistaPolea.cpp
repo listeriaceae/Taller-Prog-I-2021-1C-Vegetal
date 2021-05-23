@@ -16,7 +16,7 @@ SDL_Renderer *ComponenteVistaPolea::renderer = NULL;
 SDL_Rect ComponenteVistaPolea::rectSrc;
 int ComponenteVistaPolea::fueActualizado, ComponenteVistaPolea::tiempo, ComponenteVistaPolea::totalPoleas = 0;
 
-ComponenteVistaPolea::ComponenteVistaPolea(int x, int y, int direccion, SDL_Renderer *renderer) {
+ComponenteVistaPolea::ComponenteVistaPolea(int x, int y, int direccion, int nivel, SDL_Renderer *renderer) {
     if (texture == NULL) {
         this->renderer = renderer;
         SDL_Surface* surface = IMG_Load(IMG_POLEAS.c_str());
@@ -39,7 +39,7 @@ ComponenteVistaPolea::ComponenteVistaPolea(int x, int y, int direccion, SDL_Rend
     rectDst.w = round(ANCHO_POLEA * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     rectDst.h = round(ALTO_POLEA * ALTO_PANTALLA / (float)ALTO_NIVEL);
     
-    flip = (SDL_RendererFlip)((direccion << 1) | direccion);
+    flip = (SDL_RendererFlip)(((direccion << 1) | direccion) ^ ((1 - nivel) << 1));
 
     ++totalPoleas;
 }
