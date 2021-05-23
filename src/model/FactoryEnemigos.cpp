@@ -4,6 +4,8 @@
 
 
 const std::string FUEGO = "Fuego";
+const int ALTO_FUEGO = 32;
+const int ANCHO_FUEGO = 32;
 
 Entidad* FactoryEnemigos::crearEnemigo(std::string tipoEnemigo, int posX, int posY) {
     if(tipoEnemigo.compare(FUEGO) == 0) {
@@ -13,7 +15,7 @@ Entidad* FactoryEnemigos::crearEnemigo(std::string tipoEnemigo, int posX, int po
             velX = -1;
         else
             velX = 1;
-        return new EnemigoFuego(posX, posY, velX, 32, 32);
+        return new EnemigoFuego(posX, posY, velX, ANCHO_FUEGO, ALTO_FUEGO);
     }
     else
         return NULL;

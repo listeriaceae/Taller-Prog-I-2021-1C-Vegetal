@@ -6,23 +6,20 @@
 #include <SDL2/SDL_image.h>
 #include "../view/ComponenteVistaNivel1.h"
 #include "Entidad.h"
-<<<<<<< Updated upstream
 #include "NivelBase.h"
-=======
 #include "PlataformaEstatica.h"
 
 struct punto_t {
   int x;
   int y;
 };
->>>>>>> Stashed changes
 
 class Nivel1 : public NivelBase 
 {
     public:
         std::string rutaImagen = "res/default.png";
 
-    Nivel1(SDL_Renderer* renderer);
+    Nivel1(SDL_Renderer* renderer, bool useDefaultConfig);
     void actualizarNivel();
     void agregarObjeto(Entidad* objeto);
     void setFondo(std::string rutaImagen);
