@@ -15,4 +15,5 @@ class ComponenteVistaEnemigoFuego {
         static SDL_Texture *texture;
         SDL_Rect rectSrc;
         SDL_Rect rectDst; //Rectangulo que determina donde se va a renderear el objeto
+        int tiempo;
 };

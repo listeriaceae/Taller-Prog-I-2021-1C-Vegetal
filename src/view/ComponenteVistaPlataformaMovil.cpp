@@ -8,6 +8,7 @@ const std::string IMG_PLATAFORMA_MOVIL = "res/PlataformaMovil.png";
 
 SDL_Texture *ComponenteVistaPlataformaMovil::texture = NULL;
 SDL_Renderer *ComponenteVistaPlataformaMovil::renderer = NULL;
+Uint32 ComponenteVistaPlataformaMovil::frames = 0;
 
 ComponenteVistaPlataformaMovil::ComponenteVistaPlataformaMovil(float y, SDL_Renderer *renderer) {
     if (this->texture == NULL) {
@@ -32,5 +33,6 @@ void ComponenteVistaPlataformaMovil::mover(float x) {
 }
 
 void ComponenteVistaPlataformaMovil::mostrar(Uint32 frames) {
+    this->frames = frames;
     SDL_RenderCopy(renderer, texture, NULL, &rectDst);
 }

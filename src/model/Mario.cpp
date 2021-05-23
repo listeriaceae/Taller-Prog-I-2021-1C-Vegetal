@@ -41,12 +41,12 @@ void Mario::mostrar(Uint32 frames) {
 }
 
 void Mario::setEstado(char up, char down, char left, char right) {
-    if (up ^ down) trepar(up);
+    if (up ^ down) trepar();
     if (left ^ right) caminar(right);
     else detener();
 }
 
-void Mario::trepar(char up) {}              // TODO
+void Mario::trepar() {}              // TODO
 
 void Mario::caminar(char right) {
     this->velEnSuelo = ((- 1) + (right << 1)) * MARIO_VELX;

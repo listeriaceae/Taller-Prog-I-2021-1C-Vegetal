@@ -4,6 +4,10 @@
 #include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
+#define TIEMPO_POR_FRAME 4
+#define CANT_FRAMES 2
+#define SPRITE_INDEX_SIZE 24
+
 const std::string IMG_ENEMIGO_FUEGO = "res/Enemy1.png";
 
 SDL_Texture *ComponenteVistaEnemigoFuego::texture = NULL;
@@ -34,5 +38,8 @@ void ComponenteVistaEnemigoFuego::mover(float x, float y) {
 }
 
 void ComponenteVistaEnemigoFuego::mostrar(Uint32 frames) {
+    tiempo = (tiempo + frames) % (TIEMPO_POR_FRAME * CANT_FRAMES);
+    rectSrc.x = (tiempo / TIEMPO_POR_FRAME) * SPRITE_INDEX_SIZE;
+
     SDL_RenderCopy(renderer, texture, &rectSrc, &rectDst);
 }

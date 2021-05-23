@@ -30,7 +30,7 @@ class Mario : public Entidad
         char estado;
         char estadoEnSuelo;
 
-        void trepar(char up);
+        void trepar();
         void caminar(char right);
         void detener();
 };

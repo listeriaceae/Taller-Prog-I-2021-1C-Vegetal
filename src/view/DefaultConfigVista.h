@@ -16,4 +16,5 @@ class DefaultConfigVista {
         static SDL_Texture *texture;
         static SDL_Renderer *renderer;
         static SDL_Rect rect;
+        static Uint32 frames;
 };

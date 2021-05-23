@@ -12,5 +12,6 @@ class ComponenteVistaEntidadEstatica {
         static SDL_Renderer* renderer;
         SDL_Texture* texture;
         SDL_Rect rect;
+        static Uint32 frames;
 
 };
