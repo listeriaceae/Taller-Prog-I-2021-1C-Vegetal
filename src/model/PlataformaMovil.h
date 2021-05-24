@@ -2,19 +2,21 @@
 
 #include <string>
 #include "Entidad.h"
-#include "../view/ComponenteVistaEntidadEstatica.h"
-
+#include "../view/ComponenteVistaPlataformaMovil.h"
 
 class PlataformaMovil : public Entidad {
     public:
 
-    PlataformaMovil(int posX, int posY, int velX, int ancho, int alto);
-    void mostrar(SDL_Renderer* renderer);
-    void mover();
-    std::string getRutaImagen();
+        PlataformaMovil(int plataforma, int nivel, SDL_Renderer *renderer);
+        void mover();
+        void mostrar();
+        virtual ~PlataformaMovil() {
+            delete compVista;
+        };
+
 
     private:
-    ComponenteVistaEntidadEstatica* compVista = new ComponenteVistaEntidadEstatica();
-    int velX;
-    std::string rutaImagen = "res/PlataformaMovil.png";
+        ComponenteVistaPlataformaMovil *compVista;
+        int direccion;
+        int limite;
 };

@@ -1,40 +1,30 @@
+#include <stdlib.h>
 #include "Nivel1.h"
-#include <list>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include "Entidad.h"
-#include "../view/ComponenteVistaNivel1.h"
-#include "Barril.h"
-#include "Fuego.h"
 #include "PlataformaMovil.h"
-#include "EnemigoFuego.h"
+#include "Fuego.h"
 #include "Peach.h"
 #include "DonkeyKong.h"
 #include "Polea.h"
-#include "../utils/ Constants.hpp"
 #include "DefaultConfig.h"
+#include "../utils/Constants.hpp"
+#include "../logger.h"
 
 using namespace std;
 
+std::string Nivel1::rutaImagen = IMG_DEFAULT;
+
 Nivel1::Nivel1(SDL_Renderer* renderer, bool useDefaultConfig) {
-    this->compVista = new ComponenteVistaNivel1(renderer);
+    this->compVista = new ComponenteVistaNivel(renderer, rutaImagen);
     this->useDefaultConfig = useDefaultConfig;
 }
 
 void Nivel1::actualizarNivel() {
-    actualizarPosicionesObjetos();
-    actualizarVista();
-}
-
-void Nivel1::actualizarPosicionesObjetos() {
     std::list<Entidad*>::iterator it;
-    for (it = objetos.begin(); it != objetos.end(); ++it){
-        (*it)->mover();
-    }
+    for (it = objetos.begin(); it != objetos.end(); ++it) (*it)->mover();
 }
 
-void Nivel1::actualizarVista() { //Por ahora solo carga el fondo
-    compVista->mostrar(this);
+void Nivel1::actualizarVista() {
+    compVista->mostrar(&objetos);
 }
 
 void Nivel1::agregarObjeto(Entidad* objeto) {
@@ -46,51 +36,40 @@ list<Entidad*>* Nivel1::getObjetos() {
 }
 
 void Nivel1::setFondo(std::string rutaImagen) {
-    this->rutaImagen = rutaImagen;
+    compVista->setFondo(rutaImagen);
 }
 
-void Nivel1::inicializarObjetos() {
-    PlataformaMovil* m1 = new PlataformaMovil(200, 288, -Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
-    PlataformaMovil* m2 = new PlataformaMovil(400, 307, Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
-    PlataformaMovil* m3 = new PlataformaMovil(250, 382, -Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
-    PlataformaMovil* m4 = new PlataformaMovil(300, 401, Constants::N1_VELOCIDAD_PLATAFORMA, 60, 19);
+void Nivel1::inicializarObjetos(SDL_Renderer* renderer) {
+    agregarObjeto(new PlataformaMovil(0, 0, renderer));
+    agregarObjeto(new PlataformaMovil(1, 0, renderer));
+    agregarObjeto(new PlataformaMovil(2, 0, renderer));
 
-    Fuego* f1 = new Fuego(172, 544, 56, 56);
-    Fuego* f2 = new Fuego(314, 544, 56, 56);
-    Fuego* f3 = new Fuego(458, 544, 56, 56);
-    Fuego* f4 = new Fuego(600, 544, 56, 56);
+    agregarObjeto(new PlataformaMovil(0, 1, renderer));
+    agregarObjeto(new PlataformaMovil(1, 1, renderer));
+    agregarObjeto(new PlataformaMovil(2, 1, renderer));
 
-    //Barril b1(300, 0, 0, 10);
-    //Barril b2(200, 0, 0, 7);
-    Polea* polea1 = new Polea(35, 300, 22, 21, "derecha");
-    Polea* polea2 = new Polea(35, 394, 22, 21, "derecha");
-    Polea* polea3 = new Polea(743, 300, 22, 21, "izquierda");
-    Polea* polea4 = new Polea(743, 394, 22, 21, "izquierda");
+    agregarObjeto(new PlataformaMovil(0, 2, renderer));
+    agregarObjeto(new PlataformaMovil(1, 2, renderer));
+    agregarObjeto(new PlataformaMovil(2, 2, renderer));
 
-    Peach* p1 = new Peach(314, 76, 40, 55);
-    DonkeyKong* d1 = new DonkeyKong(129, 115, 100, 82);
+    agregarObjeto(new PlataformaMovil(0, 3, renderer));
+    agregarObjeto(new PlataformaMovil(1, 3, renderer));
+    agregarObjeto(new PlataformaMovil(2, 3, renderer));
 
-    if(this->getDefaultConfigFlag())
-    {
-        DefaultConfig* defaultConfig = new DefaultConfig(290, 40, 200, 20);
-        agregarObjeto(defaultConfig);
+    agregarObjeto(new Polea(N1_POSX1_POLEA, N1_POSY1_POLEA, 0, 0, renderer));
+    agregarObjeto(new Polea(N1_POSX2_POLEA, N1_POSY1_POLEA, 1, 0, renderer));
+    agregarObjeto(new Polea(N1_POSX1_POLEA, N1_POSY2_POLEA, 0, 1, renderer));
+    agregarObjeto(new Polea(N1_POSX2_POLEA, N1_POSY2_POLEA, 1, 1, renderer));
+
+    agregarObjeto(new Fuego(N1_POSX_FUEGO1, N1_POSY_FUEGO, renderer));
+    agregarObjeto(new Fuego(N1_POSX_FUEGO2, N1_POSY_FUEGO, renderer));
+    agregarObjeto(new Fuego(N1_POSX_FUEGO3, N1_POSY_FUEGO, renderer));
+    agregarObjeto(new Fuego(N1_POSX_FUEGO4, N1_POSY_FUEGO, renderer));
+
+    agregarObjeto(new Peach(renderer));
+    agregarObjeto(new DonkeyKong(renderer));
+
+    if(this->getDefaultConfigFlag()) {
+        agregarObjeto(new DefaultConfig(renderer));
     }
-
-    agregarObjeto(m1);
-    agregarObjeto(m2);
-    agregarObjeto(m3);
-    agregarObjeto(m4);
-    
-    agregarObjeto(f1);
-    agregarObjeto(f2);
-    agregarObjeto(f3);
-    agregarObjeto(f4);
-
-    agregarObjeto(polea1);
-    agregarObjeto(polea2);
-    agregarObjeto(polea3);
-    agregarObjeto(polea4);
-
-    agregarObjeto(p1);
-    agregarObjeto(d1);
 }

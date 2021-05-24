@@ -1,26 +1,23 @@
 #pragma once
-#include "../model/Entidad.h"
+
 #include <SDL2/SDL.h>
-#include <string>
+
+#define ANCHO_POLEA 11
+#define ALTO_POLEA 10
 
 class ComponenteVistaPolea {
     public:
     
-    ComponenteVistaPolea(std::string direccion);
-    void mostrar(Entidad* entidad, SDL_Renderer* renderer);
+        ComponenteVistaPolea(int x, int y, int direccion, int nivel, SDL_Renderer *renderer);
+        void mostrar();
     
     private:
-    std::string direccion = "izquierda";
-    SDL_Texture* textura = NULL;
-    SDL_RendererFlip flip = SDL_FLIP_NONE;
-    SDL_Rect rectSpritesheet; //Rectangulo que determina que parte de la imagen cargar
-    SDL_Rect rectRender; //Rectangulo que determina donde se va a renderear el objeto
-    int frameTextura = 0;
-    int tiempo = 0;
-    int posXTextura[3] = {0, 24, 48};
-    int posYTextura = 0;
-    int anchoTextura = 11;
-    int altoTextura = 10;
-
-    void inicializarTextura(SDL_Renderer* renderer);
+        static SDL_Renderer *renderer;
+        static SDL_Texture *texture;
+        SDL_RendererFlip flip;
+        static SDL_Rect rectSrc; //Rectangulo que determina que parte de la imagen cargar
+        SDL_Rect rectDst; //Rectangulo que determina donde se va a renderear el objeto
+        static int tiempo;
+        static int fueActualizado;
+        static int totalPoleas;
 };

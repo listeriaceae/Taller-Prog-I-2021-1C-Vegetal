@@ -1,28 +1,25 @@
 #pragma once
+
 #include <list>
 #include <string>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include "../view/ComponenteVistaNivel1.h"
+#include "../view/ComponenteVistaNivel.h"
 #include "Entidad.h"
 #include "NivelBase.h"
 
-class Nivel1 : public NivelBase 
+class Nivel1 : public NivelBase
 {
     public:
-        std::string rutaImagen = "res/default.png";
-
         Nivel1(SDL_Renderer* renderer, bool useDefaultConfig);
         void actualizarNivel();
+        void actualizarVista();
         void agregarObjeto(Entidad* objeto);
-        void setFondo(std::string rutaImagen);
-        void inicializarObjetos();
         std::list<Entidad*>* getObjetos();
+        void setFondo(std::string rutaImagen);
+        void inicializarObjetos(SDL_Renderer* renderer);
 
     private:
-        ComponenteVistaNivel1* compVista = NULL;
+        ComponenteVistaNivel* compVista;
         std::list<Entidad*> objetos;
-
-        void actualizarVista();
-        void actualizarPosicionesObjetos();
+        static std::string rutaImagen;
 };

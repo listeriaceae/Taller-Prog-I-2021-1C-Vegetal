@@ -3,15 +3,16 @@
 #include "Entidad.h"
 #include "../view/ComponenteVistaFuego.h"
 
-class Fuego : public Entidad{
+class Fuego : public Entidad {
     public:
     
-    Fuego(int posX, int posY, int ancho, int alto);
-
-    void mostrar(SDL_Renderer* renderer);
-
+    Fuego(int posX, int posY, SDL_Renderer* renderer);
     void mover();
-    
+    void mostrar();
+    virtual ~Fuego() {
+        delete compVista;
+    }
+
     private:
     ComponenteVistaFuego* compVista;
 };

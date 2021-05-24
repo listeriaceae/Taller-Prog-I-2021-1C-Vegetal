@@ -1,101 +1,80 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <iostream>
 #include <stdlib.h>
-#include <string>
 #include "Nivel2.h"
+#include "FireBarrel.h"
+#include "Fuego.h"
 #include "Peach.h"
 #include "DonkeyKong.h"
-#include "Fuego.h"
-#include "FireBarrel.h"
 #include "DefaultConfig.h"
+#include "../utils/Constants.hpp"
+#include "../logger.h"
 
 using namespace std;
 
-Nivel2::Nivel2 (SDL_Renderer* window_renderer, bool useDefaultConfig) {
-    this->tickLastBarrel = 0;
-    this->renderer = window_renderer;
+std::string Nivel2::rutaImagen = IMG_DEFAULT;
+
+Nivel2::Nivel2 (SDL_Renderer* renderer, bool useDefaultConfig) {
+    this->renderer = renderer;
+    this->tick = 0;
+    this->compVista = new ComponenteVistaNivel(renderer, rutaImagen);
     this->useDefaultConfig = useDefaultConfig;
 }
 
-void Nivel2::loadBackground () {
-    this->background_surface = IMG_Load(backgroundImage.c_str());
-    if(this->background_surface == NULL) {
-        this->background_surface = IMG_Load(DEFAULT_IMAGE.c_str());
-    }
-    this->background_texture = SDL_CreateTextureFromSurface(this->renderer, this->background_surface);
-    SDL_RenderCopy(this->renderer, this->background_texture, NULL, NULL);
+void Nivel2::actualizarNivel() {
+    if (!(++tick % 128)) agregarBarril();
+    updateBarriles();
+
+    std::list<Entidad*>::iterator it;
+    for (it = objetos.begin(); it != objetos.end(); ++it) (*it)->mover();
 }
 
-void Nivel2::updateBackground () {
-    SDL_RenderCopy(this->renderer, this->background_texture, NULL, NULL);
+void Nivel2::actualizarVista() {
+    compVista->mostrar(&objetos);
+    this->mostrarBarriles();
 }
 
-void Nivel2::loadElements () {
-    Peach* girl = new Peach(314, 76, 40, 55);
-    this->elements.push_front(girl);
-
-    DonkeyKong* donkey = new DonkeyKong(129, 115, 100, 82);
-    this->elements.push_front(donkey);
-
-    Fuego* fire = new Fuego(10, 530, 30, 30);
-    this->elements.push_front(fire);
-
-    FireBarrel* barrel = new FireBarrel(10, 560, 30, 30);
-    this->elements.push_front(barrel);
-
-    if(this->getDefaultConfigFlag())
-    {
-        DefaultConfig* defaultConfig = new DefaultConfig(290, 40, 200, 20);
-        this->elements.push_front(defaultConfig);
-    }
+void Nivel2::agregarObjeto(Entidad* element) {
+    this->objetos.push_front(element);
 }
 
-void Nivel2::addElement (Entidad* element) {
-    this->elements.push_front(element);
+list<Entidad*>* Nivel2::getObjetos() {
+    return &objetos;
 }
 
-void Nivel2::updateElements () {
-    list<Entidad*>::iterator it;
-    for (it = this->elements.begin(); it != this->elements.end(); ++it){
-        (*it)->mover();
-        (*it)->mostrar(this->renderer);
+void Nivel2::setFondo(std::string rutaImagen) {
+    compVista->setFondo(rutaImagen);
+}
+
+void Nivel2::inicializarObjetos(SDL_Renderer *renderer) {
+    agregarObjeto(new FireBarrel(renderer));
+    agregarObjeto(new Fuego(N2_POSX_FUEGO, N2_POSY_FUEGO, renderer));
+
+    agregarObjeto(new Peach(renderer));
+
+    agregarObjeto(new DonkeyKong(renderer));
+
+    if(this->getDefaultConfigFlag()) {
+        this->objetos.push_front(new DefaultConfig(renderer));
     }
 }
 
-
-void Nivel2::addBarrel () {
-    int posX = rand() % 750 + 10;
-    this->barrels.push_back(Barril(posX, 150, 0, 10));
+void Nivel2::agregarBarril() {
+    int x = rand() % MAX_X_BARRILES;
+    this->barriles.push_back(new Barril(x, 30, this->renderer));
 }
 
-void Nivel2::updateBarrels () {
-    for (uint i = 0; i < this->barrels.size(); i++) {
-        try {
-            this->barrels.at(i).mover();
-            this->barrels.at(i).mostrar(this->renderer);
+void Nivel2::updateBarriles() {
+    Barril *barril;
+    for (int i = this->barriles.size() - 1; i >= 0; --i) {
+        barril = this->barriles.at(i);
+        barril->mover();
+        if (!barril->estaEnNivel()) {
+        this->barriles.erase(this->barriles.begin() + i);
+        delete barril;
         }
-        catch (exception& e) {
-            this->barrels.erase(this->barrels.begin()+i);
-        }
-    } 
-}
-void Nivel2::initialize() {
-    this->loadBackground();
-    this->loadElements();
-}
-
-void Nivel2::updateView () {
-    
-    if (SDL_GetTicks() - this->tickLastBarrel > 1500) {
-        this->tickLastBarrel = SDL_GetTicks();
-        this->addBarrel();
     }
-
-    this->updateBackground();
-    this->updateElements();
-    this->updateBarrels();
 }
-void Nivel2::setBackground(std::string background) {
-    this->backgroundImage = background;
+
+void Nivel2::mostrarBarriles() {
+    for (int i = this->barriles.size() - 1; i >= 0; --i)
+        this->barriles.at(i)->mostrar();
 }
