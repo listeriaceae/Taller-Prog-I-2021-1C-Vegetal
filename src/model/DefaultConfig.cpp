@@ -12,6 +12,6 @@ DefaultConfig::DefaultConfig(SDL_Renderer *renderer)
 
 void DefaultConfig::mover() {}
 
-void DefaultConfig::mostrar(Uint32 frames) {
-    compVista->mostrar(frames);
+void DefaultConfig::mostrar() {
+    compVista->mostrar();
 }

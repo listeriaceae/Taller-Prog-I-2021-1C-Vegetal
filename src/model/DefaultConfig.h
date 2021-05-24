@@ -8,7 +8,11 @@ class DefaultConfig : public Entidad {
     public:
         DefaultConfig(SDL_Renderer *renderer);
         void mover();
-        void mostrar(Uint32 frames);
+        void mostrar();
+        virtual ~DefaultConfig() {
+            delete compVista;
+        };
+
 
     private:
         DefaultConfigVista *compVista;

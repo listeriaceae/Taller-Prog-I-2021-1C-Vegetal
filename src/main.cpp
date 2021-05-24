@@ -75,7 +75,7 @@ int main(void)
     n1.agregarObjeto(&mario);
     n1.inicializarObjetos(renderer);
     // http://gameprogrammingpatterns.com/game-loop.html#play-catch-up
-    Uint32 previous, current, elapsed, lag, frames;
+    Uint32 previous, current, elapsed, lag, updated;
     previous = SDL_GetTicks();
     lag = 0;
     while(!terminarPrograma) {
@@ -99,17 +99,17 @@ int main(void)
         }
 
         // Update Model
-        frames = 0;
+        updated = 0;
         while (lag >= MS_PER_UPDATE) {
             n1.actualizarNivel();
             lag -= MS_PER_UPDATE;
-            ++frames;
+            ++updated;
         }
 
         // Update View and render
-        if (frames) {
+        if (updated) {
             SDL_RenderClear(renderer);
-            n1.actualizarVista(frames);
+            n1.actualizarVista();
             SDL_RenderPresent(renderer);
         }
     }
@@ -146,17 +146,17 @@ int main(void)
         }
 
         // Update Model
-        frames = 0;
+        updated = 0;
         while (lag >= MS_PER_UPDATE) {
             n2.actualizarNivel();
             lag -= MS_PER_UPDATE;
-            frames++;
+            updated++;
         }
 
         // Update View and render
-        if (frames) {
+        if (updated) {
             SDL_RenderClear(renderer);
-            n2.actualizarVista(frames);
+            n2.actualizarVista();
             SDL_RenderPresent(renderer);
         }
     };

@@ -9,7 +9,7 @@ class ComponenteVistaMario
 {
     public:
         ComponenteVistaMario(SDL_Renderer *renderer);
-        void mostrar(Uint32 frames, float x, float y, char estado);
+        void mostrar(float x, float y, char estado);
         void free();
 
     private:

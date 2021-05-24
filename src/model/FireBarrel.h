@@ -7,11 +7,12 @@
 class FireBarrel : public Entidad {
     public:
         FireBarrel(SDL_Renderer* renderer);
-        void mostrar(Uint32 frames);
         void mover();
-        std::string getRutaImagen();
+        void mostrar();
+        virtual ~FireBarrel() {
+            delete compVista;
+        };
 
     private:
         ComponenteVistaEntidadEstatica* compVista;
-        static std::string rutaImagen;
 };

@@ -23,7 +23,7 @@ bool Barril::estaEnNivel() {
     return (posY < ALTO_NIVEL);
 }
 
-void Barril::mostrar(Uint32 frames) {
+void Barril::mostrar() {
     compVista->mover(posX, posY);
-    compVista->mostrar(frames);
+    compVista->mostrar();
 }

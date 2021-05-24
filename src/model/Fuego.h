@@ -8,8 +8,10 @@ class Fuego : public Entidad {
     
     Fuego(int posX, int posY, SDL_Renderer* renderer);
     void mover();
-    void mostrar(Uint32 frames);
-    void destruir();
+    void mostrar();
+    virtual ~Fuego() {
+        delete compVista;
+    }
 
     private:
     ComponenteVistaFuego* compVista;

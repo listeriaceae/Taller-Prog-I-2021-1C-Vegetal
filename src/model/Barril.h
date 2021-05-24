@@ -8,7 +8,7 @@ class Barril : public Entidad {
     public:
         Barril(float x, float y, SDL_Renderer *renderer);
         void mover();
-        void mostrar(Uint32 frames);
+        void mostrar();
         bool estaEnNivel();
         virtual ~Barril() {
             delete compVista;

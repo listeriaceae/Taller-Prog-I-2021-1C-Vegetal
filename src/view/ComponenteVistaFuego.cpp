@@ -42,8 +42,8 @@ ComponenteVistaFuego::ComponenteVistaFuego(int x, int y, SDL_Renderer* renderer)
     ++totalFuegos;
 }
 
-void ComponenteVistaFuego::mostrar(Uint32 frames) {
-    tiempo = (tiempo + (!fueActualizado) * frames) % (TIEMPO_POR_FRAME * CANT_FRAMES);
+void ComponenteVistaFuego::mostrar() {
+    tiempo = (tiempo + (!fueActualizado)) % (TIEMPO_POR_FRAME * CANT_FRAMES);
     rectSrc.x = (tiempo / TIEMPO_POR_FRAME) * SPRITE_INDEX_SIZE;
     fueActualizado = (fueActualizado + 1) % totalFuegos;
 

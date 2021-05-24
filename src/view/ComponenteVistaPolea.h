@@ -9,7 +9,7 @@ class ComponenteVistaPolea {
     public:
     
         ComponenteVistaPolea(int x, int y, int direccion, int nivel, SDL_Renderer *renderer);
-        void mostrar(Uint32 frames);
+        void mostrar();
     
     private:
         static SDL_Renderer *renderer;

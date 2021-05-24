@@ -12,7 +12,7 @@ class Nivel2: public NivelBase {
     public:
         Nivel2(SDL_Renderer *renderer, bool useDefaultConfig);
         void actualizarNivel();
-        void actualizarVista(Uint32 frames);
+        void actualizarVista();
         void agregarObjeto(Entidad *objeto);
         std::list<Entidad*>* getObjetos();
         void setFondo(std::string rutaImagen);
@@ -28,5 +28,5 @@ class Nivel2: public NivelBase {
 
         void agregarBarril();
         void updateBarriles();
-        void mostrarBarriles(Uint32 frames);
+        void mostrarBarriles();
 };

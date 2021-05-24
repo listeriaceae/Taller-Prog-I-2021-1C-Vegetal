@@ -7,12 +7,16 @@
 class PlataformaMovil : public Entidad {
     public:
 
-    PlataformaMovil(int plataforma, int nivel, SDL_Renderer *renderer);
-    void mover();
-    void mostrar(Uint32 frames);
+        PlataformaMovil(int plataforma, int nivel, SDL_Renderer *renderer);
+        void mover();
+        void mostrar();
+        virtual ~PlataformaMovil() {
+            delete compVista;
+        };
+
 
     private:
-    ComponenteVistaPlataformaMovil *compVista;
-    int direccion;
-    int limite;
+        ComponenteVistaPlataformaMovil *compVista;
+        int direccion;
+        int limite;
 };

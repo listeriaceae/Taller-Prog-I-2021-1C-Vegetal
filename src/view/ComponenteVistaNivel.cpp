@@ -19,9 +19,9 @@ void ComponenteVistaNivel::setFondo(std::string rutaImagen) {
     SDL_FreeSurface(surface);
 }
 
-void ComponenteVistaNivel::mostrar(std::list<Entidad*>* objetos, Uint32 frames) {
+void ComponenteVistaNivel::mostrar(std::list<Entidad*>* objetos) {
     SDL_RenderCopy(renderer, textura, NULL, NULL);
     
     std::list<Entidad*>::iterator it;
-    for (it = objetos->begin(); it != objetos->end(); ++it) (*it)->mostrar(frames);
+    for (it = objetos->begin(); it != objetos->end(); ++it) (*it)->mostrar();
 }

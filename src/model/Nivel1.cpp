@@ -23,8 +23,8 @@ void Nivel1::actualizarNivel() {
     for (it = objetos.begin(); it != objetos.end(); ++it) (*it)->mover();
 }
 
-void Nivel1::actualizarVista(Uint32 frames) {
-    compVista->mostrar(&objetos, frames);
+void Nivel1::actualizarVista() {
+    compVista->mostrar(&objetos);
 }
 
 void Nivel1::agregarObjeto(Entidad* objeto) {

@@ -9,10 +9,11 @@ class Peach : public Entidad {
 
         Peach(SDL_Renderer *renderer);
         void mover();
-        void mostrar(Uint32 frames);
-        std::string getRutaImagen();
+        void mostrar();
+        virtual ~Peach() {
+            delete compVista;
+        };
 
     private:
         ComponenteVistaEntidadEstatica* compVista;
-        static std::string rutaImagen;
 };

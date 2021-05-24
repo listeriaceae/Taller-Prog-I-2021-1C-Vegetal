@@ -9,16 +9,16 @@
 #define DONKEYKONG_ANCHO 40
 #define DONKEYKONG_ALTO 34
 
-std::string DonkeyKong::rutaImagen = "res/DonkeyKong.png";
+const std::string IMG_DONKEY_KONG = "res/DonkeyKong.png";
 
 DonkeyKong::DonkeyKong(SDL_Renderer *renderer)
 : Entidad(DONKEYKONG_POSX, DONKEYKONG_POSY, DONKEYKONG_ANCHO, DONKEYKONG_ALTO) {
     SDL_Rect rect = {DONKEYKONG_POSX, DONKEYKONG_POSY, DONKEYKONG_ANCHO, DONKEYKONG_ALTO};
-    compVista = new ComponenteVistaEntidadEstatica(rutaImagen, &rect, renderer);
+    compVista = new ComponenteVistaEntidadEstatica(IMG_DONKEY_KONG, &rect, renderer);
 }
 
 void DonkeyKong::mover() {}
 
-void DonkeyKong::mostrar(Uint32 frames) {
-    compVista->mostrar(frames);
+void DonkeyKong::mostrar() {
+    compVista->mostrar();
 }

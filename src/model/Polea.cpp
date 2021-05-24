@@ -7,6 +7,6 @@ Polea::Polea(int x, int y, int direccion, int nivel, SDL_Renderer *renderer)
 
 void Polea::mover() {}
 
-void Polea::mostrar(Uint32 frames) {
-    compVista->mostrar(frames);
+void Polea::mostrar() {
+    compVista->mostrar();
 }

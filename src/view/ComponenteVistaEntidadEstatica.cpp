@@ -5,7 +5,7 @@
 #include "../utils/window.hpp"
 
 SDL_Renderer *ComponenteVistaEntidadEstatica::renderer = NULL;
-Uint32 ComponenteVistaEntidadEstatica::frames = 0;
+
 ComponenteVistaEntidadEstatica::ComponenteVistaEntidadEstatica(std::string rutaImagen, SDL_Rect *rect, SDL_Renderer* renderer) {
     this->renderer = renderer;
     SDL_Surface* surface = IMG_Load(rutaImagen.c_str());
@@ -24,7 +24,6 @@ ComponenteVistaEntidadEstatica::ComponenteVistaEntidadEstatica(std::string rutaI
     this->rect.h = round(rect->h * ALTO_PANTALLA / (float)ALTO_NIVEL);
 }
 
-void ComponenteVistaEntidadEstatica::mostrar(Uint32 frames) {
-    this->frames = frames;
+void ComponenteVistaEntidadEstatica::mostrar() {
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 }

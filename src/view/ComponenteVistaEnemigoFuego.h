@@ -8,7 +8,7 @@ class ComponenteVistaEnemigoFuego {
     public:
         ComponenteVistaEnemigoFuego(SDL_Renderer *renderer);
         void mover(float x, float y);
-        void mostrar(Uint32 frames);
+        void mostrar();
 
     private:
         static SDL_Renderer *renderer;

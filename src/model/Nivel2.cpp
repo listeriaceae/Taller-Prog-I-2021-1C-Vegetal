@@ -27,9 +27,9 @@ void Nivel2::actualizarNivel() {
     for (it = objetos.begin(); it != objetos.end(); ++it) (*it)->mover();
 }
 
-void Nivel2::actualizarVista(Uint32 frames) {
-    compVista->mostrar(&objetos, frames);
-    this->mostrarBarriles(frames);
+void Nivel2::actualizarVista() {
+    compVista->mostrar(&objetos);
+    this->mostrarBarriles();
 }
 
 void Nivel2::agregarObjeto(Entidad* element) {
@@ -74,7 +74,7 @@ void Nivel2::updateBarriles() {
     }
 }
 
-void Nivel2::mostrarBarriles(Uint32 frames) {
+void Nivel2::mostrarBarriles() {
     for (int i = this->barriles.size() - 1; i >= 0; --i)
-        this->barriles.at(i)->mostrar(frames);
+        this->barriles.at(i)->mostrar();
 }

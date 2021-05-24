@@ -39,8 +39,8 @@ void ComponenteVistaBarril::mover(float x, float y) {
     rectDst.y = round(y * ALTO_PANTALLA / (float)ALTO_NIVEL);
 }
 
-void ComponenteVistaBarril::mostrar(Uint32 frames) {
-    tiempo = (tiempo + frames) % (TIEMPO_POR_FRAME * CANT_FRAMES);
+void ComponenteVistaBarril::mostrar() {
+    tiempo = (tiempo + 1) % (TIEMPO_POR_FRAME * CANT_FRAMES);
     rectSrc.x = (tiempo / TIEMPO_POR_FRAME) * SPRITE_INDEX_SIZE;
 
     SDL_RenderCopy(renderer, texture, &rectSrc, &rectDst);

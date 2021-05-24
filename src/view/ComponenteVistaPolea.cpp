@@ -44,8 +44,8 @@ ComponenteVistaPolea::ComponenteVistaPolea(int x, int y, int direccion, int nive
     ++totalPoleas;
 }
 
-void ComponenteVistaPolea::mostrar(Uint32 frames) {
-    tiempo = (tiempo + (!fueActualizado) * frames) % (TIEMPO_POR_FRAME * CANT_FRAMES);
+void ComponenteVistaPolea::mostrar() {
+    tiempo = (tiempo + (!fueActualizado)) % (TIEMPO_POR_FRAME * CANT_FRAMES);
     rectSrc.x = (tiempo / TIEMPO_POR_FRAME) * SPRITE_INDEX;
     fueActualizado = (fueActualizado + 1) % totalPoleas;
 

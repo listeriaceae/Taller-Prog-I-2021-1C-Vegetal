@@ -25,7 +25,7 @@ void PlataformaMovil::mover() {
     posX -= this->direccion * PLATAFORMAS_POR_NIVEL * INDICE_X_PLAT * ((posX * this->direccion) > (this->limite * this->direccion));
 }
 
-void PlataformaMovil::mostrar(Uint32 frames) {
+void PlataformaMovil::mostrar() {
     compVista->mover(posX);
-    compVista->mostrar(frames);
+    compVista->mostrar();
 }

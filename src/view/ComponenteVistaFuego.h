@@ -7,7 +7,7 @@
 class ComponenteVistaFuego {
     public:
         ComponenteVistaFuego(int x, int y, SDL_Renderer* renderer);
-        void mostrar(Uint32 frames);
+        void mostrar();
     
     private:
         static SDL_Renderer* renderer;

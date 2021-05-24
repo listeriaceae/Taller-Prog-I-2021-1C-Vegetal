@@ -16,7 +16,7 @@ void EnemigoFuego::mover() {
     if (abs(posX - posXInicial) > MAX_DESPLAZAMIENTO_PIXELES) velX *= -1; //cambio de dirección
 }
 
-void EnemigoFuego::mostrar(Uint32 frames) {
+void EnemigoFuego::mostrar() {
     compVista->mover(posX, posY);
-    compVista->mostrar(frames);
+    compVista->mostrar();
 }

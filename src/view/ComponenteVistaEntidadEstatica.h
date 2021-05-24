@@ -6,12 +6,10 @@
 class ComponenteVistaEntidadEstatica {
     public:
         ComponenteVistaEntidadEstatica(std::string rutaImagen, SDL_Rect *rect, SDL_Renderer* renderer);
-        void mostrar(Uint32 frames);
+        void mostrar();
     
     private:
         static SDL_Renderer* renderer;
         SDL_Texture* texture;
         SDL_Rect rect;
-        static Uint32 frames;
-
 };

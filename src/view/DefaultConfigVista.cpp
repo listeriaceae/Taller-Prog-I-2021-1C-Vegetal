@@ -11,7 +11,7 @@ const std::string IMG_DEFAULT_CONFIG = "res/default-config.png";
 SDL_Texture *DefaultConfigVista::texture = NULL;
 SDL_Renderer *DefaultConfigVista::renderer = NULL;
 SDL_Rect DefaultConfigVista::rect;
-Uint32 DefaultConfigVista::frames = 0;
+
 DefaultConfigVista::DefaultConfigVista(SDL_Renderer *renderer) {
     this->renderer = renderer;
     SDL_Surface* surface = IMG_Load(IMG_DEFAULT_CONFIG.c_str());
@@ -29,7 +29,6 @@ DefaultConfigVista::DefaultConfigVista(SDL_Renderer *renderer) {
     rect.h = round(ALTO_DEFAULT_CONFIG * ALTO_PANTALLA / (float)ALTO_NIVEL);
 }
 
-void DefaultConfigVista::mostrar(Uint32 frames) {
-    this->frames = frames;
+void DefaultConfigVista::mostrar() {
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 }

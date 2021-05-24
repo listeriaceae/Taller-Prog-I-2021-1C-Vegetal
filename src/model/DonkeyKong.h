@@ -9,10 +9,12 @@ class DonkeyKong : public Entidad {
 
         DonkeyKong(SDL_Renderer *renderer);
         void mover();
-        void mostrar(Uint32 frames);
-        std::string getRutaImagen();
+        void mostrar();
+        virtual ~DonkeyKong() {
+            delete compVista;
+        };
+
 
     private:
         ComponenteVistaEntidadEstatica* compVista;
-        static std::string rutaImagen;
 };

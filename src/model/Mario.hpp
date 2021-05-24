@@ -15,12 +15,14 @@ class Mario : public Entidad
     public: 
         Mario(float x, float y, SDL_Renderer *renderer);
         void mover();
-        void mostrar(Uint32 frames);
+        void mostrar();
         void setEstado(char up, char down, char left, char right);
         void getEstado(float *x, float *y, char *estado);
         void setStartPos(float x, float y);
         void saltar();
-        void free();
+        virtual ~Mario() {
+            delete compVista;
+        };
 
     private:
         ComponenteVistaMario* compVista;
@@ -31,6 +33,6 @@ class Mario : public Entidad
         char estadoEnSuelo;
 
         void trepar();
-        void caminar(char right);
+        void correr(char right);
         void detener();
 };

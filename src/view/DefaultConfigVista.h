@@ -10,11 +10,10 @@
 class DefaultConfigVista {
     public:
         DefaultConfigVista(SDL_Renderer *renderer);
-        void mostrar(Uint32 frames);
+        void mostrar();
     
     private:
         static SDL_Texture *texture;
         static SDL_Renderer *renderer;
         static SDL_Rect rect;
-        static Uint32 frames;
 };

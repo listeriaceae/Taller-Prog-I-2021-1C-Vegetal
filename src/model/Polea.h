@@ -6,8 +6,11 @@ class Polea : public Entidad {
     public:
         Polea(int x, int y, int direccion, int nivel, SDL_Renderer *renderer);
         void mover();
-        void mostrar(Uint32 frames);
-    
+        void mostrar();
+        virtual ~Polea() {
+            delete compVista;
+        };
+
     private:
         ComponenteVistaPolea* compVista;
 };

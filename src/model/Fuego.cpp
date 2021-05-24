@@ -11,10 +11,6 @@ Fuego::Fuego(int posX, int posY, SDL_Renderer* renderer)
 
 void Fuego::mover() {}
 
-void Fuego::mostrar(Uint32 frames) {
-    compVista->mostrar(frames);
-}
-
-void Fuego::destruir() {
-    delete compVista;
+void Fuego::mostrar() {
+    compVista->mostrar();
 }

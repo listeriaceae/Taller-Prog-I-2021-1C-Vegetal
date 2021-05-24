@@ -5,9 +5,9 @@
 
 #define MAX_DESPLAZAMIENTO_X 224
 #define MAX_DESPLAZAMIENTO_Y 232
-#define MARIO_VELX 0.5
+#define MARIO_VEL_X 0.5
 #define MARIO_VEL_SALTO 1
-#define MARIO_ACC -0.03125
+#define GRAVEDAD -0.03125
 
 Mario::Mario(float x, float y, SDL_Renderer *renderer)
 : Entidad(x, y, ANCHO_MARIO, ALTO_MARIO) {
@@ -21,7 +21,7 @@ Mario::Mario(float x, float y, SDL_Renderer *renderer)
 
 void Mario::mover() {
     posY -= this->velY;
-    this->velY += MARIO_ACC * (this->estado == SALTANDO);
+    this->velY += GRAVEDAD * (this->estado == SALTANDO);
     if (posY > MAX_DESPLAZAMIENTO_Y) {
         this->velX = this->velEnSuelo;
         this->estado = this->estadoEnSuelo;
@@ -36,24 +36,24 @@ void Mario::mover() {
         }
 }
 
-void Mario::mostrar(Uint32 frames) {
-    compVista->mostrar(frames, posX, posY, estado);
+void Mario::mostrar() {
+    compVista->mostrar(posX, posY, estado);
 }
 
 void Mario::setEstado(char up, char down, char left, char right) {
     if (up ^ down) trepar();
-    if (left ^ right) caminar(right);
+    if (left ^ right) correr(right);
     else detener();
 }
 
 void Mario::trepar() {}              // TODO
 
-void Mario::caminar(char right) {
-    this->velEnSuelo = ((- 1) + (right << 1)) * MARIO_VELX;
+void Mario::correr(char right) {
+    this->velEnSuelo = ((- 1) + (right << 1)) * MARIO_VEL_X;
     this->estadoEnSuelo = CORRIENDO;
     if (!this->velY) {                      // TODO: actualizar a si está parado en una plataforma
-    this->velX = this->velEnSuelo;
-    this->estado = this->estadoEnSuelo;
+        this->velX = this->velEnSuelo;
+        this->estado = this->estadoEnSuelo;
     }
 }
 
@@ -61,13 +61,13 @@ void Mario::detener() {
     this->velEnSuelo = 0;
     this->estadoEnSuelo = REPOSO;
     if (!this->velY) {                      // TODO: actualizar a si está parado en una plataforma
-    this->velX = 0;
-    this->estado = REPOSO;
+        this->velX = 0;
+        this->estado = REPOSO;
     }
 }
 
 void Mario::saltar() {
-    if (this->velY) return;                 // TODO: actualizar a si está parado en una plataforma
+    if (this->velY != 0) return;                 // TODO: actualizar a si está parado en una plataforma
     this->velY = MARIO_VEL_SALTO;
     this->estado = SALTANDO;
 }
@@ -86,8 +86,4 @@ void Mario::getEstado(float *x, float *y, char *estado) {
     *x = posX;
     *y = posY;
     *estado = this->estado;
-}
-
-void Mario::free() {
-    delete this->compVista;
 }

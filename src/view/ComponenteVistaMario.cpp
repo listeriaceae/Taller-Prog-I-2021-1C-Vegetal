@@ -38,9 +38,9 @@ ComponenteVistaMario::ComponenteVistaMario(SDL_Renderer *renderer) {
     flip = SDL_FLIP_HORIZONTAL;
 }
 
-void ComponenteVistaMario::mostrar(Uint32 frames, float x, float y, char estado) {
+void ComponenteVistaMario::mostrar(float x, float y, char estado) {
 
-    tiempo = (tiempo + frames) % (TIEMPO_POR_FRAME * CANT_FRAMES);
+    tiempo = (tiempo + 1) % (TIEMPO_POR_FRAME * CANT_FRAMES);
     int next_x = round(x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     switch(estado) {
         case REPOSO:
