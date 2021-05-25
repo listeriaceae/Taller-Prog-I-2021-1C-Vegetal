@@ -1,6 +1,5 @@
 #include "NivelBase.h"
 
-bool NivelBase::getDefaultConfigFlag() 
-{
+bool NivelBase::getDefaultConfigFlag() {
     return this->useDefaultConfig;
 }

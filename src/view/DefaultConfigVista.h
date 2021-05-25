@@ -1,13 +1,19 @@
 #pragma once
-#include <string>
-#include <SDL2/SDL.h>
-#include "../model/Entidad.h"
 
-class DefaultConfigVista 
-{
+#include <SDL2/SDL.h>
+
+#define DEFAULT_CONFIG_X 56
+#define DEFAULT_CONFIG_Y 20
+#define ANCHO_DEFAULT_CONFIG 108
+#define ALTO_DEFAULT_CONFIG 7
+
+class DefaultConfigVista {
     public:
-        void mostrar(Entidad* entidad, std::string rutaImagen, SDL_Renderer* renderer);
+        DefaultConfigVista(SDL_Renderer *renderer);
+        void mostrar();
     
     private:
-        SDL_Texture* textura = NULL;
+        static SDL_Texture *texture;
+        static SDL_Renderer *renderer;
+        static SDL_Rect rect;
 };

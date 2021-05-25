@@ -2,21 +2,20 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include "Entidad.h"
-#include "../view/ComponenteVistaEntidadEstatica.h"
+#include "../view/ComponenteVistaBarril.h"
 
 class Barril : public Entidad {
-public:
+    public:
+        Barril(float x, float y, SDL_Renderer *renderer);
+        void mover();
+        void mostrar();
+        bool estaEnNivel();
+        virtual ~Barril() {
+            delete compVista;
+        };
 
-    static const int alto = 40;
-    static const int ancho = 40;
-
-    Barril(int posX, int posY, int velX, int velY);
-    void mover();
-    void mostrar(SDL_Renderer* renderer);
-private:
-    ComponenteVistaEntidadEstatica* compVista;
-    std::string rutaImagen = "res/Barril.bmp";
-    Uint32 tickUltimoMovimiento = 0;
-    int velX = 0;
-    int velY = 0;
+    private:
+        ComponenteVistaBarril* compVista;
+        float velX;
+        float velY;
 };

@@ -6,13 +6,13 @@
 
 class FireBarrel : public Entidad {
     public:
-
-    FireBarrel(int posX, int posY, int ancho, int alto);
-    void mostrar(SDL_Renderer* renderer);
-    void mover();
-    std::string getRutaImagen();
+        FireBarrel(SDL_Renderer* renderer);
+        void mover();
+        void mostrar();
+        virtual ~FireBarrel() {
+            delete compVista;
+        };
 
     private:
-    ComponenteVistaEntidadEstatica* compVista = new ComponenteVistaEntidadEstatica();
-    std::string rutaImagen = "res/FireBarrel.png";
+        ComponenteVistaEntidadEstatica* compVista;
 };

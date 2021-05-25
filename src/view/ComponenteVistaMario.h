@@ -1,23 +1,27 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include <string>
-#include "../model/Entidad.h"
 
+#define ANCHO_MARIO 16
+#define ALTO_MARIO 16
 
 class ComponenteVistaMario 
 {
     public:
-        void mostrar(Entidad* entidad, std::string rutaImagen, SDL_Renderer* renderer);
+        ComponenteVistaMario(SDL_Renderer *renderer);
+        void mostrar(float x, float y, char estado);
+        void free();
 
     private:
-        SDL_Texture* textura = NULL;
-        SDL_Rect rectSpritesheet; //Rectangulo que determina que parte de la imagen cargar
-        SDL_Rect rectRender; //Rectangulo que determina donde se va a renderear el objeto
-        int frameTextura = 0;
-        int tiempo = 0;
-        int posXTextura[4] = {0, 24, 46, 337};
-        int posYTextura = 0;
-        int anchoTextura = 16;
-        int altoTextura = 16;
+        static SDL_Renderer *renderer;
+        SDL_Texture *texture;
+        SDL_Rect rectSrc; //Rectangulo que determina que parte de la imagen cargar
+        SDL_Rect rectDst; //Rectangulo que determina donde se va a renderear el objeto
+        SDL_RendererFlip flip;
+        int tiempo;
+
+        void updateReposo();
+        void updateCorriendo(int next_x);
+        void updateSaltando();
+        void updateTrepando();
 };

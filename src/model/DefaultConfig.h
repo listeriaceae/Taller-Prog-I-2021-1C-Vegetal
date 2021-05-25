@@ -6,12 +6,14 @@
 
 class DefaultConfig : public Entidad {
     public:
-        DefaultConfig(int posX, int posY, int ancho, int alto);
-        void mostrar(SDL_Renderer* renderer);
+        DefaultConfig(SDL_Renderer *renderer);
         void mover();
-        std::string getRutaImagen();
+        void mostrar();
+        virtual ~DefaultConfig() {
+            delete compVista;
+        };
+
 
     private:
-        DefaultConfigVista * compVista = new DefaultConfigVista();
-        std::string rutaImagen = "res/default-config.png";
+        DefaultConfigVista *compVista;
 };

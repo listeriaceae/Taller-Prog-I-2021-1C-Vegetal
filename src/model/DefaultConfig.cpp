@@ -5,15 +5,13 @@
 #include "../view/DefaultConfigVista.h"
 
 
-DefaultConfig::DefaultConfig(int posX, int posY, int ancho, int alto) 
-: Entidad(posX, posY, ancho, alto){
-    compVista = new DefaultConfigVista();
+DefaultConfig::DefaultConfig(SDL_Renderer *renderer) 
+: Entidad(DEFAULT_CONFIG_X, DEFAULT_CONFIG_Y, ANCHO_DEFAULT_CONFIG, ALTO_DEFAULT_CONFIG) {
+    compVista = new DefaultConfigVista(renderer);
 }
 
-void DefaultConfig::mostrar(SDL_Renderer* renderer) {
-    compVista->mostrar(this, rutaImagen, renderer);
-}
+void DefaultConfig::mover() {}
 
-void DefaultConfig::mover() {
-
+void DefaultConfig::mostrar() {
+    compVista->mostrar();
 }
