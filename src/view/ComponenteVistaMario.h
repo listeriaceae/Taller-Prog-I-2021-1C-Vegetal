@@ -23,5 +23,5 @@ class ComponenteVistaMario
         void updateReposo();
         void updateCorriendo(int next_x);
         void updateSaltando();
-        void updateTrepando();
+        void updateTrepando(int next_x);
 };

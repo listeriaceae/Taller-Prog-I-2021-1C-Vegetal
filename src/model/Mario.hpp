@@ -32,7 +32,7 @@ class Mario : public Entidad
         char estado;
         char estadoEnSuelo;
 
-        void trepar();
+        void trepar(char up, char down);
         void correr(char right);
         void detener();
 };

@@ -2,6 +2,8 @@
 #include <string>
 #include <iostream>
 #include "../logger.h"
+#include <stdio.h>
+#include <iostream>
 
 #define MAX_DESPLAZAMIENTO_X 224
 #define MAX_DESPLAZAMIENTO_Y 232
@@ -41,12 +43,17 @@ void Mario::mostrar() {
 }
 
 void Mario::setEstado(char up, char down, char left, char right) {
-    if (up ^ down) trepar();
+    if (up ^ down) trepar(up, down);
     if (left ^ right) correr(right);
     else detener();
 }
 
-void Mario::trepar() {}              // TODO
+void Mario::trepar(char up, char down) {
+    char isUp = (up != 0) ? 'Y' : 'N';
+    char isDown = (down != 0) ? 'Y' : 'N';
+    std::cout << "TREP U D " << isUp << isDown << std::endl;
+    this->estado = TREPANDO;
+} 
 
 void Mario::correr(char right) {
     this->velEnSuelo = ((- 1) + (right << 1)) * MARIO_VEL_X;

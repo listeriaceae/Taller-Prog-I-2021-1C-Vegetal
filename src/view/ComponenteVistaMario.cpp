@@ -23,7 +23,10 @@ ComponenteVistaMario::ComponenteVistaMario(SDL_Renderer *renderer) {
         logger::Logger::getInstance().logError("Mario image not found: " + IMG_MARIO);
         logger::Logger::getInstance().logDebug("Loading Mario default image: " + IMG_DEFAULT);
         surface = IMG_Load(IMG_DEFAULT.c_str());
-    } else SDL_SetColorKey(surface, SDL_TRUE, *(Uint32*)(surface->pixels));
+    } else { 
+        SDL_SetColorKey(surface, SDL_TRUE, *(Uint32*)(surface->pixels));
+    }
+
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 
@@ -53,7 +56,7 @@ void ComponenteVistaMario::mostrar(float x, float y, char estado) {
             updateSaltando();
             break;
         case TREPANDO:
-            updateTrepando();
+            updateTrepando(next_x);
             break;
         default:
             break;
@@ -78,8 +81,10 @@ void ComponenteVistaMario::updateSaltando() {
     rectSrc.x = MARIO_SALTO_INDEX * MARIO_SPRITE_INDEX_SIZE;
 }
 
-void ComponenteVistaMario::updateTrepando() {
-    //TODO
+void ComponenteVistaMario::updateTrepando(int next_x) {
+    // TREPANDO
+    int frameActual = (tiempo / TIEMPO_POR_FRAME);
+    rectSrc.x = 145;
 }
 
 void ComponenteVistaMario::free() {
