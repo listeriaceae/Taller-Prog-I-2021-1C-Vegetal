@@ -44,30 +44,44 @@ void Mario::mostrar() {
 }
 
 void Mario::setEstado(char up, char down, char left, char right) {
-    if (up ^ down) trepar(up, down);
-    if (left ^ right) correr(right);
-    else detener();
+    if (up ^ down) {
+         trepar(up, down);
+    } else {
+        detenerTrepar();
+    }
+    if (left ^ right) {
+         correr(right);
+    } else {
+         detener();
+    }
 }
 
 void Mario::trepar(char up, char down) {
-    char isUp = (up != 0) ? 'Y' : 'N';
-    char isDown = (down != 0) ? 'Y' : 'N';
-    std::cout << "TREP U D " << isUp << isDown << std::endl;
+    char isUp = (up == 1) ? 'Y' : 'N';
+    char isDown = (down == 1) ? 'Y' : 'N';
+    // std::cout << "TREP U D " << isUp << isDown << std::endl;
     if (isUp == 'Y') {
-        std::cout << "TREPEPANDO" << std::endl;
+        this->velY = MARIO_VEL_X;
+        std::cout << "TREPEPANDO UP" << std::endl;
         this->estado = TREPANDO;
     } else {
-        std::cout << "REPOSO" << std::endl;
-        this->estado = REPOSO;
+        std::cout << "TREPANDO DOWN" << std::endl;
+        this->estado = TREPANDO;
         this->velX = 0;
-        this->velY = 0;
+        this->velY = -MARIO_VEL_X;
     }
+}
+
+void Mario::detenerTrepar() {
+    this->velX = 0;
+    this->velY = 0;
+    this->estado = TREPANDO_REPOSO;
 }
 
 void Mario::correr(char right) {
     this->velEnSuelo = ((- 1) + (right << 1)) * MARIO_VEL_X;
     this->estadoEnSuelo = CORRIENDO;
-    if (!this->velY) {                      // TODO: actualizar a si está parado en una plataforma
+    if (this->velY == 0) {                      // TODO: actualizar a si está parado en una plataforma
         this->velX = this->velEnSuelo;
         this->estado = this->estadoEnSuelo;
     }
@@ -76,7 +90,7 @@ void Mario::correr(char right) {
 void Mario::detener() {
     this->velEnSuelo = 0;
     this->estadoEnSuelo = REPOSO;
-    if (!this->velY) {                      // TODO: actualizar a si está parado en una plataforma
+    if (this->velY == 0 && this->posY == MAX_DESPLAZAMIENTO_Y) {                      // TODO: actualizar a si está parado en una plataforma
         this->velX = 0;
         this->estado = REPOSO;
     }

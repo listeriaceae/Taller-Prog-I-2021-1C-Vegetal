@@ -7,7 +7,8 @@ enum {
     REPOSO,
     CORRIENDO,
     SALTANDO,
-    TREPANDO
+    TREPANDO,
+    TREPANDO_REPOSO
 };
 
 class Mario : public Entidad 
@@ -35,4 +36,5 @@ class Mario : public Entidad
         void trepar(char up, char down);
         void correr(char right);
         void detener();
+        void detenerTrepar();
 };
