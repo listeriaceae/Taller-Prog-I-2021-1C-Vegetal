@@ -56,7 +56,7 @@ void ComponenteVistaMario::mostrar(float x, float y, char estado) {
             updateSaltando();
             break;
         case TREPANDO:
-            updateTrepando(next_x);
+            updateTrepando();
             break;
         default:
             break;
@@ -81,10 +81,12 @@ void ComponenteVistaMario::updateSaltando() {
     rectSrc.x = MARIO_SALTO_INDEX * MARIO_SPRITE_INDEX_SIZE;
 }
 
-void ComponenteVistaMario::updateTrepando(int next_x) {
+void ComponenteVistaMario::updateTrepando() {
     // TREPANDO
     int frameActual = (tiempo / TIEMPO_POR_FRAME);
-    rectSrc.x = 145;
+    rectSrc.x = 142;
+    // La imagen de Mario de espaldas es mas ancha que la de perfil
+    rectSrc.w = 20;
 }
 
 void ComponenteVistaMario::free() {

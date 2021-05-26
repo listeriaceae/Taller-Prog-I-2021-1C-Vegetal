@@ -24,6 +24,7 @@ Mario::Mario(float x, float y, SDL_Renderer *renderer)
 void Mario::mover() {
     posY -= this->velY;
     this->velY += GRAVEDAD * (this->estado == SALTANDO);
+
     if (posY > MAX_DESPLAZAMIENTO_Y) {
         this->velX = this->velEnSuelo;
         this->estado = this->estadoEnSuelo;
@@ -35,7 +36,7 @@ void Mario::mover() {
     if ((posX < 0) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
         posX -= velX;
         velX -= 2 * velX * (posY < MAX_DESPLAZAMIENTO_Y);
-        }
+    }
 }
 
 void Mario::mostrar() {
@@ -52,8 +53,16 @@ void Mario::trepar(char up, char down) {
     char isUp = (up != 0) ? 'Y' : 'N';
     char isDown = (down != 0) ? 'Y' : 'N';
     std::cout << "TREP U D " << isUp << isDown << std::endl;
-    this->estado = TREPANDO;
-} 
+    if (isUp == 'Y') {
+        std::cout << "TREPEPANDO" << std::endl;
+        this->estado = TREPANDO;
+    } else {
+        std::cout << "REPOSO" << std::endl;
+        this->estado = REPOSO;
+        this->velX = 0;
+        this->velY = 0;
+    }
+}
 
 void Mario::correr(char right) {
     this->velEnSuelo = ((- 1) + (right << 1)) * MARIO_VEL_X;
