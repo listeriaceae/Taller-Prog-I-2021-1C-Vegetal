@@ -22,7 +22,7 @@ class ComponenteVistaMario
         int tiempo;
 
         void updateReposo();
-        void updateCorriendo(int next_x);
-        void updateSaltando();
+        void updateCorriendo(int nextX);
+        void updateSaltando(int nextX);
         void updateTrepando();
 };

@@ -45,16 +45,16 @@ void ComponenteVistaMario::setColor(int color) {
 void ComponenteVistaMario::mostrar(float x, float y, char estado) {
 
     tiempo = (tiempo + 1) % (TIEMPO_POR_FRAME * CANT_FRAMES);
-    int next_x = round(x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    int nextX = round(x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     switch(estado) {
         case REPOSO:
             updateReposo();
             break;
         case CORRIENDO:
-            updateCorriendo(next_x);
+            updateCorriendo(nextX);
             break;
         case SALTANDO:
-            updateSaltando();
+            updateSaltando(nextX);
             break;
         case TREPANDO:
             updateTrepando();
@@ -62,7 +62,7 @@ void ComponenteVistaMario::mostrar(float x, float y, char estado) {
         default:
             break;
     }
-    rectDst.x = next_x;
+    rectDst.x = nextX;
     rectDst.y = round(y * ALTO_PANTALLA / (float)ALTO_NIVEL);
 
     SDL_RenderCopyEx(renderer, texture, &rectSrc, &rectDst, 0., NULL, flip);
@@ -72,13 +72,14 @@ void ComponenteVistaMario::updateReposo() {
     rectSrc.x = 0;
 }
 
-void ComponenteVistaMario::updateCorriendo(int next_x) {
-    flip = (SDL_RendererFlip)(rectDst.x < next_x);
+void ComponenteVistaMario::updateCorriendo(int nextX) {
+    flip = (SDL_RendererFlip)((rectDst.x < nextX) + ((int)flip) * (rectDst.x == nextX));
     int frameActual = (tiempo / TIEMPO_POR_FRAME);
     rectSrc.x = ((frameActual & 1) << ((frameActual & 2) >> 1)) * MARIO_SPRITE_INDEX_SIZE;  // 0, 1, 0, 2...
 }
 
-void ComponenteVistaMario::updateSaltando() {
+void ComponenteVistaMario::updateSaltando(int nextX) {
+    flip = (SDL_RendererFlip)((rectDst.x < nextX) + ((int)flip) * (rectDst.x == nextX));
     rectSrc.x = MARIO_SALTO_INDEX * MARIO_SPRITE_INDEX_SIZE;
 }
 
