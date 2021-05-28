@@ -45,6 +45,7 @@ void ComponenteVistaMario::mostrar(float x, float y, char estado) {
 
     tiempo = (tiempo + 1) % (TIEMPO_POR_FRAME * CANT_FRAMES);
     int next_x = round(x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    int next_y = round(y * ALTO_PANTALLA / (float)ALTO_NIVEL);
     switch(estado) {
         case REPOSO:
             updateReposo();
@@ -57,7 +58,7 @@ void ComponenteVistaMario::mostrar(float x, float y, char estado) {
             break;
         case TREPANDO:
         case TREPANDO_REPOSO:
-            updateTrepando();
+            updateTrepando(y);
             break;
         default:
             break;
@@ -82,12 +83,44 @@ void ComponenteVistaMario::updateSaltando() {
     rectSrc.x = MARIO_SALTO_INDEX * MARIO_SPRITE_INDEX_SIZE;
 }
 
-void ComponenteVistaMario::updateTrepando() {
+void ComponenteVistaMario::updateTrepando(int y) {
     // TREPANDO
-    int frameActual = (tiempo / TIEMPO_POR_FRAME);
-    rectSrc.x = 142;
     // La imagen de Mario de espaldas es mas ancha que la de perfil
     rectSrc.w = 20;
+    rectSrc.x = 70;
+
+    bool flag = true;
+    if (y >= 232){
+        rectSrc.x = 142;
+    }
+    else if (y >= 229) // 1 escalon
+        flag = true;
+    else if (y >= 225) // 2 escalon
+        flag = false;
+    else if (y >= 221) // 3
+        flag = true;
+    else if (y >= 217) // 4
+        flag = false;
+    else if (y >= 213)
+        flag = true;
+    else if (y >= 209)
+        flag = false;
+    else if (y >= 205)
+        flag = true;
+    else if (y >= 201) {
+        flag = false;
+    } else if (y >= 197) {
+        flag = true;
+    } else if (y >= 193) {
+        rectSrc.x = 95;
+    } else if (y >= 191) {
+        rectSrc.x = 118;
+    } 
+    else if (y >= 182) {
+        rectSrc.x = 142;
+    }
+
+    flip = (SDL_RendererFlip)(flag);
 }
 
 void ComponenteVistaMario::free() {
