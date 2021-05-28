@@ -71,6 +71,7 @@ int main(void)
 
     Mario mario(N1_MARIO_POS_X, N1_MARIO_POS_Y, renderer);
     MarioController marioController(&mario);
+    ComponenteVistaMario* vistaMario = mario.getVista();
 
     n1.agregarObjeto(&mario);
     n1.inicializarObjetos(renderer);
@@ -85,17 +86,19 @@ int main(void)
         lag += elapsed;
 
         // Handle event
-        while(SDL_PollEvent(&event)) {
-            terminarPrograma = (event.type == SDL_QUIT);
-            
-            // Cambio de nivel
-            if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
-                logger::Logger::getInstance().logInformation("End of Level 1");
-                goto nivel2;
-            }
+        terminarPrograma = SDL_QuitRequested();
+        // Handle input for Mario
+        marioController.update();
 
-            // Handle input for Mario
-            marioController.handleEvent(&event);
+        while(SDL_PollEvent(&event)) {
+            // Cambio de nivel
+            if(event.type == SDL_KEYDOWN && event.key.repeat == 0) {
+                int  key;
+                if ((key = event.key.keysym.sym) == SDLK_TAB) {
+                    logger::Logger::getInstance().logInformation("End of Level 1");
+                    goto nivel2;
+                } else if (SDLK_1 <= key && key <= SDLK_4) vistaMario->setColor(key - SDLK_1);
+            }
         }
 
         // Update Model
@@ -132,17 +135,19 @@ int main(void)
         lag += elapsed;
 
         // Handle event
+        terminarPrograma = SDL_QuitRequested();
+        // Handle input for Mario
+        marioController.update();
+
         while(SDL_PollEvent(&event)) {
-            terminarPrograma = (event.type == SDL_QUIT);
-
             // Fin del nivel
-            if(event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
-                logger::Logger::getInstance().logInformation("End of Level 2");
-                goto fin;
+            if(event.type == SDL_KEYDOWN && event.key.repeat == 0) {
+                int  key;
+                if ((key = event.key.keysym.sym) == SDLK_TAB) {
+                    logger::Logger::getInstance().logInformation("End of Level 2");
+                    goto fin;
+                } else if (SDLK_1 <= key && key <= SDLK_4) vistaMario->setColor(key - SDLK_1);
             }
-
-            // Handle input for mario
-            marioController.handleEvent(&event);
         }
 
         // Update Model

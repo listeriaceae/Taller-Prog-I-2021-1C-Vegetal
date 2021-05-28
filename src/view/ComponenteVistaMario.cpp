@@ -38,6 +38,10 @@ ComponenteVistaMario::ComponenteVistaMario(SDL_Renderer *renderer) {
     flip = SDL_FLIP_HORIZONTAL;
 }
 
+void ComponenteVistaMario::setColor(int color) {
+    rectSrc.y = color * ALTO_MARIO;
+}
+
 void ComponenteVistaMario::mostrar(float x, float y, char estado) {
 
     tiempo = (tiempo + 1) % (TIEMPO_POR_FRAME * CANT_FRAMES);

@@ -40,36 +40,30 @@ void Mario::mostrar() {
     compVista->mostrar(posX, posY, estado);
 }
 
-void Mario::setEstado(char up, char down, char left, char right) {
-    if (up ^ down) trepar();
-    if (left ^ right) correr(right);
-    else detener();
+void Mario::setEstado(char controls) {
+    trepar();
+    correr(controls);
+    saltar(controls);
 }
 
 void Mario::trepar() {}              // TODO
 
-void Mario::correr(char right) {
-    this->velEnSuelo = ((- 1) + (right << 1)) * MARIO_VEL_X;
-    this->estadoEnSuelo = CORRIENDO;
-    if (!this->velY) {                      // TODO: actualizar a si está parado en una plataforma
+void Mario::correr(char controls) {
+    this->velEnSuelo = (((controls & RIGHT) != 0) - ((controls & LEFT) != 0)) * MARIO_VEL_X;
+    this->estadoEnSuelo = REPOSO + (CORRIENDO - REPOSO) * (this->velEnSuelo != 0);
+    // TODO: actualizar a si está parado en una plataforma
+    if (this->estado != SALTANDO) {
         this->velX = this->velEnSuelo;
         this->estado = this->estadoEnSuelo;
     }
 }
 
-void Mario::detener() {
-    this->velEnSuelo = 0;
-    this->estadoEnSuelo = REPOSO;
-    if (!this->velY) {                      // TODO: actualizar a si está parado en una plataforma
-        this->velX = 0;
-        this->estado = REPOSO;
+void Mario::saltar(char controls) {
+    // TODO: actualizar a si está parado en una plataforma
+    if (this->estado != SALTANDO && (controls & SPACE)) {
+        this->velY = MARIO_VEL_SALTO;
+        this->estado = SALTANDO;
     }
-}
-
-void Mario::saltar() {
-    if (this->velY != 0) return;                 // TODO: actualizar a si está parado en una plataforma
-    this->velY = MARIO_VEL_SALTO;
-    this->estado = SALTANDO;
 }
 
 void Mario::setStartPos(float x, float y) {
@@ -86,4 +80,8 @@ void Mario::getEstado(float *x, float *y, char *estado) {
     *x = posX;
     *y = posY;
     *estado = this->estado;
+}
+
+ComponenteVistaMario* Mario::getVista() {
+    return this->compVista;
 }

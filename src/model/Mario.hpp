@@ -3,6 +3,12 @@
 #include "Entidad.h"
 #include "../view/ComponenteVistaMario.h"
 
+#define SPACE 128
+#define UP 8
+#define DOWN 4
+#define LEFT 2
+#define RIGHT 1
+
 enum {
     REPOSO,
     CORRIENDO,
@@ -14,12 +20,12 @@ class Mario : public Entidad
 {
     public: 
         Mario(float x, float y, SDL_Renderer *renderer);
+        void setStartPos(float x, float y);
         void mover();
         void mostrar();
-        void setEstado(char up, char down, char left, char right);
+        void setEstado(char controls);
         void getEstado(float *x, float *y, char *estado);
-        void setStartPos(float x, float y);
-        void saltar();
+        ComponenteVistaMario* getVista();
         virtual ~Mario() {
             delete compVista;
         };
@@ -33,6 +39,6 @@ class Mario : public Entidad
         char estadoEnSuelo;
 
         void trepar();
-        void correr(char right);
-        void detener();
+        void correr(char controls);
+        void saltar(char controls);
 };

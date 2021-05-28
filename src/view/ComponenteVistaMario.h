@@ -10,6 +10,7 @@ class ComponenteVistaMario
     public:
         ComponenteVistaMario(SDL_Renderer *renderer);
         void mostrar(float x, float y, char estado);
+        void setColor(int color);
         void free();
 
     private:
