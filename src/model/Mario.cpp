@@ -22,6 +22,7 @@ Mario::Mario(float x, float y, SDL_Renderer *renderer)
 }
 
 void Mario::mover() {
+    float auxY = posY;
     posY -= this->velY;
     this->velY += GRAVEDAD * (this->estado == SALTANDO);
 
@@ -36,6 +37,12 @@ void Mario::mover() {
     if ((posX < 0) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
         posX -= velX;
         velX -= 2 * velX * (posY < MAX_DESPLAZAMIENTO_Y);
+    }
+
+    // Nivel 1
+    if (this->posY < 184) {
+        this->posY = auxY;
+        this->velY = 0.;
     }
 }
 
@@ -57,15 +64,24 @@ void Mario::setEstado(char up, char down, char left, char right) {
 }
 
 void Mario::trepar(char up, char down) {
+    if (!(this->posX >= 24 && this->posX <= 32)) {
+        std::cout << "NO ESTA EN LA ESCALERA " << this->posX << "," << this->posY << std::endl;
+        return;
+    }
+
+    // mientras subo la escalera
+    // fijo el x en 28 y la velocidad en x en 0
+    this->posX = 28;
+    this->velX = 0;
+
     char isUp = (up == 1) ? 'Y' : 'N';
-    char isDown = (down == 1) ? 'Y' : 'N';
-    // std::cout << "TREP U D " << isUp << isDown << std::endl;
+    
     if (isUp == 'Y') {
         this->velY = MARIO_VEL_X;
-        std::cout << "TREPEPANDO UP" << std::endl;
+        std::cout << "UP " << this->posX << "," << this->posY << std::endl;
         this->estado = TREPANDO;
     } else {
-        std::cout << "TREPANDO DOWN" << std::endl;
+        std::cout << "DOWN " << this->posX << "," << this->posY << std::endl;
         this->estado = TREPANDO;
         this->velX = 0;
         this->velY = -MARIO_VEL_X;
@@ -79,6 +95,18 @@ void Mario::detenerTrepar() {
 }
 
 void Mario::correr(char right) {
+    // En escaleras
+    // no permito despalzaientos en X
+    // 1) escaera entre y == 232 y == 188 
+    //
+    if (this->posY < 232 
+        && this->posY > 188
+        && this->posX == 28
+        && this->velX == 0) {
+            std::cout << "ESCALERA " << this->posX << "," << this->posY << std::endl;
+            return;
+    }
+
     this->velEnSuelo = ((- 1) + (right << 1)) * MARIO_VEL_X;
     this->estadoEnSuelo = CORRIENDO;
     if (this->velY == 0) {                      // TODO: actualizar a si está parado en una plataforma

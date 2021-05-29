@@ -64,7 +64,7 @@ void ComponenteVistaMario::mostrar(float x, float y, char estado) {
             break;
     }
     rectDst.x = next_x;
-    rectDst.y = round(y * ALTO_PANTALLA / (float)ALTO_NIVEL);
+    rectDst.y = next_y;
 
     SDL_RenderCopyEx(renderer, texture, &rectSrc, &rectDst, 0., NULL, flip);
 }
@@ -74,6 +74,9 @@ void ComponenteVistaMario::updateReposo() {
 }
 
 void ComponenteVistaMario::updateCorriendo(int next_x) {
+    // Direccion de Mario 
+    // Izquiera: rectDst.x < next_x == false
+    // Derecha: rectDst.x < next_x == true 
     flip = (SDL_RendererFlip)(rectDst.x < next_x);
     int frameActual = (tiempo / TIEMPO_POR_FRAME);
     rectSrc.x = ((frameActual & 1) << ((frameActual & 2) >> 1)) * MARIO_SPRITE_INDEX_SIZE;  // 0, 1, 0, 2...
@@ -87,7 +90,7 @@ void ComponenteVistaMario::updateTrepando(int y) {
     // TREPANDO
     // La imagen de Mario de espaldas es mas ancha que la de perfil
     rectSrc.w = 20;
-    rectSrc.x = 70;
+    rectSrc.x = 70; // Escalar 1
 
     bool flag = true;
     if (y >= 232){
@@ -101,24 +104,25 @@ void ComponenteVistaMario::updateTrepando(int y) {
         flag = true;
     else if (y >= 217) // 4
         flag = false;
-    else if (y >= 213)
+    else if (y >= 213) // 5
         flag = true;
-    else if (y >= 209)
+    else if (y >= 209) // 6
         flag = false;
-    else if (y >= 205)
+    else if (y >= 205) // 7
         flag = true;
-    else if (y >= 201) {
+    else if (y >= 201) // 8
         flag = false;
-    } else if (y >= 197) {
+    else if (y >= 197) // 9
         flag = true;
-    } else if (y >= 193) {
-        rectSrc.x = 95;
+    else if (y >= 193) {
+        rectSrc.x = 95; // Escalar 2
     } else if (y >= 191) {
-        rectSrc.x = 118;
-    } 
-    else if (y >= 182) {
+        rectSrc.x = 118; // Escalar 3
+    } else if (y >= 188)
+        flag = false;
+    else {
         rectSrc.x = 142;
-    }
+    } 
 
     flip = (SDL_RendererFlip)(flag);
 }
