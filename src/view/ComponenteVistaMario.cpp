@@ -89,7 +89,7 @@ void ComponenteVistaMario::updateSaltando() {
 void ComponenteVistaMario::updateTrepando(int y) {
     // TREPANDO
     // La imagen de Mario de espaldas es mas ancha que la de perfil
-    rectSrc.w = 20;
+    rectSrc.w = 18;
     rectSrc.x = 70; // Escalar 1
 
     bool flag = true;

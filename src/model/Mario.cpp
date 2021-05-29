@@ -26,11 +26,19 @@ void Mario::mover() {
     posY -= this->velY;
     this->velY += GRAVEDAD * (this->estado == SALTANDO);
 
+    char auxEstado = this->estado;
+
     if (posY > MAX_DESPLAZAMIENTO_Y) {
         this->velX = this->velEnSuelo;
         this->estado = this->estadoEnSuelo;
         this->posY = MAX_DESPLAZAMIENTO_Y;
         this->velY = 0.;
+
+        if( this->escalera()
+            && auxEstado == TREPANDO
+            && auxEstado == TREPANDO_REPOSO) {
+                this->estado = TREPANDO_REPOSO;
+        }
     }
     posX += this->velX;
 
@@ -100,7 +108,7 @@ bool Mario::escalera() {
     // En escaleras
     // no permito despalzaientos en X
     // 1) escaera entre y == 232 y == 188
-    if (this->posY < 232 
+    if (this->posY <= MAX_DESPLAZAMIENTO_Y
         && this->posY > 188
         && this->posX == 28
         && this->velX == 0) {
