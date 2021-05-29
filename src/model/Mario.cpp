@@ -54,8 +54,10 @@ void Mario::setEstado(char up, char down, char left, char right) {
     if (up ^ down) {
          trepar(up, down);
     } else {
-        detenerTrepar();
+        if (this->escalera())
+            detenerTrepar();
     }
+
     if (left ^ right) {
          correr(right);
     } else {
@@ -94,18 +96,23 @@ void Mario::detenerTrepar() {
     this->estado = TREPANDO_REPOSO;
 }
 
-void Mario::correr(char right) {
+bool Mario::escalera() {
     // En escaleras
     // no permito despalzaientos en X
-    // 1) escaera entre y == 232 y == 188 
-    //
+    // 1) escaera entre y == 232 y == 188
     if (this->posY < 232 
         && this->posY > 188
         && this->posX == 28
         && this->velX == 0) {
             std::cout << "ESCALERA " << this->posX << "," << this->posY << std::endl;
-            return;
+            return true;
+    } else {
+        return false;
     }
+}
+
+void Mario::correr(char right) {
+    if (this->escalera()) return;
 
     this->velEnSuelo = ((- 1) + (right << 1)) * MARIO_VEL_X;
     this->estadoEnSuelo = CORRIENDO;

@@ -1,7 +1,5 @@
 #pragma once
-
 #include <string>
-#include <SDL2/SDL.h>
 
 // Nivel 1
 #define N1_MARIO_POS_X 2
@@ -37,4 +35,4 @@ const std::string CONFIG_FILE = "archivo.json";
 const std::string IMG_DEFAULT = "res/default.png";
 
 // Change level key
-SDL_Keycode CHANGE_LEVEL_KEY = SDLK_l;
+const char CHANGE_LEVEL_KEY = 'l';

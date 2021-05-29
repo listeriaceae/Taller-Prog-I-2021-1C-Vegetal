@@ -37,4 +37,5 @@ class Mario : public Entidad
         void correr(char right);
         void detener();
         void detenerTrepar();
+        bool escalera();
 };
