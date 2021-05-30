@@ -86,7 +86,7 @@ int main(void)
         previous = current;
         lag += elapsed;
 
-        // Handle event
+        // Handle quit request
         terminarPrograma = SDL_QuitRequested();
         // Handle input for Mario
         marioController.update();
@@ -135,7 +135,7 @@ int main(void)
         previous = current;
         lag += elapsed;
 
-        // Handle event
+        // Handle quit request
         terminarPrograma = SDL_QuitRequested();
         // Handle input for Mario
         marioController.update();
