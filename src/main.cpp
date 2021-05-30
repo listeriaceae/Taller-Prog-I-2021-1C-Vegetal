@@ -76,7 +76,8 @@ int main(void)
     n1.agregarObjeto(&mario);
     n1.inicializarObjetos(renderer);
     // http://gameprogrammingpatterns.com/game-loop.html#play-catch-up
-    Uint32 previous, current, elapsed, lag, updated;
+    Uint32 previous, current, elapsed, lag;
+    bool updated;
     previous = SDL_GetTicks();
     lag = 0;
     while(!terminarPrograma) {
@@ -102,11 +103,11 @@ int main(void)
         }
 
         // Update Model
-        updated = 0;
+        updated = false;
         while (lag >= MS_PER_UPDATE) {
             n1.actualizarNivel();
             lag -= MS_PER_UPDATE;
-            ++updated;
+            updated = true;
         }
 
         // Update View and render
@@ -151,11 +152,11 @@ int main(void)
         }
 
         // Update Model
-        updated = 0;
+        updated = false;
         while (lag >= MS_PER_UPDATE) {
             n2.actualizarNivel();
             lag -= MS_PER_UPDATE;
-            updated++;
+            updated = true;
         }
 
         // Update View and render
