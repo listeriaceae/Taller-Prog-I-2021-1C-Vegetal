@@ -29,15 +29,14 @@ void Mario::mover() {
     char auxEstado = this->estado;
 
     if (posY > MAX_DESPLAZAMIENTO_Y) {
+        std::cout << "LLEGO AL PISO " << this->posX << "," << this->posY << std::endl;
         this->velX = this->velEnSuelo;
         this->estado = this->estadoEnSuelo;
         this->posY = MAX_DESPLAZAMIENTO_Y;
         this->velY = 0.;
 
-        if( this->escalera()
-            && auxEstado == TREPANDO
-            && auxEstado == TREPANDO_REPOSO) {
-                this->estado = TREPANDO_REPOSO;
+        if( this->escalera()) {
+                this->estado = TREPANDO_REPOSO_PISO;
         }
     }
     posX += this->velX;
@@ -47,7 +46,7 @@ void Mario::mover() {
         velX -= 2 * velX * (posY < MAX_DESPLAZAMIENTO_Y);
     }
 
-    // Nivel 1
+    // Nivel 1: primer escalera
     if (this->posY < 184) {
         this->posY = auxY;
         this->velY = 0.;
@@ -59,18 +58,25 @@ void Mario::mostrar() {
 }
 
 void Mario::setEstado(char up, char down, char left, char right) {
-    if (up ^ down) {
-         trepar(up, down);
-    } else {
-        if (this->escalera())
-            detenerTrepar();
-    }
+    if(up) trepar(up, down);
+    else if (down) trepar(up, down);
+    else if (!(up ^ down) && this->escalera() && !this->piso()) detenerTrepar();
+    else if (left) correr(right);
+    else if (right) correr(right);
+    else detener();
 
-    if (left ^ right) {
-         correr(right);
-    } else {
-         detener();
-    }
+    // if (up ^ down) {
+    //      trepar(up, down);
+    // } else {
+    //     if (this->escalera())
+    //         detenerTrepar();
+    // }
+
+    // if (left ^ right) {
+    //      correr(right);
+    // } else {
+    //      detener();
+    // }
 }
 
 void Mario::trepar(char up, char down) {
@@ -93,7 +99,6 @@ void Mario::trepar(char up, char down) {
     } else {
         std::cout << "DOWN " << this->posX << "," << this->posY << std::endl;
         this->estado = TREPANDO;
-        this->velX = 0;
         this->velY = -MARIO_VEL_X;
     }
 }
@@ -101,7 +106,7 @@ void Mario::trepar(char up, char down) {
 void Mario::detenerTrepar() {
     this->velX = 0;
     this->velY = 0;
-    this->estado = TREPANDO_REPOSO;
+    //this->estado = TREPANDO_REPOSO;
 }
 
 bool Mario::escalera() {
@@ -109,7 +114,7 @@ bool Mario::escalera() {
     // no permito despalzaientos en X
     // 1) escaera entre y == 232 y == 188
     if (this->posY <= MAX_DESPLAZAMIENTO_Y
-        && this->posY > 188
+        && this->posY >= 188
         && this->posX == 28
         && this->velX == 0) {
             std::cout << "ESCALERA " << this->posX << "," << this->posY << std::endl;
@@ -119,8 +124,18 @@ bool Mario::escalera() {
     }
 }
 
+bool Mario::piso() {
+    return (this->posY == MAX_DESPLAZAMIENTO_Y);
+}
+
+
 void Mario::correr(char right) {
-    if (this->escalera()) return;
+    std::string p = "correr";
+    this->printEstado(p);
+    if (this->escalera() && !this->piso()) {
+        std::cout << "NO CORRER " << this->posX << "," << this->posY << std::endl;
+        return;
+    }
 
     this->velEnSuelo = ((- 1) + (right << 1)) * MARIO_VEL_X;
     this->estadoEnSuelo = CORRIENDO;
@@ -131,6 +146,8 @@ void Mario::correr(char right) {
 }
 
 void Mario::detener() {
+    this->printEstado("detener");
+
     this->velEnSuelo = 0;
     this->estadoEnSuelo = REPOSO;
     if (this->velY == 0 && this->posY == MAX_DESPLAZAMIENTO_Y) {                      // TODO: actualizar a si está parado en una plataforma
@@ -159,4 +176,32 @@ void Mario::getEstado(float *x, float *y, char *estado) {
     *x = posX;
     *y = posY;
     *estado = this->estado;
+}
+
+void Mario::printEstado(std::string msg) {
+    std::cout << msg << std::endl;
+    switch (this->estado)
+    {
+    case REPOSO:
+        std::cout << "E REPOSO" << std::endl;
+        break;
+    case CORRIENDO:
+        std::cout << "E CORRIENDO" << std::endl;
+        break;
+    case SALTANDO:
+        std::cout << "E SALTANDO" << std::endl;
+        break;
+    case TREPANDO:
+        std::cout << "E TREPANDO" << std::endl;
+        break;
+    case  TREPANDO_REPOSO:
+        std::cout << "E TREPANDO_REPOSO" << std::endl;
+        break;
+    case TREPANDO_REPOSO_PISO:
+        std::cout << "E TREPANDO_REPOSO_PISO" << std::endl;
+        break;
+    default:
+        std::cout << "E ?" << std::endl;
+        break;
+    }
 }

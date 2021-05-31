@@ -8,7 +8,8 @@ enum {
     CORRIENDO,
     SALTANDO,
     TREPANDO,
-    TREPANDO_REPOSO
+    TREPANDO_REPOSO,
+    TREPANDO_REPOSO_PISO
 };
 
 class Mario : public Entidad 
@@ -38,4 +39,6 @@ class Mario : public Entidad
         void detener();
         void detenerTrepar();
         bool escalera();
+        bool piso();
+        void printEstado(std::string msg);
 };

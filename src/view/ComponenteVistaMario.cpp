@@ -58,6 +58,7 @@ void ComponenteVistaMario::mostrar(float x, float y, char estado) {
             break;
         case TREPANDO:
         case TREPANDO_REPOSO:
+        case TREPANDO_REPOSO_PISO:
             updateTrepando(y);
             break;
         default:
