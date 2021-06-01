@@ -62,44 +62,6 @@ void Nivel1::inicializarPlataformasEstaticas() {
     this->plataformasEstaticas.push_back(new PlataformaEstatica(Coordenada(104, 248), Coordenada(128, 248)));
     this->plataformasEstaticas.push_back(new PlataformaEstatica(Coordenada(144, 248), Coordenada(168, 248)));
     this->plataformasEstaticas.push_back(new PlataformaEstatica(Coordenada(184, 248), Coordenada(224, 248)));
-    /*
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(88, 56, 48));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(24, 84, 120));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(160, 87, 32));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(208, 88, 16));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 120, 16));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(208, 120, 16));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 160, 16));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(208, 160, 16));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 200, 48));*
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(64, 200, 24));*
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(104, 200, 24));*
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(144, 200, 24));*
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(184, 200, 40));*
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 248, 48));*
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(64, 248, 24));*
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(104, 248, 24));*
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(144, 248, 24));*
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(184, 248, 40));
-
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(88, 56, 48, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(24, 84, 120, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(160, 87, 32, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(208, 88, 16, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 120, 16, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(208, 120, 16, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 160, 16, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(208, 160, 16, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 200, 48, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(64, 200, 24, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(104, 200, 24, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(144, 200, 24, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(184, 200, 40, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(0, 248, 48, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(64, 248, 24, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(104, 248, 24, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(144, 248, 24, 8));
-    this->plataformasEstaticas.push_back(new PlataformaEstatica(184, 248, 40, 8));*/
 }
 
 void Nivel1::inicializarObjetos(SDL_Renderer* renderer) {
