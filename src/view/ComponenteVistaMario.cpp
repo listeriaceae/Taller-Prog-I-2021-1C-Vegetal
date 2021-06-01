@@ -23,7 +23,10 @@ ComponenteVistaMario::ComponenteVistaMario(SDL_Renderer *renderer) {
         logger::Logger::getInstance().logError("Mario image not found: " + IMG_MARIO);
         logger::Logger::getInstance().logDebug("Loading Mario default image: " + IMG_DEFAULT);
         surface = IMG_Load(IMG_DEFAULT.c_str());
-    } else SDL_SetColorKey(surface, SDL_TRUE, *(Uint32*)(surface->pixels));
+    } else { 
+        SDL_SetColorKey(surface, SDL_TRUE, *(Uint32*)(surface->pixels));
+    }
+
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 
@@ -42,6 +45,7 @@ void ComponenteVistaMario::mostrar(float x, float y, char estado) {
 
     tiempo = (tiempo + 1) % (TIEMPO_POR_FRAME * CANT_FRAMES);
     int next_x = round(x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    int next_y = round(y * ALTO_PANTALLA / (float)ALTO_NIVEL);
     switch(estado) {
         case REPOSO:
             updateReposo();
@@ -53,13 +57,15 @@ void ComponenteVistaMario::mostrar(float x, float y, char estado) {
             updateSaltando();
             break;
         case TREPANDO:
-            updateTrepando();
+        case TREPANDO_REPOSO:
+        case TREPANDO_REPOSO_PISO:
+            updateTrepando(y);
             break;
         default:
             break;
     }
     rectDst.x = next_x;
-    rectDst.y = round(y * ALTO_PANTALLA / (float)ALTO_NIVEL);
+    rectDst.y = next_y;
 
     SDL_RenderCopyEx(renderer, texture, &rectSrc, &rectDst, 0., NULL, flip);
 }
@@ -69,6 +75,9 @@ void ComponenteVistaMario::updateReposo() {
 }
 
 void ComponenteVistaMario::updateCorriendo(int next_x) {
+    // Direccion de Mario 
+    // Izquiera: rectDst.x < next_x == false
+    // Derecha: rectDst.x < next_x == true 
     flip = (SDL_RendererFlip)(rectDst.x < next_x);
     int frameActual = (tiempo / TIEMPO_POR_FRAME);
     rectSrc.x = ((frameActual & 1) << ((frameActual & 2) >> 1)) * MARIO_SPRITE_INDEX_SIZE;  // 0, 1, 0, 2...
@@ -78,8 +87,45 @@ void ComponenteVistaMario::updateSaltando() {
     rectSrc.x = MARIO_SALTO_INDEX * MARIO_SPRITE_INDEX_SIZE;
 }
 
-void ComponenteVistaMario::updateTrepando() {
-    //TODO
+void ComponenteVistaMario::updateTrepando(int y) {
+    // TREPANDO
+    // La imagen de Mario de espaldas es mas ancha que la de perfil
+    rectSrc.w = 18;
+    rectSrc.x = 70; // Escalar 1
+
+    bool flag = true;
+    if (y >= 232){
+        rectSrc.x = 142;
+    }
+    else if (y >= 229) // 1 escalon
+        flag = true;
+    else if (y >= 225) // 2 escalon
+        flag = false;
+    else if (y >= 221) // 3
+        flag = true;
+    else if (y >= 217) // 4
+        flag = false;
+    else if (y >= 213) // 5
+        flag = true;
+    else if (y >= 209) // 6
+        flag = false;
+    else if (y >= 205) // 7
+        flag = true;
+    else if (y >= 201) // 8
+        flag = false;
+    else if (y >= 197) // 9
+        flag = true;
+    else if (y >= 193) {
+        rectSrc.x = 95; // Escalar 2
+    } else if (y >= 191) {
+        rectSrc.x = 118; // Escalar 3
+    } else if (y >= 188)
+        flag = false;
+    else {
+        rectSrc.x = 142;
+    } 
+
+    flip = (SDL_RendererFlip)(flag);
 }
 
 void ComponenteVistaMario::free() {
