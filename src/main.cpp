@@ -52,8 +52,8 @@ int main(void)
     for (auto enemy: enemies)
     {
         for(unsigned int i = 0; i < enemy.getQuantity(); i++) {
-            punto_t punto = n1.getPosicionAleatoria();
-            Entidad* enemigo = factoryEnem.crearEnemigo(enemy.getType(), punto.x, punto.y, renderer);
+            Coordenada posAleatoria = n1.getPosicionAleatoria();
+            Entidad* enemigo = factoryEnem.crearEnemigo(enemy.getType(), posAleatoria.getX(), posAleatoria.getY(), renderer);
             
             if(enemigo != NULL)
                 n1.agregarObjeto(enemigo); 
@@ -80,8 +80,7 @@ int main(void)
     Uint32 previous, current, elapsed, lag, updated;
     previous = SDL_GetTicks();
     lag = 0;
-    punto_t punto = n1.getPosicionAleatoria();
-    Entidad* enemigo = factoryEnem.crearEnemigo("Fuego", punto.x, punto.y, renderer);
+
     while(!terminarPrograma) {
         current = SDL_GetTicks();
         elapsed = current - previous;
@@ -106,7 +105,6 @@ int main(void)
         updated = 0;
         while (lag >= MS_PER_UPDATE) {
             n1.actualizarNivel();
-            enemigo->mostrar();
             lag -= MS_PER_UPDATE;
             ++updated;
         }

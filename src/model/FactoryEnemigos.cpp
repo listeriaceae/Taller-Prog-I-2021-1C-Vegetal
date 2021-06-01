@@ -17,3 +17,4 @@ Entidad* FactoryEnemigos::crearEnemigo(std::string tipoEnemigo, float posX, floa
     else
         return NULL;
 }
+

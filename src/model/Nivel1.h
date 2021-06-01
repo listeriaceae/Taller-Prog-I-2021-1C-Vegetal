@@ -8,11 +8,7 @@
 #include "Entidad.h"
 #include "NivelBase.h"
 #include "PlataformaEstatica.h"
-
-struct punto_t {
-  float x;
-  float y;
-};
+#include "Coordenada.h"
 
 class Nivel1 : public NivelBase
 {
@@ -24,7 +20,7 @@ class Nivel1 : public NivelBase
         std::list<Entidad*>* getObjetos();
         void setFondo(std::string rutaImagen);
         void inicializarObjetos(SDL_Renderer* renderer);
-        punto_t getPosicionAleatoria();
+        Coordenada getPosicionAleatoria();
 
     private:
         ComponenteVistaNivel* compVista;

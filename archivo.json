@@ -7,7 +7,7 @@
             "enemies": [
                 {
                     "type": "Fuego",
-                    "quantity": 5
+                    "quantity": 3
                 }
             ],
             "stages": [

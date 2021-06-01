@@ -1,15 +1,12 @@
 #pragma once
+#include "Coordenada.h"
 
 class PlataformaEstatica {
     public:
-    int posX;
-    int posY;
-    int ancho;
-    int alto;
-
-    PlataformaEstatica(int posX, int posY, int ancho, int alto);
-
+    PlataformaEstatica(Coordenada extremo1, Coordenada extremo2);
+    Coordenada getPosicionAleatoria();
     private:
-
-    
+    Coordenada extremo1;
+    Coordenada extremo2;
+    int getY(int x);
 };
