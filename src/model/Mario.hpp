@@ -7,9 +7,7 @@ enum {
     REPOSO,
     CORRIENDO,
     SALTANDO,
-    TREPANDO,
-    TREPANDO_REPOSO,
-    TREPANDO_REPOSO_PISO
+    TREPANDO
 };
 
 class Mario : public Entidad 
@@ -34,11 +32,7 @@ class Mario : public Entidad
         char estado;
         char estadoEnSuelo;
 
-        void trepar(char up, char down);
+        void trepar();
         void correr(char right);
         void detener();
-        void detenerTrepar();
-        bool escalera();
-        bool piso();
-        void printEstado(std::string msg);
 };

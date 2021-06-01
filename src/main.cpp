@@ -89,7 +89,7 @@ int main(void)
             terminarPrograma = (event.type == SDL_QUIT);
             
             // Cambio de nivel
-            if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == CHANGE_LEVEL_KEY) {
+            if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
                 logger::Logger::getInstance().logInformation("End of Level 1");
                 goto nivel2;
             }
@@ -136,7 +136,7 @@ int main(void)
             terminarPrograma = (event.type == SDL_QUIT);
 
             // Fin del nivel
-            if(event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == CHANGE_LEVEL_KEY) {
+            if(event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
                 logger::Logger::getInstance().logInformation("End of Level 2");
                 goto fin;
             }
