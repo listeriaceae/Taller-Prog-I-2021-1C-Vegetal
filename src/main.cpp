@@ -56,8 +56,7 @@ int main(void)
             Entidad* enemigo = factoryEnem.crearEnemigo(enemy.getType(), posAleatoria.getX(), posAleatoria.getY(), renderer);
             
             if(enemigo != NULL)
-                n1.agregarObjeto(enemigo); 
-            
+                n1.agregarObjeto(enemigo);
         }
 
         logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
