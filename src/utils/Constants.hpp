@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 
 // Nivel 1
@@ -34,3 +33,6 @@ const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
 const std::string CONFIG_FILE = "archivo.json";
 // Default
 const std::string IMG_DEFAULT = "res/default.png";
+
+// Change level key
+const char CHANGE_LEVEL_KEY = 'l';

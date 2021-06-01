@@ -19,6 +19,7 @@ void MarioController::handleEvent(SDL_Event *e) {
             logger::Logger::getInstance().logDebug("Unknown key pressed");
             return;
         }
+
         up |= (key == SDLK_UP);
         down |= (key == SDLK_DOWN);
         left |= (key == SDLK_LEFT);
@@ -29,11 +30,18 @@ void MarioController::handleEvent(SDL_Event *e) {
 
         int key = e->key.keysym.sym;
 
-        if (key < SDLK_RIGHT || key > SDLK_UP) return;
+        if (key < SDLK_RIGHT || key > SDLK_UP) {
+            return;
+        }
+
         up &= (key != SDLK_UP);
         down &= (key != SDLK_DOWN);
         left &= (key != SDLK_LEFT);
         right &= (key != SDLK_RIGHT);
-    } else return;
+
+    } else { 
+        return;
+    }
+
     mario->setEstado(up, down, left, right);
 }
