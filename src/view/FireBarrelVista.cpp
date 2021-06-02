@@ -1,5 +1,5 @@
-#include <SDL2/SDL_image.h>
 #include <string>
+#include <SDL2/SDL_image.h>
 #include "FireBarrelVista.h"
 #include "../logger.h"
 #include "../utils/Constants.hpp"

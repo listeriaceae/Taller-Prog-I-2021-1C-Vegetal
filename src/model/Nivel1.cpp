@@ -31,13 +31,6 @@ void Nivel1::updatePlatforms() {
     }
 }
 
-void Nivel1::updateEnemies() {
-    std::list<EnemigoFuego*>::iterator it;
-    for (it = enemies.begin(); it != enemies.end(); ++it) {
-        (*it)->mover();
-    }
-}
-
 estadoNivel_t* Nivel1::getEstado() {
     estadoNivel_t *estado = new estadoNivel_t();
 

@@ -110,7 +110,7 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
         }
 
         *vista = new Nivel1Vista(renderer, config->getDefaultConfigFlag());
-        (*vista)->addPlayer(mario->getVista(renderer));
+        (*vista)->addPlayers(1);                                           // Aca iria cantidad de jugadores
         auto stages = config->getStages();
         if (stages.size() > 0) {
             std::string rutaImagen = stages[0].getBackgrounds()[0];
@@ -129,7 +129,7 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
 
         delete *vista;
         *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag());
-        (*vista)->addPlayer(mario->getVista(renderer));
+        (*vista)->addPlayers(1);                                           // Aca iria cantidad de jugadores
         auto stages = config->getStages();
         if (stages.size() > 1) {
             std::string rutaImagen = stages[1].getBackgrounds()[0];

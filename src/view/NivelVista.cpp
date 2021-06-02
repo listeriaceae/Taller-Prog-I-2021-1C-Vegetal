@@ -1,3 +1,4 @@
+#include <string>
 #include <SDL2/SDL_image.h>
 #include "NivelVista.h"
 #include "../logger.h"
@@ -9,8 +10,12 @@ NivelVista::NivelVista(SDL_Renderer *renderer) {
     this->renderer = renderer;
 }
 
-void NivelVista::addPlayer(MarioVista *vista) {
-    jugadoresVista.push_back(vista);
+void NivelVista::addPlayers(unsigned int n) {
+    for (unsigned int i = 0; i < n; ++i) {
+        MarioVista *vista = new MarioVista(renderer);
+        vista->setColor(i);
+        jugadoresVista.push_back(vista);
+    }
 }
 
 void NivelVista::setBackground(std::string rutaImagen) {

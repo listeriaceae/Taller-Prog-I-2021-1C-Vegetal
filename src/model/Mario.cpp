@@ -69,7 +69,3 @@ estadoMario_t Mario::getEstado() {
     estadoMario.estado = this->estado;
     return estadoMario;
 }
-
-MarioVista* Mario::getVista(SDL_Renderer *renderer) {
-    return new MarioVista(renderer);
-}

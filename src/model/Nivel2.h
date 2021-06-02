@@ -13,7 +13,7 @@ class Nivel2 : public Nivel {
 
     private:
         std::list<Barril*> barriles;
-        Uint32 tick = 0;
+        unsigned int tick = 0;
 
         void addBarrel();
         void updateBarrels();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "../model/Entidad.h"
+#include "../utils/punto.h"
 
 class BarrilVista {
     public:

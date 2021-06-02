@@ -1,12 +1,5 @@
 #pragma once
-
-struct punto
-{
-    float x = 0.f;
-    float y = 0.f;
-};
-
-typedef struct punto punto_t;
+#include "../utils/punto.h"
 
 class Entidad {
     public:

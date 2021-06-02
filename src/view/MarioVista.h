@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "../model/Entidad.h"
+#include "../utils/punto.h"
 
 class MarioVista
 {
@@ -10,6 +10,7 @@ class MarioVista
         void mostrar(punto_t pos, char estado);
         void setColor(int color);
         ~MarioVista();
+
     private:
         static SDL_Renderer *renderer;
         static SDL_Texture *texture;

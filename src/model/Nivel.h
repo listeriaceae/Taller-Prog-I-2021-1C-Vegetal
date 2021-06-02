@@ -2,17 +2,8 @@
 
 #include <list>
 #include "Mario.hpp"
-#include "Entidad.h"
 #include "EnemigoFuego.h"
-
-struct estadoNivel {
-        std::list<punto_t> platforms;
-        std::list<punto_t> enemies;
-        std::list<punto_t> barrels;
-        std::list<estadoMario_t> players;
-};
-
-typedef struct estadoNivel estadoNivel_t;
+#include "../utils/estadoNivel.h"
 
 class Nivel
 {
@@ -27,4 +18,5 @@ class Nivel
         std::list<EnemigoFuego*> enemies;
         std::list<Mario*> jugadores;
         void updatePlayers();
+        void updateEnemies();
 };

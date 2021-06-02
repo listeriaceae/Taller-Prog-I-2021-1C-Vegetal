@@ -1,3 +1,4 @@
+#include <string>
 #include <SDL2/SDL_image.h>
 #include "BarrilVista.h"
 #include "../logger.h"

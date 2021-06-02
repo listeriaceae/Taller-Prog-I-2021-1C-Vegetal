@@ -8,7 +8,6 @@ class Nivel1 : public Nivel
 {
     public:
         Nivel1();
-        void addEnemies(unsigned int amount);
         void update();
         estadoNivel_t* getEstado();
         ~Nivel1();
@@ -17,5 +16,4 @@ class Nivel1 : public Nivel
         std::list<PlataformaMovil*> plataformasMoviles;
 
         void updatePlatforms();
-        void updateEnemies();
 };

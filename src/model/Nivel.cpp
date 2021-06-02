@@ -21,6 +21,13 @@ void Nivel::updatePlayers() {
     }
 }
 
+void Nivel::updateEnemies() {
+    std::list<EnemigoFuego*>::iterator it;
+    for (it = enemies.begin(); it != enemies.end(); ++it) {
+        (*it)->mover();
+    }
+}
+
 Nivel::~Nivel() {
     jugadores.clear();
 
