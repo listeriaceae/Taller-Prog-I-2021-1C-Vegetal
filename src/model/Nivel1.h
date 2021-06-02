@@ -15,5 +15,6 @@ class Nivel1 : public Nivel
     private:
         std::list<PlataformaMovil*> plataformasMoviles;
 
+        void initPlataformas();
         void updatePlatforms();
 };

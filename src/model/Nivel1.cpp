@@ -1,6 +1,10 @@
 #include "Nivel1.h"
 
 Nivel1::Nivel1() : Nivel() {
+    initPlataformas();
+}
+
+void Nivel1::initPlataformas() {
     plataformasMoviles.push_back(new PlataformaMovil(0, 0));
     plataformasMoviles.push_back(new PlataformaMovil(1, 0));
     plataformasMoviles.push_back(new PlataformaMovil(2, 0));
@@ -16,6 +20,25 @@ Nivel1::Nivel1() : Nivel() {
     plataformasMoviles.push_back(new PlataformaMovil(0, 3));
     plataformasMoviles.push_back(new PlataformaMovil(1, 3));
     plataformasMoviles.push_back(new PlataformaMovil(2, 3));
+
+    this->plataformas.push_back(new Plataforma(88, 56, 136, 56));
+    this->plataformas.push_back(new Plataforma(24, 84, 144, 84));
+    this->plataformas.push_back(new Plataforma(160, 87, 192, 87));
+    this->plataformas.push_back(new Plataforma(208, 88, 224, 88));
+    this->plataformas.push_back(new Plataforma(0, 120, 16, 120));
+    this->plataformas.push_back(new Plataforma(208, 120, 224, 120));
+    this->plataformas.push_back(new Plataforma(0, 160, 16, 160));
+    this->plataformas.push_back(new Plataforma(208, 160, 224, 160));
+    this->plataformas.push_back(new Plataforma(0, 200, 48, 200));
+    this->plataformas.push_back(new Plataforma(64, 200, 88, 200));
+    this->plataformas.push_back(new Plataforma(104, 200, 128, 200));
+    this->plataformas.push_back(new Plataforma(144, 200, 168, 200));
+    this->plataformas.push_back(new Plataforma(184, 200, 224, 200));
+    this->plataformas.push_back(new Plataforma(0, 248, 48, 248));
+    this->plataformas.push_back(new Plataforma(64, 248, 88, 248));
+    this->plataformas.push_back(new Plataforma(104, 248, 128, 248));
+    this->plataformas.push_back(new Plataforma(144, 248, 168, 248));
+    this->plataformas.push_back(new Plataforma(184, 248, 224, 248));
 }
 
 void Nivel1::update() {

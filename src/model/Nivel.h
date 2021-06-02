@@ -1,8 +1,10 @@
 #pragma once
 
 #include <list>
+#include <vector>
 #include "Mario.hpp"
 #include "EnemigoFuego.h"
+#include "Plataforma.h"
 #include "../utils/estadoNivel.h"
 
 class Nivel
@@ -15,8 +17,10 @@ class Nivel
         virtual ~Nivel();
 
     protected:
+        std::vector<Plataforma*> plataformas;
         std::list<EnemigoFuego*> enemies;
         std::list<Mario*> jugadores;
+
         void updatePlayers();
         void updateEnemies();
 };

@@ -64,8 +64,7 @@ void Mario::setStartPos(float x, float y) {
 
 estadoMario_t Mario::getEstado() {
     estadoMario_t estadoMario;
-    estadoMario.pos.x = posX;
-    estadoMario.pos.y = posY;
+    estadoMario.pos = getPos();
     estadoMario.estado = this->estado;
     return estadoMario;
 }

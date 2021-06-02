@@ -4,10 +4,10 @@
 
 class EnemigoFuego : public Entidad {
     public:
-        EnemigoFuego(float x, float y, int velX);
+        EnemigoFuego(punto_t pos, int direccion);
+        void setLimites(float min, float max);
         void mover();
 
     private: 
-        int velX;
-        float posXInicial;
+        float velX, min, max;
 };

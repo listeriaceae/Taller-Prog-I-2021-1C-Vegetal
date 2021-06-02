@@ -11,15 +11,22 @@
 #define VELOCIDAD_PLAT 0.25
 
 PlataformaMovil::PlataformaMovil(int plataforma, int nivel)
-: Entidad(0, 0, ANCHO_PLATAFORMA, ALTO_PLATAFORMA) {
+: Plataforma(0, 0, 0, 0) {
     this->direccion = (((nivel + 1) & 2) - 1);
     int limite = ((MAX_X + MIN_X) / 2) + direccion * ((MAX_X - MIN_X) / 2);
 
-    posX = limite - direccion * plataforma * INDICE_X_PLAT;
-    posY = MIN_Y_PLATAFORMA + (nivel / 2) * INDICE_Y_PLAT + (nivel % 2) * ALTO_PLATAFORMA;
+    extremo1.x = limite - direccion * plataforma * INDICE_X_PLAT;
+    extremo1.y = MIN_Y_PLATAFORMA + (nivel / 2) * INDICE_Y_PLAT + (nivel % 2) * ALTO_PLATAFORMA;
+    extremo2.x = extremo1.x + ANCHO_PLATAFORMA;
+    extremo2.y = extremo1.y;
 }
 
 void PlataformaMovil::mover() {
-    posX += this->direccion * VELOCIDAD_PLAT;
-    posX -= this->direccion * (PLATAFORMAS_POR_NIVEL * INDICE_X_PLAT) * ((posX < MIN_X) || (posX > MAX_X));
+    extremo1.x += this->direccion * VELOCIDAD_PLAT;
+    extremo1.x -= this->direccion * (PLATAFORMAS_POR_NIVEL * INDICE_X_PLAT) * ((extremo1.x < MIN_X) || (extremo1.x > MAX_X));
+    extremo2.x = extremo1.x + ANCHO_PLATAFORMA;
+}
+
+punto_t PlataformaMovil::getPos() {
+    return extremo1;
 }
