@@ -1,11 +1,14 @@
 #pragma once
 
 #include <list>
+#include <vector>
 #include <string>
 #include <SDL2/SDL.h>
 #include "../view/ComponenteVistaNivel.h"
 #include "Entidad.h"
 #include "NivelBase.h"
+#include "PlataformaEstatica.h"
+#include "Coordenada.h"
 
 class Nivel1 : public NivelBase
 {
@@ -17,9 +20,12 @@ class Nivel1 : public NivelBase
         std::list<Entidad*>* getObjetos();
         void setFondo(std::string rutaImagen);
         void inicializarObjetos(SDL_Renderer* renderer);
+        Coordenada getPosicionAleatoria();
 
     private:
         ComponenteVistaNivel* compVista;
         std::list<Entidad*> objetos;
+        std::vector<PlataformaEstatica*> plataformasEstaticas;
         static std::string rutaImagen;
+        void inicializarPlataformasEstaticas();
 };

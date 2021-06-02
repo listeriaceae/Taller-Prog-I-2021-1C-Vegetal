@@ -14,6 +14,7 @@
 #include "model/Peach.h"
 #include "model/Mario.hpp"
 #include "model/DonkeyKong.h"
+#include "model/FactoryEnemigos.h"
 #include "configuration.hpp"
 #include "logger.h"
 #include "utils/window.hpp"
@@ -40,24 +41,28 @@ int main(void)
     Nivel1 n1(renderer, configuration.getDefaultConfigFlag());
     Nivel2 n2(renderer, configuration.getDefaultConfigFlag());
 
+    Mario mario(N1_MARIO_POS_X, N1_MARIO_POS_Y, renderer);
+    MarioController marioController(&mario);
+
+    n1.agregarObjeto(&mario);
+    n1.inicializarObjetos(renderer);
+    
+    FactoryEnemigos factoryEnem;
     auto enemies = configuration.getEnemies();
-    for (auto enemy: enemies) {
-        if(enemy.getType().compare("Fuego") == 0) {
-            unsigned int cantidad = enemy.getQuantity();
-            for(unsigned int i = 0; i < cantidad; i++) {
-                int posX = rand() % (ANCHO_NIVEL - 32);
-                int posY = rand() % (ALTO_NIVEL - 32);
-                int numRandom = (rand() % 2);
-                int velX;
-                if(numRandom == 0) velX = -1;
-                else velX = 1;
-                n1.agregarObjeto(new EnemigoFuego(posX, posY, velX, renderer));
-            }
+    for (auto enemy: enemies)
+    {
+        for(unsigned int i = 0; i < enemy.getQuantity(); i++) {
+            Coordenada posAleatoria = n1.getPosicionAleatoria();
+            Entidad* enemigo = factoryEnem.crearEnemigo(enemy.getType(), posAleatoria.getX(), posAleatoria.getY(), renderer);
+            
+            if(enemigo != NULL)
+                n1.agregarObjeto(enemigo);
         }
+
         logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
         logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
     }
-    
+
     auto stages = configuration.getStages();
     for (unsigned int i = 0; i < stages.size(); ++i) {
         if (i == 0) {
@@ -69,15 +74,12 @@ int main(void)
         }
     }
 
-    Mario mario(N1_MARIO_POS_X, N1_MARIO_POS_Y, renderer);
-    MarioController marioController(&mario);
-
-    n1.agregarObjeto(&mario);
-    n1.inicializarObjetos(renderer);
+    
     // http://gameprogrammingpatterns.com/game-loop.html#play-catch-up
     Uint32 previous, current, elapsed, lag, updated;
     previous = SDL_GetTicks();
     lag = 0;
+
     while(!terminarPrograma) {
         current = SDL_GetTicks();
         elapsed = current - previous;
