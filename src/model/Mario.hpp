@@ -1,7 +1,6 @@
 #pragma once
-#include <string>
 #include "Entidad.h"
-#include "../view/ComponenteVistaMario.h"
+#include "../view/MarioVista.h"
 
 #define SPACE 128
 #define UP 8
@@ -9,29 +8,24 @@
 #define LEFT 2
 #define RIGHT 1
 
-enum {
-    REPOSO,
-    CORRIENDO,
-    SALTANDO,
-    TREPANDO
+struct estadoMario {
+    punto_t pos;
+    char estado;
 };
+
+typedef struct estadoMario estadoMario_t;
 
 class Mario : public Entidad 
 {
     public: 
-        Mario(float x, float y, SDL_Renderer *renderer);
+        Mario();
         void setStartPos(float x, float y);
         void mover();
-        void mostrar();
         void setEstado(char controls);
-        void getEstado(float *x, float *y, char *estado);
-        ComponenteVistaMario* getVista();
-        virtual ~Mario() {
-            delete compVista;
-        };
+        estadoMario_t getEstado();
+        MarioVista* getVista(SDL_Renderer *renderer);
 
     private:
-        ComponenteVistaMario* compVista;
         float velX;
         float velEnSuelo;
         float velY;

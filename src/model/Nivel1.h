@@ -1,25 +1,21 @@
 #pragma once
 
 #include <list>
-#include <string>
-#include <SDL2/SDL.h>
-#include "../view/ComponenteVistaNivel.h"
-#include "Entidad.h"
-#include "NivelBase.h"
+#include "PlataformaMovil.h"
+#include "Nivel.h"
 
-class Nivel1 : public NivelBase
+class Nivel1 : public Nivel
 {
     public:
-        Nivel1(SDL_Renderer* renderer, bool useDefaultConfig);
-        void actualizarNivel();
-        void actualizarVista();
-        void agregarObjeto(Entidad* objeto);
-        std::list<Entidad*>* getObjetos();
-        void setFondo(std::string rutaImagen);
-        void inicializarObjetos(SDL_Renderer* renderer);
+        Nivel1();
+        void addEnemies(unsigned int amount);
+        void update();
+        estadoNivel_t* getEstado();
+        ~Nivel1();
 
     private:
-        ComponenteVistaNivel* compVista;
-        std::list<Entidad*> objetos;
-        static std::string rutaImagen;
+        std::list<PlataformaMovil*> plataformasMoviles;
+
+        void updatePlatforms();
+        void updateEnemies();
 };

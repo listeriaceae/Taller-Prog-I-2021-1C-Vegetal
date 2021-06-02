@@ -1,23 +1,19 @@
 #pragma once
 
-#include <SDL2/SDL.h>
+#include "EntidadEstaticaVista.h"
 
-#define ANCHO_POLEA 11
-#define ALTO_POLEA 10
-
-class ComponenteVistaPolea {
+class PoleaVista : public EntidadEstaticaVista {
     public:
     
-        ComponenteVistaPolea(int x, int y, int direccion, int nivel, SDL_Renderer *renderer);
+        PoleaVista(int x, int y, int orientation, int rotation, SDL_Renderer *renderer);
         void mostrar();
+        ~PoleaVista();
     
     private:
-        static SDL_Renderer *renderer;
         static SDL_Texture *texture;
         SDL_RendererFlip flip;
         static SDL_Rect rectSrc; //Rectangulo que determina que parte de la imagen cargar
         SDL_Rect rectDst; //Rectangulo que determina donde se va a renderear el objeto
-        static int tiempo;
-        static int fueActualizado;
+        int tiempo;
         static int totalPoleas;
 };

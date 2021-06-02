@@ -20,7 +20,7 @@ namespace logger {
         filepath = "game.log";
     }
 
-    void Logger::setDebugLevel(const std::string& debug_level) {
+    void Logger::setLogLevel(const std::string& debug_level) {
         this->debug_level = debug_level;
     }
 

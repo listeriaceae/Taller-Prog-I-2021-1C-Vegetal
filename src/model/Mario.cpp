@@ -1,7 +1,5 @@
 #include "Mario.hpp"
-#include <string>
-#include <iostream>
-#include "../logger.h"
+#include "../utils/Constants.hpp"
 
 #define MAX_DESPLAZAMIENTO_X 224
 #define MAX_DESPLAZAMIENTO_Y 232
@@ -9,15 +7,7 @@
 #define MARIO_VEL_SALTO 1
 #define GRAVEDAD -0.03125
 
-Mario::Mario(float x, float y, SDL_Renderer *renderer)
-: Entidad(x, y, ANCHO_MARIO, ALTO_MARIO) {
-    this->velX = 0;
-    this->velEnSuelo = 0;
-    this->velY = 0;
-    this->estado = REPOSO;
-    this->estadoEnSuelo = REPOSO;
-    this->compVista = new ComponenteVistaMario(renderer);
-}
+Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {}
 
 void Mario::mover() {
     posY -= this->velY;
@@ -31,13 +21,9 @@ void Mario::mover() {
     posX += this->velX;
 
     if ((posX < 0) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
-        posX -= velX;
-        velX -= 2 * velX * (posY < MAX_DESPLAZAMIENTO_Y);
-        }
-}
-
-void Mario::mostrar() {
-    compVista->mostrar(posX, posY, estado);
+        posX -= this->velX;
+        this->velX -= 2 * this->velX * (this->estado == SALTANDO);
+    }
 }
 
 void Mario::setEstado(char controls) {
@@ -76,12 +62,14 @@ void Mario::setStartPos(float x, float y) {
     this->estadoEnSuelo = REPOSO;
 }
 
-void Mario::getEstado(float *x, float *y, char *estado) {
-    *x = posX;
-    *y = posY;
-    *estado = this->estado;
+estadoMario_t Mario::getEstado() {
+    estadoMario_t estadoMario;
+    estadoMario.pos.x = posX;
+    estadoMario.pos.y = posY;
+    estadoMario.estado = this->estado;
+    return estadoMario;
 }
 
-ComponenteVistaMario* Mario::getVista() {
-    return this->compVista;
+MarioVista* Mario::getVista(SDL_Renderer *renderer) {
+    return new MarioVista(renderer);
 }

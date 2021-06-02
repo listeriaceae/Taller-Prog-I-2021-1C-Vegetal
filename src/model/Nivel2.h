@@ -1,32 +1,20 @@
 #pragma once
 
-#include <string>
 #include <list>
-#include <SDL2/SDL.h>
-#include <vector>
+#include "Nivel.h"
 #include "Barril.h"
-#include "../view/ComponenteVistaNivel.h"
-#include "NivelBase.h"
 
-class Nivel2: public NivelBase {
+class Nivel2 : public Nivel {
     public:
-        Nivel2(SDL_Renderer *renderer, bool useDefaultConfig);
-        void actualizarNivel();
-        void actualizarVista();
-        void agregarObjeto(Entidad *objeto);
-        std::list<Entidad*>* getObjetos();
-        void setFondo(std::string rutaImagen);
-        void inicializarObjetos(SDL_Renderer *renderer);
+        Nivel2();
+        void update();
+        estadoNivel_t* getEstado();
+        ~Nivel2();
 
     private:
-        SDL_Renderer *renderer;
-        static std::string rutaImagen;
-        ComponenteVistaNivel* compVista;
-        std::vector<Barril*> barriles;
-        std::list<Entidad*> objetos;
-        Uint32 tick;
+        std::list<Barril*> barriles;
+        Uint32 tick = 0;
 
-        void agregarBarril();
-        void updateBarriles();
-        void mostrarBarriles();
+        void addBarrel();
+        void updateBarrels();
 };

@@ -1,22 +1,15 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include "EnemigoFuego.h"
+#include "../utils/Constants.hpp"
 
-#define MAX_DESPLAZAMIENTO_PIXELES 10
+#define MAX_DESPLAZAMIENTO 10
 
-EnemigoFuego::EnemigoFuego(float x, float y, int velX, SDL_Renderer *renderer)
+EnemigoFuego::EnemigoFuego(float x, float y, int velX)
 : Entidad(x, y, ANCHO_ENEMIGO_FUEGO, ALTO_ENEMIGO_FUEGO) {
     this->velX = velX;
     this->posXInicial = posX;
-    this->compVista = new ComponenteVistaEnemigoFuego(renderer);
 }
 
 void EnemigoFuego::mover() {
     posX += velX;
-    if (abs(posX - posXInicial) > MAX_DESPLAZAMIENTO_PIXELES) velX *= -1; //cambio de dirección
-}
-
-void EnemigoFuego::mostrar() {
-    compVista->mover(posX, posY);
-    compVista->mostrar();
+    velX -= 2 * velX * (abs(posX - posXInicial) > MAX_DESPLAZAMIENTO); //cambio de dirección
 }

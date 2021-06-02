@@ -1,29 +1,18 @@
-#include <SDL2/SDL.h>
-#include <vector> 
 #include "Barril.h"
-#include "../utils/window.hpp"
-#include <stdio.h>
+#include "../utils/Constants.hpp"
 
 #define VELOCIDAD_BARRIL 1
 
-using namespace std;
-
-Barril::Barril(float x, float y, SDL_Renderer *renderer)
+Barril::Barril(float x, float y)
 : Entidad(x, y, ANCHO_BARRIL, ALTO_BARRIL) {
     this->velX = 0;
     this->velY = VELOCIDAD_BARRIL;
-    compVista = new ComponenteVistaBarril(renderer);
 }
 
 void Barril::mover() {
-    posY += velY;
+    posY += this->velY;
 }
 
 bool Barril::estaEnNivel() {
     return (posY < ALTO_NIVEL);
-}
-
-void Barril::mostrar() {
-    compVista->mover(posX, posY);
-    compVista->mostrar();
 }
