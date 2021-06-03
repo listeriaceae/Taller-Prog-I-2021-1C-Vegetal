@@ -5,7 +5,7 @@
 #include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
-#define TIEMPO_POR_FRAME 4
+#define TIEMPO_POR_FRAME 8
 #define CANT_FRAMES 2
 #define SPRITE_INDEX_SIZE 24
 

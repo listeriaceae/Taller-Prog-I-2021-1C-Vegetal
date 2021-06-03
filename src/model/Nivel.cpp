@@ -9,7 +9,7 @@ void Nivel::addPlayer(Mario *jugador) {
 
 void Nivel::addEnemies(unsigned int amount) {
     for (unsigned int i = 0; i < amount; ++i) {
-        unsigned int j = rand() % plataformas.size();
+        unsigned int j = 1 + (rand() % (plataformas.size() - 2));           // Omite plataformas inicial y final
         Plataforma *plataforma = plataformas[j];
         punto_t pos = plataforma->getPosicionAleatoria(ANCHO_ENEMIGO_FUEGO);
         pos.y -= ALTO_ENEMIGO_FUEGO;
