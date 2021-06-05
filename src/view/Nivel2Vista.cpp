@@ -11,7 +11,7 @@ Nivel2Vista::Nivel2Vista(SDL_Renderer *renderer, bool defaultConfig)
     barrilVista = new BarrilVista(renderer);
 
     entidadesVista.push_back(new FireBarrelVista(renderer));
-    entidadesVista.push_back(new FuegoVista(N2_POSX_FUEGO, N2_POSY_FUEGO, renderer));
+    entidadesVista.push_back(new FuegoVista(N2_POS_X_FUEGO, N2_POS_Y_FUEGO, renderer));
 
     entidadesVista.push_back(new PeachVista(renderer));
     entidadesVista.push_back(new DonkeyKongVista(renderer));

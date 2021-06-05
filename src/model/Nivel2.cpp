@@ -12,7 +12,7 @@ void Nivel2::update() {
 
 void Nivel2::addBarrel() {
     int x = rand() % (ANCHO_NIVEL - ANCHO_BARRIL);
-    this->barriles.push_front(new Barril(x, N2_POSY_BARRIL));
+    this->barriles.push_front(new Barril(x, N2_POS_Y_BARRIL));
 }
 
 void Nivel2::updateBarrels() {

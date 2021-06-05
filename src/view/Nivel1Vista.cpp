@@ -12,15 +12,15 @@ Nivel1Vista::Nivel1Vista(SDL_Renderer *renderer, bool defaultConfig)
     plataformaVista = new PlataformaMovilVista(renderer);
     enemigoVista = new EnemigoFuegoVista(renderer);
 
-    entidadesVista.push_back(new PoleaVista(N1_POSX1_POLEA, N1_POSY1_POLEA, 0, 0, renderer));
-    entidadesVista.push_back(new PoleaVista(N1_POSX2_POLEA, N1_POSY1_POLEA, 1, 0, renderer));
-    entidadesVista.push_back(new PoleaVista(N1_POSX1_POLEA, N1_POSY2_POLEA, 0, 1, renderer));
-    entidadesVista.push_back(new PoleaVista(N1_POSX2_POLEA, N1_POSY2_POLEA, 1, 1, renderer));
+    entidadesVista.push_back(new PoleaVista(N1_POS_X1_POLEA, N1_POS_Y1_POLEA, 0, 0, renderer));
+    entidadesVista.push_back(new PoleaVista(N1_POS_X2_POLEA, N1_POS_Y1_POLEA, 1, 0, renderer));
+    entidadesVista.push_back(new PoleaVista(N1_POS_X1_POLEA, N1_POS_Y2_POLEA, 0, 1, renderer));
+    entidadesVista.push_back(new PoleaVista(N1_POS_X2_POLEA, N1_POS_Y2_POLEA, 1, 1, renderer));
 
-    entidadesVista.push_back(new FuegoVista(N1_POSX_FUEGO1, N1_POSY_FUEGO, renderer));
-    entidadesVista.push_back(new FuegoVista(N1_POSX_FUEGO2, N1_POSY_FUEGO, renderer));
-    entidadesVista.push_back(new FuegoVista(N1_POSX_FUEGO3, N1_POSY_FUEGO, renderer));
-    entidadesVista.push_back(new FuegoVista(N1_POSX_FUEGO4, N1_POSY_FUEGO, renderer));
+    entidadesVista.push_back(new FuegoVista(N1_POS_X_FUEGO1, N1_POS_Y_FUEGO, renderer));
+    entidadesVista.push_back(new FuegoVista(N1_POS_X_FUEGO2, N1_POS_Y_FUEGO, renderer));
+    entidadesVista.push_back(new FuegoVista(N1_POS_X_FUEGO3, N1_POS_Y_FUEGO, renderer));
+    entidadesVista.push_back(new FuegoVista(N1_POS_X_FUEGO4, N1_POS_Y_FUEGO, renderer));
 
     entidadesVista.push_back(new PeachVista(renderer));
     entidadesVista.push_back(new DonkeyKongVista(renderer));

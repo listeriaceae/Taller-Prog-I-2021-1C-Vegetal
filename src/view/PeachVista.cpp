@@ -22,8 +22,8 @@ PeachVista::PeachVista(SDL_Renderer* renderer)
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 
-    rect.x = round(PEACH_POSX * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    rect.y = round(PEACH_POSY * ALTO_PANTALLA / (float)ALTO_NIVEL);
+    rect.x = round(PEACH_POS_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    rect.y = round(PEACH_POS_Y * ALTO_PANTALLA / (float)ALTO_NIVEL);
     rect.w = round(PEACH_ANCHO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     rect.h = round(PEACH_ALTO * ALTO_PANTALLA / (float)ALTO_NIVEL);
 }

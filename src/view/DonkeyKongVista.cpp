@@ -22,8 +22,8 @@ DonkeyKongVista::DonkeyKongVista(SDL_Renderer* renderer)
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 
-    rect.x = round(DONKEYKONG_POSX * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    rect.y = round(DONKEYKONG_POSY * ALTO_PANTALLA / (float)ALTO_NIVEL);
+    rect.x = round(DONKEYKONG_POS_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    rect.y = round(DONKEYKONG_POS_Y * ALTO_PANTALLA / (float)ALTO_NIVEL);
     rect.w = round(DONKEYKONG_ANCHO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     rect.h = round(DONKEYKONG_ALTO * ALTO_PANTALLA / (float)ALTO_NIVEL);
 }
