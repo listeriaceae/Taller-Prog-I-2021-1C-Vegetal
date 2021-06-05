@@ -1,38 +1,30 @@
 #pragma once
-#include <string>
 #include "Entidad.h"
-#include "../view/ComponenteVistaMario.h"
+#include "../utils/estadoMario.h"
 
-enum {
-    REPOSO,
-    CORRIENDO,
-    SALTANDO,
-    TREPANDO
-};
+#define SPACE 128
+#define UP 8
+#define DOWN 4
+#define LEFT 2
+#define RIGHT 1
 
 class Mario : public Entidad 
 {
     public: 
-        Mario(float x, float y, SDL_Renderer *renderer);
-        void mover();
-        void mostrar();
-        void setEstado(char up, char down, char left, char right);
-        void getEstado(float *x, float *y, char *estado);
+        Mario();
         void setStartPos(float x, float y);
-        void saltar();
-        virtual ~Mario() {
-            delete compVista;
-        };
+        void mover();
+        void setEstado(char controls);
+        estadoMario_t getEstado();
 
     private:
-        ComponenteVistaMario* compVista;
         float velX;
         float velEnSuelo;
         float velY;
         char estado;
         char estadoEnSuelo;
 
-        void trepar();
-        void correr(char right);
-        void detener();
+        // void trepar(char up, char down); TODO
+        void correr(char left, char right);
+        void saltar(char jump);
 };

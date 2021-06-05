@@ -12,7 +12,7 @@ namespace logger {
             void log(const std::string&, const std::string&);
         public:
             static Logger& getInstance();
-            void setDebugLevel(const std::string&);
+            void setLogLevel(const std::string&);
             void logNewGame(void);
             void logError(const std::string&);
             void logInformation(const std::string&);

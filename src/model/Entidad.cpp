@@ -6,3 +6,11 @@ Entidad::Entidad(float posX, float posY, int ancho, int alto) {
     this->ancho = ancho;
     this->alto = alto;
 }
+
+punto_t Entidad::getPos() {
+    punto_t pos;
+    pos.x = posX;
+    pos.y = posY;
+    
+    return pos;
+}

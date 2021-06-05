@@ -1,22 +1,13 @@
 #pragma once
 
-#include <string>
-#include "Entidad.h"
-#include "../view/ComponenteVistaPlataformaMovil.h"
+#include "Plataforma.h"
 
-class PlataformaMovil : public Entidad {
+class PlataformaMovil : public Plataforma {
     public:
-
-        PlataformaMovil(int plataforma, int nivel, SDL_Renderer *renderer);
+        PlataformaMovil(int plataforma, int nivel);
         void mover();
-        void mostrar();
-        virtual ~PlataformaMovil() {
-            delete compVista;
-        };
-
+        punto_t getPos();
 
     private:
-        ComponenteVistaPlataformaMovil *compVista;
         int direccion;
-        int limite;
 };

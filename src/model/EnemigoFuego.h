@@ -1,19 +1,13 @@
 #pragma once
-#include <string>
+
 #include "Entidad.h"
-#include "../view/ComponenteVistaEnemigoFuego.h"
 
 class EnemigoFuego : public Entidad {
-    public: 
-        EnemigoFuego(float x, float y, int velX, SDL_Renderer *renderer);
+    public:
+        EnemigoFuego(punto_t pos, int direccion);
+        void setLimites(float min, float max);
         void mover();
-        void mostrar();
-        virtual ~EnemigoFuego() {
-            delete compVista;
-        };
 
     private: 
-        ComponenteVistaEnemigoFuego* compVista;
-        int velX;
-        int posXInicial;
+        float velX, min, max;
 };
