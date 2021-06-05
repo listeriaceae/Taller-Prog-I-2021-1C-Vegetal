@@ -41,7 +41,7 @@ int main(void)
     NivelVista *vista = NULL;
     getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
 
-    // Game loop by http://gameprogrammingpatterns.com/game-loop.html#play-catch-up
+    // Game loop design by http://gameprogrammingpatterns.com/game-loop.html#play-catch-up
     Uint32 previous, current, elapsed, lag;
     bool updated, quitRequested = false;
     previous = SDL_GetTicks();

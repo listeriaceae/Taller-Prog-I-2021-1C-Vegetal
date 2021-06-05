@@ -27,15 +27,22 @@ void Mario::mover() {
 }
 
 void Mario::setEstado(char controls) {
-    trepar();
-    correr(controls);
-    saltar(controls);
+    // char up = (controls & UP) != 0;
+    // char down = (controls & DOWN) != 0;
+    // trepar(up, down);
+
+    char left = (controls & LEFT) != 0;
+    char right = (controls & RIGHT) != 0;
+    correr(left, right);
+
+    char space = controls & SPACE;
+    saltar(space);
 }
 
-void Mario::trepar() {}              // TODO
+// void Mario::trepar(char up, char down) {} TODO
 
-void Mario::correr(char controls) {
-    this->velEnSuelo = (((controls & RIGHT) != 0) - ((controls & LEFT) != 0)) * MARIO_VEL_X;
+void Mario::correr(char left, char right) {
+    this->velEnSuelo = (right - left) * MARIO_VEL_X;
     this->estadoEnSuelo = REPOSO + (CORRIENDO - REPOSO) * (this->velEnSuelo != 0);
     // TODO: actualizar a si está parado en una plataforma
     if (this->estado != SALTANDO) {
@@ -44,9 +51,9 @@ void Mario::correr(char controls) {
     }
 }
 
-void Mario::saltar(char controls) {
+void Mario::saltar(char space) {
     // TODO: actualizar a si está parado en una plataforma
-    if (this->estado != SALTANDO && (controls & SPACE)) {
+    if (this->estado != SALTANDO && space) {
         this->velY = MARIO_VEL_SALTO;
         this->estado = SALTANDO;
     }

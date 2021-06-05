@@ -24,7 +24,7 @@ class Mario : public Entidad
         char estado;
         char estadoEnSuelo;
 
-        void trepar();
-        void correr(char controls);
-        void saltar(char controls);
+        // void trepar(char up, char down); TODO
+        void correr(char left, char right);
+        void saltar(char jump);
 };
