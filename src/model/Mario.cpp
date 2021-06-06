@@ -1,5 +1,9 @@
 #include "Mario.hpp"
 #include "../utils/Constants.hpp"
+#include "mario/ReposoState.h"
+
+#include <stdio.h>
+#include <iostream>
 
 #define MAX_DESPLAZAMIENTO_X 224
 #define MAX_DESPLAZAMIENTO_Y 232
@@ -7,7 +11,10 @@
 #define MARIO_VEL_SALTO 1
 #define GRAVEDAD -0.03125
 
-Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {}
+Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
+    this->state = new ReposoState();
+    std::cout << "Estado inicial " << this->state->getName() << std::endl;
+}
 
 void Mario::mover() {
     posY -= this->velY;
@@ -31,6 +38,8 @@ void Mario::setEstado(char controls) {
     // char down = (controls & DOWN) != 0;
     // trepar(up, down);
 
+    this->state->handleInput(controls);
+
     char left = (controls & LEFT) != 0;
     char right = (controls & RIGHT) != 0;
     correr(left, right);
@@ -44,6 +53,7 @@ void Mario::setEstado(char controls) {
 void Mario::correr(char left, char right) {
     this->velEnSuelo = (right - left) * MARIO_VEL_X;
     this->estadoEnSuelo = REPOSO + (CORRIENDO - REPOSO) * (this->velEnSuelo != 0);
+
     // TODO: actualizar a si está parado en una plataforma
     if (this->estado != SALTANDO) {
         this->velX = this->velEnSuelo;
