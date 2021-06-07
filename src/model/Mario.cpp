@@ -12,11 +12,13 @@
 #define GRAVEDAD -0.03125
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
-    this->state = new ReposoState();
+    this->state = ReposoState::getInstance();
     std::cout << "Estado inicial " << this->state->getName() << std::endl;
 }
 
 void Mario::mover() {
+    this->state->update();
+
     posY -= this->velY;
     this->velY += GRAVEDAD * (this->estado == SALTANDO);
     if (posY > MAX_DESPLAZAMIENTO_Y) {
@@ -34,11 +36,9 @@ void Mario::mover() {
 }
 
 void Mario::setEstado(char controls) {
-    // char up = (controls & UP) != 0;
-    // char down = (controls & DOWN) != 0;
-    // trepar(up, down);
-
-    this->state->handleInput(controls);
+    this->state = this->state->handleInput(controls, this);
+    this->state->perform();
+    std::cout << "ESTADO -> " << this->state->getName() << std::endl;
 
     char left = (controls & LEFT) != 0;
     char right = (controls & RIGHT) != 0;

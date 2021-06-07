@@ -3,15 +3,15 @@
 #include "../Mario.hpp"
 #include "MarioState.h"
 
-class ReposoState : public MarioState
+class SaltandoRightState : public MarioState
 {
-    public:
+     public:
         virtual MarioState* handleInput(char controls, Mario* mario);
         virtual void update();
         virtual void perform();
-        static ReposoState* getInstance();
+        static SaltandoRightState* getInstance();
     
     private:
-        ReposoState();
-        static ReposoState* instance;
+        SaltandoRightState();
+        static SaltandoRightState* instance;
 };

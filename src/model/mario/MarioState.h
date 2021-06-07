@@ -1,11 +1,15 @@
 #pragma once
 
+#include "../Mario.hpp"
 #include <string>
+
+class Mario;
 
 class MarioState {
     public:
-        virtual void handleInput(char controls) = 0;
+        virtual MarioState* handleInput(char controls, Mario* mario) = 0;
         virtual void update() = 0;
+        virtual void perform() = 0;
         virtual ~MarioState() = default;
 
         std::string getName();
