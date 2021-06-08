@@ -1,16 +1,25 @@
 #include "Mario.hpp"
 #include "../utils/Constants.hpp"
 #include "mario/ReposoState.h"
+#include "Nivel.h"
 
 #include <stdio.h>
 #include <iostream>
 
 #define MAX_DESPLAZAMIENTO_X 228
 #define MAX_DESPLAZAMIENTO_Y 232
+#define MIN_DESPLAZAMIENTO_X -4
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
     this->state = ReposoState::getInstance();
-    std::cout << "Estado inicial " << this->state->getName() << std::endl;
+}
+
+void Mario::setNivel(Nivel* nivel) {
+    this->nivel = nivel;
+}
+
+Nivel* Mario::getNivel() {
+    return this->nivel;
 }
 
 void Mario::mover() {
@@ -18,12 +27,13 @@ void Mario::mover() {
     float velY = this->state->getVelY();
     float velX = this->state->getVelX();
 
-    posY -= velY;
+    this->posY -= velY;
 
-    posX += velX;
+    this->posX += velX;
 
-    if ((posX < -4) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
-        posX -= velX;
+    if ((this->posX < MIN_DESPLAZAMIENTO_X) 
+        || ((this->posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
+        this->posX -= velX;
     }
 }
 

@@ -1,5 +1,6 @@
 #include "Nivel2.h"
 #include "../utils/Constants.hpp"
+#include "nivel/Escalera.h"
 
 Nivel2::Nivel2() : Nivel() {}
 
@@ -24,6 +25,10 @@ void Nivel2::updateBarrels() {
             it = this->barriles.erase(it);
         } else ++it;
     }
+}
+
+Escalera* Nivel2::getEscalera(punto_t p) {
+    return NULL;
 }
 
 estadoNivel_t* Nivel2::getEstado() {

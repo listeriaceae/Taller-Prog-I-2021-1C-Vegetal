@@ -3,6 +3,7 @@
 #include <list>
 #include "Nivel.h"
 #include "Barril.h"
+#include "nivel/Escalera.h"
 
 class Nivel2 : public Nivel {
     public:
@@ -10,6 +11,7 @@ class Nivel2 : public Nivel {
         void update();
         estadoNivel_t* getEstado();
         ~Nivel2();
+        Escalera* getEscalera(punto_t p);
 
     private:
         std::list<Barril*> barriles;

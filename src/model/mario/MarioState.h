@@ -27,7 +27,4 @@ class MarioState {
         std::string name;
         float velX;
         float velY;
-        map<int, Escalera*> escaleras;
-        void inicializarEscaleras();
-        Escalera* getEscalera(punto_t p);
 };
