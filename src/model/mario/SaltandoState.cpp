@@ -38,12 +38,11 @@ MarioState* SaltandoState::handleInput(char controls, Mario* mario) {
     char right = (controls & RIGHT) != 0;
 
     AireState* aireState = AireState::getInstance();
-    aireState->setDir(left, right, this->velY, this->velX);
+    aireState->setVel(this->velY, this->velX);
     return aireState;
 }
 
 void SaltandoState::perform() {
-    // TODO: actualizar a si está parado en una plataforma
     this->velY = MARIO_VEL_SALTO;
 }
 

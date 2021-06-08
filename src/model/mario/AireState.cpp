@@ -25,9 +25,7 @@ AireState* AireState::getInstance() {
     return AireState::instance;
 }
 
-void AireState::setDir(char left, char right, float velY, float velX){
-    this->left = left;
-    this->right = right;
+void AireState::setVel(float velY, float velX){
     this->velY = velY;
     this->velX = velX;
 };

@@ -11,7 +11,7 @@ class AireState : public MarioState
         virtual void perform();
         virtual char getEstado();
         static AireState* getInstance();
-        void setDir(char left, char right, float velY, float velX);
+        void setVel(float velY, float velX);
     
     private:
         AireState();

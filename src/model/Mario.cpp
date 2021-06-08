@@ -20,13 +20,6 @@ void Mario::mover() {
 
     posY -= velY;
 
-    if (posY > MAX_DESPLAZAMIENTO_Y) {
-        velX = this->velEnSuelo;
-        this->state = ReposoState::getInstance();
-        this->posY = MAX_DESPLAZAMIENTO_Y;
-        velY = 0.;
-    }
-
     posX += velX;
 
     if ((posX < 0) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
@@ -44,7 +37,6 @@ void Mario::setEstado(char controls) {
 void Mario::setStartPos(float x, float y) {
     posX = x;
     posY = y;
-    this->velEnSuelo = 0;
     this->state = ReposoState::getInstance();
 }
 
