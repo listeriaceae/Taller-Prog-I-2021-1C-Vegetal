@@ -1,77 +1,47 @@
 #include "Mario.hpp"
 #include "../utils/Constants.hpp"
+#include "mario/ReposoState.h"
 
-#define MAX_DESPLAZAMIENTO_X 224
+#include <stdio.h>
+#include <iostream>
+
+#define MAX_DESPLAZAMIENTO_X 228
 #define MAX_DESPLAZAMIENTO_Y 232
-#define MARIO_VEL_X 0.5
-#define MARIO_VEL_SALTO 1
-#define GRAVEDAD -0.03125
 
-Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {}
+Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
+    this->state = ReposoState::getInstance();
+    std::cout << "Estado inicial " << this->state->getName() << std::endl;
+}
 
 void Mario::mover() {
-    posY -= this->velY;
-    this->velY += GRAVEDAD * (this->estado == SALTANDO);
-    if (posY > MAX_DESPLAZAMIENTO_Y) {
-        this->velX = this->velEnSuelo;
-        this->estado = this->estadoEnSuelo;
-        this->posY = MAX_DESPLAZAMIENTO_Y;
-        this->velY = 0.;
-    }
-    posX += this->velX;
+    this->state->update();
+    float velY = this->state->getVelY();
+    float velX = this->state->getVelX();
 
-    if ((posX < 0) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
-        posX -= this->velX;
-        this->velX -= 2 * this->velX * (this->estado == SALTANDO);
+    posY -= velY;
+
+    posX += velX;
+
+    if ((posX < -2) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
+        posX -= velX;
     }
 }
 
 void Mario::setEstado(char controls) {
-    // char up = (controls & UP) != 0;
-    // char down = (controls & DOWN) != 0;
-    // trepar(up, down);
-
-    char left = (controls & LEFT) != 0;
-    char right = (controls & RIGHT) != 0;
-    correr(left, right);
-
-    char space = controls & SPACE;
-    saltar(space);
-}
-
-// void Mario::trepar(char up, char down) {} TODO
-
-void Mario::correr(char left, char right) {
-    this->velEnSuelo = (right - left) * MARIO_VEL_X;
-    this->estadoEnSuelo = REPOSO + (CORRIENDO - REPOSO) * (this->velEnSuelo != 0);
-    // TODO: actualizar a si está parado en una plataforma
-    if (this->estado != SALTANDO) {
-        this->velX = this->velEnSuelo;
-        this->estado = this->estadoEnSuelo;
-    }
-}
-
-void Mario::saltar(char space) {
-    // TODO: actualizar a si está parado en una plataforma
-    if (this->estado != SALTANDO && space) {
-        this->velY = MARIO_VEL_SALTO;
-        this->estado = SALTANDO;
-    }
+    this->state = this->state->handleInput(controls, this);
+    this->state->perform();
+    std::cout << "ESTADO -> " << this->state->getName() << std::endl;
 }
 
 void Mario::setStartPos(float x, float y) {
     posX = x;
     posY = y;
-    this->velX = 0;
-    this->velEnSuelo = 0;
-    this->velY = 0;
-    this->estado = REPOSO;
-    this->estadoEnSuelo = REPOSO;
+    this->state = ReposoState::getInstance();
 }
 
 estadoMario_t Mario::getEstado() {
     estadoMario_t estadoMario;
     estadoMario.pos = getPos();
-    estadoMario.estado = this->estado;
+    estadoMario.estado = this->state->getEstado();
     return estadoMario;
 }
