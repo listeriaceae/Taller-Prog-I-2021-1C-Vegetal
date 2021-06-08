@@ -1,7 +1,5 @@
 #include "../Mario.hpp"
 #include "ReposoState.h"
-#include "CorriendoRightState.h"
-#include "CorriendoLeftState.h"
 #include "CorriendoState.h"
 #include "SaltandoState.h"
 #include <string>
@@ -12,7 +10,7 @@
 
 ReposoState* ReposoState::instance;
 
-ReposoState::ReposoState() {
+ReposoState::ReposoState() : MarioState() {
     // std::cout << "CREANDO ReposoState " << std::endl;
     this->name = "Reposo";
 }
@@ -30,7 +28,12 @@ MarioState* ReposoState::handleInput(char controls, Mario* mario) {
     char right = (controls & RIGHT) != 0;
     char space = (controls & SPACE) != 0;
 
-    if(left || right) return CorriendoState::getInstance();
+    if(left || right) {
+        CorriendoState* state = CorriendoState::getInstance();
+        state->setDir(left, right);
+        return state;
+    }
+
     if(space) return SaltandoState::getInstance();
  
     return ReposoState::instance;

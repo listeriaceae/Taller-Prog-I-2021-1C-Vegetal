@@ -1,13 +1,14 @@
 #include "../Mario.hpp"
-#include "CorriendoLeftState.h"
-#include "CorriendoRightState.h"
 #include "SaltandoState.h"
-#include "SaltandoRightState.h"
 #include "ReposoState.h"
+#include "CorriendoState.h"
 #include <string>
 
 #include <stdio.h>
 #include <iostream>
+
+#define MARIO_VEL_SALTO 1
+#define GRAVEDAD -0.03125
 
 SaltandoState* SaltandoState::instance;
 
@@ -27,13 +28,19 @@ MarioState* SaltandoState::handleInput(char controls, Mario* mario) {
     char left = (controls & LEFT) != 0;
     char right = (controls & RIGHT) != 0;
 
-    if(left) return CorriendoLeftState::getInstance();
-    if(right) return SaltandoState::getInstance();
+    if(left || right) {
+        CorriendoState* state = CorriendoState::getInstance();
+        state->setDir(left, right);
+        return state;
+    }
 
     return ReposoState::getInstance();
     
 }
 
-void SaltandoState::perform() {}
+void SaltandoState::perform() {
+    // TODO: actualizar a si está parado en una plataforma
+    this->velY = MARIO_VEL_SALTO;
+}
 
 void SaltandoState::update() {}

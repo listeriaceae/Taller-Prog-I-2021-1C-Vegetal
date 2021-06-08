@@ -10,8 +10,11 @@ class CorriendoState : public MarioState
         virtual void update();
         virtual void perform();
         static CorriendoState* getInstance();
+        void setDir(char left, char right);
     
     private:
         CorriendoState();
         static CorriendoState* instance;
+        char left;
+        char right;
 };
