@@ -65,5 +65,5 @@ void TrepandoState::perform() {
 void TrepandoState::update() {}
 
 char TrepandoState::getEstado() {
-    return CORRIENDO;
+    return TREPANDO;
 }
