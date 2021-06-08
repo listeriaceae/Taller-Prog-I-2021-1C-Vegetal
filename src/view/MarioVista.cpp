@@ -89,44 +89,11 @@ void MarioVista::updateSaltando(int nextX) {
 }
 
 void MarioVista::updateTrepando(punto_t pos, char estado) {
-    // TREPANDO
-    // La imagen de Mario de espaldas es mas ancha que la de perfil
     srcRect.h = ALTO_MARIO;
     srcRect.w = ANCHO_MARIO;
-    srcRect.x = 70; // Escalar 1
+    srcRect.x = 70;
 
     bool flag = (estado == TREPANDO_0);
-    // if (pos.y >= 232){ // subEstado == TREPANDO_ATRAS
-    //     srcRect.x = 142;
-    // }
-    // else if (pos.y >= 229) // 1 escalon subEstado == TREPANDO_0
-    //     flag = true;
-    // else if (pos.y >= 225) // 2 escalon subEstado == TREPANDO_1
-    //     flag = false;
-    // else if (pos.y >= 221) // 3
-    //     flag = true;
-    // else if (pos.y >= 217) // 4
-    //     flag = false;
-    // else if (pos.y >= 213) // 5
-    //     flag = true;
-    // else if (pos.y >= 209) // 6
-    //     flag = false;
-    // else if (pos.y >= 205) // 7
-    //     flag = true;
-    // else if (pos.y >= 201) // 8
-    //     flag = false;
-    // else if (pos.y >= 197) // 9
-    //     flag = true;
-    // else if (pos.y >= 193) {
-    //     srcRect.x = 95; // Escalar 2 subEstado == TREPANDO_2
-    // } else if (pos.y >= 191) {
-    //     srcRect.x = 118; // Escalar 3 subEstado == TREPANDO_3
-    // } else if (pos.y >= 188)
-    //     flag = false; // Escalar 1
-    // else {
-    //     srcRect.w = 17;
-    //     srcRect.x = 142;
-    // }
 
     flip = (SDL_RendererFlip)(flag);
 }
