@@ -2,13 +2,19 @@
 #include "../utils/Constants.hpp"
 #include "nivel/Escalera.h"
 
+const int ESCALERA_1_X0 = 176;
+const int ESCALERA_1_X1 = 184;
+const int ESCALERA_1_Y0 = 232;
+const int ESCALERA_1_Y1 = 203;
+
 Nivel2::Nivel2() : Nivel() {}
 
 void Nivel2::update() {
     if (++tick % 128 == 0) addBarrel();
 
-    updateBarrels();
-    updatePlayers();
+    this->updateBarrels();
+    this->updatePlayers();
+    this->inicializarEscaleras();
 }
 
 void Nivel2::addBarrel() {
@@ -27,7 +33,24 @@ void Nivel2::updateBarrels() {
     }
 }
 
+void Nivel2::inicializarEscaleras() {
+    Escalera * e1 = new Escalera("E1",
+                                ESCALERA_1_X1 -4,
+                                ESCALERA_1_X0,
+                                ESCALERA_1_X1,
+                                ESCALERA_1_Y0,
+                                ESCALERA_1_Y1);
+    
+    this->escaleras[0] = e1;
+}
+
 Escalera* Nivel2::getEscalera(punto_t p) {
+    if (p.x >= ESCALERA_1_X0 
+        && p.x <= ESCALERA_1_X1 
+        && p.y <= ESCALERA_1_Y0
+        && p.y >= ESCALERA_1_Y1) {
+            return this->escaleras[0];
+    }
     return NULL;
 }
 

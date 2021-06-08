@@ -2,7 +2,6 @@
 
 #include "../Mario.hpp"
 #include <string>
-#include <map>
 #include "../nivel/Escalera.h"
 
 class Mario;

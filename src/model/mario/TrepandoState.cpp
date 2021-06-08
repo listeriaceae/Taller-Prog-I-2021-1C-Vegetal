@@ -34,6 +34,10 @@ void TrepandoState::setEscalera(Escalera* e) {
     this->e = e;
 }
 
+void TrepandoState::clear() {
+    this->e = NULL;
+}
+
 MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
     int a = this->e->getY0() - mario->getPos().y;
     int b = (a / 4);
@@ -50,12 +54,14 @@ MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
     // Mario esta al principio de la escalera ?
     if (mario->getPos().y > this->e->getY0()) {
         mario->setPos(mario->getPos().x, this->e->getY0());
+        this->clear();
         return ReposoState::getInstance();
     }
 
     // Mario esta al final de la escalera ?
     if (mario->getPos().y < this->e->getY1()) {
         mario->setPos(mario->getPos().x, this->e->getY1());
+        this->clear();
         return ReposoState::getInstance();
     }
 

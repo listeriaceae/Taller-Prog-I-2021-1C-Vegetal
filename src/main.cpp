@@ -128,6 +128,7 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
         delete *nivel;
         *nivel = new Nivel2();
         (*nivel)->addPlayer(mario);
+        mario->setNivel((*nivel));
 
         delete *vista;
         *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag());

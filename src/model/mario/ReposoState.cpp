@@ -49,7 +49,6 @@ MarioState* ReposoState::handleInput(char controls, Mario* mario) {
         Escalera* e = mario->getNivel()->getEscalera(mario->getPos());
 
         if (e == NULL) {
-            // TODO: Pedir las escaleras al nivel
             std::cout << "no hay escaleras en esa plataforma " << mario->getPos().y << std::endl;
             return ReposoState::getInstance();
         }
