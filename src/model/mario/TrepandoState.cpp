@@ -35,6 +35,15 @@ void TrepandoState::setEscalera(Escalera* e) {
 }
 
 MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
+    int a = this->e->getY0() - mario->getPos().y;
+    int b = (a / 4);
+    int c = b % 2;
+    if (c == 0) {
+        this->estado = TREPANDO_0;
+    } else {
+        this->estado = TREPANDO_1;
+    }
+    
     char up = (controls & UP) != 0;
     char down = (controls & DOWN) != 0;
 
@@ -68,5 +77,5 @@ void TrepandoState::perform() {
 void TrepandoState::update() {}
 
 char TrepandoState::getEstado() {
-    return TREPANDO;
+    return this->estado;
 }

@@ -20,4 +20,5 @@ class TrepandoReposoState : public MarioState
         char up;
         char down;
         Escalera* e;
+        char estado;
 };

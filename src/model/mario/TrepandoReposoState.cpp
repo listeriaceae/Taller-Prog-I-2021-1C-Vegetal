@@ -35,6 +35,15 @@ void TrepandoReposoState::setEscalera(Escalera* e) {
 }
 
 MarioState* TrepandoReposoState::handleInput(char controls, Mario* mario) {
+    int a = this->e->getY0() - mario->getPos().y;
+    int b = (a / 4);
+    int c = b % 2;
+    if (c == 0) {
+        this->estado = TREPANDO_0;
+    } else {
+        this->estado = TREPANDO_1;
+    }
+    
     char left = (controls & LEFT) != 0;
     char right = (controls & RIGHT) != 0;
     char space = (controls & SPACE) != 0;
@@ -70,5 +79,5 @@ void TrepandoReposoState::perform() {
 void TrepandoReposoState::update() {}
 
 char TrepandoReposoState::getEstado() {
-    return TREPANDO;
+    return this->estado;
 }
