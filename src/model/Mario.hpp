@@ -23,13 +23,5 @@ class Mario : public Entidad
 
     private:
         MarioState* state;
-        // float velX;
         float velEnSuelo;
-        // float velY;
-        char estado;
-        char estadoEnSuelo;
-
-        // void trepar(char up, char down); TODO
-        void correr(char left, char right);
-        void saltar(char jump);
 };
