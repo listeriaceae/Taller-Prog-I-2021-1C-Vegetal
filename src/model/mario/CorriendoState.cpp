@@ -7,7 +7,7 @@
 #include <iostream>
 #include "../../utils/Constants.hpp"
 
-#define MARIO_VEL_X 0.5
+#define MARIO_VELOCIDAD 0.5
 
 CorriendoState* CorriendoState::instance;
 
@@ -50,7 +50,7 @@ MarioState* CorriendoState::handleInput(char controls, Mario* mario) {
 }
 
 void CorriendoState::perform() {
-    this->velX = (this->right - this->left) * MARIO_VEL_X;
+    this->velX = (this->right - this->left) * MARIO_VELOCIDAD;
 }
 
 void CorriendoState::update() {}

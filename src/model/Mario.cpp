@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <iostream>
 
-#define MAX_DESPLAZAMIENTO_X 224
+#define MAX_DESPLAZAMIENTO_X 228
 #define MAX_DESPLAZAMIENTO_Y 232
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
@@ -22,9 +22,8 @@ void Mario::mover() {
 
     posX += velX;
 
-    if ((posX < 0) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
+    if ((posX < -2) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
         posX -= velX;
-        // velX -= 2 *velX * (this->estado == SALTANDO);
     }
 }
 

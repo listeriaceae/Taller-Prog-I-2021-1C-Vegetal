@@ -2,12 +2,13 @@
 #include "ReposoState.h"
 #include "CorriendoState.h"
 #include "SaltandoState.h"
+#include "TrepandoState.h"
 #include <string>
 #include <stdio.h>
 #include <iostream>
 #include "../../utils/Constants.hpp"
 
-
+#define MARIO_VELOCIDAD_EN_REPOSO 0
 
 ReposoState* ReposoState::instance;
 
@@ -29,13 +30,26 @@ MarioState* ReposoState::handleInput(char controls, Mario* mario) {
     char right = (controls & RIGHT) != 0;
     char space = (controls & SPACE) != 0;
 
-    if(left || right) {
+    char up = (controls & UP) != 0;
+    char down = (controls & DOWN) != 0;
+
+    if (left || right) {
         CorriendoState* state = CorriendoState::getInstance();
         state->setDir(left, right);
         return state;
     }
 
-    if(space) return SaltandoState::getInstance();
+    if (space) {
+        SaltandoState* saltandoState = SaltandoState::getInstance();
+        saltandoState->setDir(left, right, MARIO_VELOCIDAD_EN_REPOSO);
+        return saltandoState;
+    }
+
+    if (up || down) {
+        TrepandoState* trepandoState = TrepandoState::getInstance();
+        trepandoState->setDir(up, down);
+        return trepandoState;
+    }
  
     return ReposoState::instance;
 }
