@@ -51,13 +51,6 @@ MarioState* CorriendoState::handleInput(char controls, Mario* mario) {
 
 void CorriendoState::perform() {
     this->velX = (this->right - this->left) * MARIO_VEL_X;
-    //this->estadoEnSuelo = REPOSO + (CORRIENDO - REPOSO) * (this->velEnSuelo != 0);
-
-    // TODO: actualizar a si está parado en una plataforma
-    // if (this->estado != SALTANDO) {
-    //     this->velX = this->velEnSuelo;
-    //     this->estado = this->estadoEnSuelo;
-    // }
 }
 
 void CorriendoState::update() {}

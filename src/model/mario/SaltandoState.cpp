@@ -37,17 +37,6 @@ MarioState* SaltandoState::handleInput(char controls, Mario* mario) {
     char left = (controls & LEFT) != 0;
     char right = (controls & RIGHT) != 0;
 
-    // Mario esta en una plataforma?
-    // if (mario->getPos().y > 232) {
-    //     return ReposoState::getInstance();
-    // }
-
-    // if(left || right) {
-    //     CorriendoState* state = CorriendoState::getInstance();
-    //     state->setDir(left, right);
-    //     return state;
-    // }
-    // this->velY += GRAVEDAD;
     AireState* aireState = AireState::getInstance();
     aireState->setDir(left, right, this->velY, this->velX);
     return aireState;
@@ -56,7 +45,6 @@ MarioState* SaltandoState::handleInput(char controls, Mario* mario) {
 void SaltandoState::perform() {
     // TODO: actualizar a si está parado en una plataforma
     this->velY = MARIO_VEL_SALTO;
-    //this->velX = (this->right - this->left) * MARIO_VEL_X;
 }
 
 void SaltandoState::update() {}

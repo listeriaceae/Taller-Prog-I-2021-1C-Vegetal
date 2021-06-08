@@ -42,11 +42,6 @@ MarioState* AireState::handleInput(char controls, Mario* mario) {
         return ReposoState::getInstance();
     }
 
-    // if(left || right) {
-    //     CorriendoState* state = CorriendoState::getInstance();
-    //     state->setDir(left, right);
-    //     return state;
-    // }
     return AireState::getInstance();
 }
 
