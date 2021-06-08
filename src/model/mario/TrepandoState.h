@@ -16,6 +16,7 @@ class TrepandoState : public MarioState
 
     private:
         TrepandoState();
+        void clear();
         static TrepandoState* instance;
         char up;
         char down;

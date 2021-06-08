@@ -33,13 +33,15 @@ int main(void)
 
     SDL_Event event;
 
-    Mario *mario = new Mario();
+    Mario* mario = new Mario();
     MarioController *marioController = new MarioController(mario);
 
     Uint8 currentLevel = 1;
     Nivel *nivel = NULL;
     NivelVista *vista = NULL;
     getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
+
+    mario->setNivel(nivel);
 
     // Game loop design by http://gameprogrammingpatterns.com/game-loop.html#play-catch-up
     Uint32 previous, current, elapsed, lag;
@@ -126,6 +128,7 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
         delete *nivel;
         *nivel = new Nivel2();
         (*nivel)->addPlayer(mario);
+        mario->setNivel((*nivel));
 
         delete *vista;
         *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag());

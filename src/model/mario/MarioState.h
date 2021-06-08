@@ -2,7 +2,6 @@
 
 #include "../Mario.hpp"
 #include <string>
-#include <map>
 #include "../nivel/Escalera.h"
 
 class Mario;
@@ -27,7 +26,4 @@ class MarioState {
         std::string name;
         float velX;
         float velY;
-        map<int, Escalera*> escaleras;
-        void inicializarEscaleras();
-        Escalera* getEscalera(punto_t p);
 };
