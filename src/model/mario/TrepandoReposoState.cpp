@@ -1,6 +1,6 @@
 #include "../Mario.hpp"
-#include "TrepandoState.h"
 #include "TrepandoReposoState.h"
+#include "TrepandoState.h"
 #include "CorriendoState.h"
 #include "SaltandoState.h"
 #include "ReposoState.h"
@@ -11,30 +11,30 @@
 
 #define MARIO_VELOCIDAD 0.5
 
-TrepandoState* TrepandoState::instance;
+TrepandoReposoState* TrepandoReposoState::instance;
 
-TrepandoState::TrepandoState() {
-    this->name = "Trepando";
+TrepandoReposoState::TrepandoReposoState() {
+    this->name = "Trepando Reposo";
 }
 
-TrepandoState* TrepandoState::getInstance() {
-    if (TrepandoState::instance == NULL) {
-        TrepandoState::instance = new TrepandoState();
+TrepandoReposoState* TrepandoReposoState::getInstance() {
+    if (TrepandoReposoState::instance == NULL) {
+        TrepandoReposoState::instance = new TrepandoReposoState();
     }
 
-    return TrepandoState::instance;
+    return TrepandoReposoState::instance;
 }
 
-void TrepandoState::setDir(char up, char down){
+void TrepandoReposoState::setDir(char up, char down){
     this->up = up;
     this->down = down;
 };
 
-void TrepandoState::setEscalera(Escalera* e) {
+void TrepandoReposoState::setEscalera(Escalera* e) {
     this->e = e;
 }
 
-MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
+MarioState* TrepandoReposoState::handleInput(char controls, Mario* mario) {
     int a = this->e->getY0() - mario->getPos().y;
     int b = (a / 4);
     int c = b % 2;
@@ -44,17 +44,21 @@ MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
         this->estado = TREPANDO_1;
     }
     
+    char left = (controls & LEFT) != 0;
+    char right = (controls & RIGHT) != 0;
+    char space = (controls & SPACE) != 0;
+    
     char up = (controls & UP) != 0;
     char down = (controls & DOWN) != 0;
 
     // Mario esta al principio de la escalera ?
-    if (mario->getPos().y > this->e->getY0()) {
+    if (mario->getPos().y >= this->e->getY0()) {
         mario->setPos(mario->getPos().x, this->e->getY0());
         return ReposoState::getInstance();
     }
 
-    // Mario esta al final de la escalera ?
-    if (mario->getPos().y < this->e->getY1()) {
+    // // Mario esta al final de la escalera ?
+    if (mario->getPos().y <= this->e->getY1()) {
         mario->setPos(mario->getPos().x, this->e->getY1());
         return ReposoState::getInstance();
     }
@@ -62,20 +66,18 @@ MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
     if (up || down) {
         TrepandoState* trepandoState = TrepandoState::getInstance();
         trepandoState->setDir(up, down);
+        trepandoState->setEscalera(this->e);
         return trepandoState;
     }
 
-    TrepandoReposoState* trepandoReposoState = TrepandoReposoState::getInstance();
-    trepandoReposoState->setEscalera(this->e);
-    return trepandoReposoState;
+    return TrepandoReposoState::getInstance();
 }
 
-void TrepandoState::perform() {
-    this->velY = (this->up - this->down) * MARIO_VELOCIDAD;
+void TrepandoReposoState::perform() {
 }
 
-void TrepandoState::update() {}
+void TrepandoReposoState::update() {}
 
-char TrepandoState::getEstado() {
+char TrepandoReposoState::getEstado() {
     return this->estado;
 }

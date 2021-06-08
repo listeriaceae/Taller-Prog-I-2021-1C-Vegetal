@@ -19,7 +19,7 @@ run: clean all
 	clear
 	./$(BIN)/$(EXECUTABLE)
  
-$(BIN)/$(EXECUTABLE): $(SRC)/*.cpp  $(SRC)/view/*.cpp $(SRC)/model/*.cpp $(SRC)/model/mario/*.cpp $(SRC)/controller/*.cpp
+$(BIN)/$(EXECUTABLE): $(SRC)/*.cpp  $(SRC)/view/*.cpp $(SRC)/model/*.cpp $(SRC)/model/mario/*.cpp $(SRC)/model/nivel/*.cpp $(SRC)/controller/*.cpp
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES) $(LD_FLAGS)
  
 clean:

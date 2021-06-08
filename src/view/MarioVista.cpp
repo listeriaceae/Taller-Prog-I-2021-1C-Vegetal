@@ -48,7 +48,6 @@ void MarioVista::setColor(int nroJugador) {
 }
 
 void MarioVista::mostrar(punto_t pos, char estado) {
-
     int nextX = round(pos.x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     switch(estado) {
         case REPOSO:
@@ -60,8 +59,9 @@ void MarioVista::mostrar(punto_t pos, char estado) {
         case SALTANDO:
             updateSaltando(nextX);
             break;
-        case TREPANDO:
-            updateTrepando(pos);
+        case TREPANDO_0:
+        case TREPANDO_1:
+            updateTrepando(pos, estado);
             break;
         default:
             break;
@@ -88,45 +88,12 @@ void MarioVista::updateSaltando(int nextX) {
     srcRect.x = MARIO_SALTO_INDEX * MARIO_SPRITE_INDEX_SIZE;
 }
 
-void MarioVista::updateTrepando(punto_t pos) {
-    // TREPANDO
-    // La imagen de Mario de espaldas es mas ancha que la de perfil
+void MarioVista::updateTrepando(punto_t pos, char estado) {
     srcRect.h = ALTO_MARIO;
     srcRect.w = ANCHO_MARIO;
-    srcRect.x = 72; // Escalar 1
+    srcRect.x = 70;
 
-    bool flag = true;
-    if (pos.y >= 232){
-        srcRect.x = 142;
-    }
-    else if (pos.y >= 229) // 1 escalon
-        flag = true;
-    else if (pos.y >= 225) // 2 escalon
-        flag = false;
-    else if (pos.y >= 221) // 3
-        flag = true;
-    else if (pos.y >= 217) // 4
-        flag = false;
-    else if (pos.y >= 213) // 5
-        flag = true;
-    else if (pos.y >= 209) // 6
-        flag = false;
-    else if (pos.y >= 205) // 7
-        flag = true;
-    else if (pos.y >= 201) // 8
-        flag = false;
-    else if (pos.y >= 197) // 9
-        flag = true;
-    else if (pos.y >= 193) {
-        srcRect.x = 95; // Escalar 2
-    } else if (pos.y >= 191) {
-        srcRect.x = 118; // Escalar 3
-    } else if (pos.y >= 188)
-        flag = false;
-    else {
-        srcRect.w = 17;
-        srcRect.x = 142;
-    } 
+    bool flag = (estado == TREPANDO_0);
 
     flip = (SDL_RendererFlip)(flag);
 }

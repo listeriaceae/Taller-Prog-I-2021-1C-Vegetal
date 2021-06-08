@@ -2,8 +2,12 @@
 
 #include "../Mario.hpp"
 #include <string>
+#include <map>
+#include "../nivel/Escalera.h"
 
 class Mario;
+
+using namespace std;
 
 class MarioState {
     public:
@@ -23,4 +27,7 @@ class MarioState {
         std::string name;
         float velX;
         float velY;
+        map<int, Escalera*> escaleras;
+        void inicializarEscaleras();
+        Escalera* getEscalera(punto_t p);
 };
