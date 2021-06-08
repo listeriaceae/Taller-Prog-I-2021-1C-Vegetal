@@ -45,7 +45,7 @@ MarioState* ReposoState::handleInput(char controls, Mario* mario) {
     }
 
     if (up || down) {
-        // Pedir las escaleras al nivel
+        // TODO: Pedir las escaleras al nivel
         Escalera* e = this->getEscalera(mario->getPos());
 
         if (e == NULL) {

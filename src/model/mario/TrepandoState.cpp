@@ -1,5 +1,6 @@
 #include "../Mario.hpp"
 #include "TrepandoState.h"
+#include "TrepandoReposoState.h"
 #include "CorriendoState.h"
 #include "SaltandoState.h"
 #include "ReposoState.h"
@@ -34,20 +35,16 @@ void TrepandoState::setEscalera(Escalera* e) {
 }
 
 MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
-    char left = (controls & LEFT) != 0;
-    char right = (controls & RIGHT) != 0;
-    char space = (controls & SPACE) != 0;
-
     char up = (controls & UP) != 0;
     char down = (controls & DOWN) != 0;
 
-    // Mario esta en plataforma 0
+    // Mario esta al principio de la escalera ?
     if (mario->getPos().y > this->e->getY0()) {
         mario->setPos(mario->getPos().x, this->e->getY0());
         return ReposoState::getInstance();
     }
 
-    // Mario esta en plataforma 1
+    // Mario esta al final de la escalera ?
     if (mario->getPos().y < this->e->getY1()) {
         mario->setPos(mario->getPos().x, this->e->getY1());
         return ReposoState::getInstance();
@@ -59,7 +56,9 @@ MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
         return trepandoState;
     }
 
-    return ReposoState::getInstance();
+    TrepandoReposoState* trepandoReposoState = TrepandoReposoState::getInstance();
+    trepandoReposoState->setEscalera(this->e);
+    return trepandoReposoState;
 }
 
 void TrepandoState::perform() {
