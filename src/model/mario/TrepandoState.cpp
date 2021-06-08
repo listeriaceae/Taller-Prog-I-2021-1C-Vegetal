@@ -29,6 +29,10 @@ void TrepandoState::setDir(char up, char down){
     this->down = down;
 };
 
+void TrepandoState::setEscalera(Escalera* e) {
+    this->e = e;
+}
+
 MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
     char left = (controls & LEFT) != 0;
     char right = (controls & RIGHT) != 0;
@@ -37,19 +41,19 @@ MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
     char up = (controls & UP) != 0;
     char down = (controls & DOWN) != 0;
 
-    if(space) {
-        SaltandoState* saltandoState = SaltandoState::getInstance();
-        saltandoState->setDir(left, right, this->velX);
-        return saltandoState;
+    // Mario esta en plataforma 0
+    if (mario->getPos().y > this->e->getY0()) {
+        mario->setPos(mario->getPos().x, this->e->getY0());
+        return ReposoState::getInstance();
     }
 
-    if(left || right) {
-        CorriendoState* corriendoState = CorriendoState::getInstance();
-        corriendoState->setDir(left, right);
-        return corriendoState;
+    // Mario esta en plataforma 1
+    if (mario->getPos().y < this->e->getY1()) {
+        mario->setPos(mario->getPos().x, this->e->getY1());
+        return ReposoState::getInstance();
     }
 
-     if (up || down) {
+    if (up || down) {
         TrepandoState* trepandoState = TrepandoState::getInstance();
         trepandoState->setDir(up, down);
         return trepandoState;

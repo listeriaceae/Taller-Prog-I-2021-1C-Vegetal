@@ -13,7 +13,6 @@
 ReposoState* ReposoState::instance;
 
 ReposoState::ReposoState() : MarioState() {
-    // std::cout << "CREANDO ReposoState " << std::endl;
     this->name = "Reposo";
 }
 
@@ -46,12 +45,23 @@ MarioState* ReposoState::handleInput(char controls, Mario* mario) {
     }
 
     if (up || down) {
+        // Pedir las escaleras al nivel
+        Escalera* e = this->getEscalera(mario->getPos());
+
+        if (e == NULL) {
+            // no hay escaleras en ese piso
+            std::cout << "no hay escaleras en esa plataforma " << mario->getPos().y << std::endl;
+            return ReposoState::getInstance();
+        }
+
+        mario->setPos(e->getCenter(), mario->getPos().y);
         TrepandoState* trepandoState = TrepandoState::getInstance();
         trepandoState->setDir(up, down);
+        trepandoState->setEscalera(e);
         return trepandoState;
     }
  
-    return ReposoState::instance;
+    return ReposoState::getInstance();
 }
 
 void ReposoState::perform() {

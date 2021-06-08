@@ -12,10 +12,12 @@ class TrepandoState : public MarioState
         virtual char getEstado();
         static TrepandoState* getInstance();
         void setDir(char up, char down);
+        void setEscalera(Escalera* e);
 
     private:
         TrepandoState();
         static TrepandoState* instance;
         char up;
         char down;
+        Escalera* e;
 };

@@ -97,7 +97,7 @@ int main(void)
 void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration::GameConfiguration *config, Uint8 currentLevel, SDL_Renderer *renderer) {
     if (currentLevel == 1) {
         logger::Logger::getInstance().logInformation("Level 1 starts");
-        mario->setStartPos(N1_MARIO_POS_X, N1_MARIO_POS_Y);
+        mario->setPos(N1_MARIO_POS_X, N1_MARIO_POS_Y);
 
         *nivel = new Nivel1();
         (*nivel)->addPlayer(mario);
@@ -121,7 +121,7 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
     }
     if (currentLevel == 2) {
         logger::Logger::getInstance().logInformation("Level 2 starts");
-        mario->setStartPos(N2_MARIO_POS_X, N2_MARIO_POS_Y);
+        mario->setPos(N2_MARIO_POS_X, N2_MARIO_POS_Y);
 
         delete *nivel;
         *nivel = new Nivel2();

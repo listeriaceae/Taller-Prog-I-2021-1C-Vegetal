@@ -16,7 +16,7 @@ class Mario : public Entidad
 {
     public: 
         Mario();
-        void setStartPos(float x, float y);
+        void setPos(float x, float y);
         void mover();
         void setEstado(char controls);
         estadoMario_t getEstado();

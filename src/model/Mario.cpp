@@ -22,7 +22,7 @@ void Mario::mover() {
 
     posX += velX;
 
-    if ((posX < -2) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
+    if ((posX < -4) || ((posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
         posX -= velX;
     }
 }
@@ -33,10 +33,9 @@ void Mario::setEstado(char controls) {
     std::cout << "ESTADO -> " << this->state->getName() << std::endl;
 }
 
-void Mario::setStartPos(float x, float y) {
-    posX = x;
-    posY = y;
-    this->state = ReposoState::getInstance();
+void Mario::setPos(float x, float y) {
+    this->posX = x;
+    this->posY = y;
 }
 
 estadoMario_t Mario::getEstado() {
