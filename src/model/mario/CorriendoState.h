@@ -9,9 +9,10 @@ class CorriendoState : public MarioState
         virtual MarioState* handleInput(char controls, Mario* mario);
         virtual void update();
         virtual void perform();
+        virtual char getEstado();
         static CorriendoState* getInstance();
         void setDir(char left, char right);
-    
+
     private:
         CorriendoState();
         static CorriendoState* instance;

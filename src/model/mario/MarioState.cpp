@@ -9,3 +9,11 @@ MarioState::MarioState() {
 std::string MarioState::getName() {
     return this->name;
 }
+
+float MarioState::getVelY() {
+    return this->velY;
+}
+
+float MarioState::getVelX() {
+    return this->velX;
+}

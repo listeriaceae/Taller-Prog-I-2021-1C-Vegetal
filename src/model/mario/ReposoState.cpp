@@ -3,9 +3,10 @@
 #include "CorriendoState.h"
 #include "SaltandoState.h"
 #include <string>
-
 #include <stdio.h>
 #include <iostream>
+#include "../../utils/Constants.hpp"
+
 
 
 ReposoState* ReposoState::instance;
@@ -43,4 +44,8 @@ void ReposoState::perform() {
 }
 
 void ReposoState::update() {  
+}
+
+char ReposoState::getEstado() {
+    return REPOSO;
 }

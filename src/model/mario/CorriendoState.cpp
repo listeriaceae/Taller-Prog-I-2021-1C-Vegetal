@@ -3,9 +3,9 @@
 #include "SaltandoState.h"
 #include "ReposoState.h"
 #include <string>
-
 #include <stdio.h>
 #include <iostream>
+#include "../../utils/Constants.hpp"
 
 #define MARIO_VEL_X 0.5
 
@@ -34,12 +34,16 @@ MarioState* CorriendoState::handleInput(char controls, Mario* mario) {
     char right = (controls & RIGHT) != 0;
     char space = (controls & SPACE) != 0;
 
-    if(space) return SaltandoState::getInstance();
+    if(space) {
+        SaltandoState* saltandoState = SaltandoState::getInstance();
+        saltandoState->setDir(left, right, this->velX);
+        return saltandoState;
+    }
 
     if(left || right) {
-        CorriendoState* state = CorriendoState::getInstance();
-        state->setDir(left, right);
-        return state;
+        CorriendoState* corriendoState = CorriendoState::getInstance();
+        corriendoState->setDir(left, right);
+        return corriendoState;
     }
 
     return ReposoState::getInstance();
@@ -57,3 +61,7 @@ void CorriendoState::perform() {
 }
 
 void CorriendoState::update() {}
+
+char CorriendoState::getEstado() {
+    return CORRIENDO;
+}

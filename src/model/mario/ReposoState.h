@@ -9,6 +9,7 @@ class ReposoState : public MarioState
         virtual MarioState* handleInput(char controls, Mario* mario);
         virtual void update();
         virtual void perform();
+        virtual char getEstado();
         static ReposoState* getInstance();
     
     private:
