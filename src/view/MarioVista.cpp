@@ -61,6 +61,7 @@ void MarioVista::mostrar(punto_t pos, char estado) {
             break;
         case TREPANDO_0:
         case TREPANDO_1:
+        case TREPANDO_FINAL:
             updateTrepando(pos, estado);
             break;
         default:
@@ -89,13 +90,19 @@ void MarioVista::updateSaltando(int nextX) {
 }
 
 void MarioVista::updateTrepando(punto_t pos, char estado) {
-    srcRect.h = ALTO_MARIO;
-    srcRect.w = ANCHO_MARIO;
-    srcRect.x = 70;
+    if( estado == TREPANDO_0 
+       || estado == TREPANDO_1 ) {
+        srcRect.h = ALTO_MARIO;
+        srcRect.w = ANCHO_MARIO;
+        srcRect.x = 70;
 
-    bool flag = (estado == TREPANDO_0);
+        bool flag = (estado == TREPANDO_0);
 
-    flip = (SDL_RendererFlip)(flag);
+        flip = (SDL_RendererFlip)(flag);
+    } else {
+        srcRect.w = 18;
+        srcRect.x = 142;
+    }
 }
 
 MarioVista::~MarioVista() {
