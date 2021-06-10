@@ -32,7 +32,7 @@ MarioState* ReposoState::handleInput(char controls, Mario* mario) {
     char up = (controls & UP) != 0;
     char down = (controls & DOWN) != 0;
 
-    if (left || right) {
+    if (left != right) {
         CorriendoState* state = CorriendoState::getInstance();
         state->setDir(left, right);
         return state;
@@ -44,7 +44,7 @@ MarioState* ReposoState::handleInput(char controls, Mario* mario) {
         return saltandoState;
     }
 
-    if (up || down) {
+    if (up != down) {
         
         Escalera* e = mario->getNivel()->getEscalera(mario->getPos());
 

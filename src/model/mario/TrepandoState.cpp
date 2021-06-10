@@ -66,7 +66,7 @@ MarioState* TrepandoState::handleInput(char controls, Mario* mario) {
         return TrepandoFinalState::getInstance();
     }
 
-    if (up || down) {
+    if (up != down) {
         TrepandoState* trepandoState = TrepandoState::getInstance();
         trepandoState->setDir(up, down);
         return trepandoState;

@@ -40,7 +40,7 @@ MarioState* CorriendoState::handleInput(char controls, Mario* mario) {
         return saltandoState;
     }
 
-    if(left || right) {
+    if(left != right) {
         CorriendoState* corriendoState = CorriendoState::getInstance();
         corriendoState->setDir(left, right);
         return corriendoState;
