@@ -14,6 +14,7 @@ class Mario;
 class Nivel
 {
     public:
+        Nivel();
         void addPlayer(Mario *jugador);
         void addEnemies(unsigned int amount);
         virtual void update() = 0;
@@ -26,6 +27,7 @@ class Nivel
         std::list<EnemigoFuego*> enemies;
         std::list<Mario*> jugadores;
         std::map<int, Escalera*> escaleras;
+        estadoNivel_t *estadoNivel;
 
         void updatePlayers();
         void updateEnemies();

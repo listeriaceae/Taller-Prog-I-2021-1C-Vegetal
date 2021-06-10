@@ -55,15 +55,15 @@ Escalera* Nivel2::getEscalera(punto_t p) {
 }
 
 estadoNivel_t* Nivel2::getEstado() {
-    estadoNivel_t *estado = new estadoNivel_t();
-
+    estadoNivel->barrels.clear();
     for (Barril *barril : this->barriles) {
-        estado->barrels.push_back(barril->getPos());
+        estadoNivel->barrels.push_back(barril->getPos());
     }
+    estadoNivel->players.clear();
     for (Mario *player : this->jugadores) {
-        estado->players.push_back(player->getEstado());
+        estadoNivel->players.push_back(player->getEstado());
     }
-    return estado;
+    return estadoNivel;
 }
 
 Nivel2::~Nivel2() {

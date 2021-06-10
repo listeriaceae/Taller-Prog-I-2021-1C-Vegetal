@@ -3,6 +3,10 @@
 #include "../utils/Constants.hpp"
 #include "../logger.h"
 
+Nivel::Nivel() {
+    estadoNivel = new estadoNivel_t();
+}
+
 void Nivel::addPlayer(Mario *jugador) {
     jugadores.push_back(jugador);
 }
@@ -37,6 +41,11 @@ void Nivel::updateEnemies() {
 }
 
 Nivel::~Nivel() {
+    estadoNivel->barrels.clear();
+    estadoNivel->enemies.clear();
+    estadoNivel->platforms.clear();
+    estadoNivel->players.clear();
+    delete estadoNivel;
     jugadores.clear();
 
     std::vector<Plataforma*>::iterator it;

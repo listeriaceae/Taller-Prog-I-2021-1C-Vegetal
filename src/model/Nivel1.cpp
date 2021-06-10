@@ -82,18 +82,20 @@ void Nivel1::updatePlatforms() {
 }
 
 estadoNivel_t* Nivel1::getEstado() {
-    estadoNivel_t *estado = new estadoNivel_t();
 
+    estadoNivel->enemies.clear();
     for (EnemigoFuego *enemy : this->enemies) {
-        estado->enemies.push_back(enemy->getPos());
+        estadoNivel->enemies.push_back(enemy->getPos());
     }
+    estadoNivel->platforms.clear();
     for (PlataformaMovil *plataforma : this->plataformasMoviles) {
-        estado->platforms.push_back(plataforma->getPos());
+        estadoNivel->platforms.push_back(plataforma->getPos());
     }
+    estadoNivel->players.clear();
     for (Mario *player : this->jugadores) {
-        estado->players.push_back(player->getEstado());
+        estadoNivel->players.push_back(player->getEstado());
     }
-    return estado;
+    return estadoNivel;
 }
 
 Nivel1::~Nivel1() {
