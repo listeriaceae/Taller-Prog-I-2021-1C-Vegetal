@@ -11,7 +11,7 @@ class Nivel2 : public Nivel
         ~Nivel2();
 
     private:
-        std::list<Barril *> barriles;
+        std::vector<Barril*> barriles;
         unsigned int tick = 0;
 
         void addBarrel();

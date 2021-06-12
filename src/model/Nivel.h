@@ -21,7 +21,7 @@ class Nivel
     protected:
         Stage *stage;
         std::vector<Platform *> platforms;
-        std::list<Mario *> jugadores;
-        std::list<EnemigoFuego *> enemies;
+        std::vector<EnemigoFuego*> enemies;
+        std::vector<Mario*> jugadores;
         estadoNivel_t *estadoNivel;
 };

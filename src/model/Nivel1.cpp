@@ -63,19 +63,17 @@ void Nivel1::update() {
 }
 
 estadoNivel_t* Nivel1::getEstado() {
-
-    estadoNivel->enemies.clear();
-    for (EnemigoFuego *enemy : this->enemies) {
-        estadoNivel->enemies.push_back(enemy->getPos());
+    
+    for (unsigned int i = 0; i < this->enemies.size(); i++) {
+        estadoNivel->enemies[i] = enemies.at(i)->getPos();
     }
-    estadoNivel->platforms.clear();
-    for (MovingPlatform *platform : this->movingPlatforms) {
-        estadoNivel->platforms.push_back(platform->getPos());
+    for (unsigned int i = 0; i < 12; i++) {
+        estadoNivel->platforms[i] = movingPlatforms[i]->getPos();
     }
-    estadoNivel->players.clear();
-    for (Mario *player : this->jugadores) {
-        estadoNivel->players.push_back(player->getEstado());
+    for(unsigned int i = 0; i < this->jugadores.size(); i++) {
+        estadoNivel->players[i] = jugadores.at(i)->getEstado();
     }
+    
     return estadoNivel;
 }
 

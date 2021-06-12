@@ -17,10 +17,6 @@ bool Nivel::isComplete() {
 }
 
 Nivel::~Nivel() {
-    estadoNivel->barrels.clear();
-    estadoNivel->enemies.clear();
-    estadoNivel->platforms.clear();
-    estadoNivel->players.clear();
     delete estadoNivel;
 
     delete stage;
