@@ -1,56 +1,26 @@
-#include "../Mario.hpp"
-#include "SaltandoState.h"
 #include "AireState.h"
-#include "ReposoState.h"
-#include "CorriendoState.h"
-#include <string>
-#include <stdio.h>
-#include <iostream>
+#include "SueloState.h"
 #include "../../utils/Constants.hpp"
 
-#define MARIO_VEL_SALTO 1
 #define GRAVEDAD -0.03125
 
-AireState* AireState::instance;
-
-AireState::AireState() {
-    this->name = "Aire";
-}
+AireState *AireState::instance = NULL;
 
 AireState* AireState::getInstance() {
-    if (AireState::instance == NULL) {
-        AireState::instance = new AireState();
+    if (instance == NULL) {
+        instance = new AireState();
     }
-
-    return AireState::instance;
+    return instance;
 }
 
-void AireState::setVel(float velY, float velX){
-    this->velY = velY;
-    this->velX = velX;
-};
-
-
-MarioState* AireState::handleInput(char controls, Mario* mario) {
-    char left = (controls & LEFT) != 0;
-    char right = (controls & RIGHT) != 0;
-
-    // Mario esta en una plataforma?
-    if (mario->getPos().y > 232) {
-        mario->setPos(mario->getPos().x, 232);
-        return ReposoState::getInstance();
-    }
-
-    return AireState::getInstance();
+MarioState* AireState::handleInput(char controls) {
+    return instance;
 }
 
-void AireState::perform() {
-}
-
-void AireState::update() {
-     this->velY += GRAVEDAD;
-}
-
-char AireState::getEstado() {
-    return SALTANDO;
+MarioState* AireState::update(float *x, float *y) {
+    velX -= velX * 2 * (*x < 0 || *x > ANCHO_NIVEL - ANCHO_MARIO);
+    this->velY += GRAVEDAD;
+    *x += velX;
+    *y -= velY;
+    return instance;
 }

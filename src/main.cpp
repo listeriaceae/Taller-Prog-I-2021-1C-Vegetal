@@ -101,12 +101,12 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
         logger::Logger::getInstance().logInformation("Level 1 starts");
         mario->setPos(N1_MARIO_POS_X, N1_MARIO_POS_Y);
 
-        *nivel = new Nivel1();
-        (*nivel)->addPlayer(mario);
+        Nivel1 *nivel1 = new Nivel1();
+        nivel1->addPlayer(mario);
 
         auto enemies = config->getEnemies();
         for (auto enemy: enemies) {
-            if (enemy.getType().compare("Fuego") == 0) (*nivel)->addEnemies(enemy.getQuantity());
+            if (enemy.getType().compare("Fuego") == 0) nivel1->addEnemies(enemy.getQuantity());
             logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
             logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
         }
@@ -119,6 +119,7 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
             logger::Logger::getInstance().logDebug("Stage 1 background img: " + rutaImagen);
             (*vista)->setBackground(rutaImagen);
         }
+        *nivel = nivel1;
         return;
     }
     if (currentLevel == 2) {

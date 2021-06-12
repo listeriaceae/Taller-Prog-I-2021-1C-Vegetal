@@ -1,29 +1,28 @@
 #pragma once
 
-#include "../Mario.hpp"
-#include <string>
-#include "../nivel/Escalera.h"
+#include "../stage/Stage.h"
 
-class Mario;
+#define SPACE 128
+#define UP 8
+#define DOWN 4
+#define LEFT 2
+#define RIGHT 1
 
-using namespace std;
+#define MARIO_VEL_X 0.5f
+#define MARIO_VEL_SALTO 1.f
+#define MARIO_VEL_TREPAR 0.5f
 
 class MarioState {
     public:
         MarioState();
-        virtual MarioState* handleInput(char controls, Mario* mario) = 0;
-        virtual void update() = 0;
-        virtual void perform() = 0;
-        virtual char getEstado() = 0;
+        virtual MarioState* handleInput(char controls) = 0;
+        virtual MarioState* update(float *x, float *y) = 0;
+        char getEstado();
         virtual ~MarioState() = default;
 
-        std::string getName();
-        float getVelY();
-        float getVelX();
-
-
     protected:
-        std::string name;
-        float velX;
-        float velY;
+        static Stage *stage;
+        static char estado;
+        static float velX;
+        static float velY;
 };

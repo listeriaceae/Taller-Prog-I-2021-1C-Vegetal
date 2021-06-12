@@ -1,46 +1,17 @@
 #include "Mario.hpp"
 #include "../utils/Constants.hpp"
-#include "mario/ReposoState.h"
-#include "Nivel.h"
-
-#include <stdio.h>
-#include <iostream>
-
-#define MAX_DESPLAZAMIENTO_X 228
-#define MAX_DESPLAZAMIENTO_Y 232
-#define MIN_DESPLAZAMIENTO_X -4
+#include "mario/SueloState.h"
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
-    this->state = ReposoState::getInstance();
-}
-
-void Mario::setNivel(Nivel* nivel) {
-    this->nivel = nivel;
-}
-
-Nivel* Mario::getNivel() {
-    return this->nivel;
+    this->state = SueloState::getInstance();
 }
 
 void Mario::mover() {
-    this->state->update();
-    float velY = this->state->getVelY();
-    float velX = this->state->getVelX();
-
-    this->posY -= velY;
-
-    this->posX += velX;
-
-    if ((this->posX < MIN_DESPLAZAMIENTO_X) 
-        || ((this->posX + ANCHO_MARIO) > MAX_DESPLAZAMIENTO_X)) {
-        this->posX -= velX;
-    }
+    this->state = this->state->update(&posX, &posY);
 }
 
 void Mario::setEstado(char controls) {
-    this->state = this->state->handleInput(controls, this);
-    this->state->perform();
-    std::cout << "ESTADO -> " << this->state->getName() << std::endl;
+    this->state = this->state->handleInput(controls);
 }
 
 void Mario::setPos(float x, float y) {

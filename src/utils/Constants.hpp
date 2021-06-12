@@ -79,9 +79,8 @@ const std::string IMG_DEFAULT = "res/default.png";
 
 enum {
     REPOSO,
+    DE_ESPALDAS,
     CORRIENDO,
     SALTANDO,
-    TREPANDO_0,
-    TREPANDO_1,
-    TREPANDO_FINAL
+    TREPANDO,
 };

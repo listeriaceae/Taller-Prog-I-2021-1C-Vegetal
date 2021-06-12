@@ -6,7 +6,6 @@
 #include "../utils/window.hpp"
 
 #define MARIO_SPRITE_INDEX_SIZE 24
-#define MARIO_SALTO_INDEX 14
 #define TIEMPO_POR_FRAME 4
 #define CANT_FRAMES 4
 
@@ -49,9 +48,11 @@ void MarioVista::setColor(int nroJugador) {
 
 void MarioVista::mostrar(punto_t pos, char estado) {
     int nextX = round(pos.x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    int nextY = round(pos.y * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     switch(estado) {
         case REPOSO:
-            updateReposo();
+        case DE_ESPALDAS:
+            updateReposo(estado);
             break;
         case CORRIENDO:
             updateCorriendo(nextX);
@@ -59,10 +60,8 @@ void MarioVista::mostrar(punto_t pos, char estado) {
         case SALTANDO:
             updateSaltando(nextX);
             break;
-        case TREPANDO_0:
-        case TREPANDO_1:
-        case TREPANDO_FINAL:
-            updateTrepando(pos, estado);
+        case TREPANDO:
+            updateTrepando(nextY);
             break;
         default:
             break;
@@ -73,8 +72,8 @@ void MarioVista::mostrar(punto_t pos, char estado) {
     SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0., NULL, flip);
 }
 
-void MarioVista::updateReposo() {
-    srcRect.x = 0;
+void MarioVista::updateReposo(char estado) {
+    srcRect.x = 6 * (estado == DE_ESPALDAS) * MARIO_SPRITE_INDEX_SIZE;
 }
 
 void MarioVista::updateCorriendo(int nextX) {
@@ -86,23 +85,13 @@ void MarioVista::updateCorriendo(int nextX) {
 
 void MarioVista::updateSaltando(int nextX) {
     flip = (SDL_RendererFlip)((dstRect.x < nextX) + (int)flip * (dstRect.x == nextX));
-    srcRect.x = MARIO_SALTO_INDEX * MARIO_SPRITE_INDEX_SIZE;
+    srcRect.x = 14 * MARIO_SPRITE_INDEX_SIZE;
 }
 
-void MarioVista::updateTrepando(punto_t pos, char estado) {
-    if( estado == TREPANDO_0 
-       || estado == TREPANDO_1 ) {
-        srcRect.h = ALTO_MARIO;
-        srcRect.w = ANCHO_MARIO;
-        srcRect.x = 70;
-
-        bool flag = (estado == TREPANDO_0);
-
-        flip = (SDL_RendererFlip)(flag);
-    } else {
-        srcRect.w = 18;
-        srcRect.x = 142;
-    }
+void MarioVista::updateTrepando(int nextY) {
+    tiempo += dstRect.y != nextY;
+    flip = (SDL_RendererFlip)((tiempo / TIEMPO_POR_FRAME) % 2);
+    srcRect.x = 3 * MARIO_SPRITE_INDEX_SIZE;
 }
 
 MarioVista::~MarioVista() {

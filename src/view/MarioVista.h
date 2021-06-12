@@ -20,8 +20,8 @@ class MarioVista
         int tiempo;
         static int totalJugadores;
 
-        void updateReposo();
+        void updateReposo(char estado);
         void updateCorriendo(int nextX);
         void updateSaltando(int nextX);
-        void updateTrepando(punto_t pos, char estado);
+        void updateTrepando(int nextY);
 };
