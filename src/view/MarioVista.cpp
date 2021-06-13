@@ -5,8 +5,9 @@
 #include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
-#define MARIO_SPRITE_INDEX_SIZE 24
+#define MARIO_SPRITE_SIZE 24
 #define MARIO_SALTO_INDEX 14
+#define MARIO_TREPANDO_INDEX 3
 #define TIEMPO_POR_FRAME 4
 #define CANT_FRAMES 4
 
@@ -81,12 +82,12 @@ void MarioVista::updateCorriendo(int nextX) {
     tiempo = (tiempo + 1) % (TIEMPO_POR_FRAME * CANT_FRAMES);
     flip = (SDL_RendererFlip)((dstRect.x < nextX) + (int)flip * (dstRect.x == nextX));
     int frameActual = (tiempo / TIEMPO_POR_FRAME);
-    srcRect.x = ((frameActual & 1) << ((frameActual & 2) >> 1)) * MARIO_SPRITE_INDEX_SIZE;  // 0, 1, 0, 2...
+    srcRect.x = ((frameActual & 1) << ((frameActual & 2) >> 1)) * MARIO_SPRITE_SIZE;  // 0, 1, 0, 2...
 }
 
 void MarioVista::updateSaltando(int nextX) {
     flip = (SDL_RendererFlip)((dstRect.x < nextX) + (int)flip * (dstRect.x == nextX));
-    srcRect.x = MARIO_SALTO_INDEX * MARIO_SPRITE_INDEX_SIZE;
+    srcRect.x = MARIO_SALTO_INDEX * MARIO_SPRITE_SIZE;
 }
 
 void MarioVista::updateTrepando(punto_t pos, char estado) {
@@ -94,7 +95,7 @@ void MarioVista::updateTrepando(punto_t pos, char estado) {
        || estado == TREPANDO_1 ) {
         srcRect.h = ALTO_MARIO;
         srcRect.w = ANCHO_MARIO;
-        srcRect.x = 70;
+        srcRect.x = MARIO_TREPANDO_INDEX * MARIO_SPRITE_SIZE;
 
         bool flag = (estado == TREPANDO_0);
 
