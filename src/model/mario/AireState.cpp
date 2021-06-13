@@ -18,6 +18,7 @@ MarioState* AireState::handleInput(char controls) {
 }
 
 MarioState* AireState::update(float *x, float *y) {
+    if (stage->collide(x, y, &velX, &velY)) return SueloState::getInstance();
     velX -= velX * 2 * (*x < 0 || *x > ANCHO_NIVEL - ANCHO_MARIO);
     this->velY += GRAVEDAD;
     *x += velX;

@@ -28,10 +28,10 @@ MarioState* TrepandoState::handleInput(char controls) {
 }
 
 MarioState* TrepandoState::update(float *x, float *y) {
-    if ((velY <= 0.f && std::abs(ladder->getBottom() - *y) <= 0.25f) ||
-        (velY >= 0.f && std::abs(ladder->getTop() - *y) <= 0.25f))
+    if ((velY <= 0 && std::abs(ladder->getBottom() - *y) <= MARIO_VEL_TREPAR / 2) ||
+        (velY >= 0 && std::abs(ladder->getTop() - *y) <= MARIO_VEL_TREPAR / 2))
     {
-        velY = 0.f;
+        velY = 0;
         estado = DE_ESPALDAS;
         return SueloState::getInstance();
     }

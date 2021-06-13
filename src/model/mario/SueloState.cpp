@@ -33,13 +33,11 @@ MarioState* SueloState::handleInput(char controls) {
 }
 
 MarioState* SueloState::update(float *x, float *y) {
+    if (!stage->collide(x, y, &velX, &velY)) return AireState::getInstance();
 
-    Ladder *ladder = stage->getLadder(*x, *y);
-    if (ladder != NULL &&
-        ((velY > 0.f && std::abs(ladder->getBottom() - *y) < 1.f) ||
-        (velY < 0.f && std::abs(ladder->getTop() - *y) < 1.f)))
-    {
-        *x = ladder->getCenter();
+    Ladder *ladder = stage->getLadder(*x, *y, velY);
+    if (ladder != NULL && std::abs(ladder->getX() - *x) < 2) {
+        *x = ladder->getX();
         TrepandoState *trepandoState = TrepandoState::getInstance();
         trepandoState->setLadder(ladder);
         return trepandoState;

@@ -6,6 +6,9 @@
 #define ANCHO_NIVEL 224
 #define ALTO_NIVEL 256
 
+#define ANCHO_TILE 16
+#define ALTO_TILE 16
+
 #define ANCHO_BARRIL 12
 #define ALTO_BARRIL 10
 
