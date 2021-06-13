@@ -8,6 +8,7 @@
 #define MARIO_SPRITE_SIZE 24
 #define MARIO_SALTO_INDEX 14
 #define MARIO_TREPANDO_INDEX 3
+#define MARIO_DE_ESPALDAS_INDEX 6
 #define TIEMPO_POR_FRAME 4
 #define CANT_FRAMES 4
 
@@ -93,16 +94,13 @@ void MarioVista::updateSaltando(int nextX) {
 void MarioVista::updateTrepando(punto_t pos, char estado) {
     if( estado == TREPANDO_0 
        || estado == TREPANDO_1 ) {
-        srcRect.h = ALTO_MARIO;
-        srcRect.w = ANCHO_MARIO;
         srcRect.x = MARIO_TREPANDO_INDEX * MARIO_SPRITE_SIZE;
 
         bool flag = (estado == TREPANDO_0);
 
         flip = (SDL_RendererFlip)(flag);
     } else {
-        srcRect.w = 18;
-        srcRect.x = 142;
+        srcRect.x = MARIO_DE_ESPALDAS_INDEX * MARIO_SPRITE_SIZE;
     }
 }
 
