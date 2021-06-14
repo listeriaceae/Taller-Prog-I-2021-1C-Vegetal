@@ -8,7 +8,7 @@
 #define RIGHT 1
 
 #define MARIO_VEL_X 0.5f
-#define MARIO_VEL_SALTO 1.f
+#define MARIO_VEL_SALTO 2.f
 #define MARIO_VEL_TREPAR 0.5f
 
 class MarioState {

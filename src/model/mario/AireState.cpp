@@ -2,7 +2,7 @@
 #include "SueloState.h"
 #include "../../utils/Constants.hpp"
 
-#define GRAVEDAD -0.03125
+#define GRAVEDAD - (MARIO_VEL_SALTO / 16)
 
 AireState *AireState::instance = NULL;
 
@@ -20,7 +20,7 @@ MarioState *AireState::handleInput(char) {
 }
 
 MarioState *AireState::update(float *x, float *y) {
-    velX -= velX * 2 * (*x < 0 || *x > ANCHO_NIVEL - ANCHO_MARIO);
+    velX -= velX * 2 * !((*x < ANCHO_NIVEL - ANCHO_MARIO && 0 < velX) || (0 < *x && velX < 0));
     this->velY += GRAVEDAD;
     *x += velX;
     *y -= velY;

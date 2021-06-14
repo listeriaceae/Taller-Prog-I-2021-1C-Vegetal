@@ -1,6 +1,7 @@
 #include <unordered_set>
 #include "Stage.h"
 
+#define ANCHO_HITBOX 8
 #define STAGE_WIDTH (ANCHO_NIVEL / ANCHO_TILE)
 #define STAGE_HEIGHT (ALTO_NIVEL / ALTO_TILE)
 #define GRID_COLS (STAGE_WIDTH + 1)
@@ -28,7 +29,7 @@ Ladder *Stage::getLadder(float x, float y, float ySpeed) {
 void Stage::addPlatform(Platform *platform) {
     float x, max;
     platform->getLimits(&x, &max);
-    while (x < max) {
+    while (x <= max) {
         unsigned int i = ((int)platform->getY(x) / STAGE_HEIGHT) * GRID_COLS + (int)x / STAGE_WIDTH;
         grid[i]->addPlatform(platform);
         x += ANCHO_TILE;
@@ -44,24 +45,25 @@ bool Stage::collide(float *x, float *y, float *dx, float *dy) {
     grid[i + (GRID_COLS + 1)]->getPlatforms(&platforms);
 
     bool is_standing = false;
-    float min, max;
-    for (auto it = platforms.begin(); it != platforms.end();) {
+    float min, max, distanceLeft, distanceRight, distanceY;
+    for (auto it = platforms.begin(); it != platforms.end(); it = platforms.erase(it)) {
         (*it)->getCurrentLimits(&min, &max);
-        if (min - ANCHO_MARIO < *x && *x < max) {
-            float distance = *y + ALTO_MARIO - (*it)->getY(*x);
-            if (0 <= distance) {
-                int hit_floor = distance < 2;
+        distanceLeft = *x - min + (ANCHO_MARIO / 2 + ANCHO_HITBOX / 2);
+        distanceRight = max - *x - (ANCHO_MARIO / 2 - ANCHO_HITBOX / 2);
+        if (0 < distanceLeft && 0 < distanceRight) {
+            distanceY = *y + ALTO_MARIO - (*it)->getY(*x);
+            if (0 <= distanceY) {
+                int hit_floor = distanceY < 2;
                 is_standing |= hit_floor;
-                *y -= distance * hit_floor;
+                *y -= distanceY * hit_floor;
                 *dy -= *dy * hit_floor;
                 *x += hit_floor * (*it)->getSpeed();
-                int hit_wall = !hit_floor && (distance < ALTO_MARIO);
-                *x += (max - *x) * (std::abs(*x - max) < 1);
-                *x += (min - ANCHO_MARIO - *x) * (std::abs(*x - (min - ANCHO_MARIO)) < 1);
+                int hit_wall = !hit_floor && distanceY <= ALTO_MARIO / 2 && (distanceRight < 1 || distanceLeft < 1);
+                *x -= distanceLeft * (distanceLeft < 1 && hit_wall);
+                *x += distanceRight * (distanceRight < 1 && hit_wall);
                 *dx -= *dx * hit_wall;
             }
         }
-        it = platforms.erase(it);
     }
     return is_standing;
 }

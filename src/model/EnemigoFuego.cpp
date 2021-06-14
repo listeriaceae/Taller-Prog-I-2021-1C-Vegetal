@@ -1,7 +1,7 @@
 #include "EnemigoFuego.h"
 #include "../utils/Constants.hpp"
 
-#define ENEMIGO_FUEGO_VEL 0.25
+#define ENEMIGO_FUEGO_VEL 0.5f
 
 EnemigoFuego::EnemigoFuego(punto_t pos, int direccion)
 : Entidad(pos.x, pos.y, ANCHO_ENEMIGO_FUEGO, ALTO_ENEMIGO_FUEGO) {
@@ -14,6 +14,6 @@ void EnemigoFuego::setLimites(float min, float max) {
 }
 
 void EnemigoFuego::mover() {
-    posX += velX;
     velX -= 2 * velX * (posX < min || posX > max);
+    posX += velX;
 }

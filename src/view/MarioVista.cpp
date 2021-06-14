@@ -47,8 +47,8 @@ void MarioVista::setColor(int nroJugador) {
 }
 
 void MarioVista::mostrar(punto_t pos, char estado) {
-    int nextX = round(pos.x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    int nextY = round(pos.y * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    int nextX = round((int)pos.x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    int nextY = round((int)pos.y * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     switch(estado) {
         case REPOSO:
         case DE_ESPALDAS:
@@ -67,7 +67,7 @@ void MarioVista::mostrar(punto_t pos, char estado) {
             break;
     }
     dstRect.x = nextX;
-    dstRect.y = round(pos.y * ALTO_PANTALLA / (float)ALTO_NIVEL);
+    dstRect.y = nextY;
 
     SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0., NULL, flip);
 }
@@ -90,7 +90,7 @@ void MarioVista::updateSaltando(int nextX) {
 
 void MarioVista::updateTrepando(int nextY) {
     tiempo += dstRect.y != nextY;
-    flip = (SDL_RendererFlip)((tiempo / 16) % 2);
+    flip = (SDL_RendererFlip)((tiempo / 8) % 2);
     srcRect.x = 3 * MARIO_SPRITE_INDEX_SIZE;
 }
 

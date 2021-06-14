@@ -43,7 +43,10 @@ MarioState *SueloState::update(float *x, float *y) {
     }
     *x += ((*x < ANCHO_NIVEL - ANCHO_MARIO && 0 < velX) || (0 < *x && velX < 0)) * velX;
     *y += 1;
-    if (!stage->collide(x, y, &velX, &velY)) return AireState::getInstance();
-    estado = (estado == 1) + (velX != 0) * (CORRIENDO - (estado == 1));
+    if (!stage->collide(x, y, &velX, &velY)) {
+        velY = 0;
+        return AireState::getInstance();
+    }
+    estado = (estado == DE_ESPALDAS) + (velX != 0) * (CORRIENDO - (estado == DE_ESPALDAS));
     return instance;
 }
