@@ -28,9 +28,10 @@ MarioState *AireState::update(float *x, float *y, float *xSpeed, float *ySpeed, 
         *estado = REPOSO;
         return SueloState::getInstance();
     }
-    if (*y > ALTO_NIVEL - ALTO_MARIO) {
+    if (*y > ALTO_NIVEL - ALTO_MARIO) {             // Aca moriria mario
         *x = MARIO_START_X;
         *y = MARIO_START_Y;
+        *xSpeed, *ySpeed = 0;
         *estado = REPOSO;
         return SueloState::getInstance();
     }
