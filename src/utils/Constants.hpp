@@ -82,5 +82,6 @@ enum {
     CORRIENDO,
     SALTANDO,
     TREPANDO_0,
-    TREPANDO_1
+    TREPANDO_1,
+    TREPANDO_FINAL
 };

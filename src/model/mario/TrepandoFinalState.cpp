@@ -1,4 +1,5 @@
 #include "../Mario.hpp"
+#include "TrepandoFinalState.h"
 #include "ReposoState.h"
 #include "CorriendoState.h"
 #include "SaltandoState.h"
@@ -8,23 +9,26 @@
 #include <iostream>
 #include "../../utils/Constants.hpp"
 
+#include <stdio.h>
+#include <iostream>
+
 #define MARIO_VELOCIDAD_EN_REPOSO 0
 
-ReposoState* ReposoState::instance;
+TrepandoFinalState* TrepandoFinalState::instance;
 
-ReposoState::ReposoState() : MarioState() {
-    this->name = "Reposo";
+TrepandoFinalState::TrepandoFinalState() : MarioState() {
+    this->name = "Trepando Final";
 }
 
-ReposoState* ReposoState::getInstance() {
-    if (ReposoState::instance == NULL) {
-        ReposoState::instance = new ReposoState();
+TrepandoFinalState* TrepandoFinalState::getInstance() {
+    if (TrepandoFinalState::instance == NULL) {
+        TrepandoFinalState::instance = new TrepandoFinalState();
     }
 
-    return ReposoState::instance;
+    return TrepandoFinalState::instance;
 }
 
-MarioState* ReposoState::handleInput(char controls, Mario* mario) {
+MarioState* TrepandoFinalState::handleInput(char controls, Mario* mario) {
     char left = (controls & LEFT) != 0;
     char right = (controls & RIGHT) != 0;
     char space = (controls & SPACE) != 0;
@@ -45,24 +49,23 @@ MarioState* ReposoState::handleInput(char controls, Mario* mario) {
     }
 
     if (up != down) {
-        
         Escalera* e = mario->getNivel()->getEscalera(mario->getPos());
 
         if (e == NULL) {
             std::cout << "no hay escaleras en esa plataforma " << mario->getPos().y << std::endl;
-            return ReposoState::getInstance();
+            return TrepandoFinalState::getInstance();
         }
 
         // Si Mario esta en el extremo inferior de la escalera
         // y presiona para abajo, no cambia el estado
         if( mario->getPos().y == e->getY0() && down) {
-             return ReposoState::getInstance();
+             return TrepandoFinalState::getInstance();
         }
 
         // Si Mario esta en el extremo superior de la escalera
         // y presiona para arriba, no cambia el estado
         if( mario->getPos().y == e->getY1() && up) {
-             return ReposoState::getInstance();
+             return TrepandoFinalState::getInstance();
         }
 
         mario->setPos(e->getCenter(), mario->getPos().y);
@@ -72,15 +75,15 @@ MarioState* ReposoState::handleInput(char controls, Mario* mario) {
         return trepandoState;
     }
  
-    return ReposoState::getInstance();
+    return TrepandoFinalState::getInstance();
 }
 
-void ReposoState::perform() {
+void TrepandoFinalState::perform() {
 }
 
-void ReposoState::update() {  
+void TrepandoFinalState::update() {  
 }
 
-char ReposoState::getEstado() {
-    return REPOSO;
+char TrepandoFinalState::getEstado() {
+    return TREPANDO_FINAL;
 }

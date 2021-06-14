@@ -23,5 +23,5 @@ class MarioVista
         void updateReposo();
         void updateCorriendo(int nextX);
         void updateSaltando(int nextX);
-        void updateTrepando(punto_t pos, char estado);
+        void updateTrepando(char estado);
 };
