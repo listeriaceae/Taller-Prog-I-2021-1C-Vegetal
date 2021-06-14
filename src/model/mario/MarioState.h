@@ -14,15 +14,11 @@
 class MarioState {
     public:
         void setStage(Stage *stage);
-        virtual MarioState* handleInput(char controls) = 0;
-        virtual MarioState* update(float *x, float *y) = 0;
-        char getEstado();
+        virtual MarioState* handleInput(char controls, float *xSpeed, float *ySpeed) = 0;
+        virtual MarioState* update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado) = 0;
         virtual ~MarioState() = default;
 
     protected:
         MarioState();
         static Stage *stage;
-        static char estado;
-        static float velX;
-        static float velY;
 };

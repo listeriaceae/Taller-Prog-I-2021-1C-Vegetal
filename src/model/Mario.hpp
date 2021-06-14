@@ -15,4 +15,7 @@ class Mario : public Entidad
 
     private:
         MarioState *state;
+        char estado;
+        float velX;
+        float velY;
 };
