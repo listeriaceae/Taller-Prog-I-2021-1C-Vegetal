@@ -18,14 +18,14 @@ void Nivel2::initPlatforms() {
 }
 
 void Nivel2::initLadders() {
-    stage->addLadder(new Ladder(184, 227.5f, 203.5f));
-    stage->addLadder(new Ladder(96, 198, 167));
-    stage->addLadder(new Ladder(32, 194, 171));
-    stage->addLadder(new Ladder(112, 166, 133));
-    stage->addLadder(new Ladder(184, 161.5f, 137.5f));
-    stage->addLadder(new Ladder(32, 128, 105));
-    stage->addLadder(new Ladder(72, 130.5, 102.5f));
-    stage->addLadder(new Ladder(184, 95.5f, 71.5f));
+    stage->addLadder(new Ladder(184, 227.75f, 203.25f));
+    stage->addLadder(new Ladder(96, 197.75f, 167.25f));
+    stage->addLadder(new Ladder(32, 193.75f, 171.25f));
+    stage->addLadder(new Ladder(112, 166.25f, 132.75f));
+    stage->addLadder(new Ladder(184, 161.75f, 137.25f));
+    stage->addLadder(new Ladder(72, 130.25f, 102.75f));
+    stage->addLadder(new Ladder(32, 127.75f, 105.25f));
+    stage->addLadder(new Ladder(184, 95.75f, 71.25f));
     stage->addLadder(new Ladder(128, 68, 40));
 }
 
