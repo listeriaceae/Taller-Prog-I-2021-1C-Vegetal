@@ -56,12 +56,12 @@ bool Stage::collide(float *x, float *y, float *dx, float *dy) {
                 int hit_floor = distanceY < 2;
                 is_standing |= hit_floor;
                 *y -= distanceY * hit_floor;
-                *dy -= *dy * hit_floor;
+                *dy *= !hit_floor;
                 *x += hit_floor * (*it)->getSpeed();
                 int hit_wall = !hit_floor && distanceY <= ALTO_MARIO / 2 && (distanceRight < 1 || distanceLeft < 1);
                 *x -= distanceLeft * (distanceLeft < 1 && hit_wall);
                 *x += distanceRight * (distanceRight < 1 && hit_wall);
-                *dx -= *dx * hit_wall;
+                *dx *= !hit_wall;
             }
         }
     }
