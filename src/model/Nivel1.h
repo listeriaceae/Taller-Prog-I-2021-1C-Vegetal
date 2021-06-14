@@ -1,9 +1,6 @@
 #pragma once
-
-#include <list>
-#include "stage/MovingPlatform.h"
-#include "stage/Ladder.h"
 #include "Nivel.h"
+#include "stage/MovingPlatform.h"
 
 class Nivel1 : public Nivel
 {
@@ -15,7 +12,7 @@ class Nivel1 : public Nivel
         ~Nivel1();
 
     private:
-        MovingPlatform * movingPlatforms[12];
+        MovingPlatform *movingPlatforms[12];
 
         void initPlatforms();
         void updatePlatforms();

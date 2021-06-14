@@ -4,7 +4,9 @@
 
 TrepandoState *TrepandoState::instance = NULL;
 
-TrepandoState* TrepandoState::getInstance() {
+TrepandoState::TrepandoState() {}
+
+TrepandoState *TrepandoState::getInstance() {
     if (instance == NULL) {
         instance = new TrepandoState();
     }
@@ -15,7 +17,7 @@ void TrepandoState::setLadder(Ladder *ladder) {
     this->ladder = ladder;
 }
 
-MarioState* TrepandoState::handleInput(char controls) {
+MarioState *TrepandoState::handleInput(char controls) {
     char left = (controls & LEFT) != 0;
     char right = (controls & RIGHT) != 0;
     velX = (right - left) * MARIO_VEL_X;
@@ -27,11 +29,10 @@ MarioState* TrepandoState::handleInput(char controls) {
     return instance;
 }
 
-MarioState* TrepandoState::update(float *x, float *y) {
-    if ((velY <= 0 && std::abs(ladder->getBottom() - *y) <= MARIO_VEL_TREPAR / 2) ||
-        (velY >= 0 && std::abs(ladder->getTop() - *y) <= MARIO_VEL_TREPAR / 2))
+MarioState *TrepandoState::update(float *, float *y) {
+    if ((velY <= 0 && std::abs(ladder->getBottom() - *y) <= MARIO_VEL_TREPAR)
+    || (velY >= 0 && std::abs(ladder->getTop() - *y) <= MARIO_VEL_TREPAR))
     {
-        velY = 0;
         estado = DE_ESPALDAS;
         return SueloState::getInstance();
     }

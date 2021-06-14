@@ -1,19 +1,16 @@
 #pragma once
-#include <list>
-#include <vector>
 #include "Tile.h"
 #include "Ladder.h"
-#include "MovingPlatform.h"
+#include "Platform.h"
 #include "../../utils/Constants.hpp"
 
 class Stage {
     public:
+        Stage();
         void addLadder(Ladder *ladder);
         Ladder *getLadder(float x, float y, float ySpeed);
         void addPlatform(Platform *platform);
-        std::vector<Platform *> *getPlatforms();
-        void addMovingPlatform(MovingPlatform *platform);
-        bool Stage::collide(float *x, float *y, float *dx, float *dy);
+        bool collide(float *x, float *y, float *dx, float *dy);
         ~Stage();
 
     private:

@@ -1,5 +1,3 @@
-#include <iostream>
-#include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdlib.h>
@@ -41,13 +39,11 @@ int main(void)
     NivelVista *vista = NULL;
     getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
 
-    mario->setNivel(nivel);
-
     // Game loop design by http://gameprogrammingpatterns.com/game-loop.html#play-catch-up
     Uint32 previous, current, elapsed, lag;
-    bool updated, quitRequested = false;
     previous = SDL_GetTicks();
     lag = 0;
+    bool updated, quitRequested = false;
     while (!quitRequested) {
         current = SDL_GetTicks();
         elapsed = current - previous;
@@ -99,7 +95,7 @@ int main(void)
 void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration::GameConfiguration *config, Uint8 currentLevel, SDL_Renderer *renderer) {
     if (currentLevel == 1) {
         logger::Logger::getInstance().logInformation("Level 1 starts");
-        mario->setPos(N1_MARIO_POS_X, N1_MARIO_POS_Y);
+        mario->setPos(MARIO_START_X, MARIO_START_Y);
 
         Nivel1 *nivel1 = new Nivel1();
         nivel1->addPlayer(mario);
@@ -120,16 +116,14 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
             (*vista)->setBackground(rutaImagen);
         }
         *nivel = nivel1;
-        return;
     }
-    if (currentLevel == 2) {
+    else if (currentLevel == 2) {
         logger::Logger::getInstance().logInformation("Level 2 starts");
-        mario->setPos(N2_MARIO_POS_X, N2_MARIO_POS_Y);
+        mario->setPos(N2_MARIO_POS_X, MARIO_START_Y);
 
         delete *nivel;
         *nivel = new Nivel2();
         (*nivel)->addPlayer(mario);
-        mario->setNivel((*nivel));
 
         delete *vista;
         *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag());
@@ -140,7 +134,6 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
             logger::Logger::getInstance().logDebug("Stage 2 background img: " + rutaImagen);
             (*vista)->setBackground(rutaImagen);
         }
-        return;
     } else {
         delete *nivel;
         delete *vista;

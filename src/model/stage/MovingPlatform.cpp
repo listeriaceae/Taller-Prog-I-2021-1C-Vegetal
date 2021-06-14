@@ -1,5 +1,5 @@
 #include "MovingPlatform.h"
-#include "../utils/Constants.hpp"
+#include "../../utils/Constants.hpp"
 
 #define MIN_X 17
 #define MAX_X 191
@@ -21,9 +21,18 @@ MovingPlatform::MovingPlatform(int platform, int level)
     end.y = start.y;
 }
 
+void MovingPlatform::getLimits(float *min, float *max) {
+    *min = MIN_X;
+    *max = MAX_X + ANCHO_PLATAFORMA;
+}
+
+float MovingPlatform::getSpeed() {
+    return this->direction * PLATFORM_SPEED;
+}
+
 void MovingPlatform::move() {
     start.x += this->direction * PLATFORM_SPEED;
-    start.x -= this->direction * (MAX_PLATFORMS * X_PLAT_INDEX) * ((start.x < MIN_X) || (start.x > MAX_X));
+    start.x -= this->direction * (MAX_PLATFORMS * X_PLAT_INDEX) * ((start.x < MIN_X) || (MAX_X < start.x));
     end.x = start.x + ANCHO_PLATAFORMA;
 }
 

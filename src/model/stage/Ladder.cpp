@@ -1,6 +1,6 @@
 #include "Ladder.h"
 
-Ladder::Ladder(float x, float bottomY, float topY) {
+Ladder::Ladder(float x, float bottom, float top) {
     this->x = x;
     this->bottom = bottom;
     this->top = top;

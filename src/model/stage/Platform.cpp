@@ -20,6 +20,18 @@ punto_t Platform::getRandomPoint(int entityWidth) {
 }
 
 void Platform::getLimits(float *min, float *max) {
+    getCurrentLimits(min, max);
+}
+
+void Platform::getCurrentLimits(float *min, float *max) {
     *min = start.x;
     *max = end.x;
+}
+
+float Platform::getY(float x) {
+    return start.y + (x - start.x) / (end.x - start.x) * (end.y - start.y);
+}
+
+float Platform::getSpeed() {
+    return 0;
 }

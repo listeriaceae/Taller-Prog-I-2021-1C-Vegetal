@@ -4,10 +4,8 @@ void Tile::addPlatform(Platform *platform) {
     platforms.push_back(platform);
 }
 
-void Tile::getPlatforms(std::list<Platform *> *platforms) {
-    for (Platform *platform : this->platforms) {
-        platforms->push_back(platform);
-    }
+void Tile::getPlatforms(std::unordered_set<Platform *> *platforms) {
+    platforms->insert(this->platforms.begin(), this->platforms.end());
 }
 
 void Tile::setLadderBottom(Ladder *ladder) {
@@ -28,4 +26,5 @@ Ladder *Tile::getLadderTop() {
 
 Tile::~Tile() {
     platforms.clear();
+    delete ladderBottom;
 }

@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "Nivel.h"
 
 Nivel::Nivel() {
@@ -7,21 +6,8 @@ Nivel::Nivel() {
 }
 
 void Nivel::addPlayer(Mario *jugador) {
+    jugador->setStage(stage);
     jugadores.push_back(jugador);
-}
-
-void Nivel::updatePlayers() {
-    std::list<Mario*>::iterator it;
-    for (it = jugadores.begin(); it != jugadores.end(); ++it) {
-        (*it)->mover();
-    }
-}
-
-void Nivel::updateEnemies() {
-    std::list<EnemigoFuego*>::iterator it;
-    for (it = enemies.begin(); it != enemies.end(); ++it) {
-        (*it)->mover();
-    }
 }
 
 Nivel::~Nivel() {
@@ -33,9 +19,10 @@ Nivel::~Nivel() {
 
     delete stage;
 
-    jugadores.clear();
-    std::list<EnemigoFuego*>::iterator it2;
-    for (it2 = enemies.begin(); it2 != enemies.end(); ++it2) delete (*it2);
+    for (auto platform : platforms) delete platform;
+    platforms.clear();
 
+    for (auto enemy : enemies) delete enemy;
     enemies.clear();
+    jugadores.clear();
 }

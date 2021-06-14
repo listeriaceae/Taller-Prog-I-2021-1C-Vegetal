@@ -90,7 +90,7 @@ void MarioVista::updateSaltando(int nextX) {
 
 void MarioVista::updateTrepando(int nextY) {
     tiempo += dstRect.y != nextY;
-    flip = (SDL_RendererFlip)((tiempo / TIEMPO_POR_FRAME) % 2);
+    flip = (SDL_RendererFlip)((tiempo / 16) % 2);
     srcRect.x = 3 * MARIO_SPRITE_INDEX_SIZE;
 }
 

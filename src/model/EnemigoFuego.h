@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Entidad.h"
 
 class EnemigoFuego : public Entidad {

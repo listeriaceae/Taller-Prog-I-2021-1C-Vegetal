@@ -1,9 +1,9 @@
 #pragma once
-
 #include <list>
+#include <vector>
+#include "stage/Stage.h"
 #include "Mario.hpp"
 #include "EnemigoFuego.h"
-#include "stage/Stage.h"
 #include "../utils/estadoNivel.h"
 
 class Mario;
@@ -19,10 +19,8 @@ class Nivel
 
     protected:
         Stage *stage;
-        std::list<EnemigoFuego*> enemies;
-        std::list<Mario*> jugadores;
+        std::vector<Platform *> platforms;
+        std::list<Mario *> jugadores;
+        std::list<EnemigoFuego *> enemies;
         estadoNivel_t *estadoNivel;
-
-        void updatePlayers();
-        void updateEnemies();
 };

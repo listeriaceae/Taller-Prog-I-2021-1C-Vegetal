@@ -48,8 +48,8 @@
 #define ALTO_DEFAULT_CONFIG 7
 
 // Nivel 1
-#define N1_MARIO_POS_X 2
-#define N1_MARIO_POS_Y 232
+#define MARIO_START_X 0
+#define MARIO_START_Y 232
 
 #define N1_POS_X_FUEGO1 48
 #define N1_POS_X_FUEGO2 88
@@ -65,8 +65,7 @@
 #define N1_POS_Y2_POLEA 168
 
 // Nive 2
-#define N2_MARIO_POS_X 34
-#define N2_MARIO_POS_Y 232
+#define N2_MARIO_POS_X 40
 
 #define N2_POS_X_FUEGO 16
 #define N2_POS_Y_FUEGO 216

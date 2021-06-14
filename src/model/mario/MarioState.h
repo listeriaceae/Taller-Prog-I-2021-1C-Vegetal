@@ -1,5 +1,4 @@
 #pragma once
-
 #include "../stage/Stage.h"
 
 #define SPACE 128
@@ -14,13 +13,14 @@
 
 class MarioState {
     public:
-        MarioState();
+        void setStage(Stage *stage);
         virtual MarioState* handleInput(char controls) = 0;
         virtual MarioState* update(float *x, float *y) = 0;
         char getEstado();
         virtual ~MarioState() = default;
 
     protected:
+        MarioState();
         static Stage *stage;
         static char estado;
         static float velX;
