@@ -5,7 +5,7 @@
 #include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
-const std::string IMG_PEACH = "res/Peach.png";
+const std::string IMG_PEACH = "res/Pauline.png";
 
 SDL_Texture *PaulineVista::texture = NULL;
 
