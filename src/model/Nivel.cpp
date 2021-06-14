@@ -10,6 +10,12 @@ void Nivel::addPlayer(Mario *jugador) {
     jugadores.push_back(jugador);
 }
 
+bool Nivel::isComplete() {
+    bool result = false;
+    for (Mario *mario : jugadores) result |= (mario->getPos().y == 40);
+    return result;
+}
+
 Nivel::~Nivel() {
     estadoNivel->barrels.clear();
     estadoNivel->enemies.clear();

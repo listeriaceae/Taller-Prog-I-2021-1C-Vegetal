@@ -17,6 +17,7 @@ void Mario::setPos(float x, float y) {
 
 void Mario::setStage(Stage *stage) {
     this->state->setStage(stage);
+    this->state = SueloState::getInstance();
 }
 
 void Mario::mover() {

@@ -15,6 +15,7 @@ class Nivel
         void addPlayer(Mario *jugador);
         virtual void update() = 0;
         virtual estadoNivel_t* getEstado() = 0;
+        bool isComplete();
         virtual ~Nivel();
 
     protected:

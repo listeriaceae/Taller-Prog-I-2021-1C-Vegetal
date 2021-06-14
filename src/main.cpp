@@ -29,8 +29,6 @@ int main(void)
     SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
-    SDL_Event event;
-
     Mario* mario = new Mario();
     MarioController *marioController = new MarioController(mario);
 
@@ -55,14 +53,11 @@ int main(void)
         // Handle input for Mario
         marioController->update();
 
-        while (SDL_PollEvent(&event)) {
-            // Cambio de nivel
-            if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
-                char buffer[15];
-                sprintf(buffer, "End of Level %d", currentLevel++);
-                logger::Logger::getInstance().logInformation(buffer);
-                getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
-            }
+        if (nivel->isComplete()) {
+            char buffer[15];
+            sprintf(buffer, "End of Level %d", currentLevel++);
+            logger::Logger::getInstance().logInformation(buffer);
+            getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
         }
         if (nivel == NULL) break;
 
