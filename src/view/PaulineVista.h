@@ -2,11 +2,11 @@
 
 #include "EntidadEstaticaVista.h"
 
-class PeachVista : public EntidadEstaticaVista {
+class PaulineVista : public EntidadEstaticaVista {
     public:
-        PeachVista(SDL_Renderer* renderer);
+        PaulineVista(SDL_Renderer* renderer);
         void mostrar();
-        ~PeachVista() {
+        ~PaulineVista() {
             SDL_DestroyTexture(texture);
         };
 

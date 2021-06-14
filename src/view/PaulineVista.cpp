@@ -1,15 +1,15 @@
 #include <string>
 #include <SDL2/SDL_image.h>
-#include "PeachVista.h"
+#include "PaulineVista.h"
 #include "../logger.h"
 #include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
 const std::string IMG_PEACH = "res/Peach.png";
 
-SDL_Texture *PeachVista::texture = NULL;
+SDL_Texture *PaulineVista::texture = NULL;
 
-PeachVista::PeachVista(SDL_Renderer* renderer)
+PaulineVista::PaulineVista(SDL_Renderer* renderer)
 : EntidadEstaticaVista() {
     this->renderer = renderer;
     SDL_Surface* surface = IMG_Load(IMG_PEACH.c_str());
@@ -28,6 +28,6 @@ PeachVista::PeachVista(SDL_Renderer* renderer)
     rect.h = round(PEACH_ALTO * ALTO_PANTALLA / (float)ALTO_NIVEL);
 }
 
-void PeachVista::mostrar() {
+void PaulineVista::mostrar() {
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 }
