@@ -9,7 +9,7 @@
 #define MARIO_SALTANDO_INDEX 14
 #define MARIO_TREPANDO_INDEX 3
 #define MARIO_DE_ESPALDAS_INDEX 6
-#define TIEMPO_POR_FRAME 4
+#define TIEMPO_POR_FRAME 2
 #define CANT_FRAMES 4
 
 const std::string IMG_MARIO = "res/Mario.png";
@@ -80,7 +80,7 @@ void MarioVista::updateReposo(char estado) {
 }
 
 void MarioVista::updateCorriendo(int nextX) {
-    tiempo = (tiempo + 1) % (TIEMPO_POR_FRAME * CANT_FRAMES);
+    tiempo = (tiempo + (dstRect.x != nextX)) % (TIEMPO_POR_FRAME * CANT_FRAMES);
     flip = (SDL_RendererFlip)((dstRect.x < nextX) + (int)flip * (dstRect.x == nextX));
     int frameActual = (tiempo / TIEMPO_POR_FRAME);
     srcRect.x = ((frameActual & 1) << ((frameActual & 2) >> 1)) * MARIO_SPRITE_SIZE;  // 0, 1, 0, 2...

@@ -15,26 +15,22 @@ AireState *AireState::getInstance() {
     return instance;
 }
 
-MarioState *AireState::handleInput(char, float *, float *) {
+MarioState *AireState::handleInput(char, float *, float *, char *) {
     return instance;
 }
 
-MarioState *AireState::update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado) {
+MarioState *AireState::update(float *x, float *y, float *xSpeed, float *ySpeed, char *) {
     *xSpeed -= *xSpeed * 2 * !((*x < ANCHO_NIVEL - ANCHO_MARIO && 0 < *xSpeed) || (0 < *x && *xSpeed < 0));
     *ySpeed += GRAVEDAD;
     *x += *xSpeed;
     *y -= *ySpeed;
-    if (stage->collide(x, y, xSpeed, ySpeed)) {
-        *estado = REPOSO;
-        return SueloState::getInstance();
-    }
+    if (stage->collide(x, y, xSpeed, ySpeed)) return SueloState::getInstance();
     if (*y > ALTO_NIVEL - ALTO_MARIO) {             // Aca moriria mario
         *x = MARIO_START_X;
         *y = MARIO_START_Y;
-        *xSpeed, *ySpeed = 0;
-        *estado = REPOSO;
+        *xSpeed = 0;
+        *ySpeed = 0;
         return SueloState::getInstance();
     }
-    *estado = SALTANDO;
     return instance;
 }

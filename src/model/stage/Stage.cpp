@@ -20,7 +20,7 @@ void Stage::addLadder(Ladder *ladder) {
 }
 
 Ladder *Stage::getLadder(float x, float y, float ySpeed) {
-    unsigned int i = ((int)y / STAGE_HEIGHT) * GRID_COLS + ((int)x + ANCHO_TILE / 2) / STAGE_WIDTH;
+    unsigned int i = ((int)y / STAGE_HEIGHT) * GRID_COLS + ((int)x + 4) / STAGE_WIDTH;
     if (0 < ySpeed) return grid[i]->getLadderBottom();
     if (ySpeed < 0) return grid[i]->getLadderTop();
     return NULL;
@@ -53,12 +53,12 @@ bool Stage::collide(float *x, float *y, float *dx, float *dy) {
         if (0 < distanceLeft && 0 < distanceRight) {
             distanceY = *y + ALTO_MARIO - (*it)->getY(*x);
             if (0 <= distanceY) {
-                int hit_floor = distanceY < 2;
+                int hit_floor = distanceY < 2 || distanceY < - *dy;
                 is_standing |= hit_floor;
                 *y -= distanceY * hit_floor;
                 *dy *= !hit_floor;
                 *x += hit_floor * (*it)->getSpeed();
-                int hit_wall = !hit_floor && distanceY <= ALTO_MARIO / 2 && (distanceRight < 1 || distanceLeft < 1);
+                int hit_wall = !hit_floor && distanceY <= ALTO_MARIO / 2 && (distanceRight <= 1 || distanceLeft <= 1);
                 *x -= distanceLeft * (distanceLeft < 1 && hit_wall);
                 *x += distanceRight * (distanceRight < 1 && hit_wall);
                 *dx *= !hit_wall;

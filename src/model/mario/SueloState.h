@@ -4,7 +4,7 @@
 class SueloState : public MarioState
 {
     public:
-        MarioState *handleInput(char controls, float *xSpeed, float *ySpeed);
+        MarioState *handleInput(char controls, float *xSpeed, float *ySpeed, char *estado);
         MarioState *update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado);
         static SueloState *getInstance();
     

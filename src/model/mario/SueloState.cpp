@@ -14,7 +14,7 @@ SueloState *SueloState::getInstance() {
     return instance;
 }
 
-MarioState *SueloState::handleInput(char controls, float *xSpeed, float *ySpeed) {
+MarioState *SueloState::handleInput(char controls, float *xSpeed, float *ySpeed, char *estado) {
 
     char left = (controls & LEFT) != 0;
     char right = (controls & RIGHT) != 0;
@@ -23,6 +23,7 @@ MarioState *SueloState::handleInput(char controls, float *xSpeed, float *ySpeed)
     char space = (controls & SPACE) != 0;
     if (space) {
         *ySpeed = MARIO_VEL_SALTO;
+        *estado = SALTANDO;
         return AireState::getInstance();
     }
 
@@ -35,7 +36,7 @@ MarioState *SueloState::handleInput(char controls, float *xSpeed, float *ySpeed)
 
 MarioState *SueloState::update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado) {
     Ladder *ladder = stage->getLadder(*x, *y, *ySpeed);
-    if (ladder != NULL && std::abs(ladder->getX() - (*x + 4)) < 5) {
+    if (ladder != NULL && std::abs(*x - (ladder->getX() - 4)) <= 4) {
         *x = ladder->getX() - 4;
         TrepandoState *trepandoState = TrepandoState::getInstance();
         trepandoState->setLadder(ladder);
@@ -44,6 +45,7 @@ MarioState *SueloState::update(float *x, float *y, float *xSpeed, float *ySpeed,
     *x += *xSpeed * ((*x < ANCHO_NIVEL - ANCHO_MARIO && 0 < *xSpeed) || (0 < *x && *xSpeed < 0));
     *y += 1;
     if (!stage->collide(x, y, xSpeed, ySpeed)) {
+        *xSpeed = 0;
         *ySpeed = 0;
         return AireState::getInstance();
     }
