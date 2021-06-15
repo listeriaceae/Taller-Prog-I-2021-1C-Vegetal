@@ -7,7 +7,7 @@ Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
 }
 
 void Mario::setEstado(char controls) {
-    this->state = this->state->handleInput(controls, &velX, &velY, &estado);
+    this->state = this->state->handleInput(controls, &velX, &velY);
 }
 
 void Mario::setPos(float x, float y) {

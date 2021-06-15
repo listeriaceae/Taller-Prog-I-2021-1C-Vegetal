@@ -17,7 +17,7 @@ void TrepandoState::setLadder(Ladder *ladder) {
     this->ladder = ladder;
 }
 
-MarioState *TrepandoState::handleInput(char controls, float *xSpeed, float *ySpeed, char *) {
+MarioState *TrepandoState::handleInput(char controls, float *xSpeed, float *ySpeed) {
     char left = (controls & LEFT) != 0;
     char right = (controls & RIGHT) != 0;
     *xSpeed = (right - left) * MARIO_VEL_X;
