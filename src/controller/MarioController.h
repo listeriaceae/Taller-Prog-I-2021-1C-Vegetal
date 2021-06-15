@@ -3,8 +3,8 @@
 
 class MarioController {
     public:
-        MarioController(Mario *mario);
+        MarioController();
         void update();
+        char getControls();
     private:
-        Mario *mario;
 };

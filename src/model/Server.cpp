@@ -85,7 +85,9 @@ void Server::startGame() {
     previous = SDL_GetTicks();
     lag = 0;
 
-    while(true) {
+    bool quitRequested = false;
+    
+    while(!quitRequested) {
         current = SDL_GetTicks();
         elapsed = current - previous;
         previous = current;
@@ -102,11 +104,15 @@ void Server::startGame() {
         // Update View and render
         if (updated) {
             estadoNivel_t* view = nivel->getEstado();
-            int bytesSent = sendView(&(this->clientSocket), view);
-            if(view == NULL)
-                printf("null view \n");
-            printf("sent %d/%d\n", bytesSent, (int)sizeof(estadoNivel_t));
+            sendView(&(this->clientSocket), view);  
+
+            char command;
+            int bytesReceived = receiveCommand(&(this->clientSocket), &command);
+            printf("command received: %d\n", (int)command);
+            if(bytesReceived == sizeof(char))
+                mario->setEstado(command);
         }
+        quitRequested = SDL_QuitRequested();
     }
 }
 
@@ -118,6 +124,28 @@ int Server::sendView(int* clientSocket, estadoNivel_t* view) {
     
     while((totalBytesSent < dataSize) && clientSocketStillOpen) {
         bytesSent = send(*clientSocket, (view + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
+        if(bytesSent < 0) {
+            return bytesSent;
+        } 
+        else if(bytesSent == 0) {
+            clientSocketStillOpen = false;
+        }
+        else {
+            totalBytesSent += bytesSent;
+        }
+    }
+
+    return totalBytesSent;
+}
+
+int Server::receiveCommand(int* clientSocket, char* command) {
+    int totalBytesSent = 0;
+    int bytesSent = 0;
+    int dataSize = sizeof(char);
+    bool clientSocketStillOpen = true;
+    
+    while((totalBytesSent < dataSize) && clientSocketStillOpen) {
+        bytesSent = recv(*clientSocket, (command + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
         if(bytesSent < 0) {
             return bytesSent;
         } 
