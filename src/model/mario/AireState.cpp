@@ -15,7 +15,7 @@ AireState *AireState::getInstance() {
     return instance;
 }
 
-MarioState *AireState::handleInput(char, float *, float *) {
+MarioState *AireState::handleInput(controls_t, float *, float *) {
     return instance;
 }
 

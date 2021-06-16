@@ -3,7 +3,7 @@
 
 #define MIN_X 17
 #define MAX_X 191
-#define MIN_Y_PLATFORM 124
+#define LEVEL_0_Y 124
 
 #define X_PLAT_INDEX 58
 #define Y_PLAT_INDEX 40
@@ -16,7 +16,7 @@ MovingPlatform::MovingPlatform(int platform, int level)
     int limit = ((MAX_X + MIN_X) / 2) + direction * ((MAX_X - MIN_X) / 2);
 
     start.x = limit - direction * platform * X_PLAT_INDEX;
-    start.y = MIN_Y_PLATFORM + (level / 2) * Y_PLAT_INDEX + (level % 2) * ALTO_PLATAFORMA;
+    start.y = LEVEL_0_Y + (level / 2) * Y_PLAT_INDEX + (level % 2) * ALTO_PLATAFORMA;
     end.x = start.x + ANCHO_PLATAFORMA;
     end.y = start.y;
 }

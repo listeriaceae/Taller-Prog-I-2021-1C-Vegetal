@@ -6,7 +6,7 @@ Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
     this->state = SueloState::getInstance();
 }
 
-void Mario::setEstado(char controls) {
+void Mario::setEstado(controls_t controls) {
     this->state = this->state->handleInput(controls, &velX, &velY);
 }
 

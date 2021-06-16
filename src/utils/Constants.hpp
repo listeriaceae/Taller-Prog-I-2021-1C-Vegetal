@@ -29,21 +29,13 @@
 
 #define DONKEYKONG_ANCHO 40
 #define DONKEYKONG_ALTO 34
-#define DONKEYKONG_POS_X 24
-#define DONKEYKONG_POS_Y 50
 
 #define PEACH_POS_X 88
 #define PEACH_POS_Y 34
-#define PEACH_ANCHO 16
-#define PEACH_ALTO 22
 
-#define POS_X_BARRIL 16
-#define POS_Y_BARRIL 232
 #define ANCHO_FIRE_BARREL 16
 #define ALTO_FIRE_BARREL 16
 
-#define DEFAULT_CONFIG_X 56
-#define DEFAULT_CONFIG_Y 20
 #define ANCHO_DEFAULT_CONFIG 108
 #define ALTO_DEFAULT_CONFIG 7
 
@@ -71,6 +63,20 @@
 #define N2_POS_Y_FUEGO 216
 
 #define N2_POS_Y_BARRIL 30
+
+#define POS_X_FIREBARREL 16
+#define POS_Y_FIREBARREL 232
+
+// Common
+
+#define DONKEYKONG_POS_X 24
+#define DONKEYKONG_POS_Y 50
+
+#define PEACH_ANCHO 16
+#define PEACH_ALTO 22
+
+#define DEFAULT_CONFIG_X 56
+#define DEFAULT_CONFIG_Y 20
 
 // Name
 const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";

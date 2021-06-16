@@ -23,8 +23,8 @@ FireBarrelVista::FireBarrelVista(SDL_Renderer* renderer)
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
     }
-    this->rect.x = round(POS_X_BARRIL * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    this->rect.y = round(POS_Y_BARRIL * ALTO_PANTALLA / (float)ALTO_NIVEL);
+    this->rect.x = round(POS_X_FIREBARREL * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    this->rect.y = round(POS_Y_FIREBARREL * ALTO_PANTALLA / (float)ALTO_NIVEL);
     this->rect.w = round(ANCHO_FIRE_BARREL * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     this->rect.h = round(ALTO_FIRE_BARREL * ALTO_PANTALLA / (float)ALTO_NIVEL);
 }

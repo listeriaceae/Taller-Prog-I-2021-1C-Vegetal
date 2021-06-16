@@ -14,21 +14,13 @@ SueloState *SueloState::getInstance() {
     return instance;
 }
 
-MarioState *SueloState::handleInput(char controls, float *xSpeed, float *ySpeed) {
-
-    char left = (controls & LEFT) != 0;
-    char right = (controls & RIGHT) != 0;
-    *xSpeed = (right - left) * MARIO_VEL_X;
-
-    char space = (controls & SPACE) != 0;
-    if (space) {
+MarioState *SueloState::handleInput(controls_t controls, float *xSpeed, float *ySpeed) {
+    *xSpeed = (controls.right - controls.left) * MARIO_VEL_X;
+    if (controls.space) {
         *ySpeed = MARIO_VEL_SALTO;
         return AireState::getInstance();
     }
-
-    char up = (controls & UP) != 0;
-    char down = (controls & DOWN) != 0;
-    *ySpeed = (up - down) * MARIO_VEL_TREPAR;
+    *ySpeed = (controls.up - controls.down) * MARIO_VEL_TREPAR;
 
     return instance;
 }

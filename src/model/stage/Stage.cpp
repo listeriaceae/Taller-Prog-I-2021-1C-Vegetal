@@ -59,8 +59,8 @@ bool Stage::collide(float *x, float *y, float *dx, float *dy) {
                 *dy *= !hit_floor;
                 *x += hit_floor * (*it)->getSpeed();
                 int hit_wall = !hit_floor && distanceY <= ALTO_MARIO / 2 && (distanceRight <= 1 || distanceLeft <= 1);
-                *x -= distanceLeft * (distanceLeft < 1 && hit_wall);
-                *x += distanceRight * (distanceRight < 1 && hit_wall);
+                *x -= distanceLeft * (distanceLeft <= 1 && hit_wall);
+                *x += distanceRight * (distanceRight <= 1 && hit_wall);
                 *dx *= !hit_wall;
             }
         }

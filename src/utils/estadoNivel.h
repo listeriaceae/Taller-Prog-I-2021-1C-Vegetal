@@ -1,7 +1,7 @@
 #pragma once
 #include <list>
-#include "../utils/estadoMario.h"
-#include "../utils/punto.h"
+#include "marioStructs.h"
+#include "punto.h"
 
 struct estadoNivel {
         std::list<punto_t> platforms;
