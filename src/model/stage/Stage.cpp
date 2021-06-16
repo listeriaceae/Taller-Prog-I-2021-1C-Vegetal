@@ -53,7 +53,7 @@ bool Stage::collide(float *x, float *y, float *dx, float *dy) {
         if (0 < distanceLeft && 0 < distanceRight) {
             distanceY = *y + ALTO_MARIO - (*it)->getY(*x);
             if (0 <= distanceY) {
-                int hit_floor = distanceY < 2 || distanceY < - *dy;
+                int hit_floor = (distanceY < 2 || distanceY < - *dy) && *dy <= 0.5;
                 is_standing |= hit_floor;
                 *y -= distanceY * hit_floor;
                 *dy *= !hit_floor;
