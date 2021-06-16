@@ -9,8 +9,10 @@ class Client {
 
     private:
     void startGame();
-    int receiveView(int* clientSocket, estadoNivel_t* view);
-    int sendCommand(int* clientSocket, char* command);
+    static int receiveView(int* clientSocket, estadoNivel_t* view);
+    static int sendCommand(int* clientSocket, char* command);
+    static void* updateView(void* args);
+    static void* handleCommand(void* args);
     int clientSocket;
     struct sockaddr_in serverAddress;
     

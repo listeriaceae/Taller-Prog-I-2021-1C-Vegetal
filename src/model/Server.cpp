@@ -20,6 +20,12 @@
 #include "../utils/punto.h"
 #include "Server.h"
 
+typedef struct handleCommandArgs {
+    int* clientSocket;
+    Mario* mario;
+} handleCommandArgs_t;
+
+//const int MAX_PLAYERS = 2;
 const int MAX_QUEUED_CONNECTIONS = 3;
 Server::Server(char* port) {
     serverAddress.sin_family = AF_INET;
@@ -46,7 +52,12 @@ int Server::startServer() {
         return -1;
     printf("listen...\n");
     //Accept
-    clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t*) &clientAddrLen);
+    while(clientSockets.size() < MAX_PLAYERS) {
+        int client = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t*) &clientAddrLen);
+        clientSockets.push_back(client);
+        printf("Players: %d/%d\n", (int)clientSockets.size(), MAX_PLAYERS);
+    }
+    clientSocket = clientSockets.at(0);
     if (clientSocket < 0)
         return -1;
     printf("accept\n");
@@ -69,15 +80,24 @@ void Server::startGame() {
     //SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(NULL, -1, SDL_RENDERER_PRESENTVSYNC);
 
-    Mario* mario = new Mario();
-    //MarioController *marioController = new MarioController(mario);
+    std::vector<Mario*> marios;
+    for(unsigned int i = 0; i < MAX_PLAYERS; i++) {
+        marios.push_back(new Mario()); 
+    }
 
     Uint8 currentLevel = 1;
     Nivel *nivel = NULL;
     NivelVista *vista = NULL;
-    getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
+    getNextLevel(&nivel, &vista, marios, &configuration, currentLevel, renderer);
 
+<<<<<<< HEAD
     //mario->setNivel(nivel);
+=======
+    for(unsigned int i = 0; i < MAX_PLAYERS; i++) {
+        marios[i]->setNivel(nivel);
+    }
+    
+>>>>>>> Agrego 2do jugador
 
     Uint32 previous, current, elapsed, lag;
     //bool updated, quitRequested = false;
@@ -86,7 +106,8 @@ void Server::startGame() {
     lag = 0;
 
     bool quitRequested = false;
-    
+    handleCommandArgs_t handleCommandArgs[MAX_PLAYERS];
+
     while(!quitRequested) {
         current = SDL_GetTicks();
         elapsed = current - previous;
@@ -103,19 +124,32 @@ void Server::startGame() {
 
         // Update View and render
         if (updated) {
-            estadoNivel_t* view = nivel->getEstado();
-            sendView(&(this->clientSocket), view);  
+            for(unsigned int i = 0; i < clientSockets.size(); i++) {
+                estadoNivel_t* view = nivel->getEstado();
+                int bytesSent = sendView(&clientSockets[i], view);                 
+            }
 
-            char command;
-            int bytesReceived = receiveCommand(&(this->clientSocket), &command);
-            printf("command received: %d\n", (int)command);
-            if(bytesReceived == sizeof(char))
-                mario->setEstado(command);
+            for(unsigned int i = 0; i < clientSockets.size(); i++) {
+                handleCommandArgs[i].clientSocket = &(clientSockets[i]);
+                handleCommandArgs[i].mario = marios[i];
+
+                pthread_t recvCommandThread;
+                pthread_create(&recvCommandThread, NULL, handleCommand, (void*)&handleCommandArgs[i]);
+            }
         }
         quitRequested = SDL_QuitRequested();
     }
 }
 
+void* Server::handleCommand(void* handleCommandArgs) {
+    handleCommandArgs_t* args = (handleCommandArgs_t*)handleCommandArgs;
+    char command;
+    int bytesReceived = receiveCommand(args->clientSocket, &command);
+    printf("command received: %d\n", (int)command);
+    if(bytesReceived == sizeof(char)) {
+        args->mario->setEstado(command);
+    }
+}
 int Server::sendView(int* clientSocket, estadoNivel_t* view) {
     int totalBytesSent = 0;
     int bytesSent = 0;
@@ -160,7 +194,7 @@ int Server::receiveCommand(int* clientSocket, char* command) {
     return totalBytesSent;
 }
 
-void Server::getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration::GameConfiguration *config, Uint8 currentLevel, SDL_Renderer *renderer) {
+void Server::getNextLevel(Nivel **nivel, NivelVista **vista, std::vector<Mario*> marios, configuration::GameConfiguration *config, Uint8 currentLevel, SDL_Renderer *renderer) {
     if (currentLevel == 1) {
         logger::Logger::getInstance().logInformation("Level 1 starts");
         mario->setPos(MARIO_START_X, MARIO_START_Y);
@@ -168,6 +202,12 @@ void Server::getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, confi
         Nivel1 *nivel1 = new Nivel1();
         nivel1->addPlayer(mario);
 
+        for(int i = 0; i < MAX_PLAYERS; i++) {
+            marios[i]->setPos(N1_MARIO_POS_X, N1_MARIO_POS_Y);
+
+            
+            (*nivel)->addPlayer(marios[i]);
+        }
         auto enemies = config->getEnemies();
         for (auto enemy: enemies) {
             if (enemy.getType().compare("Fuego") == 0) nivel1->addEnemies(enemy.getQuantity());
@@ -209,7 +249,7 @@ void Server::getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, confi
         logger::Logger::getInstance().logInformation("End of Level 2");
         delete *nivel;
         delete *vista;
-        delete mario;
+        //delete mario;
         *nivel = NULL;
     }
 }

@@ -4,6 +4,7 @@
 #include <arpa/inet.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <pthread.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string>
@@ -19,6 +20,17 @@
 #include "../utils/Constants.hpp"
 #include "Server.h"
 #include "Client.h"
+
+typedef struct updateViewArgs {
+    int* clientSocket;
+    NivelVista* vista;
+    SDL_Renderer* renderer;
+} updateViewArgs_t;
+
+typedef struct handleCommandArgs {
+    int* clientSocket;
+    MarioController* marioController;
+} handleCommandArgs_t;
 
 Client::Client() {
     std::cout << "Aplicación iniciada en modo cliente" << std::endl;
@@ -45,7 +57,6 @@ int Client::connectToServer(char* serverIp, char* port) {
     std::cout << "post connect" << std::endl;
     startGame();  
     
-    std::cout << "post game" << std::endl;
     return 1;
 }
 
@@ -70,7 +81,7 @@ void Client::startGame() {
     
     //getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
     vista = new Nivel1Vista(renderer, configuration.getDefaultConfigFlag());
-    vista->addPlayers(1);                                           // Aca iria cantidad de jugadores
+    vista->addPlayers(2);                                           // Aca iria cantidad de jugadores
     auto stages = configuration.getStages();
     if (stages.size() > 0) {
         std::string rutaImagen = stages[0].getBackgrounds()[0];
@@ -86,22 +97,23 @@ void Client::startGame() {
     //lag = 0;
 
     MarioController* marioController;
+    updateViewArgs_t updateViewArgs;
+    updateViewArgs.clientSocket = &clientSocket;
+    updateViewArgs.renderer = renderer;
+    updateViewArgs.vista = vista;
+
+    handleCommandArgs_t handleCommandArgs;
+    handleCommandArgs.clientSocket = &(this->clientSocket);
+    handleCommandArgs.marioController = marioController;
 
     while (!quitRequested) {
-        estadoNivel_t view;
-        int bytesReceived = receiveView(&clientSocket, &view);
-        //printf("received %d/%d\n", bytesReceived, (int)sizeof(estadoNivel_t));
-        if(bytesReceived == sizeof(estadoNivel_t)) {
-            SDL_RenderClear(renderer);
-            vista->update(&view);
-            SDL_RenderPresent(renderer);
-        }
-
-        char command = marioController->getControls();
-        int bytesSent = sendCommand(&clientSocket, &command);
-        if(bytesSent == sizeof(command))
-            printf("command sent: %d\n", (int)command);
-           
+        pthread_t recvDataThread;
+        pthread_create(&recvDataThread, NULL, updateView, (void*)&updateViewArgs);
+        
+        pthread_t sendDataThread;
+        pthread_create(&sendDataThread, NULL, handleCommand, (void*)&handleCommandArgs);
+        
+        pthread_join(recvDataThread, NULL);
         // Handle quit request
         quitRequested = SDL_QuitRequested();
         
@@ -113,6 +125,27 @@ void Client::startGame() {
     IMG_Quit();
     SDL_Quit();
 
+}
+void* Client::updateView(void* updateViewArgs) {
+    updateViewArgs_t* args = (updateViewArgs_t*)updateViewArgs;
+
+    estadoNivel_t view;
+    int bytesReceived = receiveView(args->clientSocket, &view);
+    //printf("received %d/%d\n", bytesReceived, (int)sizeof(estadoNivel_t));
+    if(bytesReceived == sizeof(estadoNivel_t)) {
+        SDL_RenderClear(args->renderer);
+        args->vista->update(&view);
+        SDL_RenderPresent(args->renderer);
+    }
+}
+
+void* Client::handleCommand(void* handleCommandArgs) {
+    handleCommandArgs_t* args = (handleCommandArgs_t*)handleCommandArgs;
+
+    char command = args->marioController->getControls();
+    int bytesSent = sendCommand(args->clientSocket, &command);
+    if(bytesSent == sizeof(command))
+        printf("command sent: %d\n", (int)command);
 }
 
 int Client::receiveView(int* clientSocket, estadoNivel_t* view) {
