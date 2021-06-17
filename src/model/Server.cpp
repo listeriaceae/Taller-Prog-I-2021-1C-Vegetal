@@ -25,8 +25,8 @@ typedef struct handleCommandArgs {
     Mario* mario;
 } handleCommandArgs_t;
 
-//const int MAX_PLAYERS = 2;
 const int MAX_QUEUED_CONNECTIONS = 3;
+
 Server::Server(char* port) {
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = INADDR_ANY;
@@ -89,15 +89,6 @@ void Server::startGame() {
     Nivel *nivel = NULL;
     NivelVista *vista = NULL;
     getNextLevel(&nivel, &vista, marios, &configuration, currentLevel, renderer);
-
-<<<<<<< HEAD
-    //mario->setNivel(nivel);
-=======
-    for(unsigned int i = 0; i < MAX_PLAYERS; i++) {
-        marios[i]->setNivel(nivel);
-    }
-    
->>>>>>> Agrego 2do jugador
 
     Uint32 previous, current, elapsed, lag;
     //bool updated, quitRequested = false;

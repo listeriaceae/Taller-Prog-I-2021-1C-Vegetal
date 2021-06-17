@@ -2,6 +2,12 @@
 
 #include <string>
 
+//estadoNivel
+const int MAX_PLATFORMS = 12;
+const int MAX_ENEMIES = 3;
+const int MAX_BARRELS = 20;
+const int MAX_PLAYERS = 2;
+
 // Dimensiones
 #define ANCHO_NIVEL 224
 #define ALTO_NIVEL 256
