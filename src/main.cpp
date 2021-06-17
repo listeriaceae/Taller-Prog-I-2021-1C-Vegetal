@@ -15,6 +15,7 @@
 #include "logger.h"
 #include "utils/window.hpp"
 #include "utils/Constants.hpp"
+#include "StartPageView.h"
 
 void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration::GameConfiguration *config, Uint8 currentLevel, SDL_Renderer *renderer);
 
@@ -32,6 +33,31 @@ int main(void)
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
     SDL_Event event;
+
+    SDL_StartTextInput();
+    StartPage *startPage = new StartPage(renderer);
+
+    bool endProgram = false;
+    int inicio, fin;
+    while (!endProgram) {
+        inicio = SDL_GetTicks();
+
+        while (SDL_PollEvent(&event)) {
+            endProgram = (event.type == SDL_QUIT);
+            if (event.type != SDL_MOUSEMOTION) {
+                endProgram = startPage->handle(event);
+            }
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        startPage->show();
+        SDL_RenderPresent(renderer);
+
+        fin = SDL_GetTicks();
+        SDL_Delay(std::max(MS_PER_UPDATE - (fin - inicio), 0));
+    }
+    SDL_StopTextInput();
 
     Mario* mario = new Mario();
     MarioController *marioController = new MarioController(mario);
@@ -60,6 +86,9 @@ int main(void)
         marioController->update();
 
         while (SDL_PollEvent(&event)) {
+            if (event.type != SDL_MOUSEMOTION) {
+                endProgram = startPage->handle(event);
+            }
             // Cambio de nivel
             if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
                 char buffer[15];
