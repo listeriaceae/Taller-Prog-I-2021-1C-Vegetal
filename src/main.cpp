@@ -54,10 +54,7 @@ int main(void)
         marioController->update();
 
         if (nivel->isComplete()) {
-            char buffer[15];
-            sprintf(buffer, "End of Level %d", currentLevel++);
-            logger::Logger::getInstance().logInformation(buffer);
-            getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
+            getNextLevel(&nivel, &vista, mario, &configuration, ++currentLevel, renderer);
         }
         if (nivel == NULL) break;
 
@@ -113,8 +110,9 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
         *nivel = nivel1;
     }
     else if (currentLevel == 2) {
+        logger::Logger::getInstance().logInformation("End of Level 1");
         logger::Logger::getInstance().logInformation("Level 2 starts");
-        mario->setPos(N2_MARIO_POS_X, MARIO_START_Y);
+        mario->setPos(N2_MARIO_START_X, MARIO_START_Y);
 
         delete *nivel;
         *nivel = new Nivel2();
@@ -130,6 +128,7 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
             (*vista)->setBackground(rutaImagen);
         }
     } else {
+        logger::Logger::getInstance().logInformation("End of Level 2");
         delete *nivel;
         delete *vista;
         delete mario;
