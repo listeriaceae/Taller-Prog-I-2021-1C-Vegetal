@@ -3,8 +3,9 @@
 #include "../../utils/marioStructs.h"
 
 #define MARIO_VEL_X 0.5f
-#define MARIO_VEL_SALTO 2.f
 #define MARIO_VEL_TREPAR 0.5f
+#define MARIO_VEL_SALTO 2.f
+#define GRAVEDAD (- (MARIO_VEL_SALTO / 16))
 
 class MarioState {
     public:

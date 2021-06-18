@@ -34,7 +34,7 @@ MarioState *SueloState::update(float *x, float *y, float *xSpeed, float *ySpeed,
         return trepandoState;
     }
     *x += *xSpeed * ((*x < ANCHO_NIVEL - ANCHO_MARIO && 0 < *xSpeed) || (0 < *x && *xSpeed < 0));
-    *y += 1;
+    *y -= GRAVEDAD;
     if (!stage->collide(x, y, xSpeed, ySpeed)) {
         *xSpeed = 0;
         *ySpeed = 0;

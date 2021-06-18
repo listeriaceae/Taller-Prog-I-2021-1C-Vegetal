@@ -2,8 +2,6 @@
 #include "SueloState.h"
 #include "../../utils/Constants.hpp"
 
-#define GRAVEDAD (- (MARIO_VEL_SALTO / 16))
-
 AireState *AireState::instance = NULL;
 
 AireState::AireState() {}
