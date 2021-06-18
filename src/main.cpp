@@ -13,6 +13,7 @@
 #include "logger.h"
 #include "utils/window.hpp"
 #include "utils/Constants.hpp"
+#include "StartPageView.h"
 
 void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration::GameConfiguration *config, Uint8 currentLevel, SDL_Renderer *renderer);
 
@@ -28,6 +29,33 @@ int main(void)
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+
+    SDL_Event event;
+
+    SDL_StartTextInput();
+    StartPage *startPage = new StartPage(renderer);
+
+    bool endProgram = false;
+    int inicio, fin;
+    while (!endProgram) {
+        inicio = SDL_GetTicks();
+
+        while (SDL_PollEvent(&event)) {
+            endProgram = (event.type == SDL_QUIT);
+            if (event.type != SDL_MOUSEMOTION) {
+                endProgram = startPage->handle(event);
+            }
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        startPage->show();
+        SDL_RenderPresent(renderer);
+
+        fin = SDL_GetTicks();
+        SDL_Delay(std::max(MS_PER_UPDATE - (fin - inicio), 0));
+    }
+    SDL_StopTextInput();
 
     Mario* mario = new Mario();
     MarioController *marioController = new MarioController(mario);
