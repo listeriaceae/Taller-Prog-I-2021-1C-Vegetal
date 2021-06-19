@@ -22,10 +22,10 @@ void Stage::addLadder(Ladder *ladder) {
     grid[y * GRID_COLUMNS + x]->setLadderTop(ladder);
 }
 
-Ladder *Stage::getLadder(float x, float y, float ySpeed) {
+Ladder *Stage::getLadder(float x, float y, int direction) {
     unsigned int i = ((int)y / STAGE_HEIGHT) * GRID_COLUMNS + ((int)x + ANCHO_MARIO / 2) / STAGE_WIDTH;
-    if (0 < ySpeed) return grid[i]->getLadderBottom();
-    if (ySpeed < 0) return grid[i]->getLadderTop();
+    if (0 < direction) return grid[i]->getLadderBottom();
+    if (direction < 0) return grid[i]->getLadderTop();
     return NULL;
 }
 

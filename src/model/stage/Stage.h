@@ -10,7 +10,7 @@ class Stage {
     public:
         Stage();
         void addLadder(Ladder *ladder);
-        Ladder *getLadder(float x, float y, float ySpeed);
+        Ladder *getLadder(float x, float y, int drection);
         void addPlatform(Platform *platform);
         bool collide(float *x, float *y, float *dx, float *dy);
         ~Stage();
