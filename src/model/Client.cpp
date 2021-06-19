@@ -23,7 +23,7 @@
 
 typedef struct updateViewArgs {
     int* clientSocket;
-    NivelVista* vista;
+    NivelVista* view;
     SDL_Renderer* renderer;
 } updateViewArgs_t;
 
@@ -31,6 +31,8 @@ typedef struct handleCommandArgs {
     int* clientSocket;
     MarioController* marioController;
 } handleCommandArgs_t;
+
+pthread_mutex_t clientMutex;
 
 Client::Client() {
     std::cout << "Aplicación iniciada en modo cliente" << std::endl;
@@ -81,7 +83,7 @@ void Client::startGame() {
     
     //getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
     vista = new Nivel1Vista(renderer, configuration.getDefaultConfigFlag());
-    vista->addPlayers(2);                                           // Aca iria cantidad de jugadores
+    vista->addPlayers(MAX_PLAYERS);                                           // Aca iria cantidad de jugadores
     auto stages = configuration.getStages();
     if (stages.size() > 0) {
         std::string rutaImagen = stages[0].getBackgrounds()[0];
@@ -100,24 +102,22 @@ void Client::startGame() {
     updateViewArgs_t updateViewArgs;
     updateViewArgs.clientSocket = &clientSocket;
     updateViewArgs.renderer = renderer;
-    updateViewArgs.vista = vista;
+    updateViewArgs.view = vista;
 
     handleCommandArgs_t handleCommandArgs;
     handleCommandArgs.clientSocket = &(this->clientSocket);
     handleCommandArgs.marioController = marioController;
 
+    pthread_t recvThread;
+    pthread_create(&recvThread, NULL, receiveDataThread, (void*)&updateViewArgs);
+
+    pthread_t sendThread;
+    pthread_create(&sendThread, NULL, sendDataThread, (void*)&handleCommandArgs);
+
     while (!quitRequested) {
-        pthread_t recvDataThread;
-        pthread_create(&recvDataThread, NULL, updateView, (void*)&updateViewArgs);
-        
-        pthread_t sendDataThread;
-        pthread_create(&sendDataThread, NULL, handleCommand, (void*)&handleCommandArgs);
-        
-        pthread_join(recvDataThread, NULL);
-        // Handle quit request
         quitRequested = SDL_QuitRequested();
-        
     }
+    
     logger::Logger::getInstance().logInformation("Game over");
 
     SDL_DestroyRenderer(renderer);
@@ -126,26 +126,43 @@ void Client::startGame() {
     SDL_Quit();
 
 }
-void* Client::updateView(void* updateViewArgs) {
+void* Client::receiveDataThread(void* updateViewArgs) {
     updateViewArgs_t* args = (updateViewArgs_t*)updateViewArgs;
-
     estadoNivel_t view;
-    int bytesReceived = receiveView(args->clientSocket, &view);
-    //printf("received %d/%d\n", bytesReceived, (int)sizeof(estadoNivel_t));
-    if(bytesReceived == sizeof(estadoNivel_t)) {
-        SDL_RenderClear(args->renderer);
-        args->vista->update(&view);
-        SDL_RenderPresent(args->renderer);
+    bool quitRequested = false;
+
+    while(!quitRequested) {
+        int bytesReceived = receiveView(args->clientSocket, &view);
+        //printf("received %d/%d\n", bytesReceived, (int)sizeof(estadoNivel_t));
+        if(bytesReceived == sizeof(estadoNivel_t)) {
+            pthread_mutex_lock(&clientMutex);
+            SDL_RenderClear(args->renderer);
+            args->view->update(&view);
+            SDL_RenderPresent(args->renderer);
+            pthread_mutex_unlock(&clientMutex);
+        }
+
+        quitRequested = SDL_QuitRequested();
     }
 }
 
-void* Client::handleCommand(void* handleCommandArgs) {
+void* Client::sendDataThread(void* handleCommandArgs) {
     handleCommandArgs_t* args = (handleCommandArgs_t*)handleCommandArgs;
+    char command = 0;
+    char lastCommand = 1;
+    bool quitRequested = false;
 
-    char command = args->marioController->getControls();
-    int bytesSent = sendCommand(args->clientSocket, &command);
-    if(bytesSent == sizeof(command))
-        printf("command sent: %d\n", (int)command);
+    while(!quitRequested) {
+        lastCommand = command;
+        command = args->marioController->getControls();
+        if(!(lastCommand == 0 && command == 0)) {
+            int bytesSent = sendCommand(args->clientSocket, &command);
+        if(bytesSent == sizeof(command))
+            printf("command sent: %d\n", (int)command);
+        }
+        SDL_Delay(10);
+        quitRequested = SDL_QuitRequested();
+    }
 }
 
 int Client::receiveView(int* clientSocket, estadoNivel_t* view) {

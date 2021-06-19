@@ -18,9 +18,13 @@
 #include "../utils/estadoNivel.h"
 #include "../utils/marioStructs.h"
 #include "../utils/punto.h"
+#include <queue>
 #include "Server.h"
 
+pthread_mutex_t mutex;
+
 typedef struct handleCommandArgs {
+    std::queue<command_t*>* commands;
     int* clientSocket;
     Mario* mario;
 } handleCommandArgs_t;
@@ -99,6 +103,15 @@ void Server::startGame() {
     bool quitRequested = false;
     handleCommandArgs_t handleCommandArgs[MAX_PLAYERS];
 
+    for(unsigned int i = 0; i < clientSockets.size(); i++) { //creo 1 hilo por cliente que recibe comandos y los coloca en una cola
+        handleCommandArgs[i].commands = &(this->commands);
+        handleCommandArgs[i].clientSocket = &(clientSockets[i]);
+        handleCommandArgs[i].mario = marios[i];
+
+        pthread_t recvCommandThread;
+        pthread_create(&recvCommandThread, NULL, handleCommand, (void*)&handleCommandArgs[i]);
+    }
+
     while(!quitRequested) {
         current = SDL_GetTicks();
         elapsed = current - previous;
@@ -113,32 +126,42 @@ void Server::startGame() {
             updated = true;
         }
 
-        // Update View and render
-        if (updated) {
+        if(updated) {
+            pthread_mutex_lock(&mutex);
+            for(unsigned int i = 0; i < commands.size(); i++) {
+                command_t* command = commands.front();
+                commands.pop();
+                command->mario->setEstado(*(command->action));
+            }
+            pthread_mutex_unlock(&mutex);
+            
             for(unsigned int i = 0; i < clientSockets.size(); i++) {
                 estadoNivel_t* view = nivel->getEstado();
-                int bytesSent = sendView(&clientSockets[i], view);                 
-            }
-
-            for(unsigned int i = 0; i < clientSockets.size(); i++) {
-                handleCommandArgs[i].clientSocket = &(clientSockets[i]);
-                handleCommandArgs[i].mario = marios[i];
-
-                pthread_t recvCommandThread;
-                pthread_create(&recvCommandThread, NULL, handleCommand, (void*)&handleCommandArgs[i]);
+                sendView(&clientSockets[i], view);                 
             }
         }
+
         quitRequested = SDL_QuitRequested();
     }
 }
 
 void* Server::handleCommand(void* handleCommandArgs) {
     handleCommandArgs_t* args = (handleCommandArgs_t*)handleCommandArgs;
-    char command;
-    int bytesReceived = receiveCommand(args->clientSocket, &command);
-    printf("command received: %d\n", (int)command);
-    if(bytesReceived == sizeof(char)) {
-        args->mario->setEstado(command);
+    char action;
+    bool quitRequested = false;
+    
+    while(!quitRequested) {
+        receiveCommand(args->clientSocket, &action);
+        printf("command received: %d\n", (int)action);
+        command_t command;
+        command.mario = args->mario;
+        command.action = &action;
+
+        pthread_mutex_lock(&mutex);
+        args->commands->push(&command);
+        pthread_mutex_unlock(&mutex);
+
+        quitRequested = SDL_QuitRequested();
     }
 }
 int Server::sendView(int* clientSocket, estadoNivel_t* view) {
