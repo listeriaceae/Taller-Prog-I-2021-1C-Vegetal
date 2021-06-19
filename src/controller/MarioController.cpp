@@ -1,8 +1,7 @@
 #include <SDL2/SDL.h>
 #include "MarioController.h"
 
-
-controls_t MarioController::getControls() {
+controls_t getControls() {
     const Uint8 *keyboard = SDL_GetKeyboardState(NULL);
     controls_t controls;
     controls.space = keyboard[SDL_SCANCODE_SPACE];

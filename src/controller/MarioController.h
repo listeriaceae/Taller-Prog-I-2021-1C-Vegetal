@@ -1,10 +1,4 @@
 #pragma once
-#include "../model/Mario.hpp"
+#include "../utils/marioStructs.h"
 
-class MarioController {
-    public:
-        MarioController();
-        void update();
-        controls_t getControls();
-    private:
-};
+controls_t getControls();
