@@ -12,7 +12,7 @@ void Nivel::addPlayer(Mario *jugador) {
 
 bool Nivel::isComplete() {
     bool result = false;
-    for (Mario *mario : jugadores) result |= (mario->getPos().y <= 40.5);
+    for (Mario *mario : jugadores) result |= (mario->getPos().y == 40);
     return result;
 }
 
