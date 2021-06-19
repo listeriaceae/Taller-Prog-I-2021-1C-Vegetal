@@ -8,7 +8,7 @@ class Mario : public Entidad
     public: 
         Mario();
         void setPos(float x, float y);
-        void setEstado(controls_t controls);
+        void setControls(controls_t controls);
         void setStage(Stage *stage);
         void mover();
         estadoMario_t getEstado();
