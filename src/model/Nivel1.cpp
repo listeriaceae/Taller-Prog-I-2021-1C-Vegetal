@@ -34,11 +34,11 @@ void Nivel1::initPlatforms() {
 }
 
 void Nivel1::initLadders() {
-    stage->addLadder(new Ladder(32, 232, 184));
-    stage->addLadder(new Ladder(216, 184, 144));
-    stage->addLadder(new Ladder(0, 144, 104));
-    stage->addLadder(new Ladder(216, 104, 72));
-    stage->addLadder(new Ladder(128, 68, 40));
+    stage->addLadder(new Ladder(28, 232, 184));
+    stage->addLadder(new Ladder(212, 184, 144));
+    stage->addLadder(new Ladder(-4, 144, 104));
+    stage->addLadder(new Ladder(212, 104, 72));
+    stage->addLadder(new Ladder(124, 68, 40));
 }
 
 void Nivel1::addEnemies(unsigned int amount) {

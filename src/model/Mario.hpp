@@ -15,6 +15,7 @@ class Mario : public Entidad
 
     private:
         MarioState *state;
+        controls_t controls;
         char estado;
         float velX;
         float velY;

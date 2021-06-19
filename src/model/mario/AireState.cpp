@@ -13,11 +13,7 @@ AireState *AireState::getInstance() {
     return instance;
 }
 
-MarioState *AireState::handleInput(controls_t, float *, float *) {
-    return instance;
-}
-
-MarioState *AireState::update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado) {
+MarioState *AireState::update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado, controls_t) {
     *estado += (SALTANDO - *estado) * (*ySpeed > 0);
     *xSpeed -= *xSpeed * 2 * !((*x < ANCHO_NIVEL - ANCHO_MARIO && 0 < *xSpeed) || (0 < *x && *xSpeed < 0));
     *ySpeed += GRAVEDAD;
