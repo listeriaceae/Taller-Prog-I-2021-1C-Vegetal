@@ -58,7 +58,6 @@ estadoNivel_t* Nivel2::getEstado() {
         if(barriles.size() < i)
             estadoNivel->barrels[i] = barriles.at(i)->getPos();
     }
-
     for(unsigned int i = 0; i < this->jugadores.size(); i++) {
         estadoNivel->players[i] = jugadores.at(i)->getEstado();
     }
