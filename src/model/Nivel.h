@@ -6,8 +6,8 @@
 #include "EnemigoFuego.h"
 #include "../utils/estadoNivel.h"
 
-class Mario;
-
+// Representa el escenario del juego
+// contiene a Stage (elementos colisionables)
 class Nivel
 {
     public:
