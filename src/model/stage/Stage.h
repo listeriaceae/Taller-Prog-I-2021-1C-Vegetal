@@ -4,6 +4,8 @@
 #include "Platform.h"
 #include "../../utils/Constants.hpp"
 
+// Representa todos los elementos del nivel con los que Mario puede colsionar
+// Contiene un arreglo de Tiles
 class Stage {
     public:
         Stage();

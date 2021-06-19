@@ -4,26 +4,26 @@
 #define ANCHO_HITBOX 8
 #define STAGE_WIDTH (ANCHO_NIVEL / ANCHO_TILE)
 #define STAGE_HEIGHT (ALTO_NIVEL / ALTO_TILE)
-#define GRID_COLS (STAGE_WIDTH + 1)
+#define GRID_COLUMNS (STAGE_WIDTH + 1)
 #define SLOPE 0.03125f
 
 // Representa todos los elementos del nivel con los que Mario puede interactuar
 // Contiene un arreglo de Tiles
 Stage::Stage() {
-    for (unsigned int i = 0; i < GRID_COLS * (STAGE_HEIGHT + 1); ++i) grid[i] = new Tile();
+    for (unsigned int i = 0; i < GRID_COLUMNS * (STAGE_HEIGHT + 1); ++i) grid[i] = new Tile();
 }
 
 void Stage::addLadder(Ladder *ladder) {
     int x = ((int)ladder->getX() + ANCHO_MARIO / 2) / STAGE_WIDTH;
     int y = (int)ladder->getBottom() / STAGE_HEIGHT;
-    grid[y * GRID_COLS + x]->setLadderBottom(ladder);
+    grid[y * GRID_COLUMNS + x]->setLadderBottom(ladder);
 
     y = (int)ladder->getTop() / STAGE_HEIGHT;
-    grid[y * GRID_COLS + x]->setLadderTop(ladder);
+    grid[y * GRID_COLUMNS + x]->setLadderTop(ladder);
 }
 
 Ladder *Stage::getLadder(float x, float y, float ySpeed) {
-    unsigned int i = ((int)y / STAGE_HEIGHT) * GRID_COLS + ((int)x + ANCHO_MARIO / 2) / STAGE_WIDTH;
+    unsigned int i = ((int)y / STAGE_HEIGHT) * GRID_COLUMNS + ((int)x + ANCHO_MARIO / 2) / STAGE_WIDTH;
     if (0 < ySpeed) return grid[i]->getLadderBottom();
     if (ySpeed < 0) return grid[i]->getLadderTop();
     return NULL;
@@ -34,23 +34,23 @@ void Stage::addPlatform(Platform *platform) {
     platform->getLimits(&x, &max);
     unsigned int i;
     while (x < max) {
-        i = ((int)platform->getY(x) / STAGE_HEIGHT) * GRID_COLS + (int)x / STAGE_WIDTH;
+        i = ((int)platform->getY(x) / STAGE_HEIGHT) * GRID_COLUMNS + (int)x / STAGE_WIDTH;
         grid[i]->addPlatform(platform);
         x += ANCHO_TILE;
     }
     Tile *tile;
-    if (grid[i] != (tile = grid[((int)platform->getY(max) / STAGE_HEIGHT) * GRID_COLS + (int)max / STAGE_WIDTH])) {
+    if (grid[i] != (tile = grid[((int)platform->getY(max) / STAGE_HEIGHT) * GRID_COLUMNS + (int)max / STAGE_WIDTH])) {
         tile->addPlatform(platform);
     }
 }
 
 bool Stage::collide(float *x, float *y, float *dx, float *dy) {
-    unsigned int i = ((int)(*y) / STAGE_HEIGHT) * GRID_COLS + (int)(*x) / STAGE_WIDTH;
+    unsigned int i = ((int)(*y) / STAGE_HEIGHT) * GRID_COLUMNS + (int)(*x) / STAGE_WIDTH;
     std::unordered_set<Platform *> platforms;
     grid[i]->getPlatforms(&platforms);
     grid[i + 1]->getPlatforms(&platforms);
-    grid[i + GRID_COLS]->getPlatforms(&platforms);
-    grid[i + (GRID_COLS + 1)]->getPlatforms(&platforms);
+    grid[i + GRID_COLUMNS]->getPlatforms(&platforms);
+    grid[i + (GRID_COLUMNS + 1)]->getPlatforms(&platforms);
 
     bool is_standing = false;
     float min, max, distanceLeft, distanceRight, distanceY;
