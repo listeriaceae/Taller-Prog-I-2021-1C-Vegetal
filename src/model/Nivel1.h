@@ -1,23 +1,20 @@
 #pragma once
-
-#include <list>
-#include "PlataformaMovil.h"
 #include "Nivel.h"
-#include "nivel/Escalera.h"
+#include "stage/MovingPlatform.h"
 
 class Nivel1 : public Nivel
 {
     public:
         Nivel1();
+        void addEnemies(unsigned int amount);
         void update();
-        estadoNivel_t* getEstado();
+        estadoNivel_t *getEstado();
         ~Nivel1();
-        Escalera* getEscalera(punto_t p);
 
     private:
-        std::list<PlataformaMovil*> plataformasMoviles;
+        MovingPlatform *movingPlatforms[12];
 
-        void initPlataformas();
+        void initPlatforms();
         void updatePlatforms();
-        void inicializarEscaleras();
+        void initLadders();
 };

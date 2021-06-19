@@ -1,7 +1,7 @@
 #include "Nivel1Vista.h"
 #include "PoleaVista.h"
 #include "FuegoVista.h"
-#include "PeachVista.h"
+#include "PaulineVista.h"
 #include "DonkeyKongVista.h"
 #include "DefaultConfigVista.h"
 #include "../utils/Constants.hpp"
@@ -22,7 +22,7 @@ Nivel1Vista::Nivel1Vista(SDL_Renderer *renderer, bool defaultConfig)
     entidadesVista.push_back(new FuegoVista(N1_POS_X_FUEGO3, N1_POS_Y_FUEGO, renderer));
     entidadesVista.push_back(new FuegoVista(N1_POS_X_FUEGO4, N1_POS_Y_FUEGO, renderer));
 
-    entidadesVista.push_back(new PeachVista(renderer));
+    entidadesVista.push_back(new PaulineVista(renderer));
     entidadesVista.push_back(new DonkeyKongVista(renderer));
 
     if (defaultConfig) entidadesVista.push_back(new DefaultConfigVista(renderer));

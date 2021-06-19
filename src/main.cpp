@@ -1,5 +1,3 @@
-#include <iostream>
-#include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdlib.h>
@@ -67,13 +65,11 @@ int main(void)
     NivelVista *vista = NULL;
     getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
 
-    mario->setNivel(nivel);
-
     // Game loop design by http://gameprogrammingpatterns.com/game-loop.html#play-catch-up
     Uint32 previous, current, elapsed, lag;
-    bool updated, quitRequested = false;
     previous = SDL_GetTicks();
     lag = 0;
+    bool updated, quitRequested = false;
     while (!quitRequested) {
         current = SDL_GetTicks();
         elapsed = current - previous;
@@ -85,17 +81,8 @@ int main(void)
         // Handle input for Mario
         marioController->update();
 
-        while (SDL_PollEvent(&event)) {
-            if (event.type != SDL_MOUSEMOTION) {
-                endProgram = startPage->handle(event);
-            }
-            // Cambio de nivel
-            if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
-                char buffer[15];
-                sprintf(buffer, "End of Level %d", currentLevel++);
-                logger::Logger::getInstance().logInformation(buffer);
-                getNextLevel(&nivel, &vista, mario, &configuration, currentLevel, renderer);
-            }
+        if (nivel->isComplete()) {
+            getNextLevel(&nivel, &vista, mario, &configuration, ++currentLevel, renderer);
         }
         if (nivel == NULL) break;
 
@@ -128,14 +115,14 @@ int main(void)
 void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration::GameConfiguration *config, Uint8 currentLevel, SDL_Renderer *renderer) {
     if (currentLevel == 1) {
         logger::Logger::getInstance().logInformation("Level 1 starts");
-        mario->setPos(N1_MARIO_POS_X, N1_MARIO_POS_Y);
+        mario->setPos(MARIO_START_X, MARIO_START_Y);
 
-        *nivel = new Nivel1();
-        (*nivel)->addPlayer(mario);
+        Nivel1 *nivel1 = new Nivel1();
+        nivel1->addPlayer(mario);
 
         auto enemies = config->getEnemies();
         for (auto enemy: enemies) {
-            if (enemy.getType().compare("Fuego") == 0) (*nivel)->addEnemies(enemy.getQuantity());
+            if (enemy.getType().compare("Fuego") == 0) nivel1->addEnemies(enemy.getQuantity());
             logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
             logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
         }
@@ -148,16 +135,16 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
             logger::Logger::getInstance().logDebug("Stage 1 background img: " + rutaImagen);
             (*vista)->setBackground(rutaImagen);
         }
-        return;
+        *nivel = nivel1;
     }
-    if (currentLevel == 2) {
+    else if (currentLevel == 2) {
+        logger::Logger::getInstance().logInformation("End of Level 1");
         logger::Logger::getInstance().logInformation("Level 2 starts");
-        mario->setPos(N2_MARIO_POS_X, N2_MARIO_POS_Y);
+        mario->setPos(N2_MARIO_START_X, MARIO_START_Y);
 
         delete *nivel;
         *nivel = new Nivel2();
         (*nivel)->addPlayer(mario);
-        mario->setNivel((*nivel));
 
         delete *vista;
         *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag());
@@ -168,8 +155,8 @@ void getNextLevel(Nivel **nivel, NivelVista **vista, Mario* mario, configuration
             logger::Logger::getInstance().logDebug("Stage 2 background img: " + rutaImagen);
             (*vista)->setBackground(rutaImagen);
         }
-        return;
     } else {
+        logger::Logger::getInstance().logInformation("End of Level 2");
         delete *nivel;
         delete *vista;
         delete mario;

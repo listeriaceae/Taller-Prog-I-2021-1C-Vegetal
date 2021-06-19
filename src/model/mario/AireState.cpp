@@ -1,56 +1,35 @@
-#include "../Mario.hpp"
-#include "SaltandoState.h"
 #include "AireState.h"
-#include "ReposoState.h"
-#include "CorriendoState.h"
-#include <string>
-#include <stdio.h>
-#include <iostream>
+#include "SueloState.h"
 #include "../../utils/Constants.hpp"
 
-#define MARIO_VEL_SALTO 1
-#define GRAVEDAD -0.03125
+AireState *AireState::instance = NULL;
 
-AireState* AireState::instance;
+AireState::AireState() {}
 
-AireState::AireState() {
-    this->name = "Aire";
-}
-
-AireState* AireState::getInstance() {
-    if (AireState::instance == NULL) {
-        AireState::instance = new AireState();
+AireState *AireState::getInstance() {
+    if (instance == NULL) {
+        instance = new AireState();
     }
-
-    return AireState::instance;
+    return instance;
 }
 
-void AireState::setVel(float velY, float velX){
-    this->velY = velY;
-    this->velX = velX;
-};
+MarioState *AireState::handleInput(controls_t, float *, float *) {
+    return instance;
+}
 
-
-MarioState* AireState::handleInput(char controls, Mario* mario) {
-    char left = (controls & LEFT) != 0;
-    char right = (controls & RIGHT) != 0;
-
-    // Mario esta en una plataforma?
-    if (mario->getPos().y > 232) {
-        mario->setPos(mario->getPos().x, 232);
-        return ReposoState::getInstance();
+MarioState *AireState::update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado) {
+    *estado += (SALTANDO - *estado) * (*ySpeed > 0);
+    *xSpeed -= *xSpeed * 2 * !((*x < ANCHO_NIVEL - ANCHO_MARIO && 0 < *xSpeed) || (0 < *x && *xSpeed < 0));
+    *ySpeed += GRAVEDAD;
+    *x += *xSpeed;
+    *y -= *ySpeed;
+    if (stage->collide(x, y, xSpeed, ySpeed)) return SueloState::getInstance();
+    if (*y > ALTO_NIVEL - ALTO_MARIO) {             // Aca moriria mario
+        *x = MARIO_START_X;
+        *y = MARIO_START_Y;
+        *xSpeed = 0;
+        *ySpeed = 0;
+        return SueloState::getInstance();
     }
-
-    return AireState::getInstance();
-}
-
-void AireState::perform() {
-}
-
-void AireState::update() {
-     this->velY += GRAVEDAD;
-}
-
-char AireState::getEstado() {
-    return SALTANDO;
+    return instance;
 }

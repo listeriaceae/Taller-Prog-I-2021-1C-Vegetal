@@ -1,25 +1,16 @@
 #pragma once
-
-#include "../Mario.hpp"
 #include "MarioState.h"
 
 class TrepandoState : public MarioState
 {
-     public:
-        virtual MarioState* handleInput(char controls, Mario* mario);
-        virtual void update();
-        virtual void perform();
-        virtual char getEstado();
-        static TrepandoState* getInstance();
-        void setDir(char up, char down);
-        void setEscalera(Escalera* e);
+    public:
+        MarioState *handleInput(controls_t controls, float *xSpeed, float *ySpeed);
+        MarioState *update(float *, float *y, float *xSpeed, float *ySpeed, char *estado);
+        static TrepandoState *getInstance();
+        void setLadder(Ladder *ladder);
 
     private:
         TrepandoState();
-        void clear();
-        static TrepandoState* instance;
-        char up;
-        char down;
-        Escalera* e;
-        char estado;
+        static TrepandoState *instance;
+        Ladder *ladder;
 };

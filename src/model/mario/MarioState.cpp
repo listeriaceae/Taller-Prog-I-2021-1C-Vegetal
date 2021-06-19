@@ -1,19 +1,10 @@
 #include "MarioState.h"
-#include <string>
+#include "../../utils/Constants.hpp"
 
-MarioState::MarioState() {
-    this->velX = 0.;
-    this->velY = 0.;
-}
+Stage *MarioState::stage = NULL;
 
-std::string MarioState::getName() {
-    return this->name;
-}
+MarioState::MarioState() {}
 
-float MarioState::getVelY() {
-    return this->velY;
-}
-
-float MarioState::getVelX() {
-    return this->velX;
+void MarioState::setStage(Stage *stage) {
+    this->stage = stage;
 }

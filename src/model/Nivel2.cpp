@@ -1,20 +1,39 @@
 #include "Nivel2.h"
 #include "../utils/Constants.hpp"
-#include "nivel/Escalera.h"
 
-const int ESCALERA_1_X0 = 176;
-const int ESCALERA_1_X1 = 184;
-const int ESCALERA_1_Y0 = 232;
-const int ESCALERA_1_Y1 = 203;
+Nivel2::Nivel2() : Nivel() {
+    this->initPlatforms();
+    this->initLadders();
+}
 
-Nivel2::Nivel2() : Nivel() {}
+void Nivel2::initPlatforms() {
+    stage->addPlatform(new Platform(0, 248, 112, 248));
+    stage->addPlatform(new Platform(112, 248, 224, 241));
+    stage->addPlatform(new Platform(0, 208, 208, 221));
+    stage->addPlatform(new Platform(16, 188, 224, 175));
+    stage->addPlatform(new Platform(0, 142, 208, 155));
+    stage->addPlatform(new Platform(16, 122, 224, 109));
+    stage->addPlatform(new Platform(144, 85, 208, 89));
+    stage->addPlatform(new Platform(0, 84, 144, 84));
+}
+
+void Nivel2::initLadders() {
+    stage->addLadder(new Ladder(184, 227.75f, 203.25f));
+    stage->addLadder(new Ladder(96, 197.75f, 167.25f));
+    stage->addLadder(new Ladder(32, 193.75f, 171.25f));
+    stage->addLadder(new Ladder(112, 166.25f, 132.75f));
+    stage->addLadder(new Ladder(184, 161.75f, 137.25f));
+    stage->addLadder(new Ladder(72, 130.25f, 102.75f));
+    stage->addLadder(new Ladder(32, 127.75f, 105.25f));
+    stage->addLadder(new Ladder(184, 95.75f, 71.25f));
+    stage->addLadder(new Ladder(128, 68, 40));
+}
 
 void Nivel2::update() {
     if (++tick % 128 == 0) addBarrel();
 
     this->updateBarrels();
-    this->updatePlayers();
-    this->inicializarEscaleras();
+    for (Mario *mario : jugadores) mario->mover();
 }
 
 void Nivel2::addBarrel() {
@@ -33,27 +52,6 @@ void Nivel2::updateBarrels() {
     }
 }
 
-void Nivel2::inicializarEscaleras() {
-    Escalera * e1 = new Escalera("E1",
-                                ESCALERA_1_X1 -4,
-                                ESCALERA_1_X0,
-                                ESCALERA_1_X1,
-                                ESCALERA_1_Y0,
-                                ESCALERA_1_Y1);
-    
-    this->escaleras[0] = e1;
-}
-
-Escalera* Nivel2::getEscalera(punto_t p) {
-    if (p.x >= ESCALERA_1_X0 
-        && p.x <= ESCALERA_1_X1 
-        && p.y <= ESCALERA_1_Y0
-        && p.y >= ESCALERA_1_Y1) {
-            return this->escaleras[0];
-    }
-    return NULL;
-}
-
 estadoNivel_t* Nivel2::getEstado() {
     estadoNivel->barrels.clear();
     for (Barril *barril : this->barriles) {
@@ -67,8 +65,6 @@ estadoNivel_t* Nivel2::getEstado() {
 }
 
 Nivel2::~Nivel2() {
-    std::list<Barril*>::iterator it;
-    for (it = barriles.begin(); it != barriles.end(); ++it) delete (*it);
-
+    for (Barril *barril : barriles) delete barril;
     barriles.clear();
 }
