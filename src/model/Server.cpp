@@ -73,6 +73,7 @@ int Server::startServer() {
 }
 
 void Server::startGame() {
+    
     logger::Logger::getInstance().logNewGame();
     
     auto configuration = configuration::GameConfiguration(CONFIG_FILE);
@@ -83,17 +84,18 @@ void Server::startGame() {
     SDL_Init(SDL_INIT_EVERYTHING);
     //SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(NULL, -1, SDL_RENDERER_PRESENTVSYNC);
-
+    
     std::vector<Mario*> marios;
     for(unsigned int i = 0; i < MAX_PLAYERS; i++) {
         marios.push_back(new Mario()); 
     }
-
+    
     Uint8 currentLevel = 1;
     Nivel *nivel = NULL;
     NivelVista *vista = NULL;
+    
     getNextLevel(&nivel, &vista, marios, &configuration, currentLevel, renderer);
-
+    
     Uint32 previous, current, elapsed, lag;
     //bool updated, quitRequested = false;
     bool updated;
@@ -102,7 +104,7 @@ void Server::startGame() {
 
     bool quitRequested = false;
     handleCommandArgs_t handleCommandArgs[MAX_PLAYERS];
-
+    
     for(unsigned int i = 0; i < clientSockets.size(); i++) { //creo 1 hilo por cliente que recibe comandos y los coloca en una cola
         handleCommandArgs[i].commands = &(this->commands);
         handleCommandArgs[i].clientSocket = &(clientSockets[i]);
@@ -111,7 +113,7 @@ void Server::startGame() {
         pthread_t recvCommandThread;
         pthread_create(&recvCommandThread, NULL, handleCommand, (void*)&handleCommandArgs[i]);
     }
-
+    
     while(!quitRequested) {
         current = SDL_GetTicks();
         elapsed = current - previous;
@@ -131,7 +133,7 @@ void Server::startGame() {
             for(unsigned int i = 0; i < commands.size(); i++) {
                 command_t* command = commands.front();
                 commands.pop();
-                command->mario->setEstado(*(command->action));
+                command->mario->setEstado(*(command->controls));
             }
             pthread_mutex_unlock(&mutex);
             
@@ -140,22 +142,22 @@ void Server::startGame() {
                 sendView(&clientSockets[i], view);                 
             }
         }
-
+        
         quitRequested = SDL_QuitRequested();
     }
 }
 
 void* Server::handleCommand(void* handleCommandArgs) {
     handleCommandArgs_t* args = (handleCommandArgs_t*)handleCommandArgs;
-    char action;
+    controls_t controls;
     bool quitRequested = false;
     
     while(!quitRequested) {
-        receiveCommand(args->clientSocket, &action);
-        printf("command received: %d\n", (int)action);
+        receiveCommand(args->clientSocket, &controls);
+        //printf("command received: %d\n", (int)controls);
         command_t command;
         command.mario = args->mario;
-        command.action = &action;
+        command.controls = &controls;
 
         pthread_mutex_lock(&mutex);
         args->commands->push(&command);
@@ -186,14 +188,14 @@ int Server::sendView(int* clientSocket, estadoNivel_t* view) {
     return totalBytesSent;
 }
 
-int Server::receiveCommand(int* clientSocket, char* command) {
+int Server::receiveCommand(int* clientSocket, controls_t* controls) {
     int totalBytesSent = 0;
     int bytesSent = 0;
-    int dataSize = sizeof(char);
+    int dataSize = sizeof(controls_t);
     bool clientSocketStillOpen = true;
     
     while((totalBytesSent < dataSize) && clientSocketStillOpen) {
-        bytesSent = recv(*clientSocket, (command + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
+        bytesSent = recv(*clientSocket, (controls + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
         if(bytesSent < 0) {
             return bytesSent;
         } 
@@ -211,47 +213,46 @@ int Server::receiveCommand(int* clientSocket, char* command) {
 void Server::getNextLevel(Nivel **nivel, NivelVista **vista, std::vector<Mario*> marios, configuration::GameConfiguration *config, Uint8 currentLevel, SDL_Renderer *renderer) {
     if (currentLevel == 1) {
         logger::Logger::getInstance().logInformation("Level 1 starts");
-        mario->setPos(MARIO_START_X, MARIO_START_Y);
 
         Nivel1 *nivel1 = new Nivel1();
-        nivel1->addPlayer(mario);
-
+        
         for(int i = 0; i < MAX_PLAYERS; i++) {
-            marios[i]->setPos(N1_MARIO_POS_X, N1_MARIO_POS_Y);
-
-            
-            (*nivel)->addPlayer(marios[i]);
+            marios[i]->setPos(MARIO_START_X, MARIO_START_Y);
+            nivel1->addPlayer(marios[i]);
         }
+        
         auto enemies = config->getEnemies();
         for (auto enemy: enemies) {
             if (enemy.getType().compare("Fuego") == 0) nivel1->addEnemies(enemy.getQuantity());
             logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
             logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
         }
-
+        
         *vista = new Nivel1Vista(renderer, config->getDefaultConfigFlag());
-        (*vista)->addPlayers(1);                                           // Aca iria cantidad de jugadores
+        (*vista)->addPlayers(MAX_PLAYERS);                                           // Aca iria cantidad de jugadores
         auto stages = config->getStages();
         if (stages.size() > 0) {
             std::string rutaImagen = stages[0].getBackgrounds()[0];
             logger::Logger::getInstance().logDebug("Stage 1 background img: " + rutaImagen);
             (*vista)->setBackground(rutaImagen);
         }
-
+        
         *nivel = nivel1;
     }
     else if (currentLevel == 2) {
         logger::Logger::getInstance().logInformation("End of Level 1");
         logger::Logger::getInstance().logInformation("Level 2 starts");
-        mario->setPos(N2_MARIO_START_X, MARIO_START_Y);
-
         delete *nivel;
         *nivel = new Nivel2();
-        (*nivel)->addPlayer(mario);
+        
+        for(int i = 0; i < MAX_PLAYERS; i++) {
+            marios[i]->setPos(MARIO_START_X, MARIO_START_Y);
+            (*nivel)->addPlayer(marios[i]);
+        }
 
         delete *vista;
         *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag());
-        (*vista)->addPlayers(1);                                           // Aca iria cantidad de jugadores
+        (*vista)->addPlayers(MAX_PLAYERS);
         auto stages = config->getStages();
         if (stages.size() > 1) {
             std::string rutaImagen = stages[1].getBackgrounds()[0];

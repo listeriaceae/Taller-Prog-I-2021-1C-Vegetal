@@ -5,6 +5,6 @@ class MarioController {
     public:
         MarioController();
         void update();
-        char getControls();
+        controls_t getControls();
     private:
 };

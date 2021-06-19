@@ -148,19 +148,20 @@ void* Client::receiveDataThread(void* updateViewArgs) {
 
 void* Client::sendDataThread(void* handleCommandArgs) {
     handleCommandArgs_t* args = (handleCommandArgs_t*)handleCommandArgs;
-    char command = 0;
-    char lastCommand = 1;
+    controls_t controls;
+    //char lastCommand = 1;
     bool quitRequested = false;
 
     while(!quitRequested) {
-        lastCommand = command;
-        command = args->marioController->getControls();
-        if(!(lastCommand == 0 && command == 0)) {
-            int bytesSent = sendCommand(args->clientSocket, &command);
-        if(bytesSent == sizeof(command))
-            printf("command sent: %d\n", (int)command);
-        }
-        SDL_Delay(10);
+        //lastCommand = command;
+        controls = args->marioController->getControls();
+        /*if(!(controls == 0 && controls == 0)) {
+        int bytesSent = sendCommand(args->clientSocket, &controls);
+        if(bytesSent == sizeof(controls))
+            printf("command sent: %d\n", (int)controls);
+        }*/
+        sendCommand(args->clientSocket, &controls);
+        SDL_Delay(5);
         quitRequested = SDL_QuitRequested();
     }
 }
@@ -187,14 +188,14 @@ int Client::receiveView(int* clientSocket, estadoNivel_t* view) {
     return totalBytesReceived;
 }
 
-int Client::sendCommand(int* clientSocket, char* command) {
+int Client::sendCommand(int* clientSocket, controls_t* controls) {
     int totalBytesSent = 0;
     int bytesSent = 0;
-    int dataSize = sizeof(char);
+    int dataSize = sizeof(controls_t);
     bool clientSocketStillOpen = true;
     
     while((totalBytesSent < dataSize) && clientSocketStillOpen) {
-        bytesSent = send(*clientSocket, (command + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
+        bytesSent = send(*clientSocket, (controls + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
         if(bytesSent < 0) {
             return bytesSent;
         } 

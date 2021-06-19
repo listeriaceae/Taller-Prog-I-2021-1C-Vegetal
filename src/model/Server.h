@@ -5,7 +5,7 @@
 #include <queue>
 
 typedef struct command {
-    char* action;
+    controls_t* controls;
     Mario* mario;
 } command_t;
 
@@ -20,7 +20,7 @@ class Server {
     void startGame();
     void getNextLevel(Nivel **nivel, NivelVista **vista, std::vector<Mario*> marios, configuration::GameConfiguration *config, Uint8 currentLevel, SDL_Renderer *renderer);
     static int sendView(int* clientSocket, estadoNivel_t* view);
-    static int receiveCommand(int* clientSocket, char* command);
+    static int receiveCommand(int* clientSocket, controls_t* controls);
     static void* handleCommand(void* handleCommandArgs);
     static void* enviarVista(void* envioArgs);
     int serverSocket;

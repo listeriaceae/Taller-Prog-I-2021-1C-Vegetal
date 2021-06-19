@@ -10,7 +10,7 @@ class Client {
     private:
     void startGame();
     static int receiveView(int* clientSocket, estadoNivel_t* view);
-    static int sendCommand(int* clientSocket, char* command);
+    static int sendCommand(int* clientSocket, controls_t* command);
     static void* receiveDataThread(void* args);
     static void* sendDataThread(void* args);
     int clientSocket;
