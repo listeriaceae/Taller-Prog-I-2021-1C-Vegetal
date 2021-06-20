@@ -14,5 +14,5 @@ void MarioController::update() {
     controls.left = keyboard[SDL_SCANCODE_LEFT];
     controls.right = keyboard[SDL_SCANCODE_RIGHT];
 
-    mario->setEstado(controls);
+    mario->setControls(controls);
 }
