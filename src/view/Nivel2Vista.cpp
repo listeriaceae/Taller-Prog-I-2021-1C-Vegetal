@@ -27,15 +27,15 @@ void Nivel2Vista::update(estadoNivel_t *estadoNivel) {
         vista->mostrar();
     }
 
-    barrilVista->setTotal(estadoNivel->barrels.size());
+    barrilVista->startRender();
     for (punto_t pos : estadoNivel->barrels) {
+        if (pos.y == 0) break;
         barrilVista->mover(pos);
         barrilVista->mostrar();
     }
 
-    size_t i = 0;
-    for (estadoMario_t estadoMario : estadoNivel->players) {
-        jugadoresVista.at(i++)->mostrar(estadoMario.pos, estadoMario.estado);
+    for(int i = 0; i < cantJugadores; i++) {
+        jugadoresVista.at(i)->mostrar(estadoNivel->players[i].pos, estadoNivel->players[i].estado);
     }
 }
 
