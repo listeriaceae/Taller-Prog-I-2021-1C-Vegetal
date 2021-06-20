@@ -46,8 +46,10 @@ void Nivel1Vista::update(estadoNivel_t *estadoNivel) {
         enemigoVista->mostrar();
     }
 
-    for(int i = 0; i < cantJugadores; i++) {
-        jugadoresVista.at(i)->mostrar(estadoNivel->players[i].pos, estadoNivel->players[i].estado);
+    size_t i = 0;
+    for(MarioVista *player : this->jugadoresVista) {
+        estadoMario_t estado = estadoNivel->players[i++];
+        player->mostrar(estado.pos, estado.estado);
     }
 }
 

@@ -11,7 +11,6 @@ NivelVista::NivelVista(SDL_Renderer *renderer) {
 }
 
 void NivelVista::addPlayers(unsigned int n) {
-    this->cantJugadores += n;
     for (unsigned int i = 0; i < n; ++i) {
         MarioVista *vista = new MarioVista(renderer);
         vista->setColor(i);
