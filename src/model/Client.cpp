@@ -10,12 +10,16 @@
 #include "../logger.h"
 #include "../utils/window.hpp"
 #include "../utils/Constants.hpp"
+#include "../TextRenderer.h"
 #include "Client.h"
 
 void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *);
 
 Client::Client() {
     std::cout << "Aplicación iniciada en modo cliente" << std::endl;
+    SDL_Init(SDL_INIT_EVERYTHING);
+    window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 }
 
 int Client::connectToServer(char* serverIp, char* port) {
@@ -50,9 +54,6 @@ void Client::startGame() {
     logger::Logger::getInstance().setLogLevel(log_level);
 
     srand(time(NULL));
-    SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
     unsigned char currentLevel = 0;
     NivelVista *vista = NULL;
@@ -166,4 +167,20 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
             (*vista)->setBackground(rutaImagen);
         }
     }
+}
+
+const float RESIZE = 1.2;
+const char* IMG_FONT = "res/font.png";
+const float TEXT_X = 10;
+const float TEXT_Y = 110;
+
+void Client::showWaitingView() {
+    TextRenderer* textRenderer = new TextRenderer(renderer, IMG_FONT);
+    
+    punto_t pos;
+    pos.x = (10 + 2 * RESIZE) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
+    pos.y = (110 + 2 * RESIZE)* ALTO_PANTALLA / (float)ALTO_NIVEL;
+    textRenderer->renderText(pos, "Esperando a jugadores...", RESIZE);
+
+    SDL_RenderPresent(renderer);
 }
