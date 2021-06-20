@@ -115,10 +115,6 @@ void Server::startGame() {
             if (nivel->isComplete()) {
                 getNextLevel(&nivel, &configuration, ++currentLevel);
                 if (nivel == NULL) {
-                    SDL_Event e;
-                    e.type = SDL_QUIT;
-                    e.quit.timestamp = SDL_GetTicks();
-                    SDL_PushEvent(&e);
                     break;
                 }
                 nivel->addPlayers(&players);
@@ -211,7 +207,6 @@ void getNextLevel(Nivel **nivel, configuration::GameConfiguration *config, Uint8
     }
     else {
         logger::Logger::getInstance().logInformation("End of Level 2");
-        delete *nivel;
         *nivel = NULL;
     }
 }
