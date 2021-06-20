@@ -83,13 +83,15 @@ void Server::startGame() {
         nivel->addPlayer(player);
     }
 
-    handleCommandArgs_t handleCommandArgs[MAX_PLAYERS];
-    for(unsigned int i = 0; i < clientSockets.size(); ++i) {
-        handleCommandArgs[i].clientSocket = clientSockets[i];
-        handleCommandArgs[i].mario = players[i];
+    {
+        handleCommandArgs_t handleCommandArgs[MAX_PLAYERS];
+        for(unsigned int i = 0; i < clientSockets.size(); ++i) {
+            handleCommandArgs[i].clientSocket = clientSockets[i];
+            handleCommandArgs[i].mario = players[i];
 
-        pthread_t recvCommandThread;
-        pthread_create(&recvCommandThread, NULL, handleCommand, &handleCommandArgs[i]);
+            pthread_t recvCommandThread;
+            pthread_create(&recvCommandThread, NULL, handleCommand, &handleCommandArgs[i]);
+        }
     }
 
     Uint32 previous, current, elapsed, lag;
