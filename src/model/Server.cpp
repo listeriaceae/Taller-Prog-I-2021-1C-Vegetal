@@ -13,7 +13,7 @@
 #include "Server.h"
 
 typedef struct handleCommandArgs {
-    int* clientSocket;
+    int clientSocket;
     Mario* mario;
 } handleCommandArgs_t;
 
@@ -49,13 +49,12 @@ int Server::startServer() {
         clientSockets.push_back(client);
         printf("Players: %d/%d\n", (int)clientSockets.size(), MAX_PLAYERS);
     }
-    int clientSocket = clientSockets.at(0);
-    if (clientSocket < 0) return -1;
+    if (clientSockets[0] < 0 || clientSockets[1] < 0) return -1;
     printf("accept\n");
     startGame();
 
-    close(clientSocket);
-    close(serverSocket);  
+    for (int clientSocket : clientSockets) close(clientSocket);
+    close(serverSocket);
     return 0;
 }
 
@@ -77,16 +76,16 @@ void Server::startGame() {
 
     Uint8 currentLevel = 1;
     Nivel *nivel = NULL;
-    
+
     getNextLevel(&nivel, &configuration, currentLevel);
     for(Mario *player : players) {
         player->setPos(MARIO_START_X, MARIO_START_Y);
         nivel->addPlayer(player);
     }
 
-    for(unsigned int i = 0; i < clientSockets.size(); i++) {
+    for(unsigned int i = 0; i < clientSockets.size(); ++i) {
         handleCommandArgs_t handleCommandArgs;
-        handleCommandArgs.clientSocket = &(clientSockets[i]);
+        handleCommandArgs.clientSocket = clientSockets[i];
         handleCommandArgs.mario = players[i];
 
         pthread_t recvCommandThread;
@@ -122,7 +121,7 @@ void Server::startGame() {
 
 void *Server::handleCommand(void *handleCommandArgs) {
     Mario *player = ((handleCommandArgs_t *)handleCommandArgs)->mario;
-    int clientSocket = *(((handleCommandArgs_t *)handleCommandArgs)->clientSocket);
+    int clientSocket = ((handleCommandArgs_t *)handleCommandArgs)->clientSocket;
 
     controls_t controls;
     int bytesRecieved;
@@ -130,7 +129,7 @@ void *Server::handleCommand(void *handleCommandArgs) {
     bool quitRequested = false;
     while(!quitRequested) {
         bytesRecieved = receiveCommand(clientSocket, &controls);
-        if (bytesRecieved == sizeof(controls_t)) player->setEstado(controls);
+        if (bytesRecieved == sizeof(controls_t)) player->setControls(controls);
 
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }

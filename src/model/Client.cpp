@@ -23,7 +23,7 @@ int Client::connectToServer(char* serverIp, char* port) {
     clientSocket = socket(AF_INET , SOCK_STREAM , 0);
     if (clientSocket == -1)
         return -1;
-    
+
     serverAddress.sin_addr.s_addr = inet_addr(serverIp);
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons( atoi(port));
@@ -104,7 +104,7 @@ void* Client::sendDataThread(void *args) {
 int Client::sendCommand(int clientSocket, controls_t* controls) {
     int totalBytesSent = 0;
     int bytesSent = 0;
-    int dataSize = sizeof(controls_t);
+    size_t dataSize = sizeof(controls_t);
     bool clientSocketStillOpen = true;
     
     while((totalBytesSent < dataSize) && clientSocketStillOpen) {
