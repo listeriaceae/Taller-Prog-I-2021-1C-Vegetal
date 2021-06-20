@@ -29,6 +29,15 @@ Server::Server(char* port) {
     std::cout << "Aplicación iniciada en modo servidor en el puerto: " << port << std::endl;
 }
 int Server::startServer() {
+    auto config = configuration::GameConfiguration(CONFIG_FILE);
+    auto log_level = config.getLogLevel();
+    logger::Logger::getInstance().setLogLevel(log_level);
+
+    this->maxPlayers = config.getMaxPlayers();
+    if(this->maxPlayers < 0) {
+        this->maxPlayers = DEFAULT_MAX_PLAYERS;
+    }
+
     //socket
     int serverSocket = socket(AF_INET , SOCK_STREAM , 0);
     if (serverSocket == -1)
@@ -44,51 +53,44 @@ int Server::startServer() {
         return -1;
     printf("listen...\n");
     //Accept
-    while(clientSockets.size() < MAX_PLAYERS) {
+    while(clientSockets.size() < (unsigned int)maxPlayers) {
         int client = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t*) &clientAddrLen);
         clientSockets.push_back(client);
-        printf("Players: %d/%d\n", (int)clientSockets.size(), MAX_PLAYERS);
+        printf("Players: %d/%d\n", (int)clientSockets.size(), maxPlayers);
     }
     if (clientSockets[0] < 0 || clientSockets[1] < 0) return -1;
     printf("accept\n");
-    startGame();
+    startGame(config);
 
     for (int clientSocket : clientSockets) close(clientSocket);
     close(serverSocket);
     return 0;
 }
 
-void Server::startGame() {
+void Server::startGame(configuration::GameConfiguration config) {
     
-    logger::Logger::getInstance().logNewGame();
     
-    auto configuration = configuration::GameConfiguration(CONFIG_FILE);
-    auto log_level = configuration.getLogLevel();
-    logger::Logger::getInstance().setLogLevel(log_level);
-
     srand(time(NULL));
     SDL_Init(SDL_INIT_TIMER);
 
     std::vector<Mario*> players;
-    for(unsigned int i = 0; i < MAX_PLAYERS; ++i) {
+    for(unsigned int i = 0; i < (unsigned int)maxPlayers; ++i) {
         players.push_back(new Mario());
     }
 
     Uint8 currentLevel = 0;
     Nivel *nivel = NULL;
 
-    getNextLevel(&nivel, &configuration, ++currentLevel);
+    getNextLevel(&nivel, &config, ++currentLevel);
     nivel->addPlayers(&players);
 
-    {
-        handleCommandArgs_t handleCommandArgs[MAX_PLAYERS];
-        for(unsigned int i = 0; i < clientSockets.size(); ++i) {
-            handleCommandArgs[i].clientSocket = clientSockets[i];
-            handleCommandArgs[i].mario = players[i];
+    handleCommandArgs_t handleCommandArgs[maxPlayers];
+    for(unsigned int i = 0; i < clientSockets.size(); ++i) {
+        handleCommandArgs[i].clientSocket = clientSockets[i];
+        handleCommandArgs[i].mario = players[i];
 
-            pthread_t recvCommandThread;
-            pthread_create(&recvCommandThread, NULL, handleCommand, &handleCommandArgs[i]);
-        }
+        pthread_t recvCommandThread;
+        pthread_create(&recvCommandThread, NULL, handleCommand, &handleCommandArgs[i]);
     }
 
     Uint32 previous, current, elapsed, lag;
@@ -100,7 +102,7 @@ void Server::startGame() {
         elapsed = current - previous;
         previous = current;
         lag += elapsed;
-
+    
         // Update Model
         updated = false;
         while (lag >= MS_PER_UPDATE) {
@@ -113,7 +115,7 @@ void Server::startGame() {
             estadoNivel_t* view = nivel->getEstado();
             for(unsigned int i = 0; i < clientSockets.size(); i++) sendView(clientSockets[i], view);
             if (nivel->isComplete()) {
-                getNextLevel(&nivel, &configuration, ++currentLevel);
+                getNextLevel(&nivel, &config, ++currentLevel);
                 if (nivel == NULL) {
                     break;
                 }

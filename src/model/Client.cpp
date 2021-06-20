@@ -141,10 +141,14 @@ int Client::receiveView(int clientSocket, estadoNivel_t* view) {
 }
 
 void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *renderer) {
+    int maxPlayers = config->getMaxPlayers();
+    if(maxPlayers < 0)
+        maxPlayers = DEFAULT_MAX_PLAYERS;
+    
     delete *vista;
     if (currentLevel == 1) {
         *vista = new Nivel1Vista(renderer, config->getDefaultConfigFlag());
-        (*vista)->addPlayers(MAX_PLAYERS);                                           // Aca iria cantidad de jugadores
+        (*vista)->addPlayers(maxPlayers);                                           // Aca iria cantidad de jugadores
         auto stages = config->getStages();
         if (stages.size() > 0) {
             std::string rutaImagen = stages[0].getBackgrounds()[0];
@@ -154,7 +158,7 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
     }
     if (currentLevel == 2) {
         *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag());
-        (*vista)->addPlayers(MAX_PLAYERS);                                           // Aca iria cantidad de jugadores
+        (*vista)->addPlayers(maxPlayers);                                           // Aca iria cantidad de jugadores
         auto stages = config->getStages();
         if (stages.size() > 1) {
             std::string rutaImagen = stages[1].getBackgrounds()[0];
