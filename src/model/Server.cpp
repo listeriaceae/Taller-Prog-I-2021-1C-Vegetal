@@ -70,7 +70,7 @@ void Server::startGame() {
     SDL_Init(SDL_INIT_TIMER);
 
     std::vector<Mario*> players;
-    for(unsigned int i = 0; i < MAX_PLAYERS; i++) {
+    for(unsigned int i = 0; i < MAX_PLAYERS; ++i) {
         players.push_back(new Mario());
     }
 
