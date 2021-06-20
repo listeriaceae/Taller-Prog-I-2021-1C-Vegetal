@@ -5,14 +5,9 @@ Nivel::Nivel() {
     stage = new Stage();
 }
 
-void Nivel::addPlayer(Mario *jugador) {
-    jugador->setStage(stage);
-    jugadores.push_back(jugador);
-}
-
 bool Nivel::isComplete() {
     bool result = false;
-    for (Mario *mario : jugadores) result |= (mario->getPos().y == 40);
+    for (Mario *mario : *players) result |= (mario->getPos().y == 40);
     return result;
 }
 
@@ -26,5 +21,4 @@ Nivel::~Nivel() {
 
     for (auto enemy : enemies) delete enemy;
     enemies.clear();
-    jugadores.clear();
 }

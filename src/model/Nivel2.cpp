@@ -4,6 +4,7 @@
 Nivel2::Nivel2() : Nivel() {
     this->initPlatforms();
     this->initLadders();
+    estadoNivel->level = 2;
 }
 
 void Nivel2::initPlatforms() {
@@ -28,13 +29,20 @@ void Nivel2::initLadders() {
     stage->addLadder(new Ladder(180, 95.75f, 71.25f));
     stage->addLadder(new Ladder(124, 68, 40));
 }
-const int MAX_BARRILES = 20;
+
+void Nivel2::addPlayers(std::vector<Mario *> *players) {
+    this->players = players;
+    for (Mario *player : *players) {
+        player->setStage(stage);
+        player->setPos(N2_MARIO_START_X, MARIO_START_Y);
+    }
+}
 
 void Nivel2::update() {
     if (++tick % 128 == 0) addBarrel();
 
     this->updateBarrels();
-    for (Mario *mario : jugadores) mario->mover();
+    for (Mario *mario : *players) mario->mover();
 }
 
 void Nivel2::addBarrel() {
@@ -43,8 +51,7 @@ void Nivel2::addBarrel() {
 }
 
 void Nivel2::updateBarrels() {
-    std::vector<Barril*>::iterator it;
-    for (it = barriles.begin(); it != barriles.end();) {
+    for (auto it = barriles.begin(); it != barriles.end();) {
         (*it)->mover();
         if (!(*it)->estaEnNivel()) {
             delete (*it);
@@ -54,12 +61,14 @@ void Nivel2::updateBarrels() {
 }
 
 estadoNivel_t* Nivel2::getEstado() {
-    for (unsigned int i = 0; i < MAX_BARRILES; i++) {
-        if(barriles.size() < i)
-            estadoNivel->barrels[i] = barriles.at(i)->getPos();
+    unsigned int i = 0;
+    for (Barril *barril : barriles) {
+        estadoNivel->barrels[i++] = barril->getPos();
     }
-    for(unsigned int i = 0; i < this->jugadores.size(); i++) {
-        estadoNivel->players[i] = jugadores.at(i)->getEstado();
+    estadoNivel->barrels[i] = {0, 0};
+    i = 0;
+    for (Mario *player : *players) {
+        estadoNivel->players[i++] = player->getEstado();
     }
 
     return estadoNivel;

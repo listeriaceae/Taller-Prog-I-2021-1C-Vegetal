@@ -12,6 +12,8 @@
 #include "../utils/Constants.hpp"
 #include "Client.h"
 
+void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *);
+
 Client::Client() {
     std::cout << "Aplicación iniciada en modo cliente" << std::endl;
 }
@@ -52,16 +54,8 @@ void Client::startGame() {
     SDL_Window* window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
+    unsigned char currentLevel = 0;
     NivelVista *vista = NULL;
-    
-    vista = new Nivel1Vista(renderer, configuration.getDefaultConfigFlag());
-    vista->addPlayers(MAX_PLAYERS);                                           // Aca iria cantidad de jugadores
-    auto stages = configuration.getStages();
-    if (stages.size() > 0) {
-        std::string rutaImagen = stages[0].getBackgrounds()[0];
-        logger::Logger::getInstance().logDebug("Stage 1 background img: " + rutaImagen);
-        vista->setBackground(rutaImagen);
-    }
 
     pthread_t sendThread;
     pthread_create(&sendThread, NULL, sendDataThread, &clientSocket);
@@ -73,6 +67,7 @@ void Client::startGame() {
     while(!quitRequested) {
         bytesReceived = receiveView(clientSocket, &estadoNivel);
         if (bytesReceived == sizeof(estadoNivel_t)) {
+            if (currentLevel < estadoNivel.level) getNextLevelView(&vista, &configuration, ++currentLevel, renderer);
             SDL_RenderClear(renderer);
             vista->update(&estadoNivel);
             SDL_RenderPresent(renderer);
@@ -143,4 +138,28 @@ int Client::receiveView(int clientSocket, estadoNivel_t* view) {
     }
 
     return totalBytesReceived;
+}
+
+void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *renderer) {
+    delete *vista;
+    if (currentLevel == 1) {
+        *vista = new Nivel1Vista(renderer, config->getDefaultConfigFlag());
+        (*vista)->addPlayers(MAX_PLAYERS);                                           // Aca iria cantidad de jugadores
+        auto stages = config->getStages();
+        if (stages.size() > 0) {
+            std::string rutaImagen = stages[0].getBackgrounds()[0];
+            logger::Logger::getInstance().logDebug("Stage 1 background img: " + rutaImagen);
+            (*vista)->setBackground(rutaImagen);
+        }
+    }
+    if (currentLevel == 2) {
+        *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag());
+        (*vista)->addPlayers(MAX_PLAYERS);                                           // Aca iria cantidad de jugadores
+        auto stages = config->getStages();
+        if (stages.size() > 1) {
+            std::string rutaImagen = stages[1].getBackgrounds()[0];
+            logger::Logger::getInstance().logDebug("Stage 2 background img: " + rutaImagen);
+            (*vista)->setBackground(rutaImagen);
+        }
+    }
 }

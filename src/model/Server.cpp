@@ -74,14 +74,11 @@ void Server::startGame() {
         players.push_back(new Mario());
     }
 
-    Uint8 currentLevel = 1;
+    Uint8 currentLevel = 0;
     Nivel *nivel = NULL;
 
-    getNextLevel(&nivel, &configuration, currentLevel);
-    for(Mario *player : players) {
-        player->setPos(MARIO_START_X, MARIO_START_Y);
-        nivel->addPlayer(player);
-    }
+    getNextLevel(&nivel, &configuration, ++currentLevel);
+    nivel->addPlayers(&players);
 
     {
         handleCommandArgs_t handleCommandArgs[MAX_PLAYERS];
@@ -115,8 +112,18 @@ void Server::startGame() {
         if (updated) {
             estadoNivel_t* view = nivel->getEstado();
             for(unsigned int i = 0; i < clientSockets.size(); i++) sendView(clientSockets[i], view);
+            if (nivel->isComplete()) {
+                getNextLevel(&nivel, &configuration, ++currentLevel);
+                if (nivel == NULL) {
+                    SDL_Event e;
+                    e.type = SDL_QUIT;
+                    e.quit.timestamp = SDL_GetTicks();
+                    SDL_PushEvent(&e);
+                    break;
+                }
+                nivel->addPlayers(&players);
+            }
         }
-
         quitRequested = SDL_QuitRequested();
     }
 }
@@ -183,6 +190,7 @@ int Server::receiveCommand(int clientSocket, controls_t* controls) {
 }
 
 void getNextLevel(Nivel **nivel, configuration::GameConfiguration *config, Uint8 currentLevel) {
+    delete *nivel;
     if (currentLevel == 1) {
         logger::Logger::getInstance().logInformation("Level 1 starts");
 
@@ -198,9 +206,8 @@ void getNextLevel(Nivel **nivel, configuration::GameConfiguration *config, Uint8
     }
     else if (currentLevel == 2) {
         logger::Logger::getInstance().logInformation("End of Level 1");
-        logger::Logger::getInstance().logInformation("Level 2 starts");
-        delete *nivel;
         *nivel = new Nivel2();
+        logger::Logger::getInstance().logInformation("Level 2 starts");
     }
     else {
         logger::Logger::getInstance().logInformation("End of Level 2");

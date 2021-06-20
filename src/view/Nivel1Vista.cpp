@@ -40,7 +40,7 @@ void Nivel1Vista::update(estadoNivel_t *estadoNivel) {
         plataformaVista->mostrar();
     }
 
-    enemigoVista->setTotal(sizeof(estadoNivel->enemies)/sizeof(punto_t));
+    enemigoVista->startRender();
     for (punto_t pos : estadoNivel->enemies) {
         enemigoVista->mover(pos);
         enemigoVista->mostrar();

@@ -4,6 +4,7 @@
 Nivel1::Nivel1() : Nivel() {
     this->initPlatforms();
     this->initLadders();
+    estadoNivel->level = 1;
 }
 
 void Nivel1::initPlatforms() {
@@ -41,6 +42,14 @@ void Nivel1::initLadders() {
     stage->addLadder(new Ladder(124, 68, 40));
 }
 
+void Nivel1::addPlayers(std::vector<Mario *> *players) {
+    this->players = players;
+    for (Mario *player : *players) {
+        player->setStage(stage);
+        player->setPos(MARIO_START_X, MARIO_START_Y);
+    }
+}
+
 void Nivel1::addEnemies(unsigned int amount) {
     for (unsigned int i = 0; i < amount; ++i) {
         unsigned int j = 1 + (rand() % (platforms.size() - 1));           // Omite plataforma inicial
@@ -58,20 +67,22 @@ void Nivel1::addEnemies(unsigned int amount) {
 
 void Nivel1::update() {
     for (MovingPlatform *platform : movingPlatforms) platform->move();
-    for (Mario *mario : jugadores) mario->mover();
+    for (Mario *mario : *players) mario->mover();
     for (EnemigoFuego *enemy : enemies) enemy->mover();
 }
 
 estadoNivel_t* Nivel1::getEstado() {
-    
-    for (unsigned int i = 0; i < this->enemies.size(); i++) {
-        estadoNivel->enemies[i] = enemies.at(i)->getPos();
-    }
-    for (unsigned int i = 0; i < 12; i++) {
+    unsigned int i;
+    for (i = 0; i < 12; ++i) {
         estadoNivel->platforms[i] = movingPlatforms[i]->getPos();
     }
-    for(unsigned int i = 0; i < this->jugadores.size(); i++) {
-        estadoNivel->players[i] = jugadores.at(i)->getEstado();
+    i = 0;
+    for (EnemigoFuego *enemy : enemies) {
+        estadoNivel->enemies[i++] = enemy->getPos();
+    }
+    i = 0;
+    for (Mario *player : *players) {
+        estadoNivel->players[i++] = player->getEstado();
     }
     
     return estadoNivel;
