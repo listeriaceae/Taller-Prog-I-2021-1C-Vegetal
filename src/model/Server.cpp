@@ -83,13 +83,13 @@ void Server::startGame() {
         nivel->addPlayer(player);
     }
 
+    handleCommandArgs_t handleCommandArgs[MAX_PLAYERS];
     for(unsigned int i = 0; i < clientSockets.size(); ++i) {
-        handleCommandArgs_t handleCommandArgs;
-        handleCommandArgs.clientSocket = clientSockets[i];
-        handleCommandArgs.mario = players[i];
+        handleCommandArgs[i].clientSocket = clientSockets[i];
+        handleCommandArgs[i].mario = players[i];
 
         pthread_t recvCommandThread;
-        pthread_create(&recvCommandThread, NULL, handleCommand, &handleCommandArgs);
+        pthread_create(&recvCommandThread, NULL, handleCommand, &handleCommandArgs[i]);
     }
 
     Uint32 previous, current, elapsed, lag;
@@ -137,9 +137,9 @@ void *Server::handleCommand(void *handleCommandArgs) {
 }
 
 int Server::sendView(int clientSocket, estadoNivel_t* view) {
-    int totalBytesSent = 0;
+    size_t totalBytesSent = 0;
     int bytesSent = 0;
-    int dataSize = sizeof(estadoNivel_t);
+    size_t dataSize = sizeof(estadoNivel_t);
     bool clientSocketStillOpen = true;
     
     while((totalBytesSent < dataSize) && clientSocketStillOpen) {
@@ -159,9 +159,9 @@ int Server::sendView(int clientSocket, estadoNivel_t* view) {
 }
 
 int Server::receiveCommand(int clientSocket, controls_t* controls) {
-    int totalBytesSent = 0;
+    size_t totalBytesSent = 0;
     int bytesSent = 0;
-    int dataSize = sizeof(controls_t);
+    size_t dataSize = sizeof(controls_t);
     bool clientSocketStillOpen = true;
     
     while((totalBytesSent < dataSize) && clientSocketStillOpen) {

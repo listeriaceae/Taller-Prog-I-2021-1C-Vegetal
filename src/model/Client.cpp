@@ -102,7 +102,7 @@ void* Client::sendDataThread(void *args) {
 }
 
 int Client::sendCommand(int clientSocket, controls_t* controls) {
-    int totalBytesSent = 0;
+    size_t totalBytesSent = 0;
     int bytesSent = 0;
     size_t dataSize = sizeof(controls_t);
     bool clientSocketStillOpen = true;
@@ -124,9 +124,9 @@ int Client::sendCommand(int clientSocket, controls_t* controls) {
 }
 
 int Client::receiveView(int clientSocket, estadoNivel_t* view) {
-    int totalBytesReceived = 0;
+    size_t totalBytesReceived = 0;
     int bytesReceived = 0;
-    int dataSize = sizeof(estadoNivel_t);
+    size_t dataSize = sizeof(estadoNivel_t);
     bool clientSocketStillOpen = true;
 
     while((totalBytesReceived < dataSize) && clientSocketStillOpen) {
