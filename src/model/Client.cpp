@@ -42,15 +42,22 @@ int Client::connectToServer(char* serverIp, char* port) {
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons( atoi(port));
 
-    std::cout << "pre connect" << std::endl;
+    std::cout << "Conectado" << std::endl;
     //connect
     if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) < 0) {
-        printf("error\n");
+        std::cout << "Error al conectarse con el servidor" << std::endl;
         return -1;
     }
+<<<<<<< HEAD
     std::cout << "post connect" << std::endl;
     startGame();
     
+=======
+    //std::cout << "post connect" << std::endl;
+    startGame();  
+    if(!serverOpen) 
+        std::cout << "Hubo un error en el servidor" << std::endl;
+>>>>>>> Muestro mensaje en la consola del cliente cuando se desconecta el servidor
     return 1;
 }
 
