@@ -150,10 +150,7 @@ bool StartPage::handle(SDL_Event event) {
                 break;
             case SDLK_KP_ENTER:
             case SDLK_RETURN:
-                if (focus) {
-                    return true;
-                }
-                [[fallthrough]];
+                return this->login(username, password);
             case SDLK_TAB:
                 focus = (focus + 1) % 3;
                 break;
