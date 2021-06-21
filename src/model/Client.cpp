@@ -13,10 +13,7 @@
 #include "Client.h"
 #include "../StartPageView.h"
 
-const float RESIZE = 1.2;
 const char* IMG_FONT = "res/font.png";
-const float TEXT_X = 10;
-const float TEXT_Y = 110;
 
 typedef struct handleLevelStateArgs {
     int clientSocket;
@@ -220,8 +217,7 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
     }
 }
 
-void Client::showStartPage() {
-    SDL_StartTextInput();
+int Client::showStartPage() {
     StartPage *startPage = new StartPage(renderer);
 
     SDL_Event event;
@@ -229,7 +225,8 @@ void Client::showStartPage() {
     bool loginOk = false;
     bool quitRequested = false;
     int inicio, fin;
-    while (!loginOk && !quitRequested) {
+    SDL_StartTextInput();
+    while (!(loginOk || quitRequested)) {
         inicio = SDL_GetTicks();
 
         while (SDL_PollEvent(&event)) {
@@ -249,21 +246,28 @@ void Client::showStartPage() {
         fin = SDL_GetTicks();
         SDL_Delay(std::max(MS_PER_UPDATE - (fin - inicio), 0));
     }
+    SDL_StopTextInput();
+    SDL_RenderClear(renderer);
 
-    // TODO: check quitRequested exit
-    if(loginOk) {
-        this->user = startPage->getCurrentUser();
+    if (quitRequested) {
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        IMG_Quit();
+        SDL_Quit();
+        return 1;
     }
 
-    SDL_StopTextInput();
+    this->user = startPage->getCurrentUser();
+    delete startPage;
 
-    SDL_RenderClear(renderer);
     TextRenderer* textRenderer = new TextRenderer(renderer, IMG_FONT);
     
     punto_t pos;
-    pos.x = (10 + 2 * RESIZE) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
-    pos.y = (110 + 2 * RESIZE)* ALTO_PANTALLA / (float)ALTO_NIVEL;
-    textRenderer->renderText(pos, "Esperando a jugadores...", RESIZE);
+    pos.x = (10 + 2) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
+    pos.y = (110 + 2) * ALTO_PANTALLA / (float)ALTO_NIVEL;
+    textRenderer->renderText(pos, "Esperando a jugadores...", 1);
 
     SDL_RenderPresent(renderer);
+
+    return 0;
 }

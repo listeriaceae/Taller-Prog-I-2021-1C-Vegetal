@@ -1,11 +1,8 @@
 #include <string>
 #include <SDL2/SDL_image.h>
 #include "TextRenderer.h"
-
-#define ANCHO_PANTALLA 448
-#define ALTO_PANTALLA 512
-#define ANCHO_NIVEL 224
-#define ALTO_NIVEL 256
+#include "utils/Constants.hpp"
+#include "utils/window.hpp"
 
 #define LETTER_X 16
 #define LETTER_Y 8
