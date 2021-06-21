@@ -48,16 +48,10 @@ int Client::connectToServer(char* serverIp, char* port) {
         std::cout << "Error al conectarse con el servidor" << std::endl;
         return -1;
     }
-<<<<<<< HEAD
-    std::cout << "post connect" << std::endl;
-    startGame();
-    
-=======
     //std::cout << "post connect" << std::endl;
     startGame();  
     if(!serverOpen) 
         std::cout << "Hubo un error en el servidor" << std::endl;
->>>>>>> Muestro mensaje en la consola del cliente cuando se desconecta el servidor
     return 1;
 }
 
