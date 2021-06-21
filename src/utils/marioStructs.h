@@ -13,4 +13,4 @@ typedef struct controls {
     unsigned char left : 1;
     unsigned char right : 1;
     unsigned char : 3;
-}controls_t;
+} controls_t;
