@@ -49,12 +49,15 @@ int Client::connectToServer(char* serverIp, char* port) {
 
     std::cout << "Conectado" << std::endl;
     //connect
-    if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) < 0) {
+    if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) == 0) {
+        std::cout << "Conectado al servidor" << std::endl;
+    } else {
         std::cout << "Error al conectarse con el servidor" << std::endl;
         return -1;
     }
-    //std::cout << "post connect" << std::endl;
+
     startGame();  
+
     if(!serverOpen) 
         std::cout << "Hubo un error en el servidor" << std::endl;
     return 1;
@@ -112,6 +115,7 @@ void* Client::sendDataThread(void *args) {
 
     bool quitRequested = false;
     while(!quitRequested && serverOpen) {
+
         if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls()))) {
             int bytesSent = sendCommand(clientSocket, &controls);
             if(bytesSent <= 0) 
@@ -145,7 +149,7 @@ int Client::sendCommand(int clientSocket, controls_t* controls) {
     return totalBytesSent;
 }
 
-void *Client::receiveDataThread(void *args) {
+void* Client::receiveDataThread(void *args) {
     int clientSocket = ((handleLevelStateArgs_t *)args)->clientSocket;
     estadoNivel_t **estado = ((handleLevelStateArgs_t *)args)->estado;
     estadoNivel_t view;

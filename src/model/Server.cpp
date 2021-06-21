@@ -74,14 +74,15 @@ int Server::startServer() {
 
     startGame(config);
 
-    for (int clientSocket : clientSockets) close(clientSocket);
+    for (int clientSocket : clientSockets) {
+        close(clientSocket);
+    }
+
     close(serverSocket);
     return 0;
 }
 
 void Server::startGame(configuration::GameConfiguration config) {
-    
-    
     srand(time(NULL));
     SDL_Init(SDL_INIT_TIMER);
 
