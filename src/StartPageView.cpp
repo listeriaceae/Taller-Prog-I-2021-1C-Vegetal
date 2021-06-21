@@ -58,6 +58,7 @@ StartPage::StartPage(SDL_Renderer *renderer) {
     this->textRenderer = new TextRenderer(renderer, FONT_IMG);
     
     // Load users
+    std::cout << "Loading users..." << std::endl;
     auto config = configuration::GameConfiguration(CONFIG_FILE);
     for (auto u: config.getUsers())
     {
@@ -174,6 +175,7 @@ bool StartPage::handle(SDL_Event event) {
 }
 
 bool StartPage::login(std::string name, std::string pass) {
+    std::cout << "login process..." << std::endl;
     if (this->users.count(name) == 0) {
         this->resultMsg = INVALID_USER;
         return false;
@@ -181,7 +183,7 @@ bool StartPage::login(std::string name, std::string pass) {
     
     auto user = this->users.at(name);
 
-    if (strcmp(pass.c_str(), user.password.c_str()) != 0) {
+    if (pass.compare("") == 0 || pass.compare(user.password) != 0) {
         this->resultMsg = INVALID_PASS;
         return false;
     }
