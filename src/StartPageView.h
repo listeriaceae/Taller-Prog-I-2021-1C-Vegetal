@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include "TextRenderer.h"
 #include "utils/user.h"
@@ -9,6 +11,7 @@ class StartPage
         StartPage(SDL_Renderer *);
         void show();
         bool handle(SDL_Event event);
+        user_t getCurrentUser() const {return currentUser;};
         ~StartPage();
 
     private:
@@ -18,6 +21,7 @@ class StartPage
         std::string password = "";
         std::string resultMsg = "";
         std::map<std::string, user_t> users;
+        user_t currentUser;
         
         char focus = 0;
 
