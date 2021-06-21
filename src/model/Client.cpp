@@ -18,7 +18,7 @@ typedef struct handleLevelStateArgs {
 } handleLevelStateArgs_t;
 
 pthread_mutex_t mutex;
-
+bool serverOpen = true;
 void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *);
 
 Client::Client() {
@@ -77,7 +77,7 @@ void Client::startGame() {
     pthread_create(&recieveThread, NULL, recieveDataThread, &receiveArgs);
 
     bool quitRequested = false;
-    while(!quitRequested) {
+    while(!quitRequested && serverOpen) {
         if (estadoNivel != NULL) {
             pthread_mutex_lock(&mutex);
             if (currentLevel < estadoNivel->level) getNextLevelView(&vista, &configuration, ++currentLevel, renderer);
@@ -103,9 +103,13 @@ void* Client::sendDataThread(void *args) {
     controls_t controls = getControls();
 
     bool quitRequested = false;
-    while (!quitRequested) {
-        if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls())))
-            sendCommand(clientSocket, &controls);
+    while(!quitRequested && serverOpen) {
+        if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls()))) {
+            int bytesSent = sendCommand(clientSocket, &controls);
+            if(bytesSent <= 0) 
+                serverOpen = false;
+        }
+            
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
     return NULL;
@@ -140,8 +144,10 @@ void *Client::recieveDataThread(void *args) {
     int bytesReceived;
 
     bool quitRequested = false;
-    while(!quitRequested) {
+    while(!quitRequested && serverOpen) {
         bytesReceived = receiveView(clientSocket, &view);
+        if(bytesReceived == 0)
+            serverOpen = false;
         if (bytesReceived == sizeof(estadoNivel_t)) {
             pthread_mutex_lock(&mutex);
             *estado = &view;
