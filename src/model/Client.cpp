@@ -268,6 +268,7 @@ int Client::showStartPage() {
     textRenderer->renderText(pos, "Esperando a jugadores...", 1);
 
     SDL_RenderPresent(renderer);
+    delete textRenderer;
 
     return 0;
 }
