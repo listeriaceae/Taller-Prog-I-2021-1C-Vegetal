@@ -1,5 +1,4 @@
 #include <iostream>
-#include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <pthread.h>
 #include <string>
@@ -12,6 +11,13 @@
 #include "../utils/Constants.hpp"
 #include "../TextRenderer.h"
 #include "Client.h"
+
+typedef struct handleLevelStateArgs {
+    int clientSocket;
+    estadoNivel_t **estado;
+} handleLevelStateArgs_t;
+
+pthread_mutex_t mutex;
 
 void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *);
 
@@ -48,7 +54,7 @@ int Client::connectToServer(char* serverIp, char* port) {
 
 void Client::startGame() {
     logger::Logger::getInstance().logNewGame();
-    
+
     auto configuration = configuration::GameConfiguration(CONFIG_FILE);
     auto log_level = configuration.getLogLevel();
     logger::Logger::getInstance().setLogLevel(log_level);
@@ -61,16 +67,24 @@ void Client::startGame() {
     pthread_t sendThread;
     pthread_create(&sendThread, NULL, sendDataThread, &clientSocket);
 
-    estadoNivel_t estadoNivel;
-    int bytesReceived;
+    estadoNivel_t *estadoNivel = NULL;
+
+    handleLevelStateArgs_t receiveArgs;
+    receiveArgs.clientSocket = clientSocket;
+    receiveArgs.estado = &estadoNivel;
+
+    pthread_t recieveThread;
+    pthread_create(&recieveThread, NULL, recieveDataThread, &receiveArgs);
 
     bool quitRequested = false;
     while(!quitRequested) {
-        bytesReceived = receiveView(clientSocket, &estadoNivel);
-        if (bytesReceived == sizeof(estadoNivel_t)) {
-            if (currentLevel < estadoNivel.level) getNextLevelView(&vista, &configuration, ++currentLevel, renderer);
+        if (estadoNivel != NULL) {
+            pthread_mutex_lock(&mutex);
+            if (currentLevel < estadoNivel->level) getNextLevelView(&vista, &configuration, ++currentLevel, renderer);
             SDL_RenderClear(renderer);
-            vista->update(&estadoNivel);
+            vista->update(estadoNivel);
+            estadoNivel = NULL;
+            pthread_mutex_unlock(&mutex);
             SDL_RenderPresent(renderer);
         }
         quitRequested = SDL_QuitRequested();
@@ -89,8 +103,8 @@ void* Client::sendDataThread(void *args) {
     controls_t controls = getControls();
 
     bool quitRequested = false;
-    while(!quitRequested) {
-        if(*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls())))
+    while (!quitRequested) {
+        if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls())))
             sendCommand(clientSocket, &controls);
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
@@ -117,6 +131,25 @@ int Client::sendCommand(int clientSocket, controls_t* controls) {
     }
 
     return totalBytesSent;
+}
+
+void *Client::recieveDataThread(void *args) {
+    int clientSocket = ((handleLevelStateArgs_t *)args)->clientSocket;
+    estadoNivel_t **estado = ((handleLevelStateArgs_t *)args)->estado;
+    estadoNivel_t view;
+    int bytesReceived;
+
+    bool quitRequested = false;
+    while(!quitRequested) {
+        bytesReceived = receiveView(clientSocket, &view);
+        if (bytesReceived == sizeof(estadoNivel_t)) {
+            pthread_mutex_lock(&mutex);
+            *estado = &view;
+            pthread_mutex_unlock(&mutex);
+        }
+        quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
+    }
+    return NULL;
 }
 
 int Client::receiveView(int clientSocket, estadoNivel_t* view) {
@@ -149,7 +182,7 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
     delete *vista;
     if (currentLevel == 1) {
         *vista = new Nivel1Vista(renderer, config->getDefaultConfigFlag());
-        (*vista)->addPlayers(maxPlayers);                                           // Aca iria cantidad de jugadores
+        (*vista)->addPlayers(maxPlayers);
         auto stages = config->getStages();
         if (stages.size() > 0) {
             std::string rutaImagen = stages[0].getBackgrounds()[0];
@@ -159,7 +192,7 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
     }
     if (currentLevel == 2) {
         *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag());
-        (*vista)->addPlayers(maxPlayers);                                           // Aca iria cantidad de jugadores
+        (*vista)->addPlayers(maxPlayers);
         auto stages = config->getStages();
         if (stages.size() > 1) {
             std::string rutaImagen = stages[1].getBackgrounds()[0];
@@ -175,6 +208,7 @@ const float TEXT_X = 10;
 const float TEXT_Y = 110;
 
 void Client::showWaitingView() {
+    SDL_RenderClear(renderer);
     TextRenderer* textRenderer = new TextRenderer(renderer, IMG_FONT);
     
     punto_t pos;

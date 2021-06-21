@@ -16,7 +16,6 @@ class NivelVista {
         virtual ~NivelVista();
 
     protected:
-        int cantJugadores = 0;
         static SDL_Renderer* renderer;
         SDL_Texture* texture;
         std::vector<MarioVista*> jugadoresVista;
