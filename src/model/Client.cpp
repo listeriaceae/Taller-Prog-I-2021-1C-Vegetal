@@ -24,7 +24,7 @@ typedef struct handleLevelStateArgs {
 } handleLevelStateArgs_t;
 
 pthread_mutex_t mutex;
-
+bool serverOpen = true;
 void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *);
 
 Client::Client() {
@@ -47,15 +47,16 @@ int Client::connectToServer(char* serverIp, char* port) {
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons( atoi(port));
 
-    std::cout << "pre connect" << std::endl;
+    std::cout << "Conectado" << std::endl;
     //connect
     if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) < 0) {
-        printf("error\n");
+        std::cout << "Error al conectarse con el servidor" << std::endl;
         return -1;
     }
-    std::cout << "post connect" << std::endl;
-    startGame();
-    
+    //std::cout << "post connect" << std::endl;
+    startGame();  
+    if(!serverOpen) 
+        std::cout << "Hubo un error en el servidor" << std::endl;
     return 1;
 }
 
@@ -84,7 +85,7 @@ void Client::startGame() {
     pthread_create(&receiveThread, NULL, receiveDataThread, &receiveArgs);
 
     bool quitRequested = false;
-    while(!quitRequested) {
+    while(!quitRequested && serverOpen) {
         if (estadoNivel != NULL) {
             pthread_mutex_lock(&mutex);
             if (currentLevel < estadoNivel->level) getNextLevelView(&vista, &configuration, ++currentLevel, renderer);
@@ -110,9 +111,13 @@ void* Client::sendDataThread(void *args) {
     controls_t controls = getControls();
 
     bool quitRequested = false;
-    while (!quitRequested) {
-        if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls())))
-            sendCommand(clientSocket, &controls);
+    while(!quitRequested && serverOpen) {
+        if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls()))) {
+            int bytesSent = sendCommand(clientSocket, &controls);
+            if(bytesSent <= 0) 
+                serverOpen = false;
+        }
+            
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
     return NULL;
@@ -147,8 +152,10 @@ void *Client::receiveDataThread(void *args) {
     int bytesReceived;
 
     bool quitRequested = false;
-    while(!quitRequested) {
+    while(!quitRequested && serverOpen) {
         bytesReceived = receiveView(clientSocket, &view);
+        if(bytesReceived == 0)
+            serverOpen = false;
         if (bytesReceived == sizeof(estadoNivel_t)) {
             pthread_mutex_lock(&mutex);
             *estado = &view;
