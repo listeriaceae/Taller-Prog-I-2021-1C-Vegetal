@@ -11,6 +11,7 @@
 #include "../utils/Constants.hpp"
 #include "../TextRenderer.h"
 #include "Client.h"
+#include "../StartPageView.h"
 
 typedef struct handleLevelStateArgs {
     int clientSocket;
@@ -33,8 +34,9 @@ int Client::connectToServer(char* serverIp, char* port) {
 
     //socket
     clientSocket = socket(AF_INET , SOCK_STREAM , 0);
-    if (clientSocket == -1)
+    if (clientSocket == -1) {
         return -1;
+    }
 
     serverAddress.sin_addr.s_addr = inet_addr(serverIp);
     serverAddress.sin_family = AF_INET;
@@ -47,7 +49,7 @@ int Client::connectToServer(char* serverIp, char* port) {
         return -1;
     }
     std::cout << "post connect" << std::endl;
-    startGame();  
+    startGame();
     
     return 1;
 }
@@ -73,8 +75,8 @@ void Client::startGame() {
     receiveArgs.clientSocket = clientSocket;
     receiveArgs.estado = &estadoNivel;
 
-    pthread_t recieveThread;
-    pthread_create(&recieveThread, NULL, recieveDataThread, &receiveArgs);
+    pthread_t receiveThread;
+    pthread_create(&receiveThread, NULL, receiveDataThread, &receiveArgs);
 
     bool quitRequested = false;
     while(!quitRequested) {
@@ -133,7 +135,7 @@ int Client::sendCommand(int clientSocket, controls_t* controls) {
     return totalBytesSent;
 }
 
-void *Client::recieveDataThread(void *args) {
+void *Client::receiveDataThread(void *args) {
     int clientSocket = ((handleLevelStateArgs_t *)args)->clientSocket;
     estadoNivel_t **estado = ((handleLevelStateArgs_t *)args)->estado;
     estadoNivel_t view;
@@ -208,6 +210,34 @@ const float TEXT_X = 10;
 const float TEXT_Y = 110;
 
 void Client::showWaitingView() {
+    SDL_StartTextInput();
+    StartPage *startPage = new StartPage(renderer);
+
+    SDL_Event event;
+
+    bool loginOk = false;
+    int inicio, fin;
+    while (!loginOk) {
+        inicio = SDL_GetTicks();
+
+        while (SDL_PollEvent(&event)) {
+            loginOk = (event.type == SDL_QUIT);
+            if (event.type != SDL_MOUSEMOTION) {
+                loginOk = startPage->handle(event);
+            }
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        startPage->show();
+        SDL_RenderPresent(renderer);
+
+        fin = SDL_GetTicks();
+        SDL_Delay(std::max(MS_PER_UPDATE - (fin - inicio), 0));
+    }
+
+    SDL_StopTextInput();
+
     SDL_RenderClear(renderer);
     TextRenderer* textRenderer = new TextRenderer(renderer, IMG_FONT);
     
