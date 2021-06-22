@@ -1,6 +1,7 @@
 #include "Mario.hpp"
 #include "../utils/Constants.hpp"
 #include "mario/SueloState.h"
+#include "mario/DisabledState.h"
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
     this->state = SueloState::getInstance();
@@ -29,4 +30,8 @@ estadoMario_t Mario::getEstado() {
     estadoMario.pos = getPos();
     estadoMario.estado = estado;
     return estadoMario;
+}
+
+void Mario::disable() {
+    this->state = DisabledState::getInstance();
 }

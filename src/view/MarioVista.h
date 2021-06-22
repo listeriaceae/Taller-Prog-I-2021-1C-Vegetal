@@ -24,4 +24,5 @@ class MarioVista
         void updateCorriendo(int nextX);
         void updateSaltando(int nextX);
         void updateTrepando(int nextY);
+        void updateDesconectado();
 };
