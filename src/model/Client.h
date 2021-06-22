@@ -3,11 +3,12 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include "../utils/estadoNivel.h"
+#include "../utils/user.h"
 
 class Client {
     public:
     Client();
-    void showWaitingView();
+    void showStartPage();
     int connectToServer(char* serverIp, char* port);
 
     private:
@@ -20,4 +21,5 @@ class Client {
     static int receiveView(int clientSocket, estadoNivel_t* view);
     int clientSocket;
     struct sockaddr_in serverAddress;
+    user_t user;
 };

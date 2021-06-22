@@ -13,6 +13,11 @@
 #include "Client.h"
 #include "../StartPageView.h"
 
+const float RESIZE = 1.2;
+const char* IMG_FONT = "res/font.png";
+const float TEXT_X = 10;
+const float TEXT_Y = 110;
+
 typedef struct handleLevelStateArgs {
     int clientSocket;
     estadoNivel_t **estado;
@@ -30,7 +35,7 @@ Client::Client() {
 }
 
 int Client::connectToServer(char* serverIp, char* port) {
-    std::cout << "Intento conectarme al servidor en: " << serverIp << " en el puerto: " << port << std::endl;
+    std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port << std::endl;
 
     //socket
     clientSocket = socket(AF_INET , SOCK_STREAM , 0);
@@ -211,24 +216,22 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
     }
 }
 
-const float RESIZE = 1.2;
-const char* IMG_FONT = "res/font.png";
-const float TEXT_X = 10;
-const float TEXT_Y = 110;
-
-void Client::showWaitingView() {
+void Client::showStartPage() {
     SDL_StartTextInput();
     StartPage *startPage = new StartPage(renderer);
 
     SDL_Event event;
 
     bool loginOk = false;
+    bool quitRequested = false;
     int inicio, fin;
-    while (!loginOk) {
+    while (!loginOk && !quitRequested) {
         inicio = SDL_GetTicks();
 
         while (SDL_PollEvent(&event)) {
-            loginOk = (event.type == SDL_QUIT);
+
+            quitRequested = (event.type == SDL_QUIT);
+
             if (event.type != SDL_MOUSEMOTION) {
                 loginOk = startPage->handle(event);
             }
@@ -241,6 +244,11 @@ void Client::showWaitingView() {
 
         fin = SDL_GetTicks();
         SDL_Delay(std::max(MS_PER_UPDATE - (fin - inicio), 0));
+    }
+
+    // TODO: check quitRequested exit
+    if(loginOk) {
+        this->user = startPage->getCurrentUser();
     }
 
     SDL_StopTextInput();

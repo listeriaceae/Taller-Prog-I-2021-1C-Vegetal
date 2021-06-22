@@ -4,11 +4,9 @@
 #include "utils/Constants.hpp"
 #include <map>
 #include <string_view>
+#include "utils/window.hpp"
 
 #include <iostream>
-
-#define ANCHO_PANTALLA 448
-#define ALTO_PANTALLA 512
 
 #define ANCHO_NIVEL 224
 #define ALTO_NIVEL 256
@@ -31,7 +29,6 @@ const char* PASSWORD = "PASSWORD";
 const char* DONE = "DONE";
 const char* INVALID_USER = "INVALID USER";
 const char* INVALID_PASS = "INVALID PASSWORD";
-const char* LOGIN_OK = "LOGIN OK";
 
 const SDL_Rect usernameRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(USER_BUTTON_Y * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f),
@@ -185,7 +182,7 @@ bool StartPage::login(std::string name, std::string pass) {
         return false;
     }
 
-    this->resultMsg = LOGIN_OK;
+    this->currentUser = user;
     return true;
 }
 
