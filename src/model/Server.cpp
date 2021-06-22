@@ -41,7 +41,7 @@ int Server::startServer() {
     }
 
     //socket
-    int serverSocket = socket(AF_INET , SOCK_STREAM , 0);
+    serverSocket = socket(AF_INET , SOCK_STREAM , 0);
     if (serverSocket == -1) {
         return -1;
     }
@@ -66,6 +66,9 @@ int Server::startServer() {
         printf("Players: %d/%d\n", (int)clientSockets.size(), maxPlayers);
     }
 
+    pthread_t acceptConnectionsThread;
+    pthread_create(&acceptConnectionsThread, NULL, acceptNewConnections, this);
+
     if (clientSockets[0] < 0 || clientSockets[1] < 0) {
         return -1;
     }
@@ -78,7 +81,17 @@ int Server::startServer() {
     close(serverSocket);
     return 0;
 }
-
+void* Server::acceptNewConnections(void* serverArg) {
+    Server* server = (Server*)serverArg;
+    
+    while(true) {
+        int client = accept(server->serverSocket, (struct sockaddr *)&(server->clientAddress), (socklen_t*) &(server->clientAddrLen));
+        //TODO: si el usuario ya esta en la lista de conexiones se actualiza el socket
+        printf("Cantidad de jugadores excedida\n");
+        close(client);
+    }
+    return NULL;
+}
 void Server::startGame(configuration::GameConfiguration config) {
     
     
