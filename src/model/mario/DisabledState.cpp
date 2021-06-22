@@ -13,10 +13,10 @@ DisabledState* DisabledState::getInstance() {
     return instance;
 }
 
-MarioState *DisabledState::update(float *x, float *y, float *, float *, char *estado, controls_t) {
-    // Al deshabilitar, vuelvo a Mario a la pos inicial
-    *x = MARIO_START_X;
-    *y = MARIO_START_Y;
+MarioState *DisabledState::update(float *, float *, float *xSpeed, float *ySpeed, char *estado, controls_t) {
+    // Al deshabilitar, inmovilizo a Mario a la pos actual
+    *xSpeed = .0f;
+    *ySpeed = .0f;
 
     *estado = DESCONECTADO;
     return instance;
