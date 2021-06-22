@@ -12,7 +12,7 @@
 #define TIEMPO_POR_FRAME 2
 #define CANT_FRAMES 4
 
-const std::string IMG_MARIO = "res/Mario-2.png";
+const std::string IMG_MARIO = "res/Mario.png";
 
 SDL_Renderer *MarioVista::renderer = NULL;
 SDL_Texture *MarioVista::texture = NULL;
