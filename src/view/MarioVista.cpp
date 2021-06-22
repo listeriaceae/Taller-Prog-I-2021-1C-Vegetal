@@ -16,7 +16,7 @@ const std::string IMG_MARIO = "res/Mario.png";
 
 SDL_Renderer *MarioVista::renderer = NULL;
 SDL_Texture *MarioVista::texture = NULL;
-//SDL_Rect MarioVista::dstRect;
+
 int MarioVista::totalJugadores = 0;
 
 MarioVista::MarioVista(SDL_Renderer *renderer) {
@@ -66,6 +66,9 @@ void MarioVista::mostrar(punto_t pos, char estado) {
         case TREPANDO:
             updateTrepando(nextY);
             break;
+        case DESCONECTADO:
+            updateDesconectado();
+            break;
         default:
             break;
     }
@@ -95,6 +98,12 @@ void MarioVista::updateTrepando(int nextY) {
     tiempo += dstRect.y != nextY;
     flip = (SDL_RendererFlip)((tiempo / 8) % 2);
     srcRect.x = MARIO_TREPANDO_INDEX * MARIO_SPRITE_SIZE;
+}
+
+void MarioVista::updateDesconectado() {
+    flip = SDL_FLIP_HORIZONTAL;
+    srcRect.x = 0;
+    srcRect.y = 64;
 }
 
 MarioVista::~MarioVista() {

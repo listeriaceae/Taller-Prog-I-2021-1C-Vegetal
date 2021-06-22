@@ -57,7 +57,7 @@ int Server::startServer() {
         return -1;
     }
 
-    printf("listen...\n");
+    printf("listening...\n");
 
     //Accept
     while(clientSockets.size() < (unsigned int)maxPlayers) {
@@ -77,7 +77,10 @@ int Server::startServer() {
 
     startGame(config);
 
-    for (int clientSocket : clientSockets) close(clientSocket);
+    for (int clientSocket : clientSockets) {
+        close(clientSocket);
+    }
+
     close(serverSocket);
     return 0;
 }
@@ -93,8 +96,6 @@ void* Server::acceptNewConnections(void* serverArg) {
     return NULL;
 }
 void Server::startGame(configuration::GameConfiguration config) {
-    
-    
     srand(time(NULL));
     SDL_Init(SDL_INIT_TIMER);
 
@@ -161,7 +162,11 @@ void *Server::handleCommand(void *handleCommandArgs) {
     bool quitRequested = false;
     while(!quitRequested) {
         bytesReceived = receiveCommand(clientSocket, &controls);
-        if (bytesReceived == sizeof(controls_t)) player->setControls(controls);
+        if (bytesReceived == sizeof(controls_t)) {
+            player->setControls(controls);
+        } else {
+            player->disable();
+        }
 
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }

@@ -13,10 +13,7 @@
 #include "Client.h"
 #include "../StartPageView.h"
 
-const float RESIZE = 1.2;
 const char* IMG_FONT = "res/font.png";
-const float TEXT_X = 10;
-const float TEXT_Y = 110;
 
 typedef struct handleLevelStateArgs {
     int clientSocket;
@@ -49,12 +46,15 @@ int Client::connectToServer(char* serverIp, char* port) {
 
     std::cout << "Conectado" << std::endl;
     //connect
-    if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) < 0) {
+    if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) == 0) {
+        std::cout << "Conectado al servidor" << std::endl;
+    } else {
         std::cout << "Error al conectarse con el servidor" << std::endl;
         return -1;
     }
-    //std::cout << "post connect" << std::endl;
+
     startGame();  
+
     if(!serverOpen) 
         std::cout << "Hubo un error en el servidor" << std::endl;
     return 1;
@@ -112,6 +112,7 @@ void* Client::sendDataThread(void *args) {
 
     bool quitRequested = false;
     while(!quitRequested && serverOpen) {
+
         if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls()))) {
             int bytesSent = sendCommand(clientSocket, &controls);
             if(bytesSent <= 0) 
@@ -145,7 +146,7 @@ int Client::sendCommand(int clientSocket, controls_t* controls) {
     return totalBytesSent;
 }
 
-void *Client::receiveDataThread(void *args) {
+void* Client::receiveDataThread(void *args) {
     int clientSocket = ((handleLevelStateArgs_t *)args)->clientSocket;
     estadoNivel_t **estado = ((handleLevelStateArgs_t *)args)->estado;
     estadoNivel_t view;
@@ -216,8 +217,7 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
     }
 }
 
-void Client::showStartPage() {
-    SDL_StartTextInput();
+int Client::showStartPage() {
     StartPage *startPage = new StartPage(renderer);
 
     SDL_Event event;
@@ -225,7 +225,8 @@ void Client::showStartPage() {
     bool loginOk = false;
     bool quitRequested = false;
     int inicio, fin;
-    while (!loginOk && !quitRequested) {
+    SDL_StartTextInput();
+    while (!(loginOk || quitRequested)) {
         inicio = SDL_GetTicks();
 
         while (SDL_PollEvent(&event)) {
@@ -245,21 +246,29 @@ void Client::showStartPage() {
         fin = SDL_GetTicks();
         SDL_Delay(std::max(MS_PER_UPDATE - (fin - inicio), 0));
     }
+    SDL_StopTextInput();
+    SDL_RenderClear(renderer);
 
-    // TODO: check quitRequested exit
-    if(loginOk) {
-        this->user = startPage->getCurrentUser();
+    if (quitRequested) {
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        IMG_Quit();
+        SDL_Quit();
+        return 1;
     }
 
-    SDL_StopTextInput();
+    this->user = startPage->getCurrentUser();
+    delete startPage;
 
-    SDL_RenderClear(renderer);
     TextRenderer* textRenderer = new TextRenderer(renderer, IMG_FONT);
     
     punto_t pos;
-    pos.x = (10 + 2 * RESIZE) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
-    pos.y = (110 + 2 * RESIZE)* ALTO_PANTALLA / (float)ALTO_NIVEL;
-    textRenderer->renderText(pos, "Esperando a jugadores...", RESIZE);
+    pos.x = (10 + 2) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
+    pos.y = (110 + 2) * ALTO_PANTALLA / (float)ALTO_NIVEL;
+    textRenderer->renderText(pos, "Esperando a jugadores...", 1);
 
     SDL_RenderPresent(renderer);
+    delete textRenderer;
+
+    return 0;
 }

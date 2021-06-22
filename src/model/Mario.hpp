@@ -11,10 +11,12 @@ class Mario : public Entidad
         void setControls(controls_t controls);
         void setStage(Stage *stage);
         void mover();
+        void disable();
         estadoMario_t getEstado();
 
     private:
         MarioState *state;
+        bool isDisabled;
         controls_t controls = {0, 0, 0, 0, 0};
         char estado;
         float velX;

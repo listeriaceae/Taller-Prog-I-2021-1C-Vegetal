@@ -4,6 +4,7 @@
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
     this->state = SueloState::getInstance();
+    this->isDisabled = false;
 }
 
 void Mario::setControls(controls_t controls) {
@@ -27,6 +28,14 @@ void Mario::mover() {
 estadoMario_t Mario::getEstado() {
     estadoMario_t estadoMario;
     estadoMario.pos = getPos();
-    estadoMario.estado = estado;
+    if(this->isDisabled) {
+        estadoMario.estado = DESCONECTADO;
+    } else {
+        estadoMario.estado = this->estado;
+    }
     return estadoMario;
+}
+
+void Mario::disable() {
+    this->isDisabled = true;
 }

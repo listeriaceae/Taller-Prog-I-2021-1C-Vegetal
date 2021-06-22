@@ -97,4 +97,5 @@ enum {
     CORRIENDO,
     SALTANDO,
     TREPANDO,
+    DESCONECTADO
 };
