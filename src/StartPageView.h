@@ -25,7 +25,7 @@ class StartPage
         
         char focus = 0;
 
-        void setFocusColor(int);
+        int setFocusColor(int);
         bool mouseOnUsernameButton(int, int);
         bool mouseOnPasswordButton(int, int);
         bool mouseOnDoneButton(int, int);

@@ -8,7 +8,7 @@
 class Client {
     public:
     Client();
-    void showStartPage();
+    int showStartPage();
     int connectToServer(char* serverIp, char* port);
 
     private:

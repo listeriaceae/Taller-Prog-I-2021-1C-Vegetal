@@ -1,15 +1,9 @@
+#include <iostream>
 #include <SDL2/SDL_image.h>
 #include "StartPageView.h"
 #include "configuration.hpp"
 #include "utils/Constants.hpp"
-#include <map>
-#include <string_view>
 #include "utils/window.hpp"
-
-#include <iostream>
-
-#define ANCHO_NIVEL 224
-#define ALTO_NIVEL 256
 
 #define TEXT_BUTTON_X 28
 #define USER_BUTTON_Y 78
@@ -21,6 +15,9 @@
 #define RESIZE 1.5f
 #define TEXT_BUTTON_WIDTH (((7 + 2) * 10 + 2) * RESIZE)
 #define BUTTON_HEIGHT ((7 + 4) * RESIZE)
+
+#define ERROR_MSG_X 74
+#define ERROR_MSG_Y 138
 
 const char* FONT_IMG = "res/font.png";
 
@@ -45,17 +42,10 @@ const SDL_Rect doneRect = {(int)(DONE_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_N
                            (int)(DONE_BUTTON_WIDTH * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                            (int)(BUTTON_HEIGHT * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f)};
 
-const SDL_Rect errorRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
-                               (int)(USER_BUTTON_Y * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f),
-                               (int)(TEXT_BUTTON_WIDTH * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
-                               (int)(BUTTON_HEIGHT * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f)};
-
 StartPage::StartPage(SDL_Renderer *renderer) {
     this->renderer = renderer;
     this->textRenderer = new TextRenderer(renderer, FONT_IMG);
     
-    // Load users
-    std::cout << "Loading users..." << std::endl;
     auto config = configuration::GameConfiguration(CONFIG_FILE);
     for (auto u: config.getUsers())
     {
@@ -63,17 +53,16 @@ StartPage::StartPage(SDL_Renderer *renderer) {
     }
 }
 
-void StartPage::setFocusColor(int focus) {
-    SDL_SetRenderDrawColor(renderer, 128 + focus * 127, (1 - focus) * 128, (1 - focus) * 128, 255);
+int StartPage::setFocusColor(int focus) {
+    return SDL_SetRenderDrawColor(renderer, 128 + focus * 127, (1 - focus) * 128, (1 - focus) * 128, 255);
 }
 
 void StartPage::show() {
-
     SDL_RenderClear(renderer);
 
     punto_t pos;
     pos.x = (TEXT_BUTTON_X + 2 * RESIZE) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
-    pos.y = (58 + 2 * RESIZE)* ALTO_PANTALLA / (float)ALTO_NIVEL;
+    pos.y = (58 + 2 * RESIZE) * ALTO_PANTALLA / (float)ALTO_NIVEL;
     textRenderer->renderText(pos, USERNAME, RESIZE);
 
     pos.y += 20 * ALTO_PANTALLA / (float)ALTO_NIVEL;
@@ -95,15 +84,17 @@ void StartPage::show() {
     setFocusColor(focus == 2);
     SDL_RenderDrawRect(renderer, &doneRect);
 
-    this->showError();
+    showError();
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
 
 void StartPage::showError() {
     punto_t pos;
-    pos.x = .0f;
-    pos.y = .0f;
-    textRenderer->renderText(pos, this->resultMsg.c_str(), RESIZE);
-    SDL_RenderDrawRect(renderer, &errorRect);
+    pos.x = (TEXT_BUTTON_X + 2 * RESIZE) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
+    pos.y = ERROR_MSG_Y * ALTO_PANTALLA / (float)ALTO_NIVEL;
+    textRenderer->setColor(1);
+    textRenderer->renderText(pos, this->resultMsg.c_str(), 1);
+    textRenderer->setColor(0);
 }
 
 bool StartPage::mouseOnUsernameButton(int x, int y) {
@@ -139,7 +130,7 @@ bool StartPage::handle(SDL_Event event) {
     } else if (event.type == SDL_KEYDOWN) {
         switch (event.key.keysym.sym) {
             case SDLK_BACKSPACE:
-                if (focus == 0 && !username.empty()){
+                if (focus == 0 && !username.empty()) {
                     username.pop_back();
                 } else if (focus == 1 && !password.empty()) {
                     password.pop_back();
@@ -147,7 +138,8 @@ bool StartPage::handle(SDL_Event event) {
                 break;
             case SDLK_KP_ENTER:
             case SDLK_RETURN:
-                return this->login(username, password);
+                if (focus) return this->login(username, password);
+                [[fallthrough]];
             case SDLK_TAB:
                 focus = (focus + 1) % 3;
                 break;
@@ -177,7 +169,7 @@ bool StartPage::login(std::string name, std::string pass) {
     
     auto user = this->users.at(name);
 
-    if (pass.compare("") == 0 || pass.compare(user.password) != 0) {
+    if (pass.compare(user.password) != 0) {
         this->resultMsg = INVALID_PASS;
         return false;
     }
