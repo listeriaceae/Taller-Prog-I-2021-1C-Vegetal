@@ -65,7 +65,7 @@ int Server::startServer() {
     while(clientSockets.size() < (unsigned int)maxPlayers) {
         int client = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t*) &clientAddrLen);
         clientSockets.push_back(client);
-        myqueue.push(client);
+        clientSocketQueue.push(client);
         printf("Players: %d/%d\n", (int)clientSockets.size(), maxPlayers);
     }
 
@@ -93,9 +93,13 @@ void* Server::acceptNewConnections(void* serverArg) {
     
     while(true) {
         int client = accept(server->serverSocket, (struct sockaddr *)&(server->clientAddress), (socklen_t*) &(server->clientAddrLen));
-        server->myqueue.push(client);
+        server->clientSocketQueue.push(client);
+        
         //TODO: si el usuario ya esta en la lista de conexiones se actualiza el socket
-        printf("Cantidad de jugadores excedida\n");
+        if (server->clientSocketQueue.size() >= 1) {
+            printf("Cantidad de jugadores excedida: en cola de espera\n");
+        }
+
         //close(client);
     }
     return NULL;
@@ -118,9 +122,11 @@ void Server::startGame(configuration::GameConfiguration config) {
     handleCommandArgs_t handleCommandArgs[maxPlayers];
 
     for(unsigned int i = 0; i < clientSockets.size(); ++i) {
+        // Dejo esta linea comentada
+        // asi se asignaban antes los clientes
         // handleCommandArgs[i].clientSocket = clientSockets[i];
-        handleCommandArgs[i].clientSocket = this->myqueue.front();
-        this->myqueue.pop();
+        handleCommandArgs[i].clientSocket = this->clientSocketQueue.front();
+        this->clientSocketQueue.pop();
         handleCommandArgs[i].mario = players[i];
         handleCommandArgs[i].server = this;
 
@@ -177,11 +183,11 @@ void *Server::handleCommand(void *handleCommandArgs) {
         } else {
             player->disable();
 
-            if(!server->myqueue.empty()) {
+            if(!server->clientSocketQueue.empty()) {
                 printf("Reconectando...\n");
-                clientSocket = server->myqueue.front();
-                server->clientSockets.push_back(server->myqueue.front());
-                server->myqueue.pop();
+                clientSocket = server->clientSocketQueue.front();
+                server->clientSockets.push_back(server->clientSocketQueue.front());
+                server->clientSocketQueue.pop();
 
                 player->enable();
             }

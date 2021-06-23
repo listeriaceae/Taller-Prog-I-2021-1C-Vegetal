@@ -23,5 +23,5 @@ class Server {
     struct sockaddr_in serverAddress;
     struct sockaddr_in clientAddress;
     int clientAddrLen;
-    std::queue<int> myqueue;
+    std::queue<int> clientSocketQueue;
 };

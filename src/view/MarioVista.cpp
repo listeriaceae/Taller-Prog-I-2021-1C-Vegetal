@@ -67,8 +67,8 @@ void MarioVista::mostrar(punto_t pos, char estado) {
             updateTrepando(nextY);
             break;
         case DESCONECTADO:
-            return updateDesconectado(nextX, nextY);
-            break;
+            updateDesconectado(nextX, nextY);
+            return;
         default:
             break;
     }
