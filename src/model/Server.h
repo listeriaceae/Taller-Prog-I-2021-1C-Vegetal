@@ -4,6 +4,7 @@
 #include <vector>
 #include "../utils/estadoNivel.h"
 #include "../configuration.hpp"
+#include <queue>
 
 class Server {
     public:
@@ -22,4 +23,5 @@ class Server {
     struct sockaddr_in serverAddress;
     struct sockaddr_in clientAddress;
     int clientAddrLen;
+    std::queue<int> myqueue;
 };

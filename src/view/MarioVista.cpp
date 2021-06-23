@@ -67,7 +67,7 @@ void MarioVista::mostrar(punto_t pos, char estado) {
             updateTrepando(nextY);
             break;
         case DESCONECTADO:
-            updateDesconectado();
+            return updateDesconectado(nextX, nextY);
             break;
         default:
             break;
@@ -100,10 +100,18 @@ void MarioVista::updateTrepando(int nextY) {
     srcRect.x = MARIO_TREPANDO_INDEX * MARIO_SPRITE_SIZE;
 }
 
-void MarioVista::updateDesconectado() {
+void MarioVista::updateDesconectado(int nextX, int nextY) {
+    SDL_Rect _srcRect;
     flip = SDL_FLIP_HORIZONTAL;
-    srcRect.x = 0;
-    srcRect.y = 64;
+    _srcRect.w = ANCHO_MARIO;
+    _srcRect.h = ALTO_MARIO;
+    _srcRect.x = 0;
+    _srcRect.y = 64;
+
+    dstRect.x = nextX;
+    dstRect.y = nextY;
+
+    SDL_RenderCopyEx(renderer, texture, &_srcRect, &dstRect, 0., NULL, flip);
 }
 
 MarioVista::~MarioVista() {

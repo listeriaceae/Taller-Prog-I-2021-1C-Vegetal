@@ -12,10 +12,12 @@
 #include "../utils/window.hpp"
 #include "../utils/estadoNivel.h"
 #include "Server.h"
+#include <queue>
 
 typedef struct handleCommandArgs {
     int clientSocket;
     Mario* mario;
+    Server* server;
 } handleCommandArgs_t;
 
 void getNextLevel(Nivel **nivel, configuration::GameConfiguration *config, Uint8 currentLevel);
@@ -63,6 +65,7 @@ int Server::startServer() {
     while(clientSockets.size() < (unsigned int)maxPlayers) {
         int client = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t*) &clientAddrLen);
         clientSockets.push_back(client);
+        myqueue.push(client);
         printf("Players: %d/%d\n", (int)clientSockets.size(), maxPlayers);
     }
 
@@ -84,14 +87,16 @@ int Server::startServer() {
     close(serverSocket);
     return 0;
 }
+
 void* Server::acceptNewConnections(void* serverArg) {
     Server* server = (Server*)serverArg;
     
     while(true) {
         int client = accept(server->serverSocket, (struct sockaddr *)&(server->clientAddress), (socklen_t*) &(server->clientAddrLen));
+        server->myqueue.push(client);
         //TODO: si el usuario ya esta en la lista de conexiones se actualiza el socket
         printf("Cantidad de jugadores excedida\n");
-        close(client);
+        //close(client);
     }
     return NULL;
 }
@@ -111,9 +116,13 @@ void Server::startGame(configuration::GameConfiguration config) {
     nivel->addPlayers(&players);
 
     handleCommandArgs_t handleCommandArgs[maxPlayers];
+
     for(unsigned int i = 0; i < clientSockets.size(); ++i) {
-        handleCommandArgs[i].clientSocket = clientSockets[i];
+        // handleCommandArgs[i].clientSocket = clientSockets[i];
+        handleCommandArgs[i].clientSocket = this->myqueue.front();
+        this->myqueue.pop();
         handleCommandArgs[i].mario = players[i];
+        handleCommandArgs[i].server = this;
 
         pthread_t recvCommandThread;
         pthread_create(&recvCommandThread, NULL, handleCommand, &handleCommandArgs[i]);
@@ -155,6 +164,7 @@ void Server::startGame(configuration::GameConfiguration config) {
 void *Server::handleCommand(void *handleCommandArgs) {
     Mario *player = ((handleCommandArgs_t *)handleCommandArgs)->mario;
     int clientSocket = ((handleCommandArgs_t *)handleCommandArgs)->clientSocket;
+    Server* server = ((handleCommandArgs_t *)handleCommandArgs)->server;
 
     controls_t controls;
     int bytesReceived;
@@ -166,6 +176,15 @@ void *Server::handleCommand(void *handleCommandArgs) {
             player->setControls(controls);
         } else {
             player->disable();
+
+            if(!server->myqueue.empty()) {
+                printf("Reconectando...\n");
+                clientSocket = server->myqueue.front();
+                server->clientSockets.push_back(server->myqueue.front());
+                server->myqueue.pop();
+
+                player->enable();
+            }
         }
 
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
