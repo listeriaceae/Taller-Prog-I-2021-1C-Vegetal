@@ -42,12 +42,12 @@ Server::Server(char* port) {
 
     std::cout << "Aplicación iniciada en modo servidor en el puerto: " << port << std::endl;
 
-    std::cout << "Cargando usuarios validos..." << std::endl;
+    //std::cout << "Cargando usuarios validos..." << std::endl;
     auto config = configuration::GameConfiguration(CONFIG_FILE);
     for (auto u: config.getUsers())
     {
         this->users[u.username] = u;
-        std::cout << "user: " << u.username << " " << u.password << std::endl; 
+        //std::cout << "user: " << u.username << " " << u.password << std::endl; 
     }
 }
 
@@ -92,11 +92,7 @@ int Server::startServer() {
     pthread_t acceptConnectionsThread;
     pthread_create(&acceptConnectionsThread, NULL, acceptNewConnections, this);
 
-    while(this->clientSockets.size() < (unsigned int)maxPlayers) {}
-
-    if (clientSockets[0] < 0 || clientSockets[1] < 0) {
-        return -1;
-    }
+    while(this->connected_users.size() < (unsigned int)maxPlayers) {}
 
     printf("Accept\n");
 
@@ -311,12 +307,16 @@ void * Server::z_connectToClient (void* arguments) {
     Server* server = ((connectToClientArgs_t*)arguments)->server;
     int client = ((connectToClientArgs_t*)arguments)->clientId;
     
-    int result;
+    int response;
 
     do {
         std::cout << "LOOP server login" << std::endl;
-        int response = server->z_startLogin(client);
-    } while(true);
+        response = server->z_startLogin(client);
+    } while(response != LOGIN_OK);
+    
+    std::cout << "Usuario conectado" << std::endl;
+
+    return NULL;
 }
 
 int Server::z_startLogin(int client) {
@@ -344,11 +344,19 @@ int Server::z_startLogin(int client) {
         return LOGIN_INVALID_USER_PASS;
     }
 
-    // TODO: user connected
+    if(this->connected_users.count(user.username) != 0) {
+        std::cout << user.username << " usuario conectado" << std::endl;
+        response = LOGIN_USER_ALREADY_CONNECTED;
+        z_sendLoginResponse(client, &response);
+        return LOGIN_USER_ALREADY_CONNECTED;
+    }
 
     std::cout << "LOGIN_OK" << std::endl;
     response = LOGIN_OK;
     z_sendLoginResponse(client, &response);
+
+    // Lo agrego a usuarios conectados
+    this->connected_users[user.username] = user;
     return LOGIN_OK;
 }
 

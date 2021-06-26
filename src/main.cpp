@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
         Client* client = new Client(argv[2], argv[3]);
         client->connectToServer();
         if (client->showStartPage() == 1) return 0;
+        client->startGame();
     } else {
         std::cout << "ERROR: no es posible ejecutar el juego" << std::endl;
     }

@@ -29,8 +29,6 @@ class Server {
         std::map<std::string, user_t> connected_users;
         std::vector<user_t> connectedUsers;
         static void* z_connectToClient(void* arguments);
-        //bool z_userAlreadyConnected(user_t user);
-        //int z_checkUser(user_t player, std::vector<user_t> users);
         int z_startLogin(int client);
         int z_receiveLogin (int client, user_t* player);
         int z_sendLoginResponse (int client, int* response);
