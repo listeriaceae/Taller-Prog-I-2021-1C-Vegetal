@@ -24,14 +24,16 @@ pthread_mutex_t mutex;
 bool serverOpen = true;
 void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *);
 
-Client::Client() {
+Client::Client(char* serverIp, char* port) {
+    this->serverIp = serverIp;
+    this->port = port;
     std::cout << "Aplicación iniciada en modo cliente" << std::endl;
     SDL_Init(SDL_INIT_EVERYTHING);
     window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 }
 
-int Client::connectToServer(char* serverIp, char* port) {
+int Client::connectToServer() {
     std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port << std::endl;
 
     //socket
@@ -52,8 +54,6 @@ int Client::connectToServer(char* serverIp, char* port) {
         std::cout << "Error al conectarse con el servidor" << std::endl;
         return -1;
     }
-
-    startGame();  
 
     if(!serverOpen) 
         std::cout << "Hubo un error en el servidor" << std::endl;
@@ -218,7 +218,7 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
 }
 
 int Client::showStartPage() {
-    StartPage *startPage = new StartPage(renderer);
+    StartPage *startPage = new StartPage(renderer, this);
 
     SDL_Event event;
 
@@ -271,4 +271,71 @@ int Client::showStartPage() {
     delete textRenderer;
 
     return 0;
+}
+
+int Client::z_login(std::string username, std::string password) {
+    std::cout << "client z_login..." << std::endl;
+    user_t user;
+    int response;
+
+    strcpy(user.username, username.c_str());
+    strcpy(user.password, password.c_str());
+
+    std::cout << "user" << user.username << "-" << user.password << std::endl;
+
+    int bytesSent = z_sendLogin(&user);
+
+    int bytesReceived = z_receiveLoginResponse(&response);
+    std::cout << "received " << bytesReceived << std::endl;
+    std::cout << "Response " << response << std::endl;
+    
+    if(bytesReceived != sizeof(int)) {
+       // TODO: bytesReceived is not int
+       return false;
+    }
+    std::cout << "login response" << response << std::endl;
+    return response;
+}
+
+int Client::z_sendLogin(user_t* user) {
+    int totalBytesSent = 0;
+    int bytesSent = 0;
+    int dataSize = sizeof(user_t);
+    bool clientSocketStillOpen = true;
+    
+    while((totalBytesSent < dataSize) && clientSocketStillOpen) {
+        bytesSent = send(this->clientSocket, (user + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
+        if(bytesSent < 0) {
+            return bytesSent;
+        } 
+        else if(bytesSent == 0) {
+            clientSocketStillOpen = false;
+        }
+        else {
+            totalBytesSent += bytesSent;
+        }
+    }
+    return totalBytesSent;
+}
+
+int Client::z_receiveLoginResponse (int* response) {
+    int totalBytesReceived = 0;
+    int bytesReceived = 0;
+    int dataSize = sizeof(int);
+    bool clientSocketStillOpen = true;
+
+    while((totalBytesReceived < dataSize) && clientSocketStillOpen) {
+        bytesReceived = recv(clientSocket, (response + totalBytesReceived), (dataSize - totalBytesReceived), MSG_NOSIGNAL);
+        if(bytesReceived < 0) {
+            return bytesReceived;
+        } 
+        else if(bytesReceived == 0) {
+            clientSocketStillOpen = false;
+        }
+        else {
+            totalBytesReceived += bytesReceived;
+        }
+    }
+
+    return totalBytesReceived;
 }

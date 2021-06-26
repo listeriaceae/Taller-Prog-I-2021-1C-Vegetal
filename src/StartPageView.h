@@ -4,11 +4,12 @@
 #include "TextRenderer.h"
 #include "utils/user.h"
 #include <map>
+#include "model/Client.h"
 
 class StartPage
 {
     public:
-        StartPage(SDL_Renderer *);
+        StartPage(SDL_Renderer *, Client* client);
         void show();
         bool handle(SDL_Event event);
         user_t getCurrentUser() const {return currentUser;};
@@ -20,8 +21,9 @@ class StartPage
         std::string username = "";
         std::string password = "";
         std::string resultMsg = "";
-        std::map<std::string, user_t> users;
+        //std::map<std::string, user_t> users;
         user_t currentUser;
+        Client *client;
         
         char focus = 0;
 

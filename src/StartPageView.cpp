@@ -4,6 +4,7 @@
 #include "configuration.hpp"
 #include "utils/Constants.hpp"
 #include "utils/window.hpp"
+#include "model/Client.h"
 
 #define TEXT_BUTTON_X 28
 #define USER_BUTTON_Y 78
@@ -26,6 +27,7 @@ const char* PASSWORD = "PASSWORD";
 const char* DONE = "DONE";
 const char* INVALID_USER = "INVALID USER";
 const char* INVALID_PASS = "INVALID PASSWORD";
+const char* USER_ALREADY_CONNECTED = "USER ALREADY CONNECTED";
 
 const SDL_Rect usernameRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(USER_BUTTON_Y * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f),
@@ -42,15 +44,10 @@ const SDL_Rect doneRect = {(int)(DONE_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_N
                            (int)(DONE_BUTTON_WIDTH * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                            (int)(BUTTON_HEIGHT * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f)};
 
-StartPage::StartPage(SDL_Renderer *renderer) {
+StartPage::StartPage(SDL_Renderer *renderer, Client *client) {
     this->renderer = renderer;
     this->textRenderer = new TextRenderer(renderer, FONT_IMG);
-    
-    auto config = configuration::GameConfiguration(CONFIG_FILE);
-    for (auto u: config.getUsers())
-    {
-        this->users[u.username] = u;
-    }
+    this->client = client;
 }
 
 int StartPage::setFocusColor(int focus) {
@@ -162,20 +159,26 @@ bool StartPage::handle(SDL_Event event) {
 
 bool StartPage::login(std::string name, std::string pass) {
     std::cout << "login process..." << std::endl;
-    if (this->users.count(name) == 0) {
-        this->resultMsg = INVALID_USER;
-        return false;
-    } 
-    
-    auto user = this->users.at(name);
 
-    if (pass.compare(user.password) != 0) {
-        this->resultMsg = INVALID_PASS;
-        return false;
+    int response = this->client->z_login(name, pass);
+
+    switch (response)
+    {
+        case LOGIN_OK:
+            this->resultMsg = "OK";
+            return true;
+        case LOGIN_INVALID_USER:
+            this->resultMsg = INVALID_USER;
+            return false;
+        case LOGIN_INVALID_USER_PASS:
+            this->resultMsg = INVALID_PASS;
+            return false;
+        case LOGIN_USER_ALREADY_CONNECTED:
+            this->resultMsg = USER_ALREADY_CONNECTED;
+            return false;
+        default:
+            break;
     }
-
-    this->currentUser = user;
-    return true;
 }
 
 StartPage::~StartPage()  {
