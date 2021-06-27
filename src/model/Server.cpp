@@ -113,7 +113,6 @@ void* Server::acceptNewConnections(void* serverArg) {
         if(server->isFull()) {
             std::cout << "Cantidad de jugadores excedida" << std::endl;
             close(client);
-            return NULL;
         }
 
         handleLoginArgs_t arguments;
