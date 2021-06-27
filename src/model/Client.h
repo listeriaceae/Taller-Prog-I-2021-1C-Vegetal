@@ -13,10 +13,9 @@ class Client {
     Client(char* serverIp, char* port);
     int startClient();
     int showStartPage();
-    int showStartPage_2();
     int connectToServer();
     void startGame();
-    int z_login(std::string username, std::string password);
+    int login(user_t user);
 
     private:
         char* serverIp;
@@ -32,4 +31,5 @@ class Client {
         user_t user;
         int sendLoginRequest (user_t* user);
         int receiveLoginResponse (int* response);
+        void showConnectedPage();
 };

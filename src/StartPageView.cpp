@@ -27,6 +27,7 @@ const char* USERNAME = "USERNAME";
 const char* PASSWORD = "PASSWORD";
 const char* DONE = "DONE";
 
+const char* MSG_OK = "OK";
 const char* MSG_INVALID_USER = "INVALID USER";
 const char* MSG_INVALID_PASS = "INVALID PASSWORD";
 const char* MSG_USER_ALREADY_CONNECTED = "USER ALREADY CONNECTED";
@@ -162,7 +163,6 @@ bool StartPage::handle(SDL_Event event) {
         } else if (mouseOnPasswordButton(x, y)) {
             focus = 1;
         } else if (mouseOnDoneButton(x, y)) {
-            //return this->login(username, password);
             return true;
         }
     } else if (event.type == SDL_KEYDOWN) {
@@ -176,7 +176,6 @@ bool StartPage::handle(SDL_Event event) {
                 break;
             case SDLK_KP_ENTER:
             case SDLK_RETURN:
-                //if (focus) return this->login(username, password);
                 if (focus) return true;
                 [[fallthrough]];
             case SDLK_TAB:
@@ -199,35 +198,11 @@ bool StartPage::handle(SDL_Event event) {
     return false;
 }
 
-// bool StartPage::login(std::string name, std::string pass) {
-//     std::cout << "login process..." << std::endl;
-
-//     int response = this->client->z_login(name, pass);
-
-//     switch (response)
-//     {
-//         case LOGIN_OK:
-//             this->resultMsg = "OK";
-//             return true;
-//         case LOGIN_INVALID_USER:
-//             this->resultMsg = MSG_INVALID_USER;
-//             return false;
-//         case LOGIN_INVALID_USER_PASS:
-//             this->resultMsg = MSG_INVALID_PASS;
-//             return false;
-//         case LOGIN_USER_ALREADY_CONNECTED:
-//             this->resultMsg = MSG_USER_ALREADY_CONNECTED;
-//             return false;
-//         default:
-//             return false;
-//     }
-// }
-
 void StartPage::renderResponse(int response) {
     switch (response)
     {
         case LOGIN_OK:
-            this->resultMsg = "OK";
+            this->resultMsg = MSG_OK;
             break;
         case LOGIN_INVALID_USER:
             this->resultMsg = MSG_INVALID_USER;

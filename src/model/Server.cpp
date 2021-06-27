@@ -214,8 +214,6 @@ void *Server::handleCommand(void *handleCommandArgs) {
         if (bytesReceived == sizeof(controls_t)) {
             mario->setControls(controls);
         } else {
-            logger::Logger::getInstance().logInformation(std::string("*** Player disconnected associated with clientI: ") + std::to_string(clientSocket));
-            
             mario->disable();
 
             if(!server->clientSocketQueue.empty()) {

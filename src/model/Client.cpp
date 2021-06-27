@@ -15,6 +15,8 @@
 #include "../StartPageView.h"
 
 #define SERVER_CONNECTION_SUCCESS 0
+#define START_PAGE_SUCCESS 0
+
 const char* IMG_FONT = "res/font.png";
 
 typedef struct handleLevelStateArgs {
@@ -41,7 +43,13 @@ int Client::startClient() {
         return -1;
     }
     
-    if (this->showStartPage_2() == 1) return 0;
+    if (this->showStartPage() != START_PAGE_SUCCESS){
+        std::cout << "Hubo un error con StartPage" << std::endl;
+        return -1;
+    }
+
+    this->showConnectedPage();
+
     this->startGame();
     return 0;
 }
@@ -234,48 +242,32 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
 }
 
 int Client::showStartPage() {
-    StartPage *startPage = new StartPage(renderer, this);
+    StartPage* startPage = new StartPage(renderer, this);
+    int response;
+    try {
+        do {
+            user_t user = startPage->getLoginUser();
+            response = login(user);
 
-    SDL_Event event;
-
-    bool loginOk = false;
-    bool quitRequested = false;
-    int inicio, fin;
-
-    SDL_StartTextInput();
-    while (!(loginOk || quitRequested)) {
-        inicio = SDL_GetTicks();
-
-        while (SDL_PollEvent(&event)) {
-
-            quitRequested = (event.type == SDL_QUIT);
-
-            if (event.type != SDL_MOUSEMOTION) {
-                loginOk = startPage->handle(event);
+            if (response == LOGIN_OK) {
+                this->user = user;
             }
-        }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-        startPage->show();
-        SDL_RenderPresent(renderer);
+            startPage->renderResponse(response);
 
-        fin = SDL_GetTicks();
-        SDL_Delay(std::max(MS_PER_UPDATE - (fin - inicio), 0));
+        } while (response != LOGIN_OK);
     }
-    SDL_StopTextInput();
-    SDL_RenderClear(renderer);
-
-    if (quitRequested) {
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        IMG_Quit();
-        SDL_Quit();
-        return 1;
+    catch (std::exception& e) {
+        delete startPage;
+        return -1;
     }
-
-    this->user = startPage->getCurrentUser();
     delete startPage;
+    return 0;
+}
+
+void Client::showConnectedPage() {
+
+    SDL_RenderClear(renderer);
 
     TextRenderer* textRenderer = new TextRenderer(renderer, IMG_FONT);
     
@@ -286,57 +278,23 @@ int Client::showStartPage() {
 
     SDL_RenderPresent(renderer);
     delete textRenderer;
-
-    return 0;
 }
 
-int Client::showStartPage_2() {
-    std::cout << "ShowStartPage_2" << std::endl;
-    StartPage* startPage = new StartPage(renderer, this);
+int Client::login(user_t user) {
     int response;
-    try {
-        do {
-            std::cout << "start login" << std::endl;
-            user_t user = startPage->getLoginUser();
-            std::cout << "got " << user.username << "-" << user.password << std::endl;
-
-            response = z_login(user.username, user.password);
-            
-            std::cout << "login response" << response << std::endl;
-            if (response == LOGIN_OK) this->user = user;
-            else startPage->renderResponse(response);
-            
-        } while (response != LOGIN_OK);
-    }
-    catch (std::exception& e) {
-        delete startPage;
-        return false;
-    }
-    delete startPage;
-    return true;
-}
-
-int Client::z_login(std::string username, std::string password) {
-    std::cout << "client z_login..." << std::endl;
-    user_t user;
-    int response;
-
-    strcpy(user.username, username.c_str());
-    strcpy(user.password, password.c_str());
-
-    std::cout << "user" << user.username << "-" << user.password << std::endl;
 
     int bytesSent = sendLoginRequest(&user);
+    std::cout << "Sent " << bytesSent << std::endl;
 
     int bytesReceived = receiveLoginResponse(&response);
-    std::cout << "received " << bytesReceived << std::endl;
+    std::cout << "Received " << bytesReceived << std::endl;
     std::cout << "Response " << response << std::endl;
     
     if(bytesReceived != sizeof(int)) {
        // TODO: bytesReceived is not int
        return 0;
     }
-    std::cout << "login response" << response << std::endl;
+
     return response;
 }
 
