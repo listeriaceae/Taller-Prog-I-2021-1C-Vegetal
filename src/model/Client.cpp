@@ -291,7 +291,7 @@ int Client::z_login(std::string username, std::string password) {
     
     if(bytesReceived != sizeof(int)) {
        // TODO: bytesReceived is not int
-       return false;
+       return 0;
     }
     std::cout << "login response" << response << std::endl;
     return response;

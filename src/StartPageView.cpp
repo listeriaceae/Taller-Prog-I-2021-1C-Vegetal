@@ -177,7 +177,7 @@ bool StartPage::login(std::string name, std::string pass) {
             this->resultMsg = USER_ALREADY_CONNECTED;
             return false;
         default:
-            break;
+            return false;
     }
 }
 

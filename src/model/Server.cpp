@@ -14,16 +14,14 @@
 #include "Server.h"
 #include <queue>
 #include <vector>
+#include "../logger.h"
+#include "string"
+#include "../utils/player.h"
 
-typedef struct connectToClientArgs {
-    std::vector<int>* clientSockets;
-    int serverSocket;
-    std::vector<user_t> users; 
-    struct sockaddr_in* clientAddress;
-    int* clientAddrLen;
-    int clientId;
+typedef struct handleLoginArgs {
     Server* server;
-} connectToClientArgs_t;
+    int clientId;
+} handleLoginArgs_t;
 
 typedef struct handleCommandArgs {
     int clientSocket;
@@ -42,12 +40,12 @@ Server::Server(char* port) {
 
     std::cout << "Aplicación iniciada en modo servidor en el puerto: " << port << std::endl;
 
-    //std::cout << "Cargando usuarios validos..." << std::endl;
+    logger::Logger::getInstance().logInformation("Loading valid users...");
     auto config = configuration::GameConfiguration(CONFIG_FILE);
     for (auto u: config.getUsers())
     {
         this->users[u.username] = u;
-        //std::cout << "user: " << u.username << " " << u.password << std::endl; 
+        logger::Logger::getInstance().logDebug(std::string("user: ") + u.username + " " + u.password);
     }
 }
 
@@ -79,20 +77,12 @@ int Server::startServer() {
         return -1;
     }
 
-    printf("listening...\n");
-
-    //Accept
-    // while(clientSockets.size() < (unsigned int)maxPlayers) {
-    //     int client = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t*) &clientAddrLen);
-    //     clientSockets.push_back(client);
-    //     clientSocketQueue.push(client);
-    //     printf("Players: %d/%d\n", (int)clientSockets.size(), maxPlayers);
-    // }
-
     pthread_t acceptConnectionsThread;
     pthread_create(&acceptConnectionsThread, NULL, acceptNewConnections, this);
 
-    while(this->connected_users.size() < (unsigned int)maxPlayers) {}
+    printf("listening...\n");
+
+    while(this->connectedPlayers.size() < (unsigned int)maxPlayers) {}
 
     printf("Accept\n");
 
@@ -116,15 +106,14 @@ void* Server::acceptNewConnections(void* serverArg) {
         
         printf("Players: %d/%d\n", (int)server->clientSockets.size(), server->maxPlayers);
 
-        connectToClientArgs_t arguments;
+        handleLoginArgs_t arguments;
         arguments.clientId = client;
         arguments.server = server;
-        for (const auto & p : server->users) { arguments.users.push_back(p.second); }
+
         pthread_t clientConnection;
-        
-        
-        std::cout << "Creando thread para login..." << std::endl;
-        pthread_create(&clientConnection, NULL, z_connectToClient, &arguments);
+
+        logger::Logger::getInstance().logInformation(std::string("Creating login thread for clientI: ") + std::to_string(client));
+        pthread_create(&clientConnection, NULL, handleLogin, &arguments);
         
         //TODO: si el usuario ya esta en la lista de conexiones se actualiza el socket
         // if (server->clientSocketQueue.size() >= 1) {
@@ -303,26 +292,26 @@ void getNextLevel(Nivel **nivel, configuration::GameConfiguration *config, Uint8
 }
 
 // LOGIN
-void * Server::z_connectToClient (void* arguments) {
-    Server* server = ((connectToClientArgs_t*)arguments)->server;
-    int client = ((connectToClientArgs_t*)arguments)->clientId;
+void * Server::handleLogin (void* arguments) {
+    Server* server = ((handleLoginArgs_t*)arguments)->server;
+    int client = ((handleLoginArgs_t*)arguments)->clientId;
     
     int response;
 
     do {
         std::cout << "LOOP server login" << std::endl;
-        response = server->z_startLogin(client);
+        response = server->validateUserLogin(client);
     } while(response != LOGIN_OK);
     
-    std::cout << "Usuario conectado" << std::endl;
+    std::cout << "Jugador conectado" << std::endl;
 
     return NULL;
 }
 
-int Server::z_startLogin(int client) {
+int Server::validateUserLogin(int client) {
     std::cout << "server login" << std::endl;
     user_t user;
-    int bytesReceived = z_receiveLogin(client, &user);
+    int bytesReceived = receiveLoginRequest(client, &user);
     std::cout << "bytes received: " << bytesReceived << std::endl;
     std::cout << "user: " << user.username << " " << user.password << std::endl;
 
@@ -331,7 +320,7 @@ int Server::z_startLogin(int client) {
     if (this->users.count(user.username) == 0) {
         std::cout << user.username << " no existe - es invalido" << std::endl;
         response = LOGIN_INVALID_USER;
-        z_sendLoginResponse(client, &response);
+        sendLoginResponse(client, &response);
         return LOGIN_INVALID_USER;
     } 
     
@@ -340,27 +329,31 @@ int Server::z_startLogin(int client) {
     if (strcmp(existingUser.password, user.password) != 0) {
         std::cout << "pass incorrecta" << std::endl;
         response = LOGIN_INVALID_USER_PASS;
-        z_sendLoginResponse(client, &response);
+        sendLoginResponse(client, &response);
         return LOGIN_INVALID_USER_PASS;
     }
 
-    if(this->connected_users.count(user.username) != 0) {
+    if(this->connectedPlayers.count(user.username) != 0) {
         std::cout << user.username << " usuario conectado" << std::endl;
         response = LOGIN_USER_ALREADY_CONNECTED;
-        z_sendLoginResponse(client, &response);
+        sendLoginResponse(client, &response);
         return LOGIN_USER_ALREADY_CONNECTED;
     }
 
     std::cout << "LOGIN_OK" << std::endl;
     response = LOGIN_OK;
-    z_sendLoginResponse(client, &response);
+    sendLoginResponse(client, &response);
 
-    // Lo agrego a usuarios conectados
-    this->connected_users[user.username] = user;
+    // Usuario valido: login OK
+    // Lo agrego a jugadores conectados
+    player_t newPlayer;
+    newPlayer.user = user;
+    newPlayer.clientId = client;
+    this->connectedPlayers[user.username] = newPlayer;
     return LOGIN_OK;
 }
 
-int Server::z_receiveLogin (int client, user_t* player) {
+int Server::receiveLoginRequest (int client, user_t* player) {
     int totalBytesReceived = 0;
     int bytesReceived = 0;
     int dataSize = sizeof(user_t);
@@ -382,7 +375,7 @@ int Server::z_receiveLogin (int client, user_t* player) {
     return totalBytesReceived;
 }
 
-int Server::z_sendLoginResponse (int client, int* response) {
+int Server::sendLoginResponse (int client, int* response) {
     int totalBytesSent = 0;
     int bytesSent = 0;
     int dataSize = sizeof(int);

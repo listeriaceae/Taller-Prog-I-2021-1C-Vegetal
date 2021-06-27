@@ -6,4 +6,5 @@
 typedef struct player
 {
     user_t user;
+    int clientId;
 } player_t;

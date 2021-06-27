@@ -6,6 +6,7 @@
 #include "../configuration.hpp"
 #include <queue>
 #include <map>
+#include "../utils/player.h"
 
 class Server {
     public:
@@ -26,10 +27,9 @@ class Server {
         int clientAddrLen;
         std::queue<int> clientSocketQueue;
         std::map<std::string, user_t> users;
-        std::map<std::string, user_t> connected_users;
-        std::vector<user_t> connectedUsers;
-        static void* z_connectToClient(void* arguments);
-        int z_startLogin(int client);
-        int z_receiveLogin (int client, user_t* player);
-        int z_sendLoginResponse (int client, int* response);
+        std::map<std::string, player_t> connectedPlayers;
+        static void* handleLogin(void* arguments);
+        int validateUserLogin(int client);
+        int receiveLoginRequest (int client, user_t* player);
+        int sendLoginResponse (int client, int* response);
 };
