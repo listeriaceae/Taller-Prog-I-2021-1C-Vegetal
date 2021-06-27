@@ -48,10 +48,9 @@ const SDL_Rect doneRect = {(int)(DONE_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_N
                            (int)(DONE_BUTTON_WIDTH * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                            (int)(BUTTON_HEIGHT * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f)};
 
-StartPage::StartPage(SDL_Renderer *renderer, Client *client) {
+StartPage::StartPage(SDL_Renderer *renderer) {
     this->renderer = renderer;
     this->textRenderer = new TextRenderer(renderer, FONT_IMG);
-    this->client = client;
 }
 
 user_t StartPage::getLoginUser () {

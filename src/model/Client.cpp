@@ -242,7 +242,7 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
 }
 
 int Client::showStartPage() {
-    StartPage* startPage = new StartPage(renderer, this);
+    StartPage* startPage = new StartPage(renderer);
     int response;
     try {
         do {
