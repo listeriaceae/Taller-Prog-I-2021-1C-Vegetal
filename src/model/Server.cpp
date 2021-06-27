@@ -96,6 +96,10 @@ int Server::startServer() {
     return 0;
 }
 
+bool Server::isFull() {
+    return (this->connectedPlayers.size() == this->maxPlayers);
+}
+
 void* Server::acceptNewConnections(void* serverArg) {
     Server* server = (Server*)serverArg;
     
@@ -105,6 +109,12 @@ void* Server::acceptNewConnections(void* serverArg) {
         server->clientSockets.push_back(client);
         
         printf("Players: %d/%d\n", (int)server->clientSockets.size(), server->maxPlayers);
+
+        if(server->isFull()) {
+            std::cout << "Cantidad de jugadores excedida" << std::endl;
+            close(client);
+            return NULL;
+        }
 
         handleLoginArgs_t arguments;
         arguments.clientId = client;
@@ -141,7 +151,7 @@ void Server::startGame(configuration::GameConfiguration config) {
 
     handleCommandArgs_t handleCommandArgs[maxPlayers];
 
-    for(unsigned int i = 0; i < clientSockets.size(); ++i) {
+    for(unsigned int i = 0; i < this->clientSockets.size(); ++i) {
         // Dejo esta linea comentada
         // asi se asignaban antes los clientes
         // handleCommandArgs[i].clientSocket = clientSockets[i];
@@ -191,7 +201,7 @@ void Server::startGame(configuration::GameConfiguration config) {
 }
 
 void *Server::handleCommand(void *handleCommandArgs) {
-    Mario *player = ((handleCommandArgs_t *)handleCommandArgs)->mario;
+    Mario *mario = ((handleCommandArgs_t *)handleCommandArgs)->mario;
     int clientSocket = ((handleCommandArgs_t *)handleCommandArgs)->clientSocket;
     Server* server = ((handleCommandArgs_t *)handleCommandArgs)->server;
 
@@ -202,9 +212,11 @@ void *Server::handleCommand(void *handleCommandArgs) {
     while(!quitRequested) {
         bytesReceived = receiveCommand(clientSocket, &controls);
         if (bytesReceived == sizeof(controls_t)) {
-            player->setControls(controls);
+            mario->setControls(controls);
         } else {
-            player->disable();
+            logger::Logger::getInstance().logInformation(std::string("*** Player disconnected associated with clientI: ") + std::to_string(clientSocket));
+            
+            mario->disable();
 
             if(!server->clientSocketQueue.empty()) {
                 printf("Reconectando...\n");
@@ -212,7 +224,7 @@ void *Server::handleCommand(void *handleCommandArgs) {
                 server->clientSockets.push_back(server->clientSocketQueue.front());
                 server->clientSocketQueue.pop();
 
-                player->enable();
+                mario->enable();
             }
         }
 
@@ -318,7 +330,7 @@ int Server::validateUserLogin(int client) {
     int response;
     
     if (this->users.count(user.username) == 0) {
-        std::cout << user.username << " no existe - es invalido" << std::endl;
+        logger::Logger::getInstance().logDebug(std::string("[") + user.username + "] invalid user");
         response = LOGIN_INVALID_USER;
         sendLoginResponse(client, &response);
         return LOGIN_INVALID_USER;
@@ -327,14 +339,14 @@ int Server::validateUserLogin(int client) {
     auto existingUser = this->users.at(user.username);
 
     if (strcmp(existingUser.password, user.password) != 0) {
-        std::cout << "pass incorrecta" << std::endl;
+        logger::Logger::getInstance().logDebug(std::string("[") + user.username + "] incorrect password");
         response = LOGIN_INVALID_USER_PASS;
         sendLoginResponse(client, &response);
         return LOGIN_INVALID_USER_PASS;
     }
 
     if(this->connectedPlayers.count(user.username) != 0) {
-        std::cout << user.username << " usuario conectado" << std::endl;
+        logger::Logger::getInstance().logDebug(std::string("[") + user.username + "] user already connected");
         response = LOGIN_USER_ALREADY_CONNECTED;
         sendLoginResponse(client, &response);
         return LOGIN_USER_ALREADY_CONNECTED;

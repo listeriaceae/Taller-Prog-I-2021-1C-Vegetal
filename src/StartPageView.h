@@ -21,7 +21,6 @@ class StartPage
         std::string username = "";
         std::string password = "";
         std::string resultMsg = "";
-        //std::map<std::string, user_t> users;
         user_t currentUser;
         Client *client;
         

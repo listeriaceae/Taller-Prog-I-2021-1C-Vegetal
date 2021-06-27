@@ -14,7 +14,7 @@ class Server {
         int startServer();
     
     private:
-        int maxPlayers;
+        unsigned int maxPlayers;
         int serverSocket;
         std::vector<int> clientSockets;
         void startGame(configuration::GameConfiguration config);
@@ -32,4 +32,5 @@ class Server {
         int validateUserLogin(int client);
         int receiveLoginRequest (int client, user_t* player);
         int sendLoginResponse (int client, int* response);
+        bool isFull();
 };
