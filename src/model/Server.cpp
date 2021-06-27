@@ -311,11 +311,17 @@ void * Server::handleLogin (void* arguments) {
     do {
         std::cout << "LOOP server login" << std::endl;
         response = server->validateUserLogin(client);
-    } while(response != LOGIN_OK);
+    } while(response != LOGIN_OK && response != LOGIN_ABORTED);
+
+    if(response == LOGIN_ABORTED) {
+        std::cout << "Se detecto la desconexion" << std::endl;
+        close(client);
+        // TODO: borrar el client de clientSockets
+        return &response;
+    }
     
     std::cout << "Jugador conectado" << std::endl;
-
-    return NULL;
+    return &response;
 }
 
 int Server::validateUserLogin(int client) {
@@ -324,6 +330,11 @@ int Server::validateUserLogin(int client) {
     int bytesReceived = receiveLoginRequest(client, &user);
     std::cout << "bytes received: " << bytesReceived << std::endl;
     std::cout << "user: " << user.username << " " << user.password << std::endl;
+
+    if(bytesReceived == 0) {
+        // Desconexion del cliente
+        return LOGIN_ABORTED;
+    }
 
     int response;
     
