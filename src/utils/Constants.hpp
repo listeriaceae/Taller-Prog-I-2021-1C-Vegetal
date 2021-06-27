@@ -61,7 +61,7 @@ const int MAX_PLAYERS = 4; //se usa para el struct estadoNivel_t
 #define N1_POS_Y1_POLEA 128
 #define N1_POS_Y2_POLEA 168
 
-// Nive 2
+// Nivel 2
 #define N2_MARIO_START_X 40
 
 #define N2_POS_X_FUEGO 16
@@ -83,6 +83,14 @@ const int MAX_PLAYERS = 4; //se usa para el struct estadoNivel_t
 
 #define DEFAULT_CONFIG_X 56
 #define DEFAULT_CONFIG_Y 20
+
+// Login
+#define LOGIN_OK 0
+#define LOGIN_ABORTED 1
+#define LOGIN_INVALID_USER_PASS 2
+#define LOGIN_USER_ALREADY_CONNECTED 3
+#define LOGIN_MAX_USERS_CONNECTED 4
+#define LOGIN_INVALID_USER 5
 
 // Name
 const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";

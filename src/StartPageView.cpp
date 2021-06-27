@@ -4,6 +4,8 @@
 #include "configuration.hpp"
 #include "utils/Constants.hpp"
 #include "utils/window.hpp"
+#include "model/Client.h"
+#include "utils/GameAbortedException.h"
 
 #define TEXT_BUTTON_X 28
 #define USER_BUTTON_Y 78
@@ -24,8 +26,12 @@ const char* FONT_IMG = "res/font.png";
 const char* USERNAME = "USERNAME";
 const char* PASSWORD = "PASSWORD";
 const char* DONE = "DONE";
-const char* INVALID_USER = "INVALID USER";
-const char* INVALID_PASS = "INVALID PASSWORD";
+
+const char* MSG_OK = "OK";
+const char* MSG_INVALID_USER = "INVALID USER";
+const char* MSG_INVALID_PASS = "INVALID PASSWORD";
+const char* MSG_USER_ALREADY_CONNECTED = "USER ALREADY CONNECTED";
+const char* MSG_MAX_USERS_CONNECTED = "MAX USERS CONNECTED";
 
 const SDL_Rect usernameRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(USER_BUTTON_Y * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f),
@@ -45,12 +51,44 @@ const SDL_Rect doneRect = {(int)(DONE_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_N
 StartPage::StartPage(SDL_Renderer *renderer) {
     this->renderer = renderer;
     this->textRenderer = new TextRenderer(renderer, FONT_IMG);
+}
+
+user_t StartPage::getLoginUser () {
+    SDL_StartTextInput();
+
+    bool loginDone = false;
+    SDL_Event event;
+
+    int inicio, fin;
     
-    auto config = configuration::GameConfiguration(CONFIG_FILE);
-    for (auto u: config.getUsers())
-    {
-        this->users[u.username] = u;
+    while (!loginDone) {
+        inicio = SDL_GetTicks();
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                std::cout << "aborted" << std::endl;
+                throw GameAborted;
+            }
+            else if (event.type != SDL_MOUSEMOTION)
+                loginDone = handle(event);
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        show();
+        SDL_RenderPresent(renderer);
+
+        fin = SDL_GetTicks();
+        SDL_Delay(std::max(MS_PER_UPDATE - (fin - inicio), 0));
     }
+
+    SDL_StopTextInput();
+    user_t user;
+    strcpy (user.username, username.c_str());
+    strcpy (user.password, password.c_str());
+
+    std::cout << "capturing user [" << user.username << " " << user.password << "]" << std::endl;
+    return user;
 }
 
 int StartPage::setFocusColor(int focus) {
@@ -112,7 +150,6 @@ bool StartPage::mouseOnDoneButton(int x, int y) {
         && doneRect.x <= x && x <= doneRect.x + doneRect.w;
 }
 
-
 bool StartPage::handle(SDL_Event event) {
     
     if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
@@ -125,7 +162,7 @@ bool StartPage::handle(SDL_Event event) {
         } else if (mouseOnPasswordButton(x, y)) {
             focus = 1;
         } else if (mouseOnDoneButton(x, y)) {
-            return this->login(username, password);
+            return true;
         }
     } else if (event.type == SDL_KEYDOWN) {
         switch (event.key.keysym.sym) {
@@ -138,7 +175,7 @@ bool StartPage::handle(SDL_Event event) {
                 break;
             case SDLK_KP_ENTER:
             case SDLK_RETURN:
-                if (focus) return this->login(username, password);
+                if (focus) return true;
                 [[fallthrough]];
             case SDLK_TAB:
                 focus = (focus + 1) % 3;
@@ -160,22 +197,27 @@ bool StartPage::handle(SDL_Event event) {
     return false;
 }
 
-bool StartPage::login(std::string name, std::string pass) {
-    std::cout << "login process..." << std::endl;
-    if (this->users.count(name) == 0) {
-        this->resultMsg = INVALID_USER;
-        return false;
-    } 
-    
-    auto user = this->users.at(name);
-
-    if (pass.compare(user.password) != 0) {
-        this->resultMsg = INVALID_PASS;
-        return false;
+void StartPage::renderResponse(int response) {
+    switch (response)
+    {
+        case LOGIN_OK:
+            this->resultMsg = MSG_OK;
+            break;
+        case LOGIN_INVALID_USER:
+            this->resultMsg = MSG_INVALID_USER;
+            break;
+        case LOGIN_INVALID_USER_PASS:
+            this->resultMsg = MSG_INVALID_PASS;
+            break;
+        case LOGIN_USER_ALREADY_CONNECTED:
+            this->resultMsg = MSG_USER_ALREADY_CONNECTED;
+            break;
+        case LOGIN_MAX_USERS_CONNECTED:
+            this->resultMsg = MSG_MAX_USERS_CONNECTED;
+            break;
+        default:
+            break;
     }
-
-    this->currentUser = user;
-    return true;
 }
 
 StartPage::~StartPage()  {

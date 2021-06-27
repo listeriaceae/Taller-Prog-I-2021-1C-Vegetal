@@ -12,6 +12,8 @@ class StartPage
         void show();
         bool handle(SDL_Event event);
         user_t getCurrentUser() const {return currentUser;};
+        user_t getLoginUser();
+        void renderResponse(int response);
         ~StartPage();
 
     private:
@@ -20,7 +22,6 @@ class StartPage
         std::string username = "";
         std::string password = "";
         std::string resultMsg = "";
-        std::map<std::string, user_t> users;
         user_t currentUser;
         
         char focus = 0;
@@ -30,5 +31,4 @@ class StartPage
         bool mouseOnPasswordButton(int, int);
         bool mouseOnDoneButton(int, int);
         void showError();
-        bool login(std::string username, std::string password);
 };

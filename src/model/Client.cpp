@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include <pthread.h>
 #include <string>
+#include <exception>
 #include "../view/Nivel1Vista.h"
 #include "../view/Nivel2Vista.h"
 #include "../controller/MarioController.h"
@@ -12,6 +13,9 @@
 #include "../TextRenderer.h"
 #include "Client.h"
 #include "../StartPageView.h"
+
+#define SERVER_CONNECTION_SUCCESS 0
+#define START_PAGE_SUCCESS 0
 
 const char* IMG_FONT = "res/font.png";
 
@@ -24,18 +28,37 @@ pthread_mutex_t mutex;
 bool serverOpen = true;
 void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *);
 
-Client::Client() {
+Client::Client(char* serverIp, char* port) {
+    this->serverIp = serverIp;
+    this->port = port;
     std::cout << "Aplicación iniciada en modo cliente" << std::endl;
     SDL_Init(SDL_INIT_EVERYTHING);
     window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 }
 
-int Client::connectToServer(char* serverIp, char* port) {
+int Client::startClient() {
+    if(this->connectToServer() != SERVER_CONNECTION_SUCCESS){
+        std::cout << "Hubo un error al connectarse al servidor" << std::endl;
+        return -1;
+    }
+    
+    if (this->showStartPage() != START_PAGE_SUCCESS){
+        std::cout << "Hubo un error con StartPage" << std::endl;
+        return -1;
+    }
+
+    this->showConnectedPage();
+
+    this->startGame();
+    return 0;
+}
+
+int Client::connectToServer() {
     std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port << std::endl;
 
     //socket
-    clientSocket = socket(AF_INET , SOCK_STREAM , 0);
+    this->clientSocket = socket(AF_INET , SOCK_STREAM , 0);
     if (clientSocket == -1) {
         return -1;
     }
@@ -53,11 +76,12 @@ int Client::connectToServer(char* serverIp, char* port) {
         return -1;
     }
 
-    startGame();  
-
-    if(!serverOpen) 
+    if(!serverOpen) {
         std::cout << "Hubo un error en el servidor" << std::endl;
-    return 1;
+        return -1;
+    }
+        
+    return 0;
 }
 
 void Client::startGame() {
@@ -218,47 +242,32 @@ void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *conf
 }
 
 int Client::showStartPage() {
-    StartPage *startPage = new StartPage(renderer);
+    StartPage* startPage = new StartPage(renderer);
+    int response;
+    try {
+        do {
+            user_t user = startPage->getLoginUser();
+            response = login(user);
 
-    SDL_Event event;
-
-    bool loginOk = false;
-    bool quitRequested = false;
-    int inicio, fin;
-    SDL_StartTextInput();
-    while (!(loginOk || quitRequested)) {
-        inicio = SDL_GetTicks();
-
-        while (SDL_PollEvent(&event)) {
-
-            quitRequested = (event.type == SDL_QUIT);
-
-            if (event.type != SDL_MOUSEMOTION) {
-                loginOk = startPage->handle(event);
+            if (response == LOGIN_OK) {
+                this->user = user;
             }
-        }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-        startPage->show();
-        SDL_RenderPresent(renderer);
+            startPage->renderResponse(response);
 
-        fin = SDL_GetTicks();
-        SDL_Delay(std::max(MS_PER_UPDATE - (fin - inicio), 0));
+        } while (response != LOGIN_OK);
     }
-    SDL_StopTextInput();
-    SDL_RenderClear(renderer);
-
-    if (quitRequested) {
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        IMG_Quit();
-        SDL_Quit();
-        return 1;
+    catch (std::exception& e) {
+        delete startPage;
+        return -1;
     }
-
-    this->user = startPage->getCurrentUser();
     delete startPage;
+    return 0;
+}
+
+void Client::showConnectedPage() {
+
+    SDL_RenderClear(renderer);
 
     TextRenderer* textRenderer = new TextRenderer(renderer, IMG_FONT);
     
@@ -269,6 +278,65 @@ int Client::showStartPage() {
 
     SDL_RenderPresent(renderer);
     delete textRenderer;
+}
 
-    return 0;
+int Client::login(user_t user) {
+    int response;
+
+    int bytesSent = sendLoginRequest(&user);
+    std::cout << "Sent " << bytesSent << std::endl;
+
+    int bytesReceived = receiveLoginResponse(&response);
+    std::cout << "Received " << bytesReceived << std::endl;
+    std::cout << "Response " << response << std::endl;
+    
+    if(bytesReceived != sizeof(int)) {
+       // TODO: bytesReceived is not int
+       return 0;
+    }
+
+    return response;
+}
+
+int Client::sendLoginRequest(user_t* user) {
+    int totalBytesSent = 0;
+    int bytesSent = 0;
+    int dataSize = sizeof(user_t);
+    bool clientSocketStillOpen = true;
+    
+    while((totalBytesSent < dataSize) && clientSocketStillOpen) {
+        bytesSent = send(this->clientSocket, (user + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
+        if(bytesSent < 0) {
+            return bytesSent;
+        } 
+        else if(bytesSent == 0) {
+            clientSocketStillOpen = false;
+        }
+        else {
+            totalBytesSent += bytesSent;
+        }
+    }
+    return totalBytesSent;
+}
+
+int Client::receiveLoginResponse (int* response) {
+    int totalBytesReceived = 0;
+    int bytesReceived = 0;
+    int dataSize = sizeof(int);
+    bool clientSocketStillOpen = true;
+
+    while((totalBytesReceived < dataSize) && clientSocketStillOpen) {
+        bytesReceived = recv(clientSocket, (response + totalBytesReceived), (dataSize - totalBytesReceived), MSG_NOSIGNAL);
+        if(bytesReceived < 0) {
+            return bytesReceived;
+        } 
+        else if(bytesReceived == 0) {
+            clientSocketStillOpen = false;
+        }
+        else {
+            totalBytesReceived += bytesReceived;
+        }
+    }
+
+    return totalBytesReceived;
 }
