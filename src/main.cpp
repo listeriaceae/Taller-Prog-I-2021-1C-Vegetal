@@ -10,9 +10,7 @@ int main(int argc, char *argv[])
         server->startServer();
     } else if(argc == 4 && (strcmp(argv[1], "client") == 0)) {
         Client* client = new Client(argv[2], argv[3]);
-        client->connectToServer();
-        if (client->showStartPage() == 1) return 0;
-        client->startGame();
+        client->startClient();
     } else {
         std::cout << "ERROR: no es posible ejecutar el juego" << std::endl;
     }

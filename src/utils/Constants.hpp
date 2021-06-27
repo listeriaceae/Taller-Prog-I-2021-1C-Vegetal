@@ -89,7 +89,7 @@ const int MAX_PLAYERS = 4; //se usa para el struct estadoNivel_t
 #define LOGIN_ABORTED 1
 #define LOGIN_INVALID_USER_PASS 2
 #define LOGIN_USER_ALREADY_CONNECTED 3
-#define LOGIN_MAX_USERS 4
+#define LOGIN_MAX_USERS_CONNECTED 4
 #define LOGIN_INVALID_USER 5
 
 // Name

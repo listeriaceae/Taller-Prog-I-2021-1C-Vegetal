@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include <pthread.h>
 #include <string>
+#include <exception>
 #include "../view/Nivel1Vista.h"
 #include "../view/Nivel2Vista.h"
 #include "../controller/MarioController.h"
@@ -13,6 +14,7 @@
 #include "Client.h"
 #include "../StartPageView.h"
 
+#define SERVER_CONNECTION_SUCCESS 0
 const char* IMG_FONT = "res/font.png";
 
 typedef struct handleLevelStateArgs {
@@ -33,11 +35,22 @@ Client::Client(char* serverIp, char* port) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 }
 
+int Client::startClient() {
+    if(this->connectToServer() != SERVER_CONNECTION_SUCCESS){
+        std::cout << "Hubo un error al connectarse al servidor" << std::endl;
+        return -1;
+    }
+    
+    if (this->showStartPage_2() == 1) return 0;
+    this->startGame();
+    return 0;
+}
+
 int Client::connectToServer() {
     std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port << std::endl;
 
     //socket
-    clientSocket = socket(AF_INET , SOCK_STREAM , 0);
+    this->clientSocket = socket(AF_INET , SOCK_STREAM , 0);
     if (clientSocket == -1) {
         return -1;
     }
@@ -55,9 +68,12 @@ int Client::connectToServer() {
         return -1;
     }
 
-    if(!serverOpen) 
+    if(!serverOpen) {
         std::cout << "Hubo un error en el servidor" << std::endl;
-    return 1;
+        return -1;
+    }
+        
+    return 0;
 }
 
 void Client::startGame() {
@@ -225,6 +241,7 @@ int Client::showStartPage() {
     bool loginOk = false;
     bool quitRequested = false;
     int inicio, fin;
+
     SDL_StartTextInput();
     while (!(loginOk || quitRequested)) {
         inicio = SDL_GetTicks();
@@ -273,6 +290,32 @@ int Client::showStartPage() {
     return 0;
 }
 
+int Client::showStartPage_2() {
+    std::cout << "ShowStartPage_2" << std::endl;
+    StartPage* startPage = new StartPage(renderer, this);
+    int response;
+    try {
+        do {
+            std::cout << "start login" << std::endl;
+            user_t user = startPage->getLoginUser();
+            std::cout << "got " << user.username << "-" << user.password << std::endl;
+
+            response = z_login(user.username, user.password);
+            
+            std::cout << "login response" << response << std::endl;
+            if (response == LOGIN_OK) this->user = user;
+            else startPage->renderResponse(response);
+            
+        } while (response != LOGIN_OK);
+    }
+    catch (std::exception& e) {
+        delete startPage;
+        return false;
+    }
+    delete startPage;
+    return true;
+}
+
 int Client::z_login(std::string username, std::string password) {
     std::cout << "client z_login..." << std::endl;
     user_t user;
@@ -283,9 +326,9 @@ int Client::z_login(std::string username, std::string password) {
 
     std::cout << "user" << user.username << "-" << user.password << std::endl;
 
-    int bytesSent = z_sendLogin(&user);
+    int bytesSent = sendLoginRequest(&user);
 
-    int bytesReceived = z_receiveLoginResponse(&response);
+    int bytesReceived = receiveLoginResponse(&response);
     std::cout << "received " << bytesReceived << std::endl;
     std::cout << "Response " << response << std::endl;
     
@@ -297,7 +340,7 @@ int Client::z_login(std::string username, std::string password) {
     return response;
 }
 
-int Client::z_sendLogin(user_t* user) {
+int Client::sendLoginRequest(user_t* user) {
     int totalBytesSent = 0;
     int bytesSent = 0;
     int dataSize = sizeof(user_t);
@@ -318,7 +361,7 @@ int Client::z_sendLogin(user_t* user) {
     return totalBytesSent;
 }
 
-int Client::z_receiveLoginResponse (int* response) {
+int Client::receiveLoginResponse (int* response) {
     int totalBytesReceived = 0;
     int bytesReceived = 0;
     int dataSize = sizeof(int);

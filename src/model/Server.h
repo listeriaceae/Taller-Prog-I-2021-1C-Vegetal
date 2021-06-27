@@ -30,7 +30,7 @@ class Server {
         std::map<std::string, player_t> connectedPlayers;
         static void* handleLogin(void* arguments);
         int validateUserLogin(int client);
-        int receiveLoginRequest (int client, user_t* player);
-        int sendLoginResponse (int client, int* response);
+        static int receiveLoginRequest (int client, user_t* player);
+        static int sendLoginResponse (int client, int* response);
         bool isFull();
 };

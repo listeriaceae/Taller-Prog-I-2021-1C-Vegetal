@@ -365,15 +365,14 @@ int Server::validateUserLogin(int client) {
     return LOGIN_OK;
 }
 
-int Server::receiveLoginRequest (int client, user_t* player) {
+int Server::receiveLoginRequest (int client, user_t* user) {
     int totalBytesReceived = 0;
     int bytesReceived = 0;
     int dataSize = sizeof(user_t);
-    std::cout << "data size to receive: " << dataSize << std::endl;
     bool clientSocketStillOpen = true;
     
     while((totalBytesReceived < dataSize) && clientSocketStillOpen) {
-        bytesReceived = recv(client, (player + totalBytesReceived), (dataSize - totalBytesReceived), MSG_NOSIGNAL);
+        bytesReceived = recv(client, (user + totalBytesReceived), (dataSize - totalBytesReceived), MSG_NOSIGNAL);
         if(bytesReceived < 0) {
             return bytesReceived;
         } 

@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <exception>
 #include "../utils/estadoNivel.h"
 #include "../utils/user.h"
 #include <string>
@@ -10,7 +11,9 @@
 class Client {
     public:
     Client(char* serverIp, char* port);
+    int startClient();
     int showStartPage();
+    int showStartPage_2();
     int connectToServer();
     void startGame();
     int z_login(std::string username, std::string password);
@@ -27,6 +30,6 @@ class Client {
         int clientSocket;
         struct sockaddr_in serverAddress;
         user_t user;
-        int z_sendLogin (user_t* user);
-        int z_receiveLoginResponse (int* response);
+        int sendLoginRequest (user_t* user);
+        int receiveLoginResponse (int* response);
 };
