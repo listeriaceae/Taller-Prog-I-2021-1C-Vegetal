@@ -16,7 +16,12 @@ class Server {
     private:
         unsigned int maxPlayers;
         int serverSocket;
+        // TODO: borrar clientSockets
         std::vector<int> clientSockets;
+        // TODO: borrar clientSocketQueue
+        std::queue<int> clientSocketQueue;
+        std::map<std::string, player_t> connectedPlayers;
+        std::map<std::string, user_t> users;
         void startGame(configuration::GameConfiguration config);
         static int sendView(int clientSocket, estadoNivel_t* view);
         static int receiveCommand(int clientSocket, controls_t* controls);
@@ -25,9 +30,6 @@ class Server {
         struct sockaddr_in serverAddress;
         struct sockaddr_in clientAddress;
         int clientAddrLen;
-        std::queue<int> clientSocketQueue;
-        std::map<std::string, user_t> users;
-        std::map<std::string, player_t> connectedPlayers;
         static void* handleLogin(void* arguments);
         int validateUserLogin(int client);
         static int receiveLoginRequest (int client, user_t* player);
