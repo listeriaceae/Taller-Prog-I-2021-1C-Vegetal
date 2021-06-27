@@ -317,11 +317,11 @@ void * Server::handleLogin (void* arguments) {
         std::cout << "Se detecto la desconexion" << std::endl;
         close(client);
         // TODO: borrar el client de clientSockets
-        return &response;
+        return NULL;
     }
     
     std::cout << "Jugador conectado" << std::endl;
-    return &response;
+    return NULL;
 }
 
 int Server::validateUserLogin(int client) {
