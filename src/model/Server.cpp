@@ -29,7 +29,7 @@ typedef struct handleCommandArgs {
     Server* server;
 } handleCommandArgs_t;
 
-void getNextLevel(Nivel **nivel, configuration::GameConfiguration *config, Uint8 currentLevel);
+void getNextLevel(Nivel **nivel, Uint8 currentLevel);
 
 const int MAX_QUEUED_CONNECTIONS = 3;
 pthread_mutex_t connectedPlayersMutex;
@@ -42,8 +42,8 @@ Server::Server(char* port) {
     std::cout << "Aplicación iniciada en modo servidor en el puerto: " << port << std::endl;
 
     logger::Logger::getInstance().logInformation("Loading valid users...");
-    auto config = configuration::GameConfiguration(CONFIG_FILE);
-    for (auto u: config.getUsers())
+    auto config = configuration::GameConfiguration::getOrCreate(CONFIG_FILE);
+    for (auto u: config->getUsers())
     {
         this->users[u.username] = u;
         logger::Logger::getInstance().logDebug(std::string("user: ") + u.username + " " + u.password);
@@ -51,11 +51,11 @@ Server::Server(char* port) {
 }
 
 int Server::startServer() {
-    auto config = configuration::GameConfiguration(CONFIG_FILE);
-    auto logLevel = config.getLogLevel();
+    auto config = configuration::GameConfiguration::getOrCreate(CONFIG_FILE);
+    auto logLevel = config->getLogLevel();
     logger::Logger::getInstance().setLogLevel(logLevel);
 
-    this->maxPlayers = config.getMaxPlayers();
+    this->maxPlayers = config->getMaxPlayers();
     if(this->maxPlayers < 1) {
         logger::Logger::getInstance().logDebug(CANTIDAD_DE_JUGADORES_INVALIDA);
         this->maxPlayers = DEFAULT_MAX_PLAYERS;
@@ -86,7 +86,7 @@ int Server::startServer() {
 
     printf("Accept\n");
 
-    startGame(config);
+    startGame();
 
     for (auto player : connectedPlayers) {
         close(player.second.clientSocket);
@@ -128,7 +128,7 @@ void* Server::acceptNewConnections(void* serverArg) {
     }
 }
 
-void Server::startGame(configuration::GameConfiguration config) {   
+void Server::startGame() {
     srand(time(NULL));
     SDL_Init(SDL_INIT_TIMER);
 
@@ -140,7 +140,7 @@ void Server::startGame(configuration::GameConfiguration config) {
     Uint8 currentLevel = 0;
     Nivel *nivel = NULL;
 
-    getNextLevel(&nivel, &config, ++currentLevel);
+    getNextLevel(&nivel, ++currentLevel);
     nivel->addPlayers(&players);
 
     handleCommandArgs_t handleCommandArgs[maxPlayers];
@@ -178,7 +178,7 @@ void Server::startGame(configuration::GameConfiguration config) {
                 sendView(it->second.clientSocket, view);
             }
             if (nivel->isComplete()) {
-                getNextLevel(&nivel, &config, ++currentLevel);
+                getNextLevel(&nivel, ++currentLevel);
                 if (nivel == NULL) {
                     break;
                 }
@@ -265,20 +265,11 @@ int Server::receiveCommand(int clientSocket, controls_t* controls) {
     return totalBytesSent;
 }
 
-void getNextLevel(Nivel **nivel, configuration::GameConfiguration *config, Uint8 currentLevel) {
+void getNextLevel(Nivel **nivel, Uint8 currentLevel) {
     delete *nivel;
     if (currentLevel == 1) {
         logger::Logger::getInstance().logInformation("Level 1 starts");
-
-        Nivel1 *nivel1 = new Nivel1();
-
-        auto enemies = config->getEnemies();
-        for (auto enemy: enemies) {
-            if (enemy.getType().compare("Fuego") == 0) nivel1->addEnemies(enemy.getQuantity());
-            logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
-            logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
-        }
-        *nivel = nivel1;
+        *nivel = new Nivel1();
     }
     else if (currentLevel == 2) {
         logger::Logger::getInstance().logInformation("End of Level 1");

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL_image.h>
 #include "StartPageView.h"
-#include "configuration.hpp"
 #include "utils/Constants.hpp"
 #include "utils/window.hpp"
 #include "model/Client.h"

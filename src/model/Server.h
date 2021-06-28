@@ -3,7 +3,6 @@
 #include <arpa/inet.h>
 #include <vector>
 #include "../utils/estadoNivel.h"
-#include "../configuration.hpp"
 #include <queue>
 #include <map>
 #include "../utils/player.h"
@@ -18,7 +17,7 @@ class Server {
         int serverSocket;
         std::map<std::string, player_t> connectedPlayers;
         std::map<std::string, user_t> users;
-        void startGame(configuration::GameConfiguration config);
+        void startGame();
         static int sendView(int clientSocket, estadoNivel_t* view);
         static int receiveCommand(int clientSocket, controls_t* controls);
         static void* handleCommand(void* handleCommandArgs);
