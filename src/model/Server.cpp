@@ -20,7 +20,7 @@
 
 typedef struct handleLoginArgs {
     Server* server;
-    int clientId;
+    int clientSocket;
 } handleLoginArgs_t;
 
 typedef struct handleCommandArgs {
@@ -32,6 +32,7 @@ typedef struct handleCommandArgs {
 void getNextLevel(Nivel **nivel, configuration::GameConfiguration *config, Uint8 currentLevel);
 
 const int MAX_QUEUED_CONNECTIONS = 3;
+pthread_mutex_t connectedPlayersMutex;
 
 Server::Server(char* port) {
     serverAddress.sin_family = AF_INET;
@@ -67,8 +68,7 @@ int Server::startServer() {
     }
 
     //bind
-    int serverBind = bind(serverSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress));
-    if(serverBind < 0) {
+    if (bind(serverSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0) {
         return -1;
     }
 
@@ -88,8 +88,8 @@ int Server::startServer() {
 
     startGame(config);
 
-    for (int clientSocket : clientSockets) {
-        close(clientSocket);
+    for (auto player : connectedPlayers) {
+        close(player.second.clientSocket);
     }
 
     close(serverSocket);
@@ -105,25 +105,20 @@ void* Server::acceptNewConnections(void* serverArg) {
     
     while(true) {
         int client = accept(server->serverSocket, (struct sockaddr *)&(server->clientAddress), (socklen_t*) &(server->clientAddrLen));
-        server->clientSocketQueue.push(client);
-        server->clientSockets.push_back(client);
-        
-        printf("Players: %d/%d\n", (int)server->clientSockets.size(), server->maxPlayers);
+        //server->clientSocketQueue.push(client);
+        //server->clientSockets.push_back(client);
 
-        if(server->isFull()) {
-            std::cout << "Cantidad de jugadores excedida" << std::endl;
-            close(client);
-        }
+        //printf("Players: %d/%d\n", (int)server->clientSockets.size(), server->maxPlayers);
 
         handleLoginArgs_t arguments;
-        arguments.clientId = client;
+        arguments.clientSocket = client;
         arguments.server = server;
 
         pthread_t clientConnection;
 
         logger::Logger::getInstance().logInformation(std::string("Creating login thread for clientI: ") + std::to_string(client));
         pthread_create(&clientConnection, NULL, handleLogin, &arguments);
-        
+
         //TODO: si el usuario ya esta en la lista de conexiones se actualiza el socket
         // if (server->clientSocketQueue.size() >= 1) {
         //     printf("Cantidad de jugadores excedida: en cola de espera\n");
@@ -149,25 +144,21 @@ void Server::startGame(configuration::GameConfiguration config) {
     nivel->addPlayers(&players);
 
     handleCommandArgs_t handleCommandArgs[maxPlayers];
-
-    for(unsigned int i = 0; i < this->clientSockets.size(); ++i) {
-        // Dejo esta linea comentada
-        // asi se asignaban antes los clientes
-        // handleCommandArgs[i].clientSocket = clientSockets[i];
-        handleCommandArgs[i].clientSocket = this->clientSocketQueue.front();
-        this->clientSocketQueue.pop();
+    size_t i = 0;
+    for(auto it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
+        handleCommandArgs[i].clientSocket = it->second.clientSocket;
         handleCommandArgs[i].mario = players[i];
         handleCommandArgs[i].server = this;
 
         pthread_t recvCommandThread;
-        pthread_create(&recvCommandThread, NULL, handleCommand, &handleCommandArgs[i]);
+        pthread_create(&recvCommandThread, NULL, handleCommand, &handleCommandArgs[i++]);
     }
 
     Uint32 previous, current, elapsed, lag;
     bool updated, quitRequested = false;
     previous = SDL_GetTicks();
     lag = 0;
-    while(!quitRequested) {
+    while (!quitRequested) {
         current = SDL_GetTicks();
         elapsed = current - previous;
         previous = current;
@@ -183,10 +174,9 @@ void Server::startGame(configuration::GameConfiguration config) {
 
         if (updated) {
             estadoNivel_t* view = nivel->getEstado();
-            for(unsigned int i = 0; i < clientSockets.size(); i++){
-                sendView(clientSockets[i], view);
+            for(auto it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
+                sendView(it->second.clientSocket, view);
             }
-            
             if (nivel->isComplete()) {
                 getNextLevel(&nivel, &config, ++currentLevel);
                 if (nivel == NULL) {
@@ -202,19 +192,20 @@ void Server::startGame(configuration::GameConfiguration config) {
 void *Server::handleCommand(void *handleCommandArgs) {
     Mario *mario = ((handleCommandArgs_t *)handleCommandArgs)->mario;
     int clientSocket = ((handleCommandArgs_t *)handleCommandArgs)->clientSocket;
-    Server* server = ((handleCommandArgs_t *)handleCommandArgs)->server;
+
+    //Server* server = ((handleCommandArgs_t *)handleCommandArgs)->server;
 
     controls_t controls;
-    int bytesReceived;
+    ssize_t bytesReceived;
 
     bool quitRequested = false;
-    while(!quitRequested) {
+    while (!quitRequested) {
         bytesReceived = receiveCommand(clientSocket, &controls);
         if (bytesReceived == sizeof(controls_t)) {
             mario->setControls(controls);
         } else {
             mario->disable();
-
+            /*
             if(!server->clientSocketQueue.empty()) {
                 printf("Reconectando...\n");
                 clientSocket = server->clientSocketQueue.front();
@@ -222,7 +213,7 @@ void *Server::handleCommand(void *handleCommandArgs) {
                 server->clientSocketQueue.pop();
 
                 mario->enable();
-            }
+            } */
         }
 
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
@@ -232,16 +223,16 @@ void *Server::handleCommand(void *handleCommandArgs) {
 
 int Server::sendView(int clientSocket, estadoNivel_t* view) {
     size_t totalBytesSent = 0;
-    int bytesSent = 0;
+    ssize_t bytesSent = 0;
     size_t dataSize = sizeof(estadoNivel_t);
     bool clientSocketStillOpen = true;
     
-    while((totalBytesSent < dataSize) && clientSocketStillOpen) {
+    while ((totalBytesSent < dataSize) && clientSocketStillOpen) {
         bytesSent = send(clientSocket, (view + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
-        if(bytesSent < 0) {
+        if (bytesSent < 0) {
             return bytesSent;
         } 
-        else if(bytesSent == 0) {
+        else if (bytesSent == 0) {
             clientSocketStillOpen = false;
         }
         else {
@@ -254,16 +245,16 @@ int Server::sendView(int clientSocket, estadoNivel_t* view) {
 
 int Server::receiveCommand(int clientSocket, controls_t* controls) {
     size_t totalBytesSent = 0;
-    int bytesSent = 0;
+    ssize_t bytesSent = 0;
     size_t dataSize = sizeof(controls_t);
     bool clientSocketStillOpen = true;
     
-    while((totalBytesSent < dataSize) && clientSocketStillOpen) {
+    while ((totalBytesSent < dataSize) && clientSocketStillOpen) {
         bytesSent = recv(clientSocket, (controls + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
-        if(bytesSent < 0) {
+        if (bytesSent < 0) {
             return bytesSent;
         } 
-        else if(bytesSent == 0) {
+        else if (bytesSent == 0) {
             clientSocketStillOpen = false;
         }
         else {
@@ -301,21 +292,20 @@ void getNextLevel(Nivel **nivel, configuration::GameConfiguration *config, Uint8
 }
 
 // LOGIN
-void * Server::handleLogin (void* arguments) {
+void *Server::handleLogin(void* arguments) {
     Server* server = ((handleLoginArgs_t*)arguments)->server;
-    int client = ((handleLoginArgs_t*)arguments)->clientId;
-    
+    int client = ((handleLoginArgs_t*)arguments)->clientSocket;
+
     int response;
 
     do {
         std::cout << "LOOP server login" << std::endl;
         response = server->validateUserLogin(client);
-    } while(response != LOGIN_OK && response != LOGIN_ABORTED);
+    } while (response != LOGIN_OK && response != LOGIN_ABORTED);
 
-    if(response == LOGIN_ABORTED) {
+    if (response == LOGIN_ABORTED) {
         std::cout << "Se detecto la desconexion" << std::endl;
         close(client);
-        // TODO: borrar el client de clientSockets
         return NULL;
     }
     
@@ -326,11 +316,11 @@ void * Server::handleLogin (void* arguments) {
 int Server::validateUserLogin(int client) {
     std::cout << "server login" << std::endl;
     user_t user;
-    int bytesReceived = receiveLoginRequest(client, &user);
+    ssize_t bytesReceived = receiveLoginRequest(client, &user);
     std::cout << "bytes received: " << bytesReceived << std::endl;
     std::cout << "user: " << user.username << " " << user.password << std::endl;
 
-    if(bytesReceived == 0) {
+    if (bytesReceived == 0) {
         // Desconexion del cliente
         return LOGIN_ABORTED;
     }
@@ -353,10 +343,18 @@ int Server::validateUserLogin(int client) {
         return LOGIN_INVALID_USER_PASS;
     }
 
-    if(this->connectedPlayers.count(user.username) != 0) {
+    pthread_mutex_lock(&connectedPlayersMutex);
+    if (connectedPlayers.size() >= this->maxPlayers) {
+        response = LOGIN_MAX_USERS_CONNECTED;
+        sendLoginResponse(client, &response);
+        pthread_mutex_unlock(&connectedPlayersMutex);
+        return LOGIN_MAX_USERS_CONNECTED;
+    }
+    if (this->connectedPlayers.count(user.username) != 0) {
         logger::Logger::getInstance().logDebug(std::string("[") + user.username + "] user already connected");
         response = LOGIN_USER_ALREADY_CONNECTED;
         sendLoginResponse(client, &response);
+        pthread_mutex_unlock(&connectedPlayersMutex);
         return LOGIN_USER_ALREADY_CONNECTED;
     }
 
@@ -368,23 +366,24 @@ int Server::validateUserLogin(int client) {
     // Lo agrego a jugadores conectados
     player_t newPlayer;
     newPlayer.user = user;
-    newPlayer.clientId = client;
+    newPlayer.clientSocket = client;
     this->connectedPlayers[user.username] = newPlayer;
+    pthread_mutex_unlock(&connectedPlayersMutex);
     return LOGIN_OK;
 }
 
-int Server::receiveLoginRequest (int client, user_t* user) {
-    int totalBytesReceived = 0;
-    int bytesReceived = 0;
-    int dataSize = sizeof(user_t);
+int Server::receiveLoginRequest(int client, user_t *user) {
+    size_t totalBytesReceived = 0;
+    ssize_t bytesReceived = 0;
+    size_t dataSize = sizeof(user_t);
     bool clientSocketStillOpen = true;
     
-    while((totalBytesReceived < dataSize) && clientSocketStillOpen) {
+    while ((totalBytesReceived < dataSize) && clientSocketStillOpen) {
         bytesReceived = recv(client, (user + totalBytesReceived), (dataSize - totalBytesReceived), MSG_NOSIGNAL);
-        if(bytesReceived < 0) {
+        if (bytesReceived < 0) {
             return bytesReceived;
         } 
-        else if(bytesReceived == 0) {
+        else if (bytesReceived == 0) {
             clientSocketStillOpen = false;
         }
         else {
@@ -394,18 +393,18 @@ int Server::receiveLoginRequest (int client, user_t* user) {
     return totalBytesReceived;
 }
 
-int Server::sendLoginResponse (int client, int* response) {
-    int totalBytesSent = 0;
-    int bytesSent = 0;
-    int dataSize = sizeof(int);
+int Server::sendLoginResponse(int client, int *response) {
+    size_t totalBytesSent = 0;
+    ssize_t bytesSent = 0;
+    size_t dataSize = sizeof(int);
     bool clientSocketStillOpen = true;
     
-    while((totalBytesSent < dataSize) && clientSocketStillOpen) {
+    while ((totalBytesSent < dataSize) && clientSocketStillOpen) {
         bytesSent = send(client, (response + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
-        if(bytesSent < 0) {
+        if (bytesSent < 0) {
             return bytesSent;
         } 
-        else if(bytesSent == 0) {
+        else if (bytesSent == 0) {
             clientSocketStillOpen = false;
         }
         else {

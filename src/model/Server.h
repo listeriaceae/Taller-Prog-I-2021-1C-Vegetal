@@ -16,10 +16,6 @@ class Server {
     private:
         unsigned int maxPlayers;
         int serverSocket;
-        // TODO: borrar clientSockets
-        std::vector<int> clientSockets;
-        // TODO: borrar clientSocketQueue
-        std::queue<int> clientSocketQueue;
         std::map<std::string, player_t> connectedPlayers;
         std::map<std::string, user_t> users;
         void startGame(configuration::GameConfiguration config);
