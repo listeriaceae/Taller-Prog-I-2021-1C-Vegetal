@@ -140,7 +140,7 @@ void Client::startGame()
 
     logger::Logger::getInstance().logInformation("Game over");
     if(!serverOpen) {
-        bool quitRequested = false;
+        quitRequested = false;
         DesconexionVista::show(renderer);
         while(!quitRequested) {
             quitRequested = SDL_QuitRequested();
