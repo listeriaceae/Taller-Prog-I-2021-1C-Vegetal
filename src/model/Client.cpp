@@ -13,6 +13,7 @@
 #include "../TextRenderer.h"
 #include "Client.h"
 #include "../StartPageView.h"
+#include "../view/DesconexionVista.h"
 
 #define SERVER_CONNECTION_SUCCESS 0
 #define START_PAGE_SUCCESS 0
@@ -136,6 +137,13 @@ void Client::startGame()
     }
 
     logger::Logger::getInstance().logInformation("Game over");
+    if(!serverOpen) {
+        quitRequested = false;
+        DesconexionVista::show(renderer);
+        while(!quitRequested) {
+            quitRequested = SDL_QuitRequested();
+        }
+    }
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
