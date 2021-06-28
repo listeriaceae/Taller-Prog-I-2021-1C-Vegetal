@@ -103,8 +103,6 @@ void Client::startGame()
     auto log_level = configuration->getLogLevel();
     logger::Logger::getInstance().setLogLevel(log_level);
 
-    srand(time(NULL));
-
     unsigned char currentLevel = 0;
     NivelVista *vista = NULL;
 
