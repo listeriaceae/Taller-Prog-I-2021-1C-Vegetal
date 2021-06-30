@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <unistd.h>
+#include <iostream>
 #include "../configuration.hpp"
 #include "../logger.h"
 #include "Nivel1.h"
@@ -31,6 +32,8 @@ Server::Server(char* port) {
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = INADDR_ANY;
     serverAddress.sin_port = htons(atoi(port));
+
+    std::cout << "Aplicación iniciada en modo servidor en el puerto: " << port << std::endl;
 
     logger::Logger::getInstance().logInformation("Loading valid users...");
     auto config = configuration::GameConfiguration::getOrCreate(CONFIG_FILE);
