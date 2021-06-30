@@ -36,7 +36,7 @@ Server::Server(char* port) {
     std::cout << "Aplicación iniciada en modo servidor en el puerto: " << port << std::endl;
 
     logger::Logger::getInstance().logInformation("Loading valid users...");
-    auto config = configuration::GameConfiguration::getOrCreate(CONFIG_FILE);
+    auto config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
     for (auto u: config->getUsers())
     {
         this->users[u.username] = u;
@@ -45,7 +45,7 @@ Server::Server(char* port) {
 }
 
 int Server::startServer() {
-    auto config = configuration::GameConfiguration::getOrCreate(CONFIG_FILE);
+    auto config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
     auto logLevel = config->getLogLevel();
     logger::Logger::getInstance().setLogLevel(logLevel);
 

@@ -8,7 +8,7 @@ namespace configuration
 {
     GameConfiguration *GameConfiguration::instance = NULL;
 
-    GameConfiguration *GameConfiguration::getOrCreate(const std::string& jsonFileName) {
+    GameConfiguration *GameConfiguration::getInstance(const std::string& jsonFileName) {
         if (instance == NULL) instance = new GameConfiguration(jsonFileName);
         return instance;
     }

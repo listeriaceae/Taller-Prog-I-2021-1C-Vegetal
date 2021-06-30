@@ -37,7 +37,7 @@ namespace configuration
     class GameConfiguration
     {
         public:
-            static GameConfiguration *getOrCreate(const std::string& json_filename);
+            static GameConfiguration *getInstance(const std::string& json_filename);
             ~GameConfiguration();
 
             const std::string getLogLevel() const { return logLevel; };

@@ -100,7 +100,7 @@ void Client::startGame()
 {
     logger::Logger::getInstance().logNewGame();
 
-    auto configuration = configuration::GameConfiguration::getOrCreate(CONFIG_FILE);
+    auto configuration = configuration::GameConfiguration::getInstance(CONFIG_FILE);
     auto log_level = configuration->getLogLevel();
     logger::Logger::getInstance().setLogLevel(log_level);
 
@@ -252,7 +252,7 @@ int Client::receiveView(int clientSocket, estadoNivel_t *view)
 
 void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer)
 {
-    auto config = configuration::GameConfiguration::getOrCreate(CONFIG_FILE);
+    auto config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
     int maxPlayers = config->getMaxPlayers();
     if (maxPlayers < 0)
         maxPlayers = DEFAULT_MAX_PLAYERS;

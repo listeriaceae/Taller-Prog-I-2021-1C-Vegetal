@@ -5,7 +5,7 @@
 
 Nivel1::Nivel1() : Nivel() {
     this->initPlatforms();
-    auto config = configuration::GameConfiguration::getOrCreate(CONFIG_FILE);
+    auto config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
     auto configEnemies = config->getEnemies();
     for (auto enemy: configEnemies) {
         if (enemy.getType().compare("Fuego") == 0) this->addEnemies(enemy.getQuantity());
