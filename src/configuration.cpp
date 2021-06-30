@@ -6,6 +6,13 @@
 
 namespace configuration
 {
+    GameConfiguration *GameConfiguration::instance = NULL;
+
+    GameConfiguration *GameConfiguration::getInstance(const std::string& jsonFileName) {
+        if (instance == NULL) instance = new GameConfiguration(jsonFileName);
+        return instance;
+    }
+
     inline static bool exists(const std::string& filename)
     {
         std::ifstream f(filename.c_str());
@@ -139,5 +146,10 @@ namespace configuration
             throw std::runtime_error(error_message);
         }
         return value;
+    }
+
+    GameConfiguration::~GameConfiguration() {
+        delete instance;
+        instance = NULL;
     }
 }

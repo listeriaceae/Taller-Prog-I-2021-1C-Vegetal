@@ -28,7 +28,7 @@ typedef struct handleLevelStateArgs
 
 pthread_mutex_t mutex;
 bool serverOpen = true;
-void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *);
+void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *);
 
 Client::Client(char *serverIp, char *port)
 {
@@ -100,11 +100,9 @@ void Client::startGame()
 {
     logger::Logger::getInstance().logNewGame();
 
-    auto configuration = configuration::GameConfiguration(CONFIG_FILE);
-    auto log_level = configuration.getLogLevel();
+    auto configuration = configuration::GameConfiguration::getInstance(CONFIG_FILE);
+    auto log_level = configuration->getLogLevel();
     logger::Logger::getInstance().setLogLevel(log_level);
-
-    srand(time(NULL));
 
     unsigned char currentLevel = 0;
     NivelVista *vista = NULL;
@@ -128,7 +126,7 @@ void Client::startGame()
         {
             pthread_mutex_lock(&mutex);
             if (currentLevel < estadoNivel->level)
-                getNextLevelView(&vista, &configuration, ++currentLevel, renderer);
+                getNextLevelView(&vista, ++currentLevel, renderer);
             SDL_RenderClear(renderer);
             vista->update(estadoNivel);
             estadoNivel = NULL;
@@ -252,8 +250,9 @@ int Client::receiveView(int clientSocket, estadoNivel_t *view)
     return totalBytesReceived;
 }
 
-void getNextLevelView(NivelVista **vista, configuration::GameConfiguration *config, unsigned char currentLevel, SDL_Renderer *renderer)
+void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer)
 {
+    auto config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
     int maxPlayers = config->getMaxPlayers();
     if (maxPlayers < 0)
         maxPlayers = DEFAULT_MAX_PLAYERS;
