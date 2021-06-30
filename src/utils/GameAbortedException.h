@@ -2,9 +2,9 @@
 
 using namespace std;
 
-class GameAborted: public exception
+class GameAborted : public exception
 {
-  virtual const char* what() const throw()
+  virtual const char *what() const throw()
   {
     return "Game has been aborted by user";
   }

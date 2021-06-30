@@ -20,13 +20,12 @@
 #define ERROR_MSG_X 74
 #define ERROR_MSG_Y 138
 
-const char* FONT_IMG = "res/font.png";
-
 const char* USERNAME = "USERNAME";
 const char* PASSWORD = "PASSWORD";
 const char* DONE = "DONE";
 
 const char* MSG_OK = "OK";
+const char* MSG_ABORTED = "SERVER DISCONNECTED";
 const char* MSG_INVALID_USER = "INVALID USER";
 const char* MSG_INVALID_PASS = "INVALID PASSWORD";
 const char* MSG_USER_ALREADY_CONNECTED = "USER ALREADY CONNECTED";
@@ -49,10 +48,10 @@ const SDL_Rect doneRect = {(int)(DONE_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_N
 
 StartPage::StartPage(SDL_Renderer *renderer) {
     this->renderer = renderer;
-    this->textRenderer = new TextRenderer(renderer, FONT_IMG);
+    this->textRenderer = TextRenderer::getInstance(renderer);
 }
 
-user_t StartPage::getLoginUser () {
+user_t StartPage::getLoginUser() {
     SDL_StartTextInput();
 
     bool loginDone = false;
@@ -129,9 +128,7 @@ void StartPage::showError() {
     punto_t pos;
     pos.x = (TEXT_BUTTON_X + 2 * RESIZE) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
     pos.y = ERROR_MSG_Y * ALTO_PANTALLA / (float)ALTO_NIVEL;
-    textRenderer->setColor(1);
-    textRenderer->renderText(pos, this->resultMsg.c_str(), 1);
-    textRenderer->setColor(0);
+    textRenderer->renderText(pos, this->resultMsg.c_str(), 1, RED);
 }
 
 bool StartPage::mouseOnUsernameButton(int x, int y) {
@@ -202,8 +199,8 @@ void StartPage::renderResponse(int response) {
         case LOGIN_OK:
             this->resultMsg = MSG_OK;
             break;
-        case LOGIN_INVALID_USER:
-            this->resultMsg = MSG_INVALID_USER;
+        case LOGIN_ABORTED:
+            this->resultMsg = MSG_ABORTED;
             break;
         case LOGIN_INVALID_USER_PASS:
             this->resultMsg = MSG_INVALID_PASS;
@@ -214,11 +211,10 @@ void StartPage::renderResponse(int response) {
         case LOGIN_MAX_USERS_CONNECTED:
             this->resultMsg = MSG_MAX_USERS_CONNECTED;
             break;
+        case LOGIN_INVALID_USER:
+            this->resultMsg = MSG_INVALID_USER;
+            break;
         default:
             break;
     }
-}
-
-StartPage::~StartPage()  {
-    delete textRenderer;
 }
