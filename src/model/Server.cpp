@@ -100,6 +100,8 @@ int Server::startServer() {
 }
 
 void Server::startGame() {
+    logger::Logger::getInstance().logNewGame();
+    
     srand(time(NULL));
     SDL_Init(SDL_INIT_TIMER);
 
