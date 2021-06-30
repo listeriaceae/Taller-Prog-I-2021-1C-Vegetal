@@ -319,11 +319,12 @@ void *handleCommand(void *player) {
         if (receiveCommand(clientSocket, &controls) == sizeof(controls_t)) {
             mario->setControls(controls);
         } else {
-            mario->disable();
             break;
         }
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
+    mario->disable();
+    mario->setControls({0, 0, 0, 0, 0});
     shutdown(clientSocket, SHUT_RD);
     return NULL;
 }
