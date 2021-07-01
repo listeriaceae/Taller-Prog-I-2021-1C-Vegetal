@@ -13,7 +13,7 @@ public:
     bool handle(SDL_Event event);
     user_t getCurrentUser() const { return currentUser; };
     user_t getLoginUser();
-    void renderResponse(int response);
+    void setResponse(char response);
     ~StartPage() = default;
 
 private:
@@ -21,7 +21,7 @@ private:
     TextRenderer *textRenderer;
     std::string username = "";
     std::string password = "";
-    std::string resultMsg = "";
+    const char *const *resultMsg;
     user_t currentUser;
 
     char focus = 0;

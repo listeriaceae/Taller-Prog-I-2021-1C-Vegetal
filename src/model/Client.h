@@ -21,6 +21,6 @@ private:
     SDL_Renderer *renderer;
     int clientSocket;
     struct sockaddr_in serverAddress;
-    user_t user;
+    char name[11];
     void showConnectedPage();
 };

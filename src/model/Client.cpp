@@ -15,6 +15,7 @@
 #include "../utils/window.hpp"
 #include "../utils/Constants.hpp"
 #include "../controller/MarioController.h"
+#include "../utils/dataTransfer.h"
 
 #define SERVER_CONNECTION_SUCCESS 0
 #define START_PAGE_SUCCESS 0
@@ -28,13 +29,9 @@ typedef struct handleLevelStateArgs
 pthread_mutex_t mutex;
 bool serverOpen = true;
 
-int sendLoginRequest(int clientSocket, user_t *user);
-int receiveLoginResponse(int clientSocket, int *response);
 
 void *sendDataThread(void *args);
-int sendCommand(int clientSocket, controls_t *command);
 void *receiveDataThread(void *args);
-int receiveView(int clientSocket, estadoNivel_t *view);
 
 void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *);
 
@@ -162,8 +159,7 @@ void *sendDataThread(void *args)
 
         if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls())))
         {
-            int bytesSent = sendCommand(clientSocket, &controls);
-            if (bytesSent <= 0)
+            if (sendData(clientSocket, &controls) < sizeof(controls_t))
                 serverOpen = false;
         }
 
@@ -172,82 +168,28 @@ void *sendDataThread(void *args)
     return NULL;
 }
 
-int sendCommand(int clientSocket, controls_t *controls)
-{
-    size_t totalBytesSent = 0;
-    int bytesSent = 0;
-    size_t dataSize = sizeof(controls_t);
-    bool clientSocketStillOpen = true;
-
-    while ((totalBytesSent < dataSize) && clientSocketStillOpen)
-    {
-        bytesSent = send(clientSocket, (controls + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
-        if (bytesSent < 0)
-        {
-            return bytesSent;
-        }
-        else if (bytesSent == 0)
-        {
-            clientSocketStillOpen = false;
-        }
-        else
-        {
-            totalBytesSent += bytesSent;
-        }
-    }
-
-    return totalBytesSent;
-}
-
 void *receiveDataThread(void *args)
 {
     int clientSocket = ((handleLevelStateArgs_t *)args)->clientSocket;
     estadoNivel_t **estado = ((handleLevelStateArgs_t *)args)->estado;
     estadoNivel_t view;
-    int bytesReceived;
 
     bool quitRequested = false;
     while (!quitRequested && serverOpen)
     {
-        bytesReceived = receiveView(clientSocket, &view);
-        if (bytesReceived == 0)
-            serverOpen = false;
-        if (bytesReceived == sizeof(estadoNivel_t))
+        if (receiveData(clientSocket, &view) == sizeof(estadoNivel_t))
         {
             pthread_mutex_lock(&mutex);
             *estado = &view;
             pthread_mutex_unlock(&mutex);
         }
+        else
+        {
+            serverOpen = false;
+        }
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
     return NULL;
-}
-
-int receiveView(int clientSocket, estadoNivel_t *view)
-{
-    size_t totalBytesReceived = 0;
-    int bytesReceived = 0;
-    size_t dataSize = sizeof(estadoNivel_t);
-    bool clientSocketStillOpen = true;
-
-    while ((totalBytesReceived < dataSize) && clientSocketStillOpen)
-    {
-        bytesReceived = recv(clientSocket, (view + totalBytesReceived), (dataSize - totalBytesReceived), MSG_NOSIGNAL);
-        if (bytesReceived < 0)
-        {
-            return bytesReceived;
-        }
-        else if (bytesReceived == 0)
-        {
-            clientSocketStillOpen = false;
-        }
-        else
-        {
-            totalBytesReceived += bytesReceived;
-        }
-    }
-
-    return totalBytesReceived;
 }
 
 void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer)
@@ -297,11 +239,12 @@ int Client::showStartPage()
 
             if (response == LOGIN_OK)
             {
-                this->user = user;
+                strcpy(this->name, user.username);
             }
-
-            startPage.renderResponse(response);
-
+            else
+            {
+            startPage.setResponse(response);
+            }
         } while (response != LOGIN_OK && serverOpen);
     }
     catch (std::exception &e)
@@ -310,6 +253,20 @@ int Client::showStartPage()
     }
 
     return EXIT_SUCCESS;
+}
+
+int Client::login(user_t user)
+{
+    char response;
+
+    sendData(clientSocket, &user);
+    if (receiveData(clientSocket, &response) < sizeof(char))
+    {
+        serverOpen = false;
+        return LOGIN_ABORTED;
+    }
+
+    return response;
 }
 
 void Client::showConnectedPage()
@@ -322,71 +279,4 @@ void Client::showConnectedPage()
     TextRenderer::getInstance(renderer)->renderText(pos, "Esperando a jugadores...", 1);
 
     SDL_RenderPresent(renderer);
-}
-
-int Client::login(user_t user)
-{
-    int response;
-
-    sendLoginRequest(clientSocket, &user);
-    if (receiveLoginResponse(clientSocket, &response) != sizeof(int))
-    {
-        serverOpen = false;
-        return LOGIN_ABORTED;
-    }
-
-    return response;
-}
-
-int sendLoginRequest(int clientSocket, user_t *user)
-{
-    int totalBytesSent = 0;
-    int bytesSent = 0;
-    int dataSize = sizeof(user_t);
-    bool clientSocketStillOpen = true;
-
-    while ((totalBytesSent < dataSize) && clientSocketStillOpen)
-    {
-        bytesSent = send(clientSocket, (user + totalBytesSent), (dataSize - totalBytesSent), MSG_NOSIGNAL);
-        if (bytesSent < 0)
-        {
-            return bytesSent;
-        }
-        else if (bytesSent == 0)
-        {
-            clientSocketStillOpen = false;
-        }
-        else
-        {
-            totalBytesSent += bytesSent;
-        }
-    }
-    return totalBytesSent;
-}
-
-int receiveLoginResponse(int clientSocket, int *response)
-{
-    int totalBytesReceived = 0;
-    int bytesReceived = 0;
-    int dataSize = sizeof(int);
-    bool clientSocketStillOpen = true;
-
-    while ((totalBytesReceived < dataSize) && clientSocketStillOpen)
-    {
-        bytesReceived = recv(clientSocket, (response + totalBytesReceived), (dataSize - totalBytesReceived), MSG_NOSIGNAL);
-        if (bytesReceived < 0)
-        {
-            return bytesReceived;
-        }
-        else if (bytesReceived == 0)
-        {
-            clientSocketStillOpen = false;
-        }
-        else
-        {
-            totalBytesReceived += bytesReceived;
-        }
-    }
-
-    return totalBytesReceived;
 }
