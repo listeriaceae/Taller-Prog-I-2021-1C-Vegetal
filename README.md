@@ -27,6 +27,11 @@ Ejecutar
 ```sh
 > ./bin/main client 127.0.0.1 5555
 ```
+## Controles
+* Movimiento: Flechas
+* Salto: Barra espaciadora
+* Toggle música: M
+* Toggle modo test: T
 
 ## Donkey Kong video
 [Donkey Kong 2 Gameplay YouTube Video](https://www.youtube.com/watch?v=y4xnoOdqmMU)
