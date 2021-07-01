@@ -15,7 +15,7 @@
 #include "../utils/Constants.hpp"
 #include "../utils/Messages.h"
 #include "../utils/window.hpp"
-#include "../utils/estadoNivel.h"
+#include "../utils/estadoJuego.h"
 #include "../utils/player.h"
 #include "../utils/dataTransfer.h"
 
@@ -27,6 +27,7 @@ typedef struct handleLoginArgs {
 } handleLoginArgs_t;
 
 void getNextLevel(Nivel **nivel, Uint8 currentLevel);
+estadoJugador_t getEstadoJugador(player_t* player);
 
 void *acceptNewConnections(void *serverArg);
 void *handleLogin(void *arguments);
@@ -139,10 +140,17 @@ void Server::startGame() {
         }
 
         if (updated) {
-            estadoNivel_t* view = nivel->getEstado();
+            estadoJuego_t game;
+            game.estadoNivel = *(nivel->getEstado());
+
+            int i = 0;
+            for(auto it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
+                game.players[i++] = getEstadoJugador(it->second);
+            }
+
             for(auto it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
                 if (it->second->isConnected) {
-                    it->second->isConnected = sendData(it->second->clientSocket, view) == sizeof(estadoNivel_t);
+                    it->second->isConnected = sendData(it->second->clientSocket, &game) == sizeof(estadoJuego_t);
                 }
             }
             if (__builtin_expect(nivel->isComplete(), 0)) {
@@ -299,4 +307,11 @@ void getNextLevel(Nivel **nivel, Uint8 currentLevel) {
         logger::Logger::getInstance().logInformation("End of Level 2");
         *nivel = NULL;
     }
+}
+
+estadoJugador_t getEstadoJugador(player_t* player) {
+    estadoJugador_t estado;
+    strcpy(estado.name, player->user.username);
+    //TODO: agregar vidas, puntaje, etc.
+    return estado;
 }

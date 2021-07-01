@@ -3,7 +3,7 @@
 #include <list>
 #include <vector>
 #include <SDL2/SDL.h>
-#include "../utils/estadoNivel.h"
+#include "../utils/estadoJuego.h"
 #include "MarioVista.h"
 #include "EntidadEstaticaVista.h"
 
@@ -13,7 +13,7 @@ public:
     NivelVista(SDL_Renderer *renderer);
     void setBackground(std::string rutaImagen);
     void addPlayers(unsigned int n);
-    virtual void update(estadoNivel_t *estadoNivel) = 0;
+    virtual void update(estadoJuego_t *estadoJuego) = 0;
     virtual ~NivelVista();
 
 protected:

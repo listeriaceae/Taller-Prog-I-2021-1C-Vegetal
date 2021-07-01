@@ -6,8 +6,10 @@
 #include "DefaultConfigVista.h"
 #include "../utils/Constants.hpp"
 
-Nivel2Vista::Nivel2Vista(SDL_Renderer *renderer, bool defaultConfig)
+Nivel2Vista::Nivel2Vista(SDL_Renderer *renderer, bool defaultConfig, const char* clientUsername)
 : NivelVista(renderer) {
+    strcpy(this->clientUsername, clientUsername);
+
     barrilVista = new BarrilVista(renderer);
 
     entidadesVista.push_back(new FireBarrelVista(renderer));
@@ -20,7 +22,9 @@ Nivel2Vista::Nivel2Vista(SDL_Renderer *renderer, bool defaultConfig)
 
 }
 
-void Nivel2Vista::update(estadoNivel_t *estadoNivel) {
+void Nivel2Vista::update(estadoJuego_t *estadoJuego) {
+    estadoNivel_t* estadoNivel = &(estadoJuego->estadoNivel);
+
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
     for (EntidadEstaticaVista *vista : entidadesVista) {
@@ -35,10 +39,21 @@ void Nivel2Vista::update(estadoNivel_t *estadoNivel) {
     }
 
     size_t i = 0;
+    MarioVista* vistaJugadorPrincipal = NULL;
+    estadoMario_t* estadoMarioPrincipal = NULL;
     for(MarioVista *player : this->jugadoresVista) {
-        estadoMario_t estado = estadoNivel->players[i++];
-        player->mostrar(estado.pos, estado.estado);
+        if(strcmp(estadoJuego->players[i].name, clientUsername) != 0) {
+            estadoMario_t estado = estadoNivel->players[i];
+            player->mostrar(estado.pos, estado.estado);
+        }
+        else {
+            vistaJugadorPrincipal = player;
+            estadoMarioPrincipal = &(estadoNivel->players[i]);
+        }
+        i++;
     }
+    if(vistaJugadorPrincipal != NULL && estadoMarioPrincipal != NULL)
+        vistaJugadorPrincipal->mostrar(estadoMarioPrincipal->pos, estadoMarioPrincipal->estado);
 }
 
 Nivel2Vista::~Nivel2Vista() {

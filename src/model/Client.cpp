@@ -14,6 +14,7 @@
 #include "../view/DesconexionVista.h"
 #include "../utils/window.hpp"
 #include "../utils/Constants.hpp"
+#include "../utils/estadoJuego.h"
 #include "../controller/MarioController.h"
 #include "../utils/dataTransfer.h"
 
@@ -23,7 +24,7 @@
 typedef struct handleLevelStateArgs
 {
     int clientSocket;
-    estadoNivel_t **estado;
+    estadoJuego_t **estado;
 } handleLevelStateArgs_t;
 
 pthread_mutex_t mutex;
@@ -33,7 +34,7 @@ bool serverOpen = true;
 void *sendDataThread(void *args);
 void *receiveDataThread(void *args);
 
-void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *);
+void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer, const char* username);
 
 Client::Client(char *serverIp, char *port)
 {
@@ -119,11 +120,11 @@ void Client::startGame()
     pthread_t sendThread;
     pthread_create(&sendThread, NULL, sendDataThread, &clientSocket);
 
-    estadoNivel_t *estadoNivel = NULL;
+    estadoJuego_t* estadoJuego = NULL;
 
     handleLevelStateArgs_t receiveArgs;
     receiveArgs.clientSocket = clientSocket;
-    receiveArgs.estado = &estadoNivel;
+    receiveArgs.estado = &estadoJuego;
 
     pthread_t receiveThread;
     pthread_create(&receiveThread, NULL, receiveDataThread, &receiveArgs);
@@ -131,14 +132,14 @@ void Client::startGame()
     bool quitRequested = false;
     while (!quitRequested && serverOpen)
     {
-        if (estadoNivel != NULL)
+        if (estadoJuego != NULL)
         {
             pthread_mutex_lock(&mutex);
-            if (currentLevel < estadoNivel->level)
-                getNextLevelView(&vista, ++currentLevel, renderer);
+            if (currentLevel < estadoJuego->estadoNivel.level)
+                getNextLevelView(&vista, ++currentLevel, renderer, name);
             SDL_RenderClear(renderer);
-            vista->update(estadoNivel);
-            estadoNivel = NULL;
+            vista->update(estadoJuego);
+            estadoJuego = NULL;
             pthread_mutex_unlock(&mutex);
             SDL_RenderPresent(renderer);
         }
@@ -171,16 +172,16 @@ void *sendDataThread(void *args)
 void *receiveDataThread(void *args)
 {
     int clientSocket = ((handleLevelStateArgs_t *)args)->clientSocket;
-    estadoNivel_t **estado = ((handleLevelStateArgs_t *)args)->estado;
-    estadoNivel_t view;
+    estadoJuego_t **estado = ((handleLevelStateArgs_t *)args)->estado;
+    estadoJuego_t game;
 
     bool quitRequested = false;
     while (!quitRequested && serverOpen)
     {
-        if (receiveData(clientSocket, &view) == sizeof(estadoNivel_t))
+        if (receiveData(clientSocket, &game) == sizeof(estadoJuego_t))
         {
             pthread_mutex_lock(&mutex);
-            *estado = &view;
+            *estado = &game;
             pthread_mutex_unlock(&mutex);
         }
         else
@@ -192,7 +193,7 @@ void *receiveDataThread(void *args)
     return NULL;
 }
 
-void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer)
+void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer, const char* username)
 {
     auto config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
     int maxPlayers = config->getMaxPlayers();
@@ -202,7 +203,7 @@ void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Render
     delete *vista;
     if (currentLevel == 1)
     {
-        *vista = new Nivel1Vista(renderer, config->getDefaultConfigFlag());
+        *vista = new Nivel1Vista(renderer, config->getDefaultConfigFlag(), username);
         (*vista)->addPlayers(maxPlayers);
         auto stages = config->getStages();
         if (stages.size() > 0)
@@ -214,7 +215,7 @@ void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Render
     }
     if (currentLevel == 2)
     {
-        *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag());
+        *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag(), username);
         (*vista)->addPlayers(maxPlayers);
         auto stages = config->getStages();
         if (stages.size() > 1)
