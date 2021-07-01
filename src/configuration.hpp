@@ -11,7 +11,7 @@ namespace configuration
     {
     public:
         Enemy() = default;
-        Enemy(const std::string &t, const unsigned int q) : type(t), quantity(q){};
+        Enemy(const std::string &t, const unsigned int q) : type(t), quantity(q) {};
         ~Enemy() = default;
 
         const std::string getType() const { return type; };
@@ -26,7 +26,7 @@ namespace configuration
     {
     public:
         Stage() = default;
-        Stage(const std::vector<std::string> bgs) : backgrounds(bgs){};
+        Stage(const std::vector<std::string> bgs) : backgrounds(bgs) {};
 
         const std::vector<std::string> getBackgrounds() const { return backgrounds; };
 
