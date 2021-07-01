@@ -7,28 +7,28 @@
 
 class StartPage
 {
-    public:
-        StartPage(SDL_Renderer *);
-        void show();
-        bool handle(SDL_Event event);
-        user_t getCurrentUser() const {return currentUser;};
-        user_t getLoginUser();
-        void renderResponse(int response);
-        ~StartPage();
+public:
+    StartPage(SDL_Renderer *);
+    void show();
+    bool handle(SDL_Event event);
+    user_t getCurrentUser() const { return currentUser; };
+    user_t getLoginUser();
+    void setResponse(char response);
+    ~StartPage() = default;
 
-    private:
-        SDL_Renderer *renderer;
-        TextRenderer *textRenderer;
-        std::string username = "";
-        std::string password = "";
-        std::string resultMsg = "";
-        user_t currentUser;
-        
-        char focus = 0;
+private:
+    SDL_Renderer *renderer;
+    TextRenderer *textRenderer;
+    std::string username = "";
+    std::string password = "";
+    const char *const *resultMsg;
+    user_t currentUser;
 
-        int setFocusColor(int);
-        bool mouseOnUsernameButton(int, int);
-        bool mouseOnPasswordButton(int, int);
-        bool mouseOnDoneButton(int, int);
-        void showError();
+    char focus = 0;
+
+    int setFocusColor(int);
+    bool mouseOnUsernameButton(int, int);
+    bool mouseOnPasswordButton(int, int);
+    bool mouseOnDoneButton(int, int);
+    void showError();
 };

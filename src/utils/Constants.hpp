@@ -7,7 +7,7 @@ const int MAX_PLATFORMS = 12;
 const int MAX_ENEMIES = 3;
 const int MAX_BARRELS = 10;
 const int DEFAULT_MAX_PLAYERS = 2; //en caso de que la cant max de jugadores sea negativa en el json
-const int MAX_PLAYERS = 4; //se usa para el struct estadoNivel_t
+const int MAX_PLAYERS = 4;         //se usa para el struct estadoNivel_t
 // Dimensiones
 #define ANCHO_NIVEL 224
 #define ALTO_NIVEL 256
@@ -99,7 +99,8 @@ const std::string CONFIG_FILE = "archivo.json";
 // Default
 const std::string IMG_DEFAULT = "res/default.png";
 
-enum {
+enum
+{
     REPOSO,
     DE_ESPALDAS,
     CORRIENDO,

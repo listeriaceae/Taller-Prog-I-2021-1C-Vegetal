@@ -3,18 +3,16 @@
 #include "../utils/Constants.hpp"
 #include "DesconexionVista.h"
 
-static const char* IMG_FONT = "res/font.png";
-
 void DesconexionVista::show(SDL_Renderer* renderer) {
     SDL_RenderClear(renderer);
 
-    TextRenderer* textRenderer = new TextRenderer(renderer, IMG_FONT);
-    
     punto_t pos;
-    pos.x = (5 + 2) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
-    pos.y = (110 + 2) * ALTO_PANTALLA / (float)ALTO_NIVEL;
-    textRenderer->renderText(pos, "Desconexion del servidor", 1);
+    pos.x = 18.5f * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
+    pos.y = 112 * ALTO_PANTALLA / (float)ALTO_NIVEL;
+    TextRenderer::getInstance(renderer)->renderText(pos, "SE PERDIO LA CONEXION", 1);
+    pos.x = 45.5f * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
+    pos.y = 122 * ALTO_PANTALLA / (float)ALTO_NIVEL;
+    TextRenderer::getInstance(renderer)->renderText(pos, "CON EL SERVIDOR", 1);
 
     SDL_RenderPresent(renderer);
-    delete textRenderer;
 }
