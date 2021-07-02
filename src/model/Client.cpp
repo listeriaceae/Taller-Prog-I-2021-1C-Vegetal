@@ -34,8 +34,6 @@ bool serverOpen = true;
 void *sendDataThread(void *args);
 void *receiveDataThread(void *args);
 
-void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer, const char* username);
-
 Client::Client(char *serverIp, char *port)
 {
     std::cout << "Aplicación iniciada en modo cliente" << std::endl;
@@ -136,7 +134,7 @@ void Client::startGame()
         {
             pthread_mutex_lock(&mutex);
             if (currentLevel < estadoJuego->estadoNivel.level)
-                getNextLevelView(&vista, ++currentLevel, renderer, name);
+                getNextLevelView(&vista, ++currentLevel, renderer);
             SDL_RenderClear(renderer);
             vista->update(estadoJuego);
             estadoJuego = NULL;
@@ -193,7 +191,7 @@ void *receiveDataThread(void *args)
     return NULL;
 }
 
-void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer, const char* username)
+void Client::getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer)
 {
     auto config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
     int maxPlayers = config->getMaxPlayers();
@@ -203,7 +201,7 @@ void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Render
     delete *vista;
     if (currentLevel == 1)
     {
-        *vista = new Nivel1Vista(renderer, config->getDefaultConfigFlag(), username);
+        *vista = new Nivel1Vista(renderer, config->getDefaultConfigFlag(), name);
         (*vista)->addPlayers(maxPlayers);
         auto stages = config->getStages();
         if (stages.size() > 0)
@@ -215,7 +213,7 @@ void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Render
     }
     if (currentLevel == 2)
     {
-        *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag(), username);
+        *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag(), name);
         (*vista)->addPlayers(maxPlayers);
         auto stages = config->getStages();
         if (stages.size() > 1)
