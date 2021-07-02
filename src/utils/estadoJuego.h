@@ -3,6 +3,13 @@
 #include "punto.h"
 #include "../utils/Constants.hpp"
 
+typedef struct estadoJugador 
+{
+    char name[11];
+    int score;
+    int lives;
+} estadoJugador_t;
+
 struct estadoNivel
 {
     punto_t platforms[MAX_PLATFORMS];
@@ -13,3 +20,9 @@ struct estadoNivel
 };
 
 typedef struct estadoNivel estadoNivel_t;
+
+typedef struct estadoJuego 
+{
+    estadoJugador_t players[MAX_PLAYERS];
+    estadoNivel_t estadoNivel;
+} estadoJuego_t;

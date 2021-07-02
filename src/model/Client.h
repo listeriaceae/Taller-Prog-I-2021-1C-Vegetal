@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <arpa/inet.h>
 #include "../utils/user.h"
+#include "../view/NivelVista.h"
 
 class Client
 {
@@ -23,4 +24,5 @@ private:
     struct sockaddr_in serverAddress;
     char name[11];
     void showConnectedPage();
+    void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer);
 };

@@ -4,7 +4,7 @@
 #include "stage/Stage.h"
 #include "Mario.hpp"
 #include "EnemigoFuego.h"
-#include "../utils/estadoNivel.h"
+#include "../utils/estadoJuego.h"
 
 // Representa el escenario del juego
 // contiene a Stage (elementos colisionables)
