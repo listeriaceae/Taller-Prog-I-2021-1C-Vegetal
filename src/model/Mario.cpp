@@ -1,6 +1,7 @@
 #include "Mario.hpp"
 #include "../utils/Constants.hpp"
 #include "mario/SueloState.h"
+#include "mario/GameOverState.h"
 #include <iostream>
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
@@ -30,6 +31,7 @@ void Mario::mover() {
 estadoMario_t Mario::getEstado() {
     estadoMario_t estadoMario;
     estadoMario.pos = getPos();
+    estadoMario.lives = this->lives;
     if(this->isEnabled) {
         estadoMario.estado = this->estado;
     } else {
@@ -46,13 +48,14 @@ void Mario::enable() {
     this->isEnabled = true;
 }
 
-void Mario::die() {
-    this->lives--;
-    std::cout << "VIDAS: " << (int)this->lives << std::endl;
-    if (this->lives == -1) {
-        this->reset();
-        this->disable();
+MarioState *Mario::die() {
+    std::cout << "VIDAS: " << (int)(this->lives - 1) << std::endl;
+    this->reset();
+    if (this->isGameOver()) {
+        return GameOverState::getInstance();
     }
+    this->lives--;
+    return this->state;
 }
 
 void Mario::reset() {
@@ -61,4 +64,8 @@ void Mario::reset() {
     this->velX = 0;
     this->velY = 0;
     this->state = SueloState::getInstance();
+}
+
+bool Mario::isGameOver() {
+    return this->lives == 0;
 }

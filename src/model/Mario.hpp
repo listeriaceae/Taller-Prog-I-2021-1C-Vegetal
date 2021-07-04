@@ -16,7 +16,7 @@ public:
     void disable();
     void enable();
     estadoMario_t getEstado();
-    void die();
+    MarioState *die();
     void reset();
     char estado;
     float velX;
@@ -27,4 +27,5 @@ private:
     MarioState *state;
     bool isEnabled;
     char lives;
+    bool isGameOver();
 };
