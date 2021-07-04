@@ -22,12 +22,7 @@ MarioState *AireState::update(float *x, float *y, float *xSpeed, float *ySpeed, 
     *y -= *ySpeed;
     if (stage->collide(x, y, xSpeed, ySpeed)) return SueloState::getInstance();
     
-    if (*y > ALTO_NIVEL - ALTO_MARIO) {             
-        // *x = MARIO_START_X;
-        // *y = MARIO_START_Y;
-        // *xSpeed = 0;
-        // *ySpeed = 0;
-        // return SueloState::getInstance();
+    if (*y > ALTO_NIVEL - ALTO_MARIO) {
         return MuriendoState::getInstance();
     }
     return instance;
