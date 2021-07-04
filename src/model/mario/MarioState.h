@@ -10,7 +10,7 @@
 class MarioState {
     public:
         void setStage(Stage *stage);
-        virtual MarioState* update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado, controls_t controls) = 0;
+        virtual MarioState* update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado, controls_t controls, char *contador) = 0;
         virtual ~MarioState() = default;
 
     protected:

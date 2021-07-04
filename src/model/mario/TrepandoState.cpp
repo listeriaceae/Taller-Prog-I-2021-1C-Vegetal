@@ -17,7 +17,7 @@ void TrepandoState::setLadder(Ladder *ladder) {
     this->ladder = ladder;
 }
 
-MarioState *TrepandoState::update(float *, float *y, float *, float *ySpeed, char *estado, controls_t controls) {
+MarioState *TrepandoState::update(float *, float *y, float *, float *ySpeed, char *estado, controls_t controls, char *) {
     *ySpeed = (controls.up - controls.down) * MARIO_VEL_TREPAR;
     if ((*ySpeed <= 0 && std::abs(ladder->getBottom() - *y) <= MARIO_VEL_TREPAR / 2)
     || (*ySpeed >= 0 && std::abs(ladder->getTop() - *y) <= MARIO_VEL_TREPAR / 2))

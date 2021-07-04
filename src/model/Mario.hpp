@@ -17,6 +17,7 @@ class Mario : public Entidad
 
     private:
         MarioState *state;
+        char contador;
         bool isEnabled;
         controls_t controls = {0, 0, 0, 0, 0};
         char estado;

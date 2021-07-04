@@ -14,7 +14,7 @@ SueloState *SueloState::getInstance() {
     return instance;
 }
 
-MarioState *SueloState::update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado, controls_t controls) {
+MarioState *SueloState::update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado, controls_t controls, char *) {
     Ladder *ladder = stage->getLadder(*x, *y, controls.up - controls.down);
     if (ladder != NULL) {
         float distance = ladder->getX() - *x;

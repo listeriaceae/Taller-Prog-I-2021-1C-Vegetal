@@ -22,7 +22,7 @@ void Mario::setStage(Stage *stage) {
 }
 
 void Mario::mover() {
-    this->state = this->state->update(&posX, &posY, &velX, &velY, &estado, controls);
+    this->state = this->state->update(&posX, &posY, &velX, &velY, &estado, controls, &contador);
 }
 
 estadoMario_t Mario::getEstado() {
