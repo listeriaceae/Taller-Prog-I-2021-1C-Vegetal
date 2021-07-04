@@ -14,26 +14,26 @@ SueloState *SueloState::getInstance() {
     return instance;
 }
 
-MarioState *SueloState::update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado, controls_t controls) {
-    Ladder *ladder = stage->getLadder(*x, *y, controls.up - controls.down);
+MarioState *SueloState::update(Mario *mario) {
+    Ladder *ladder = stage->getLadder(mario->posX, mario->posY, mario->controls.up - mario->controls.down);
     if (ladder != NULL) {
-        float distance = ladder->getX() - *x;
+        float distance = ladder->getX() - mario->posX;
         if (-4 <= distance && distance <= 4) {
-            *x = ladder->getX();
+            mario->posX = ladder->getX();
             TrepandoState *trepandoState = TrepandoState::getInstance();
             trepandoState->setLadder(ladder);
             return trepandoState;
         }
     }
-    *xSpeed = (controls.right - controls.left) * MARIO_VEL_X;
-    *ySpeed = GRAVEDAD;
-    *x += *xSpeed * ((*x < ANCHO_NIVEL - ANCHO_MARIO && 0 < *xSpeed) || (0 < *x && *xSpeed < 0));
-    *y -= *ySpeed;
-    if (controls.space || !stage->collide(x, y, xSpeed, ySpeed)) {
-        *xSpeed *= controls.space;
-        *ySpeed = controls.space * MARIO_VEL_SALTO;
+    mario->velX = (mario->controls.right - mario->controls.left) * MARIO_VEL_X;
+    mario->velY = GRAVEDAD;
+    mario->posX += mario->velX * ((mario->posX < ANCHO_NIVEL - ANCHO_MARIO && 0 < mario->velX) || (0 < mario->posX && mario->velX < 0));
+    mario->posY -= mario->velY;
+    if (mario->controls.space || !stage->collide(&mario->posX, &mario->posY, &mario->velX, &mario->velY)) {
+        mario->velX *= mario->controls.space;
+        mario->velY = mario->controls.space * MARIO_VEL_SALTO;
         return AireState::getInstance();
     }
-    *estado = (*estado == DE_ESPALDAS) + (*xSpeed != 0) * (CORRIENDO - (*estado == DE_ESPALDAS));
+    mario->estado = (mario->estado == DE_ESPALDAS) + (mario->velX != 0) * (CORRIENDO - (mario->estado == DE_ESPALDAS));
     return instance;
 }

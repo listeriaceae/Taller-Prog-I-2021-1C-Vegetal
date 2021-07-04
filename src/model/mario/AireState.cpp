@@ -13,19 +13,17 @@ AireState *AireState::getInstance() {
     return instance;
 }
 
-MarioState *AireState::update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado, controls_t) {
-    *estado += (SALTANDO - *estado) * (*ySpeed > 0);
-    *xSpeed -= *xSpeed * 2 * !((*x < ANCHO_NIVEL - ANCHO_MARIO && 0 < *xSpeed) || (0 < *x && *xSpeed < 0));
-    *ySpeed += GRAVEDAD;
-    *x += *xSpeed;
-    *y -= *ySpeed;
-    if (stage->collide(x, y, xSpeed, ySpeed)) return SueloState::getInstance();
-    if (*y > ALTO_NIVEL - ALTO_MARIO) {             // Aca moriria mario
-        *x = MARIO_START_X;
-        *y = MARIO_START_Y;
-        *xSpeed = 0;
-        *ySpeed = 0;
-        return SueloState::getInstance();
+MarioState *AireState::update(Mario *mario) {
+    mario->estado += (SALTANDO - mario->estado) * (mario->velY > 0);
+    mario->velX -= mario->velX * 2 * !((mario->posX < ANCHO_NIVEL - ANCHO_MARIO && 0 < mario->velX) || (0 < mario->posX && mario->velX < 0));
+    mario->velY += GRAVEDAD;
+    mario->posX += mario->velX;
+    mario->posY -= mario->velY;
+    if (stage->collide(&mario->posX, &mario->posY, &mario->velX, &mario->velY)) return SueloState::getInstance();
+
+    if (mario->posY > ALTO_NIVEL - ALTO_MARIO) {             // Aca moriria mario
+        mario->die();
+        mario->reset();
     }
     return instance;
 }

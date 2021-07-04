@@ -8,10 +8,10 @@ public:
     virtual void mover() = 0; //separar entidades en entidades estaticas y dinamicas
     punto_t getPos();
     virtual ~Entidad() = default;
-
-protected:
     float posX;
     float posY;
+
+protected:
     int ancho;
     int alto;
 };

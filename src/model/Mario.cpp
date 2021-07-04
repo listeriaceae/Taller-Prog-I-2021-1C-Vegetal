@@ -1,10 +1,12 @@
 #include "Mario.hpp"
 #include "../utils/Constants.hpp"
 #include "mario/SueloState.h"
+#include <iostream>
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
     this->state = SueloState::getInstance();
     this->isEnabled = true;
+    this->lives = 3;
 }
 
 void Mario::setControls(controls_t controls) {
@@ -22,7 +24,7 @@ void Mario::setStage(Stage *stage) {
 }
 
 void Mario::mover() {
-    this->state = this->state->update(&posX, &posY, &velX, &velY, &estado, controls);
+    this->state = this->state->update(this);
 }
 
 estadoMario_t Mario::getEstado() {
@@ -42,4 +44,21 @@ void Mario::disable() {
 
 void Mario::enable() {
     this->isEnabled = true;
+}
+
+void Mario::die() {
+    this->lives--;
+    std::cout << "VIDAS: " << (int)this->lives << std::endl;
+    if (this->lives == -1) {
+        this->reset();
+        this->disable();
+    }
+}
+
+void Mario::reset() {
+    this->posX = MARIO_START_X;
+    this->posY = MARIO_START_Y;
+    this->velX = 0;
+    this->velY = 0;
+    this->state = SueloState::getInstance();
 }
