@@ -1,5 +1,4 @@
 #include "GameOverState.h"
-#include "SueloState.h"
 #include "../../utils/Constants.hpp"
 
 GameOverState *GameOverState::instance = NULL;
