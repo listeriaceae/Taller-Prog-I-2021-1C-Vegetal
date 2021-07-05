@@ -5,7 +5,7 @@
 bool AudioController::isKeyDown = false;
 Mix_Music* AudioController::music = NULL;
 
-const char* MUSIC_FILE_NAME = "res/Audio/backgroundMusic.wav";
+const char* const MUSIC_FILE_NAME = "res/Audio/backgroundMusic.wav";
 
 void AudioController::loadAudioFiles() {
     if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
