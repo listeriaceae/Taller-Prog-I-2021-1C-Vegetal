@@ -6,6 +6,8 @@
 #include "model/Client.h"
 #include "utils/GameAbortedException.h"
 
+#define MS_PER_UPDATE 50
+
 #define TEXT_BUTTON_X 28
 #define USER_BUTTON_Y 78
 #define PASS_BUTTON_Y 118

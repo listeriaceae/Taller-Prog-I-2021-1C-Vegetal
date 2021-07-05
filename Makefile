@@ -1,7 +1,7 @@
 
 CXX			:= g++
 CXX_FLAGS	:= -Wall -Wextra -std=c++11 -g
-LD_FLAGS	:= -lSDL2 -lSDL2_image -ljsoncpp -pthread
+LD_FLAGS	:= -lSDL2 -lSDL2_image -lSDL2_mixer -ljsoncpp -pthread 
  
 BIN		:= bin
 SRC		:= src

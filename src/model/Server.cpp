@@ -1,9 +1,10 @@
 #include <iostream>
 #include <stdlib.h>
-#include <SDL2/SDL.h>
 #include <vector>
 #include <string>
 #include <unistd.h>
+#include <string.h>
+#include <chrono>
 
 #include "Server.h"
 #include "../configuration.hpp"
@@ -20,13 +21,14 @@
 #include "../utils/dataTransfer.h"
 
 #define MAX_QUEUED_CONNECTIONS 3
+#define MS_PER_UPDATE std::chrono::milliseconds{17}
 
 typedef struct handleLoginArgs {
     Server *server;
     int clientSocket;
 } handleLoginArgs_t;
 
-void getNextLevel(Nivel **nivel, Uint8 currentLevel);
+void getNextLevel(Nivel **nivel, unsigned char currentLevel);
 estadoJugador_t getEstadoJugador(player_t* player);
 
 void *acceptNewConnections(void *serverArg);
@@ -101,14 +103,13 @@ void Server::startGame() {
     logger::Logger::getInstance().logNewGame();
     
     srand(time(NULL));
-    SDL_Init(SDL_INIT_TIMER);
 
     std::vector<Mario *> marios;
     for(unsigned int i = 0; i < (unsigned int)maxPlayers; ++i) {
         marios.push_back(new Mario());
     }
 
-    Uint8 currentLevel = 0;
+    unsigned char currentLevel = 0;
     Nivel *nivel = NULL;
 
     getNextLevel(&nivel, ++currentLevel);
@@ -121,14 +122,16 @@ void Server::startGame() {
         }
     }
 
-    Uint32 previous, current, elapsed, lag;
-    bool updated, quitRequested = false;
-    previous = SDL_GetTicks();
-    lag = 0;
-    while (!quitRequested) {
-        current = SDL_GetTicks();
+    std::chrono::time_point <std::chrono::steady_clock, std::chrono::milliseconds> previous, current;
+    previous = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
+    std::chrono::milliseconds elapsed;
+    std::chrono::milliseconds lag;
+    bool updated = false;
+    lag = std::chrono::milliseconds{0};
+    while (nivel != NULL) {
+        current = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
         elapsed = current - previous;
-        previous = current;
+        previous += elapsed;
         lag += elapsed;
     
         // Update Model
@@ -143,7 +146,7 @@ void Server::startGame() {
             estadoJuego_t game;
             game.estadoNivel = *(nivel->getEstado());
 
-            int i = 0;
+            size_t i = 0;
             for(auto it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
                 game.players[i++] = getEstadoJugador(it->second);
             }
@@ -155,13 +158,11 @@ void Server::startGame() {
             }
             if (__builtin_expect(nivel->isComplete(), 0)) {
                 getNextLevel(&nivel, ++currentLevel);
-                if (nivel == NULL) {
-                    break;
+                if (nivel != NULL) {
+                    nivel->addPlayers(&marios);
                 }
-                nivel->addPlayers(&marios);
             }
         }
-        quitRequested = SDL_QuitRequested();
     }
 }
 
@@ -277,14 +278,13 @@ void *handleCommand(void *player) {
     int clientSocket = ((player_t *)player)->clientSocket;
     controls_t controls;
 
-    bool quitRequested = false;
-    while (!quitRequested) {
+    bool clientOpen = true;
+    while (clientOpen) {
         if (receiveData(clientSocket, &controls) == sizeof(controls_t)) {
             mario->setControls(controls);
         } else {
-            break;
+            clientOpen = false;
         }
-        quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
     mario->disable();
     mario->setControls({0, 0, 0, 0, 0});
@@ -292,7 +292,7 @@ void *handleCommand(void *player) {
     return NULL;
 }
 
-void getNextLevel(Nivel **nivel, Uint8 currentLevel) {
+void getNextLevel(Nivel **nivel, unsigned char currentLevel) {
     delete *nivel;
     if (currentLevel == 1) {
         logger::Logger::getInstance().logInformation("Level 1 starts");
