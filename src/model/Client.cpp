@@ -17,6 +17,7 @@
 #include "../utils/estadoJuego.h"
 #include "../controller/MarioController.h"
 #include "../utils/dataTransfer.h"
+#include "../controller/AudioController.h"
 
 #define SERVER_CONNECTION_SUCCESS 0
 #define START_PAGE_SUCCESS 0
@@ -43,6 +44,7 @@ Client::Client(char *serverIp, char *port)
     SDL_Init(SDL_INIT_EVERYTHING);
     window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+    AudioController::loadAudioFiles();
 }
 
 int Client::startClient()
@@ -106,6 +108,8 @@ int Client::connectToServer()
 
 void Client::startGame()
 {
+    AudioController::toggleMusic();
+
     logger::Logger::getInstance().logNewGame();
 
     auto configuration = configuration::GameConfiguration::getInstance(CONFIG_FILE);
@@ -141,6 +145,8 @@ void Client::startGame()
             pthread_mutex_unlock(&mutex);
             SDL_RenderPresent(renderer);
         }
+
+        AudioController::checkToggleMusicEvent();
         quitRequested = SDL_QuitRequested();
     }
 
