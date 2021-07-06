@@ -17,15 +17,15 @@ void TrepandoState::setLadder(Ladder *ladder) {
     this->ladder = ladder;
 }
 
-MarioState *TrepandoState::update(float *, float *y, float *, float *ySpeed, char *estado, controls_t controls) {
-    *ySpeed = (controls.up - controls.down) * MARIO_VEL_TREPAR;
-    if ((*ySpeed <= 0 && std::abs(ladder->getBottom() - *y) <= MARIO_VEL_TREPAR / 2)
-    || (*ySpeed >= 0 && std::abs(ladder->getTop() - *y) <= MARIO_VEL_TREPAR / 2))
+MarioState *TrepandoState::update(Mario *mario) {
+    mario->velY = (mario->controls.up - mario->controls.down) * MARIO_VEL_TREPAR;
+    if ((mario->velY <= 0 && std::abs(ladder->getBottom() - mario->posY) <= MARIO_VEL_TREPAR / 2)
+    || (mario->velY >= 0 && std::abs(ladder->getTop() - mario->posY) <= MARIO_VEL_TREPAR / 2))
     {
-        *estado = DE_ESPALDAS;
+        mario->estado = DE_ESPALDAS;
         return SueloState::getInstance();
     }
-    *y -= *ySpeed;
-    *estado = TREPANDO;
+    mario->posY -= mario->velY;
+    mario->estado = TREPANDO;
     return instance;
 }

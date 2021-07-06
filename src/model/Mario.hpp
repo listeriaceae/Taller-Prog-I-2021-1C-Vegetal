@@ -3,6 +3,8 @@
 #include "mario/MarioState.h"
 #include "../utils/marioStructs.h"
 
+class MarioState;
+
 class Mario : public Entidad
 {
 public:
@@ -14,12 +16,16 @@ public:
     void disable();
     void enable();
     estadoMario_t getEstado();
+    MarioState *die();
+    void reset();
+    char estado;
+    float velX;
+    float velY;
+    controls_t controls = {0, 0, 0, 0, 0};
 
 private:
     MarioState *state;
     bool isEnabled;
-    controls_t controls = {0, 0, 0, 0, 0};
-    char estado;
-    float velX;
-    float velY;
+    char lives;
+    bool isGameOver();
 };
