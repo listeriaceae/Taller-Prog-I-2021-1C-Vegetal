@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include <SDL2/SDL_image.h>
 #include "MarioVista.h"
@@ -14,13 +15,13 @@
 
 const std::string IMG_MARIO = "res/Mario.png";
 
-SDL_Renderer *MarioVista::renderer = NULL;
-SDL_Texture *MarioVista::texture = NULL;
+SDL_Renderer *MarioVista::renderer{nullptr};
+SDL_Texture *MarioVista::texture{nullptr};
 
 int MarioVista::totalJugadores = 0;
 
 MarioVista::MarioVista(SDL_Renderer *renderer) {
-    if (texture == NULL) {
+    if (texture == nullptr) {
         this->renderer = renderer;
         SDL_Surface* surface = IMG_Load(IMG_MARIO.c_str());
 
@@ -45,17 +46,19 @@ MarioVista::MarioVista(SDL_Renderer *renderer) {
     ++totalJugadores;
 }
 
+MarioVista::MarioVista(const MarioVista &other) : MarioVista(other.renderer) {}
+
 void MarioVista::setColor(int nroJugador) {
     srcRect.y = nroJugador * ALTO_MARIO;
 }
 
-void MarioVista::mostrar(punto_t pos, char estado) {
-    int nextX = round((int)pos.x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    int nextY = round((int)pos.y * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    switch(estado) {
+void MarioVista::mostrar(const estadoMario_t &estadoMario) {
+    int nextX = round((int)estadoMario.pos.x * (ANCHO_PANTALLA / (float)ANCHO_NIVEL));
+    int nextY = round((int)estadoMario.pos.y * (ANCHO_PANTALLA / (float)ANCHO_NIVEL));
+    switch(estadoMario.estado) {
         case REPOSO:
         case DE_ESPALDAS:
-            updateReposo(estado);
+            updateReposo(estadoMario.estado);
             break;
         case CORRIENDO:
             updateCorriendo(nextX);
@@ -79,7 +82,7 @@ void MarioVista::mostrar(punto_t pos, char estado) {
 }
 
 void MarioVista::updateReposo(char estado) {
-    srcRect.x = MARIO_DE_ESPALDAS_INDEX * (estado == DE_ESPALDAS) * MARIO_SPRITE_SIZE;
+    srcRect.x = (estado == DE_ESPALDAS) * (MARIO_DE_ESPALDAS_INDEX * MARIO_SPRITE_SIZE);
 }
 
 void MarioVista::updateCorriendo(int nextX) {
@@ -116,7 +119,8 @@ void MarioVista::updateDesconectado(int nextX, int nextY) {
 
 MarioVista::~MarioVista() {
     if (--totalJugadores == 0) {
+        std::cout << "destroyed\n";
         SDL_DestroyTexture(texture);
-        texture = NULL;
+        texture = nullptr;
     }
 }

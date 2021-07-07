@@ -19,7 +19,7 @@ class TextRenderer
 public:
     static TextRenderer *getInstance(SDL_Renderer *);
     void renderText(punto_t punto, const char *text, float resize, color_t color = YELLOW);
-    bool includesCharacter(char);
+    bool includesCharacter(char) const;
     ~TextRenderer();
 
 private:

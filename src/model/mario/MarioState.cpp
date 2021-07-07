@@ -1,9 +1,7 @@
 #include "MarioState.h"
 
-Stage *MarioState::stage = NULL;
+const Stage *MarioState::stage{nullptr};
 
-MarioState::MarioState() {}
-
-void MarioState::setStage(Stage *stage) {
+void MarioState::setStage(const Stage *stage) {
     this->stage = stage;
 }

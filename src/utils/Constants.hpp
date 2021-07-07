@@ -3,11 +3,12 @@
 #include <string>
 
 //estadoNivel
-const int MAX_PLATFORMS = 12;
-const int MAX_ENEMIES = 3;
-const int MAX_BARRELS = 10;
-const int DEFAULT_MAX_PLAYERS = 2; //en caso de que la cant max de jugadores sea negativa en el json
-const int MAX_PLAYERS = 4;         //se usa para el struct estadoNivel_t
+#define MAX_PLATFORMS 12
+#define MAX_ENEMIES 3
+#define MAX_BARRELS 10
+#define DEFAULT_MAX_PLAYERS 2 //en caso de que la cant max de jugadores sea negativa en el json
+#define MAX_PLAYERS 4         //se usa para el struct estadoNivel_t
+
 // Dimensiones
 #define ANCHO_NIVEL 224
 #define ALTO_NIVEL 256
@@ -36,8 +37,8 @@ const int MAX_PLAYERS = 4;         //se usa para el struct estadoNivel_t
 #define DONKEYKONG_ANCHO 40
 #define DONKEYKONG_ALTO 34
 
-#define PEACH_POS_X 88
-#define PEACH_POS_Y 34
+#define PAULINE_POS_X 88
+#define PAULINE_POS_Y 34
 
 #define ANCHO_FIRE_BARREL 16
 #define ALTO_FIRE_BARREL 16
@@ -78,8 +79,8 @@ const int MAX_PLAYERS = 4;         //se usa para el struct estadoNivel_t
 #define DONKEYKONG_POS_X 24
 #define DONKEYKONG_POS_Y 50
 
-#define PEACH_ANCHO 16
-#define PEACH_ALTO 22
+#define PAULINE_ANCHO 16
+#define PAULINE_ALTO 22
 
 #define DEFAULT_CONFIG_X 56
 #define DEFAULT_CONFIG_Y 20

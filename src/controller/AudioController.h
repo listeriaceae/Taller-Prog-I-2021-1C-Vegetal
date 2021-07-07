@@ -9,6 +9,6 @@ public:
     static void toggleMusic();
     static void checkToggleMusicEvent();
 private:
-    static Mix_Music* music;
+    static Mix_Music *music;
     static bool isKeyDown;
 };

@@ -24,5 +24,5 @@ private:
     struct sockaddr_in serverAddress;
     char name[11];
     void showConnectedPage();
-    void getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer);
+    void getNextLevelView(NivelVista **vista, unsigned char currentLevel);
 };

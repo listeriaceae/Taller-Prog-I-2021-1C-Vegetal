@@ -3,13 +3,12 @@
 #include <string>
 #include "TextRenderer.h"
 #include "utils/user.h"
-#include <map>
 
 class StartPage
 {
 public:
     StartPage(SDL_Renderer *);
-    void show();
+    void show() const;
     bool handle(SDL_Event event);
     user_t getCurrentUser() const { return currentUser; };
     user_t getLoginUser();
@@ -21,14 +20,14 @@ private:
     TextRenderer *textRenderer;
     std::string username = "";
     std::string password = "";
-    const char *const *resultMsg;
+    const char *resultMsg;
     user_t currentUser;
 
     char focus = 0;
 
-    int setFocusColor(int);
-    bool mouseOnUsernameButton(int, int);
-    bool mouseOnPasswordButton(int, int);
-    bool mouseOnDoneButton(int, int);
-    void showError();
+    int setFocusColor(int) const;
+    bool mouseOnUsernameButton(int, int) const;
+    bool mouseOnPasswordButton(int, int) const;
+    bool mouseOnDoneButton(int, int) const;
+    void showError() const;
 };

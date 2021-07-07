@@ -1,5 +1,4 @@
 #include <iostream>
-#include <SDL2/SDL_image.h>
 #include <pthread.h>
 #include <string>
 #include <exception>
@@ -37,7 +36,7 @@ void *receiveDataThread(void *args);
 
 Client::Client(char *serverIp, char *port)
 {
-    std::cout << "Aplicación iniciada en modo cliente" << std::endl;
+    std::cout << "Aplicación iniciada en modo cliente\n";
 
     this->serverIp = serverIp;
     this->port = port;
@@ -83,7 +82,7 @@ int Client::startClient()
 
 int Client::connectToServer()
 {
-    std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port << std::endl;
+    std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port << '\n';
 
     //socket
     this->clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -99,7 +98,7 @@ int Client::connectToServer()
     //connect
     if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) != 0)
     {
-        std::cout << "Error al conectarse con el servidor" << std::endl;
+        std::cout << "Error al conectarse con el servidor\n";
         return EXIT_FAILURE;
     }
 
@@ -117,12 +116,12 @@ void Client::startGame()
     logger::Logger::getInstance().setLogLevel(log_level);
 
     unsigned char currentLevel = 0;
-    NivelVista *vista = NULL;
+    NivelVista *vista{nullptr};
 
     pthread_t sendThread;
     pthread_create(&sendThread, NULL, sendDataThread, &clientSocket);
 
-    estadoJuego_t* estadoJuego = NULL;
+    estadoJuego_t *estadoJuego{nullptr};
 
     handleLevelStateArgs_t receiveArgs;
     receiveArgs.clientSocket = clientSocket;
@@ -134,14 +133,14 @@ void Client::startGame()
     bool quitRequested = false;
     while (!quitRequested && serverOpen)
     {
-        if (estadoJuego != NULL)
+        if (estadoJuego != nullptr)
         {
             pthread_mutex_lock(&mutex);
             if (currentLevel < estadoJuego->estadoNivel.level)
-                getNextLevelView(&vista, ++currentLevel, renderer);
+                getNextLevelView(&vista, ++currentLevel);
             SDL_RenderClear(renderer);
-            vista->update(estadoJuego);
-            estadoJuego = NULL;
+            vista->update(*estadoJuego);
+            estadoJuego = nullptr;
             pthread_mutex_unlock(&mutex);
             SDL_RenderPresent(renderer);
         }
@@ -170,7 +169,7 @@ void *sendDataThread(void *args)
 
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
-    return NULL;
+    return nullptr;
 }
 
 void *receiveDataThread(void *args)
@@ -194,46 +193,25 @@ void *receiveDataThread(void *args)
         }
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
-    return NULL;
+    return nullptr;
 }
 
-void Client::getNextLevelView(NivelVista **vista, unsigned char currentLevel, SDL_Renderer *renderer)
+void Client::getNextLevelView(NivelVista **vista, unsigned char currentLevel)
 {
-    auto config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
-    int maxPlayers = config->getMaxPlayers();
-    if (maxPlayers < 0)
-        maxPlayers = DEFAULT_MAX_PLAYERS;
-
     delete *vista;
     if (currentLevel == 1)
     {
-        *vista = new Nivel1Vista(renderer, config->getDefaultConfigFlag(), name);
-        (*vista)->addPlayers(maxPlayers);
-        auto stages = config->getStages();
-        if (stages.size() > 0)
-        {
-            std::string rutaImagen = stages[0].getBackgrounds()[0];
-            logger::Logger::getInstance().logDebug("Stage 1 background img: " + rutaImagen);
-            (*vista)->setBackground(rutaImagen);
-        }
+        *vista = new Nivel1Vista(renderer, name);
     }
     if (currentLevel == 2)
     {
-        *vista = new Nivel2Vista(renderer, config->getDefaultConfigFlag(), name);
-        (*vista)->addPlayers(maxPlayers);
-        auto stages = config->getStages();
-        if (stages.size() > 1)
-        {
-            std::string rutaImagen = stages[1].getBackgrounds()[0];
-            logger::Logger::getInstance().logDebug("Stage 2 background img: " + rutaImagen);
-            (*vista)->setBackground(rutaImagen);
-        }
+        *vista = new Nivel2Vista(renderer, name);
     }
 }
 
 int Client::showStartPage()
 {
-    StartPage startPage = StartPage(renderer);
+    StartPage startPage{renderer};
     int response;
     try
     {

@@ -10,7 +10,7 @@ public:
     ~FireBarrelVista()
     {
         SDL_DestroyTexture(texture);
-        texture = NULL;
+        texture = nullptr;
     };
 
 private:

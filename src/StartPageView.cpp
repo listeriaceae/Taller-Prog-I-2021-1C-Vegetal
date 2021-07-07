@@ -22,29 +22,29 @@
 #define ERROR_MSG_X 74
 #define ERROR_MSG_Y 138
 
-const char *const USERNAME = "USERNAME";
-const char *const PASSWORD = "PASSWORD";
-const char *const DONE = "DONE";
+constexpr const char *USERNAME = "USERNAME";
+constexpr const char *PASSWORD = "PASSWORD";
+constexpr const char *DONE = "DONE";
 
-const char *const EMPTY_STR = "";
-const char *const MSG_OK = "OK";
-const char *const MSG_ABORTED = "SERVER DISCONNECTED";
-const char *const MSG_INVALID_USER = "INVALID USER";
-const char *const MSG_INVALID_PASS = "INVALID PASSWORD";
-const char *const MSG_USER_ALREADY_CONNECTED = "USER ALREADY CONNECTED";
-const char *const MSG_MAX_USERS_CONNECTED = "MAX USERS CONNECTED";
+constexpr const char *EMPTY_STR = "";
+constexpr const char *MSG_OK = "OK";
+constexpr const char *MSG_ABORTED = "SERVER DISCONNECTED";
+constexpr const char *MSG_INVALID_USER = "INVALID USER";
+constexpr const char *MSG_INVALID_PASS = "INVALID PASSWORD";
+constexpr const char *MSG_USER_ALREADY_CONNECTED = "USER ALREADY CONNECTED";
+constexpr const char *MSG_MAX_USERS_CONNECTED = "MAX USERS CONNECTED";
 
-const SDL_Rect usernameRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
+constexpr SDL_Rect usernameRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(USER_BUTTON_Y * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f),
                                (int)(TEXT_BUTTON_WIDTH * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(BUTTON_HEIGHT * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f)};
 
-const SDL_Rect passwordRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
+constexpr SDL_Rect passwordRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(PASS_BUTTON_Y * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f),
                                (int)(TEXT_BUTTON_WIDTH * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(BUTTON_HEIGHT * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f)};
 
-const SDL_Rect doneRect = {(int)(DONE_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
+constexpr SDL_Rect doneRect = {(int)(DONE_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                            (int)(DONE_BUTTON_Y * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f),
                            (int)(DONE_BUTTON_WIDTH * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                            (int)(BUTTON_HEIGHT * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f)};
@@ -52,7 +52,7 @@ const SDL_Rect doneRect = {(int)(DONE_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_N
 StartPage::StartPage(SDL_Renderer *renderer) {
     this->renderer = renderer;
     this->textRenderer = TextRenderer::getInstance(renderer);
-    this->resultMsg = &EMPTY_STR;
+    this->resultMsg = EMPTY_STR;
 }
 
 user_t StartPage::getLoginUser() {
@@ -68,7 +68,7 @@ user_t StartPage::getLoginUser() {
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                std::cout << "aborted" << std::endl;
+                std::cout << "aborted\n";
                 throw GameAborted;
             }
             else if (event.type != SDL_MOUSEMOTION)
@@ -89,15 +89,15 @@ user_t StartPage::getLoginUser() {
     strcpy (user.username, username.c_str());
     strcpy (user.password, password.c_str());
 
-    std::cout << "capturing user [" << user.username << " " << user.password << "]" << std::endl;
+    std::cout << "capturing user [" << user.username << " " << user.password << "]\n";
     return user;
 }
 
-int StartPage::setFocusColor(int focus) {
+int StartPage::setFocusColor(int focus) const {
     return SDL_SetRenderDrawColor(renderer, 128 + focus * 127, (1 - focus) * 128, (1 - focus) * 128, 255);
 }
 
-void StartPage::show() {
+void StartPage::show() const {
     SDL_RenderClear(renderer);
 
     punto_t pos;
@@ -128,24 +128,24 @@ void StartPage::show() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
 
-void StartPage::showError() {
+void StartPage::showError() const {
     punto_t pos;
     pos.x = (TEXT_BUTTON_X + 2 * RESIZE) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
     pos.y = ERROR_MSG_Y * ALTO_PANTALLA / (float)ALTO_NIVEL;
-    textRenderer->renderText(pos, *this->resultMsg, 1, RED);
+    textRenderer->renderText(pos, this->resultMsg, 1, RED);
 }
 
-bool StartPage::mouseOnUsernameButton(int x, int y) {
+bool StartPage::mouseOnUsernameButton(int x, int y) const {
     return usernameRect.y <= y && y <= usernameRect.y + usernameRect.h
         && usernameRect.x <= x && x <= usernameRect.x + usernameRect.w;
 }
 
-bool StartPage::mouseOnPasswordButton(int x, int y) {
+bool StartPage::mouseOnPasswordButton(int x, int y) const {
     return passwordRect.y <= y && y <= passwordRect.y + passwordRect.h
         && passwordRect.x <= x && x <= passwordRect.x + passwordRect.w;
 }
 
-bool StartPage::mouseOnDoneButton(int x, int y) {
+bool StartPage::mouseOnDoneButton(int x, int y) const {
     return doneRect.y <= y && y <= doneRect.y + doneRect.h
         && doneRect.x <= x && x <= doneRect.x + doneRect.w;
 }
@@ -197,20 +197,20 @@ bool StartPage::handle(SDL_Event event) {
     return false;
 }
 
-void StartPage::setResponse(char response) {
+void StartPage::setResponse(const char response) {
     switch (response)
     {
         case LOGIN_INVALID_USER_PASS:
-            this->resultMsg = &MSG_INVALID_PASS;
+            this->resultMsg = MSG_INVALID_PASS;
             break;
         case LOGIN_USER_ALREADY_CONNECTED:
-            this->resultMsg = &MSG_USER_ALREADY_CONNECTED;
+            this->resultMsg = MSG_USER_ALREADY_CONNECTED;
             break;
         case LOGIN_MAX_USERS_CONNECTED:
-            this->resultMsg = &MSG_MAX_USERS_CONNECTED;
+            this->resultMsg = MSG_MAX_USERS_CONNECTED;
             break;
         case LOGIN_INVALID_USER:
-            this->resultMsg = &MSG_INVALID_USER;
+            this->resultMsg = MSG_INVALID_USER;
             break;
         default:
             break;

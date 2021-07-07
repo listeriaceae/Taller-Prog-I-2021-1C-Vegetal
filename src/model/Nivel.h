@@ -1,5 +1,4 @@
 #pragma once
-#include <list>
 #include <vector>
 #include "stage/Stage.h"
 #include "Mario.hpp"
@@ -7,21 +6,20 @@
 #include "../utils/estadoJuego.h"
 
 // Representa el escenario del juego
-// contiene a Stage (elementos colisionables)
+// contiene a Stage (plataformas y escaleras)
 class Nivel
 {
 public:
-    Nivel();
     virtual void addPlayers(std::vector<Mario *> *players) = 0;
     virtual void update() = 0;
-    virtual estadoNivel_t *getEstado() = 0;
-    bool isComplete();
+    virtual const estadoNivel_t &getEstado() = 0;
+    bool isComplete() const;
     virtual ~Nivel();
 
 protected:
-    Stage *stage;
-    std::vector<Platform *> platforms;
-    std::list<EnemigoFuego *> enemies;
+    Stage stage;
+    estadoNivel_t estadoNivel;
+    std::vector<EnemigoFuego> enemies;
+    std::vector<Platform> platforms;
     std::vector<Mario *> *players;
-    estadoNivel_t *estadoNivel;
 };

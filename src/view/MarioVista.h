@@ -1,13 +1,15 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "../utils/punto.h"
+#include "../utils/marioStructs.h"
 
 class MarioVista
 {
 public:
     MarioVista(SDL_Renderer *renderer);
-    void mostrar(punto_t pos, char estado);
+    MarioVista(const MarioVista &other);
+    MarioVista &operator=(const MarioVista &other) = delete;
+    void mostrar(const estadoMario_t &estado);
     void setColor(int color);
     ~MarioVista();
 

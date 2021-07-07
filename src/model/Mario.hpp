@@ -8,16 +8,16 @@ class Mario : public Entidad
 public:
     Mario();
     void setPos(float x, float y);
-    void setControls(controls_t controls);
-    void setStage(Stage *stage);
+    inline void setControls(controls_t controls) { this->controls = controls; }
+    void setStage(const Stage *stage) const;
     void mover();
-    void disable();
-    void enable();
-    estadoMario_t getEstado();
+    inline void disable() { isEnabled = false; }
+    inline void enable() { isEnabled = true; }
+    estadoMario_t getEstado() const;
 
 private:
     MarioState *state;
-    bool isEnabled;
+    bool isEnabled = true;
     controls_t controls = {0, 0, 0, 0, 0};
     char estado;
     float velX;

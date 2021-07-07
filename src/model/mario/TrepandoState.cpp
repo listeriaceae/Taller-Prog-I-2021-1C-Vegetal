@@ -2,30 +2,31 @@
 #include "TrepandoState.h"
 #include "../../utils/Constants.hpp"
 
-TrepandoState *TrepandoState::instance = NULL;
+TrepandoState *TrepandoState::instance{nullptr};
 
 TrepandoState::TrepandoState() {}
 
 TrepandoState *TrepandoState::getInstance() {
-    if (instance == NULL) {
+    if (instance == nullptr) {
         instance = new TrepandoState();
     }
     return instance;
 }
 
-void TrepandoState::setLadder(Ladder *ladder) {
-    this->ladder = ladder;
+void TrepandoState::setLimits(const float min, const float max) {
+    this->min = min;
+    this->max = max;
 }
 
-MarioState *TrepandoState::update(float *, float *y, float *, float *ySpeed, char *estado, controls_t controls) {
-    *ySpeed = (controls.up - controls.down) * MARIO_VEL_TREPAR;
-    if ((*ySpeed <= 0 && std::abs(ladder->getBottom() - *y) <= MARIO_VEL_TREPAR / 2)
-    || (*ySpeed >= 0 && std::abs(ladder->getTop() - *y) <= MARIO_VEL_TREPAR / 2))
+MarioState *TrepandoState::update(float &, float &y, float &, float &ySpeed, char &estado, const controls_t controls) {
+    ySpeed = (controls.up - controls.down) * MARIO_VEL_TREPAR;
+    if ((ySpeed <= 0 && std::abs(min - y) <= MARIO_VEL_TREPAR / 2)
+    || (ySpeed >= 0 && std::abs(max - y) <= MARIO_VEL_TREPAR / 2))
     {
-        *estado = DE_ESPALDAS;
+        estado = DE_ESPALDAS;
         return SueloState::getInstance();
     }
-    *y -= *ySpeed;
-    *estado = TREPANDO;
+    y -= ySpeed;
+    estado = TREPANDO;
     return instance;
 }

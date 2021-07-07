@@ -10,11 +10,11 @@
 class MarioState
 {
 public:
-    void setStage(Stage *stage);
-    virtual MarioState *update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado, controls_t controls) = 0;
+    void setStage(const Stage *stage);
+    virtual MarioState *update(float &x, float &y, float &xSpeed, float &ySpeed, char &estado, controls_t controls) = 0;
     virtual ~MarioState() = default;
 
 protected:
-    MarioState();
-    static Stage *stage;
+    MarioState() = default;
+    static const Stage *stage;
 };

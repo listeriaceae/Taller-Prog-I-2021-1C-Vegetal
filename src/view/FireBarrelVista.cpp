@@ -7,11 +7,11 @@
 
 const std::string IMG_FIRE_BARREL = "res/FireBarrel.png";
 
-SDL_Texture *FireBarrelVista::texture = NULL;
+SDL_Texture *FireBarrelVista::texture{nullptr};
 
 FireBarrelVista::FireBarrelVista(SDL_Renderer* renderer)
 : EntidadEstaticaVista() {
-    if (texture == NULL) {
+    if (texture == nullptr) {
         this->renderer = renderer;
         SDL_Surface* surface = IMG_Load(IMG_FIRE_BARREL.c_str());
         if (surface == NULL) {
