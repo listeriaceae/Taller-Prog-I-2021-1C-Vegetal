@@ -8,9 +8,9 @@ public:
     virtual void mover() = 0; //separar entidades en entidades estaticas y dinamicas
     inline punto_t getPos() const { return pos; }
     virtual ~Entidad() = default;
+    punto_t pos;
 
 protected:
-    punto_t pos;
     const int ancho;
     const int alto;
 };

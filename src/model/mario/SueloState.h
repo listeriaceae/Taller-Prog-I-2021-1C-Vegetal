@@ -4,10 +4,10 @@
 class SueloState : public MarioState
 {
 public:
-    MarioState *update(float &x, float &y, float &xSpeed, float &ySpeed, char &estado, controls_t controls);
-    static SueloState *getInstance();
+    const MarioState *update(Mario &mario) const;
+    static const SueloState *getInstance();
 
 private:
-    SueloState();
-    static SueloState *instance;
+    SueloState() = default;
+    ~SueloState() = default;
 };

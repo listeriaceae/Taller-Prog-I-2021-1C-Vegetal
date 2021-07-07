@@ -40,6 +40,7 @@ void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
     MarioVista *vistaJugadorPrincipal{nullptr};
     const estadoMario_t *estadoMarioPrincipal{nullptr};
     for (auto &player : this->jugadoresVista) {
+        player.setColor((i + 1) * estadoJuego.estadoNivel.players[i].isEnabled);
         if (strcmp(estadoJuego.players[i].name, clientUsername) != 0) {
             player.mostrar(estadoJuego.estadoNivel.players[i]);
         }

@@ -1,31 +1,24 @@
 #include "AireState.h"
 #include "SueloState.h"
+#include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
-AireState *AireState::instance{nullptr};
 
-AireState::AireState() {}
 
-AireState *AireState::getInstance() {
-    if (instance == nullptr) {
-        instance = new AireState();
-    }
-    return instance;
+const AireState *AireState::getInstance() {
+    static const AireState instance;
+    return &instance;
 }
 
-MarioState *AireState::update(float &x, float &y, float &xSpeed, float &ySpeed, char &estado, controls_t) {
-    estado += (SALTANDO - estado) * (ySpeed > 0);
-    xSpeed -= xSpeed * 2 * !((x < ANCHO_NIVEL - ANCHO_MARIO && 0 < xSpeed) || (0 < x && xSpeed < 0));
-    ySpeed += GRAVEDAD;
-    x += xSpeed;
-    y -= ySpeed;
-    if (stage->collide(x, y, xSpeed, ySpeed)) return SueloState::getInstance();
-    if (y > ALTO_NIVEL - ALTO_MARIO) {             // Aca moriria mario
-        x = MARIO_START_X;
-        y = MARIO_START_Y;
-        xSpeed = 0;
-        ySpeed = 0;
-        return SueloState::getInstance();
+const MarioState *AireState::update(Mario &mario) const {
+    mario.estado += (SALTANDO - mario.estado) * (mario.velY > 0);
+    mario.velX -= mario.velX * 2 * !((mario.pos.x < ANCHO_NIVEL - ANCHO_MARIO && 0 < mario.velX) || (0 < mario.pos.x && mario.velX < 0));
+    mario.velY += GRAVEDAD;
+    mario.pos.x += mario.velX;
+    mario.pos.y -= mario.velY;
+    if (stage->collide(mario.pos.x, mario.pos.y, mario.velX, mario.velY)) return SueloState::getInstance();
+    if (mario.pos.y > ALTO_NIVEL - ALTO_MARIO) {
+        return mario.die();
     }
-    return instance;
+    return this;
 }

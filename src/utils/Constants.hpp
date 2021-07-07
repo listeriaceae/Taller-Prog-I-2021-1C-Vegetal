@@ -107,5 +107,6 @@ enum
     CORRIENDO,
     SALTANDO,
     TREPANDO,
-    DESCONECTADO
+    MURIENDO,
+    MUERTO
 };

@@ -5,12 +5,16 @@
 #include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
-#define MARIO_SPRITE_SIZE 24
-#define MARIO_SALTANDO_INDEX 14
 #define MARIO_TREPANDO_INDEX 3
 #define MARIO_DE_ESPALDAS_INDEX 6
+#define MARIO_SALTANDO_INDEX 14
+#define MARIO_MURIENDO_INDEX 16
+#define MARIO_MUERTO_INDEX 18
+
+#define TIEMPO_FRAME_MUERTO 16
 #define TIEMPO_POR_FRAME 2
 #define CANT_FRAMES 4
+#define MARIO_SPRITE_SIZE 24
 
 const std::string IMG_MARIO = "res/Mario.png";
 
@@ -47,8 +51,8 @@ MarioVista::MarioVista(const MarioVista &other)
     ++totalJugadores;
 }
 
-void MarioVista::setColor(int nroJugador) {
-    srcRect.y = nroJugador * ALTO_MARIO;
+void MarioVista::setColor(size_t color) {
+    srcRect.y = (color + 4) % 5 * ALTO_MARIO;
 }
 
 void MarioVista::mostrar(const estadoMario_t &estadoMario) {
@@ -68,9 +72,10 @@ void MarioVista::mostrar(const estadoMario_t &estadoMario) {
         case TREPANDO:
             updateTrepando(nextY);
             break;
-        case DESCONECTADO:
-            updateDesconectado(nextX, nextY);
-            return;
+        case MURIENDO:
+        case MUERTO:
+            updateMuriendo(estadoMario.estado);
+            break;
         default:
             break;
     }
@@ -102,18 +107,18 @@ void MarioVista::updateTrepando(int nextY) {
     srcRect.x = MARIO_TREPANDO_INDEX * MARIO_SPRITE_SIZE;
 }
 
-void MarioVista::updateDesconectado(int nextX, int nextY) {
-    SDL_Rect _srcRect;
-    flip = SDL_FLIP_HORIZONTAL;
-    _srcRect.w = ANCHO_MARIO;
-    _srcRect.h = ALTO_MARIO;
-    _srcRect.x = 0;
-    _srcRect.y = 64;
-
-    dstRect.x = nextX;
-    dstRect.y = nextY;
-
-    SDL_RenderCopyEx(renderer, texture, &_srcRect, &dstRect, 0., NULL, flip);
+void MarioVista::updateMuriendo(char estado) {
+    tiempo *= srcRect.x >= MARIO_MURIENDO_INDEX * MARIO_SPRITE_SIZE;
+    ++tiempo;
+    if (estado == MURIENDO) {
+        int sprite = (tiempo / TIEMPO_FRAME_MUERTO) % 4;
+        srcRect.x = (MARIO_MURIENDO_INDEX + 1 - sprite % 2) * MARIO_SPRITE_SIZE;
+        flip = (SDL_RendererFlip)((sprite > 1) * (sprite - 1));
+    }
+    else {
+        flip = SDL_FLIP_NONE;
+        srcRect.x = MARIO_MUERTO_INDEX * MARIO_SPRITE_SIZE;
+    }
 }
 
 MarioVista::~MarioVista() {

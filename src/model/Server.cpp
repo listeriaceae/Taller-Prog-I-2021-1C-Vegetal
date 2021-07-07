@@ -281,13 +281,12 @@ void *handleCommand(void *player) {
     bool clientOpen = true;
     while (clientOpen) {
         if (receiveData(clientSocket, &controls) == sizeof(controls_t)) {
-            mario->setControls(controls);
+            mario->controls = controls;
         } else {
             clientOpen = false;
         }
     }
     mario->disable();
-    mario->setControls({0, 0, 0, 0, 0});
     shutdown(clientSocket, SHUT_RD);
     return nullptr;
 }

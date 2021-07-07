@@ -4,10 +4,10 @@
 class AireState : public MarioState
 {
 public:
-    MarioState *update(float &x, float &y, float &xSpeed, float &ySpeed, char &estado, controls_t);
-    static AireState *getInstance();
+    const MarioState *update(Mario &mario) const;
+    static const AireState *getInstance();
 
 private:
-    AireState();
-    static AireState *instance;
+    AireState() = default;
+    ~AireState() = default;
 };

@@ -1,32 +1,21 @@
 #include "SueloState.h"
 #include "TrepandoState.h"
+#include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
-TrepandoState *TrepandoState::instance{nullptr};
-
-TrepandoState::TrepandoState() {}
-
-TrepandoState *TrepandoState::getInstance() {
-    if (instance == nullptr) {
-        instance = new TrepandoState();
-    }
-    return instance;
+const TrepandoState *TrepandoState::getInstance() {
+    static const TrepandoState instance;
+    return &instance;
 }
 
-void TrepandoState::setLimits(const float min, const float max) {
-    this->min = min;
-    this->max = max;
-}
-
-MarioState *TrepandoState::update(float &, float &y, float &, float &ySpeed, char &estado, const controls_t controls) {
-    ySpeed = (controls.up - controls.down) * MARIO_VEL_TREPAR;
-    if ((ySpeed <= 0 && std::abs(min - y) <= MARIO_VEL_TREPAR / 2)
-    || (ySpeed >= 0 && std::abs(max - y) <= MARIO_VEL_TREPAR / 2))
+const MarioState *TrepandoState::update(Mario &mario) const {
+    mario.velY = (mario.controls.up - mario.controls.down) * MARIO_VEL_TREPAR;
+    if (mario.climbMin < mario.pos.y || mario.pos.y < mario.climbMax)
     {
-        estado = DE_ESPALDAS;
+        mario.estado = DE_ESPALDAS;
         return SueloState::getInstance();
     }
-    y -= ySpeed;
-    estado = TREPANDO;
-    return instance;
+    mario.pos.y -= mario.velY;
+    mario.estado = TREPANDO;
+    return this;
 }

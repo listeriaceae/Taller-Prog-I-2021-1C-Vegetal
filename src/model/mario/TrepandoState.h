@@ -4,12 +4,10 @@
 class TrepandoState : public MarioState
 {
 public:
-    MarioState *update(float &, float &y, float &, float &ySpeed, char &estado, controls_t controls);
-    static TrepandoState *getInstance();
-    void setLimits(float min, float max);
+    const MarioState *update(Mario &mario) const;
+    static const TrepandoState *getInstance();
 
 private:
-    TrepandoState();
-    static TrepandoState *instance;
-    float min, max;
+    TrepandoState() = default;
+    ~TrepandoState() = default;
 };

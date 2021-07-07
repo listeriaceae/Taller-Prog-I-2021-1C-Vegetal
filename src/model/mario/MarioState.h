@@ -7,11 +7,13 @@
 #define MARIO_VEL_SALTO 2.f
 #define GRAVEDAD (-(MARIO_VEL_SALTO / 16))
 
+class Mario;
+
 class MarioState
 {
 public:
-    void setStage(const Stage *stage);
-    virtual MarioState *update(float &x, float &y, float &xSpeed, float &ySpeed, char &estado, controls_t controls) = 0;
+    static void setStage(const Stage *stage);
+    virtual const MarioState *update(Mario &mario) const = 0;
     virtual ~MarioState() = default;
 
 protected:

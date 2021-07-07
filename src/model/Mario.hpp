@@ -8,18 +8,23 @@ class Mario : public Entidad
 public:
     Mario();
     void setPos(float x, float y);
-    inline void setControls(controls_t controls) { this->controls = controls; }
     void setStage(const Stage *stage) const;
     void mover();
-    inline void disable() { isEnabled = false; }
-    inline void enable() { isEnabled = true; }
+    void disable() { isEnabled = false; controls = {0, 0, 0, 0, 0}; }
+    void enable() { isEnabled = true; }
     estadoMario_t getEstado() const;
+    const MarioState *die();
+
+    controls_t controls{0, 0, 0, 0, 0};
+    char estado{REPOSO};
+    unsigned char contador{0};
+    char lives{3};
+    float velX{0.f};
+    float velY{0.f};
+    float climbMin{256};
+    float climbMax{0};
 
 private:
-    MarioState *state;
-    bool isEnabled = true;
-    controls_t controls = {0, 0, 0, 0, 0};
-    char estado;
-    float velX;
-    float velY;
+    const MarioState *state;
+    bool isEnabled{true};
 };
