@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include <SDL2/SDL_image.h>
 #include "MarioVista.h"
@@ -18,7 +17,7 @@ const std::string IMG_MARIO = "res/Mario.png";
 SDL_Renderer *MarioVista::renderer{nullptr};
 SDL_Texture *MarioVista::texture{nullptr};
 
-int MarioVista::totalJugadores = 0;
+size_t MarioVista::totalJugadores = 0;
 
 MarioVista::MarioVista(SDL_Renderer *renderer) {
     if (texture == nullptr) {
@@ -40,13 +39,13 @@ MarioVista::MarioVista(SDL_Renderer *renderer) {
     dstRect.w = round(ANCHO_MARIO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     dstRect.h = round(ALTO_MARIO * ALTO_PANTALLA / (float)ALTO_NIVEL);
 
-    tiempo = 0;
-    flip = SDL_FLIP_HORIZONTAL;
-
     ++totalJugadores;
 }
 
-MarioVista::MarioVista(const MarioVista &other) : MarioVista(other.renderer) {}
+MarioVista::MarioVista(const MarioVista &other)
+: srcRect{other.srcRect}, dstRect{other.dstRect}, flip{other.flip}, tiempo{other.tiempo} {
+    ++totalJugadores;
+}
 
 void MarioVista::setColor(int nroJugador) {
     srcRect.y = nroJugador * ALTO_MARIO;
@@ -119,7 +118,6 @@ void MarioVista::updateDesconectado(int nextX, int nextY) {
 
 MarioVista::~MarioVista() {
     if (--totalJugadores == 0) {
-        std::cout << "destroyed\n";
         SDL_DestroyTexture(texture);
         texture = nullptr;
     }
