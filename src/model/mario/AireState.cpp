@@ -23,8 +23,7 @@ MarioState *AireState::update(Mario *mario) {
     if (stage->collide(&mario->posX, &mario->posY, &mario->velX, &mario->velY)) return SueloState::getInstance();
 
     if (mario->posY > ALTO_NIVEL - ALTO_MARIO) {
-        return MuriendoState::getInstance();
-        //return mario->die();
+        return mario->die();
     }
     return instance;
 }

@@ -22,11 +22,11 @@ public:
     float velX;
     float velY;
     controls_t controls = {0, 0, 0, 0, 0};
+    char contador;
+    bool isGameOver();
 
 private:
     MarioState *state;
     bool isEnabled;
     char lives;
-    bool isGameOver();
-    char contador;
 };
