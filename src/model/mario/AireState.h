@@ -4,7 +4,7 @@
 class AireState : public MarioState
 {
 public:
-    MarioState *update(float *x, float *y, float *xSpeed, float *ySpeed, char *estado, controls_t, char *);
+    MarioState *update(Mario *mario);
     static AireState *getInstance();
 
 private:

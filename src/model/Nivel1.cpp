@@ -65,8 +65,8 @@ void Nivel1::addEnemies(unsigned int amount) {
         Platform *platform = platforms[j];
         punto_t pos = platform->getRandomPoint(ANCHO_ENEMIGO_FUEGO);
         pos.y -= ALTO_ENEMIGO_FUEGO;
-        int direccion = (rand() % 2) ? -1 : 1;
-        EnemigoFuego *enemy = new EnemigoFuego(pos, direccion);
+        int direction = (rand() % 2) ? -1 : 1;
+        EnemigoFuego *enemy = new EnemigoFuego(pos, direction);
         float min, max;
         platform->getLimits(&min, &max);
         enemy->setLimites(min, max);
