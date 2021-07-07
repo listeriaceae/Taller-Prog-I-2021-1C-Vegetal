@@ -25,4 +25,5 @@ private:
     void updateSaltando(int nextX);
     void updateTrepando(int nextY);
     void updateDesconectado(int nextX, int nextY);
+    void updateMuriendo(char estado);
 };

@@ -8,6 +8,9 @@
 #define MARIO_SPRITE_SIZE 24
 #define MARIO_SALTANDO_INDEX 14
 #define MARIO_TREPANDO_INDEX 3
+#define MARIO_MURIENDO_1_INDEX 16
+#define MARIO_MURIENDO_2_INDEX 17
+#define MARIO_MURIENDO_3_INDEX 18
 #define MARIO_DE_ESPALDAS_INDEX 6
 #define TIEMPO_POR_FRAME 2
 #define CANT_FRAMES 4
@@ -71,6 +74,11 @@ void MarioVista::mostrar(punto_t pos, char estado) {
             return;
         default:
             break;
+        case MURIENDO_1:
+        case MURIENDO_2:
+        case MURIENDO_3:
+            updateMuriendo(estado);
+            break;
     }
     dstRect.x = nextX;
     dstRect.y = nextY;
@@ -98,6 +106,24 @@ void MarioVista::updateTrepando(int nextY) {
     tiempo += dstRect.y != nextY;
     flip = (SDL_RendererFlip)((tiempo / 8) % 2);
     srcRect.x = MARIO_TREPANDO_INDEX * MARIO_SPRITE_SIZE;
+}
+
+void MarioVista::updateMuriendo(char estado) {
+    switch (estado)
+    {
+        case MURIENDO_1:
+            srcRect.x = MARIO_MURIENDO_1_INDEX * MARIO_SPRITE_SIZE;
+            break;
+        case MURIENDO_2:
+            srcRect.x = MARIO_MURIENDO_2_INDEX * MARIO_SPRITE_SIZE;
+            break;
+        case MURIENDO_3:
+            srcRect.x = MARIO_MURIENDO_3_INDEX * MARIO_SPRITE_SIZE;
+            break;
+        default:
+            break;
+    }
+    
 }
 
 void MarioVista::updateDesconectado(int nextX, int nextY) {

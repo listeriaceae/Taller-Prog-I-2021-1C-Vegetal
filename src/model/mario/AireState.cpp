@@ -1,6 +1,7 @@
 #include "AireState.h"
 #include "SueloState.h"
 #include "../../utils/Constants.hpp"
+#include "MuriendoState.h"
 
 AireState *AireState::instance = NULL;
 
