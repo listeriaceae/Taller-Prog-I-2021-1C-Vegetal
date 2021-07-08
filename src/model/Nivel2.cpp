@@ -21,22 +21,22 @@ void Nivel2::initPlatforms() {
 }
 
 void Nivel2::initLadders() {
-    stage.addLadder(new Ladder(180, 227.75f, 203.25f));
-    stage.addLadder(new Ladder(92, 197.75f, 167.25f));
-    stage.addLadder(new Ladder(28, 193.75f, 171.25f));
-    stage.addLadder(new Ladder(108, 166.25f, 132.75f));
-    stage.addLadder(new Ladder(180, 161.75f, 137.25f));
-    stage.addLadder(new Ladder(68, 130.25f, 102.75f));
-    stage.addLadder(new Ladder(28, 127.75f, 105.25f));
-    stage.addLadder(new Ladder(180, 95.75f, 71.25f));
-    stage.addLadder(new Ladder(124, 68, 40));
+    stage.addLadder({180, 227.75f, 203.25f});
+    stage.addLadder({92, 197.75f, 167.25f});
+    stage.addLadder({28, 193.75f, 171.25f});
+    stage.addLadder({108, 166.25f, 132.75f});
+    stage.addLadder({180, 161.75f, 137.25f});
+    stage.addLadder({68, 130.25f, 102.75f});
+    stage.addLadder({28, 127.75f, 105.25f});
+    stage.addLadder({180, 95.75f, 71.25f});
+    stage.addLadder({124, 68, 40});
 }
 
-void Nivel2::addPlayers(std::vector<Mario *> *players) {
-    this->players = players;
-    for (Mario *player : *players) {
-        player->setStage(&stage);
-        player->setPos(N2_MARIO_START_X, MARIO_START_Y);
+void Nivel2::addPlayers(std::vector<Mario> &players) {
+    this->players = &players;
+    for (auto &player : players) {
+        player.setStage(&stage);
+        player.setPos(N2_MARIO_START_X, MARIO_START_Y);
     }
 }
 
@@ -44,7 +44,7 @@ void Nivel2::update() {
     if (++tick % 128 == 0) addBarrel();
 
     this->updateBarrels();
-    for (Mario *mario : *players) mario->mover();
+    for (auto &mario : *players) mario.mover();
 }
 
 void Nivel2::addBarrel() {
@@ -64,12 +64,12 @@ void Nivel2::updateBarrels() {
 const estadoNivel_t &Nivel2::getEstado() {
     size_t i = 0;
     for (auto &barril : barriles) {
-        estadoNivel.barrels[i++] = barril.getPos();
+        estadoNivel.barrels[i++] = barril.pos;
     }
     estadoNivel.barrels[i] = {0, 0};
     i = 0;
-    for (Mario *player : *players) {
-        estadoNivel.players[i++] = player->getEstado();
+    for (auto &player : *players) {
+        estadoNivel.players[i++] = player.getEstado();
     }
 
     return estadoNivel;

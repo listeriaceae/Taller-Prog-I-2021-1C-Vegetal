@@ -13,8 +13,8 @@ public:
     void getPlatforms(std::unordered_set<const Platform *> &platforms) const;
     void setLadderBottom(const Ladder *ladder);
     void setLadderTop(const Ladder *ladder);
-    inline const Ladder *getLadderBottom() const { return ladderBottom; }
-    inline const Ladder *getLadderTop() const { return ladderTop; }
+    const Ladder *getLadderBottom() const { return ladderBottom; }
+    const Ladder *getLadderTop() const { return ladderTop; }
     ~Tile();
 
 private:

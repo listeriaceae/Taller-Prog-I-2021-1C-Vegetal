@@ -8,6 +8,6 @@ const GameOverState *GameOverState::getInstance() {
 }
 
 const MarioState *GameOverState::update(Mario &mario) const {
-    mario.pos = {248, 0};
+    mario.pos = {248, 128};
     return this;
 }

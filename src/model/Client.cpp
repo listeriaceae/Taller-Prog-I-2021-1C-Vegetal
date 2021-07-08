@@ -1,7 +1,6 @@
 #include <iostream>
 #include <pthread.h>
 #include <string>
-#include <exception>
 
 #include "Client.h"
 #include "../view/Nivel1Vista.h"
@@ -24,7 +23,7 @@
 typedef struct handleLevelStateArgs
 {
     int clientSocket;
-    estadoJuego_t **estado;
+    const estadoJuego_t *&estado;
 } handleLevelStateArgs_t;
 
 pthread_mutex_t mutex;
@@ -121,11 +120,9 @@ void Client::startGame()
     pthread_t sendThread;
     pthread_create(&sendThread, NULL, sendDataThread, &clientSocket);
 
-    estadoJuego_t *estadoJuego{nullptr};
+    const estadoJuego_t *estadoJuego{nullptr};
 
-    handleLevelStateArgs_t receiveArgs;
-    receiveArgs.clientSocket = clientSocket;
-    receiveArgs.estado = &estadoJuego;
+    handleLevelStateArgs_t receiveArgs{clientSocket, estadoJuego};
 
     pthread_t receiveThread;
     pthread_create(&receiveThread, NULL, receiveDataThread, &receiveArgs);
@@ -137,7 +134,7 @@ void Client::startGame()
         {
             pthread_mutex_lock(&mutex);
             if (currentLevel < estadoJuego->estadoNivel.level)
-                getNextLevelView(&vista, ++currentLevel);
+                getNextLevelView(vista, ++currentLevel);
             SDL_RenderClear(renderer);
             vista->update(*estadoJuego);
             estadoJuego = nullptr;
@@ -175,7 +172,7 @@ void *sendDataThread(void *args)
 void *receiveDataThread(void *args)
 {
     int clientSocket = ((handleLevelStateArgs_t *)args)->clientSocket;
-    estadoJuego_t **estado = ((handleLevelStateArgs_t *)args)->estado;
+    const estadoJuego_t *&estado = ((handleLevelStateArgs_t *)args)->estado;
     estadoJuego_t game;
 
     bool quitRequested = false;
@@ -184,7 +181,7 @@ void *receiveDataThread(void *args)
         if (receiveData(clientSocket, &game) == sizeof(estadoJuego_t))
         {
             pthread_mutex_lock(&mutex);
-            *estado = &game;
+            estado = &game;
             pthread_mutex_unlock(&mutex);
         }
         else
@@ -196,16 +193,16 @@ void *receiveDataThread(void *args)
     return nullptr;
 }
 
-void Client::getNextLevelView(NivelVista **vista, unsigned char currentLevel)
+void Client::getNextLevelView(NivelVista *&vista, unsigned char currentLevel)
 {
-    delete *vista;
+    delete vista;
     if (currentLevel == 1)
     {
-        *vista = new Nivel1Vista(renderer, name);
+        vista = new Nivel1Vista(renderer, name);
     }
     if (currentLevel == 2)
     {
-        *vista = new Nivel2Vista(renderer, name);
+        vista = new Nivel2Vista(renderer, name);
     }
 }
 
@@ -213,27 +210,25 @@ int Client::showStartPage()
 {
     StartPage startPage{renderer};
     int response;
-    try
+    bool quitRequested = false;
+    do
     {
-        do
+        user_t user = startPage.getLoginUser(quitRequested);
+        if (quitRequested)
         {
-            user_t user = startPage.getLoginUser();
-            response = login(user);
+            return EXIT_FAILURE;
+        }
 
-            if (response == LOGIN_OK)
-            {
-                strcpy(this->name, user.username);
-            }
-            else
-            {
+        response = login(user);
+        if (response == LOGIN_OK)
+        {
+            strcpy(this->name, user.username);
+        }
+        else
+        {
             startPage.setResponse(response);
-            }
-        } while (response != LOGIN_OK && serverOpen);
-    }
-    catch (std::exception &e)
-    {
-        return EXIT_FAILURE;
-    }
+        }
+    } while (response != LOGIN_OK && serverOpen);
 
     return EXIT_SUCCESS;
 }
@@ -257,8 +252,8 @@ void Client::showConnectedPage()
     SDL_RenderClear(renderer);
 
     punto_t pos;
-    pos.x = (10 + 2) * ANCHO_PANTALLA / (float)ANCHO_NIVEL;
-    pos.y = (110 + 2) * ALTO_PANTALLA / (float)ALTO_NIVEL;
+    pos.x = (10 + 2) * (ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    pos.y = (110 + 2) * (ALTO_PANTALLA / (float)ALTO_NIVEL);
     TextRenderer::getInstance(renderer)->renderText(pos, "Esperando a jugadores...", 1);
 
     SDL_RenderPresent(renderer);

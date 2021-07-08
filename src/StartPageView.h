@@ -11,7 +11,7 @@ public:
     void show() const;
     bool handle(SDL_Event event);
     user_t getCurrentUser() const { return currentUser; };
-    user_t getLoginUser();
+    user_t getLoginUser(bool &quitRequested);
     void setResponse(char response);
     ~StartPage() = default;
 

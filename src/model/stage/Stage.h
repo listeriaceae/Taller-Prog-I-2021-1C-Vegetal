@@ -9,7 +9,7 @@
 class Stage
 {
 public:
-    void addLadder(const Ladder *ladder);
+    void addLadder(const Ladder &ladder);
     const Ladder *getLadder(float x, float y, int drection) const;
     void addPlatform(const Platform *platform);
     bool collide(float &x, float &y, float &dx, float &dy) const;

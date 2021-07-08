@@ -1,10 +1,8 @@
-#include <iostream>
 #include <SDL2/SDL_image.h>
 #include "StartPageView.h"
 #include "utils/Constants.hpp"
 #include "utils/window.hpp"
 #include "model/Client.h"
-#include "utils/GameAbortedException.h"
 
 #define MS_PER_UPDATE 50
 
@@ -55,7 +53,7 @@ StartPage::StartPage(SDL_Renderer *renderer) {
     this->resultMsg = EMPTY_STR;
 }
 
-user_t StartPage::getLoginUser() {
+user_t StartPage::getLoginUser(bool &quitRequested) {
     SDL_StartTextInput();
 
     bool loginDone = false;
@@ -63,13 +61,12 @@ user_t StartPage::getLoginUser() {
 
     int inicio, fin;
     
-    while (!loginDone) {
+    while (!loginDone && !quitRequested) {
         inicio = SDL_GetTicks();
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                std::cout << "aborted\n";
-                throw GameAborted;
+                quitRequested = true;
             }
             else if (event.type != SDL_MOUSEMOTION)
                 loginDone = handle(event);
@@ -85,11 +82,11 @@ user_t StartPage::getLoginUser() {
     }
 
     SDL_StopTextInput();
-    user_t user;
-    strcpy (user.username, username.c_str());
-    strcpy (user.password, password.c_str());
 
-    std::cout << "capturing user [" << user.username << " " << user.password << "]\n";
+    user_t user;
+    strcpy(user.username, username.c_str());
+    strcpy(user.password, password.c_str());
+
     return user;
 }
 

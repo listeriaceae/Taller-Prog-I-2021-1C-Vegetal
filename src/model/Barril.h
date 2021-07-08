@@ -8,7 +8,7 @@ class Barril : public Entidad
 public:
     Barril(float x, float y);
     void mover();
-    inline bool estaEnNivel() const { return pos.y < ALTO_NIVEL; }
+    bool estaEnNivel() const { return pos.y < ALTO_NIVEL; }
 
 private:
     float velX;

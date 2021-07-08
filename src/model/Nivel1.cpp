@@ -44,18 +44,18 @@ void Nivel1::initPlatforms() {
 }
 
 void Nivel1::initLadders() {
-    stage.addLadder(new Ladder(28, 232, 184));
-    stage.addLadder(new Ladder(212, 184, 144));
-    stage.addLadder(new Ladder(-4, 144, 104));
-    stage.addLadder(new Ladder(212, 104, 72));
-    stage.addLadder(new Ladder(124, 68, 40));
+    stage.addLadder({28, 232, 184});
+    stage.addLadder({212, 184, 144});
+    stage.addLadder({-4, 144, 104});
+    stage.addLadder({212, 104, 72});
+    stage.addLadder({124, 68, 40});
 }
 
-void Nivel1::addPlayers(std::vector<Mario *> *players) {
-    this->players = players;
-    for (Mario *player : *players) {
-        player->setStage(&stage);
-        player->setPos(MARIO_START_X, MARIO_START_Y);
+void Nivel1::addPlayers(std::vector<Mario> &players) {
+    this->players = &players;
+    for (auto &player : players) {
+        player.setStage(&stage);
+        player.setPos(MARIO_START_X, MARIO_START_Y);
     }
 }
 
@@ -74,7 +74,7 @@ void Nivel1::addEnemies(unsigned int amount) {
 
 void Nivel1::update() {
     for (MovingPlatform *platform : movingPlatforms) platform->move();
-    for (Mario *mario : *players) mario->mover();
+    for (auto &mario : *players) mario.mover();
     for (auto &enemy : enemies) enemy.mover();
 }
 
@@ -85,11 +85,11 @@ const estadoNivel_t &Nivel1::getEstado() {
     }
     i = 0;
     for (auto &enemy : enemies) {
-        estadoNivel.enemies[i++] = enemy.getPos();
+        estadoNivel.enemies[i++] = enemy.pos;
     }
     i = 0;
-    for (Mario *player : *players) {
-        estadoNivel.players[i++] = player->getEstado();
+    for (auto &player : *players) {
+        estadoNivel.players[i++] = player.getEstado();
     }
 
     return estadoNivel;

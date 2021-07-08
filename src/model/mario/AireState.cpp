@@ -1,5 +1,6 @@
 #include "AireState.h"
 #include "SueloState.h"
+#include "MuriendoState.h"
 #include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
@@ -18,7 +19,8 @@ const MarioState *AireState::update(Mario &mario) const {
     mario.pos.y -= mario.velY;
     if (stage->collide(mario.pos.x, mario.pos.y, mario.velX, mario.velY)) return SueloState::getInstance();
     if (mario.pos.y > ALTO_NIVEL - ALTO_MARIO) {
-        return mario.die();
+        mario.die();
+        return MuriendoState::getInstance();
     }
     return this;
 }

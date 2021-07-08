@@ -7,12 +7,13 @@
 #define GRID_COLUMNS (STAGE_WIDTH + 1)
 #define SLOPE 0.03125f
 
-void Stage::addLadder(const Ladder *ladder) {
-    const int x = ((int)ladder->getX() + ANCHO_MARIO / 2) / STAGE_WIDTH;
-    int y = (int)ladder->getBottom() / STAGE_HEIGHT;
+void Stage::addLadder(const Ladder &ladder_) {
+    const int x = ((int)ladder_.x + ANCHO_MARIO / 2) / STAGE_WIDTH;
+    int y = (int)ladder_.bottom / STAGE_HEIGHT;
+    Ladder *ladder = new Ladder(ladder_);
     grid[y * GRID_COLUMNS + x].setLadderBottom(ladder);
 
-    y = (int)ladder->getTop() / STAGE_HEIGHT;
+    y = (int)ladder_.top / STAGE_HEIGHT;
     grid[y * GRID_COLUMNS + x].setLadderTop(ladder);
 }
 

@@ -2,7 +2,7 @@
 
 bool Nivel::isComplete() const {
     bool result = false;
-    for (Mario *mario : *players) result |= (mario->getPos().y == 40);
+    for (auto &mario : *players) result |= (mario.pos.y <= 40);
     return result;
 }
 

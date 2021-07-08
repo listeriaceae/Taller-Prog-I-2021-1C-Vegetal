@@ -12,12 +12,12 @@ const SueloState *SueloState::getInstance() {
 const MarioState *SueloState::update(Mario &mario) const {
     const Ladder *ladder = stage->getLadder(mario.pos.x, mario.pos.y, mario.controls.up - mario.controls.down);
     if (ladder != nullptr) {
-        float distance = ladder->getX() - mario.pos.x;
+        const float distance = ladder->x - mario.pos.x;
         if (-4 <= distance && distance <= 4) {
-            mario.pos.x = ladder->getX();
+            mario.pos.x = ladder->x;
             mario.pos.y -= (mario.controls.up - mario.controls.down) * MARIO_VEL_TREPAR;
-            mario.climbMin = ladder->getBottom();
-            mario.climbMax = ladder->getTop();
+            mario.climbMin = ladder->bottom;
+            mario.climbMax = ladder->top;
             return TrepandoState::getInstance();
         }
     }

@@ -13,7 +13,7 @@ public:
     void disable() { isEnabled = false; controls = {0, 0, 0, 0, 0}; }
     void enable() { isEnabled = true; }
     estadoMario_t getEstado() const;
-    const MarioState *die();
+    void die();
 
     controls_t controls{0, 0, 0, 0, 0};
     char estado{REPOSO};

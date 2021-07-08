@@ -10,7 +10,7 @@
 class Nivel
 {
 public:
-    virtual void addPlayers(std::vector<Mario *> *players) = 0;
+    virtual void addPlayers(std::vector<Mario> &players) = 0;
     virtual void update() = 0;
     virtual const estadoNivel_t &getEstado() = 0;
     bool isComplete() const;
@@ -21,5 +21,5 @@ protected:
     estadoNivel_t estadoNivel;
     std::vector<EnemigoFuego> enemies;
     std::vector<Platform> platforms;
-    std::vector<Mario *> *players;
+    std::vector<Mario> *players;
 };
