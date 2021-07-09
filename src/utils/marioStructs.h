@@ -6,6 +6,7 @@ typedef struct estadoMario
     punto_t pos;
     char estado;
     bool isEnabled;
+    char lives;
 } estadoMario_t;
 
 typedef struct controls

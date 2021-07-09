@@ -3,6 +3,8 @@
 #include "mario/MarioState.h"
 #include "../utils/marioStructs.h"
 
+class MarioState;
+
 class Mario : public Entidad
 {
 public:

@@ -29,5 +29,5 @@ void Mario::die() {
 }
 
 estadoMario_t Mario::getEstado() const {
-    return {pos, estado, isEnabled};
+    return {pos, estado, isEnabled, lives};
 }
