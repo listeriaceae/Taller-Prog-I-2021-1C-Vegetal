@@ -52,7 +52,7 @@ MarioVista::MarioVista(const MarioVista &other)
 }
 
 void MarioVista::setColor(size_t color) {
-    srcRect.y = (color + 4) % 5 * ALTO_MARIO;
+    srcRect.y = color * ALTO_MARIO;
 }
 
 void MarioVista::mostrar(const estadoMario_t &estadoMario) {
