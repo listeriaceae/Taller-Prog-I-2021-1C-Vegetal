@@ -102,5 +102,6 @@ enum
     SALTANDO,
     TREPANDO,
     MURIENDO,
-    MUERTO
+    MUERTO,
+    GAME_OVER
 };
