@@ -62,13 +62,13 @@ void AudioController::checkToggleMusicEvent() {
     }
 }
 
-void AudioController::playSounds(char sounds) {
-    if(sounds & JUMP_SOUND_CODE) {
+void AudioController::playSounds(sounds_t sounds) {
+    if(sounds.jump) {
         Mix_PlayChannel(-1, jumpSound, 0);
         printf("salto\n");
     }
 
-    if(sounds & DEATH_SOUND_CODE) {
+    if(sounds.death) {
         Mix_PlayChannel(-1, deathSound, 0);
         printf("muerte\n");
     }

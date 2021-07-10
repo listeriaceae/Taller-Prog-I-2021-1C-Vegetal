@@ -1,4 +1,5 @@
 #pragma once
+#include "../utils/marioStructs.h"
 #include <SDL2/SDL_mixer.h>
 
 class AudioController {
@@ -8,7 +9,7 @@ public:
 
     static void toggleMusic();
     static void checkToggleMusicEvent();
-    static void playSounds(char sounds);
+    static void playSounds(sounds_t sounds);
 private:
     static Mix_Music* music;
     static Mix_Chunk* jumpSound;

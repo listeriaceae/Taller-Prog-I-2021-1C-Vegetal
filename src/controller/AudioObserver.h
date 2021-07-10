@@ -1,4 +1,5 @@
 #pragma once
+#include "../utils/marioStructs.h"
 #include <string>
 
 class AudioObserver {
@@ -6,7 +7,7 @@ public:
     AudioObserver();
     void update(std::string event);
     void reset();
-    char getState();
+    sounds_t getState();
 private:
-    char sounds; 
+    sounds_t sounds; 
 };

@@ -6,17 +6,18 @@ AudioObserver::AudioObserver() { }
 
 void AudioObserver::update(std::string event) {
     if(event == "salto") {
-        this->sounds += JUMP_SOUND_CODE;
+        sounds.jump = 1;
     }
     else if(event == "death") {
-        this->sounds += DEATH_SOUND_CODE;
+        sounds.death = 1;
     }
 }
 
 void AudioObserver::reset() {
-    this->sounds = 0;
+    sounds.jump = 0;
+    sounds.death = 0;
 }
 
-char AudioObserver::getState() {
+sounds_t AudioObserver::getState() {
     return sounds;
 }
