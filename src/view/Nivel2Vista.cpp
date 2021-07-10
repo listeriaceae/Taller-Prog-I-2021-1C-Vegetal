@@ -1,5 +1,4 @@
 #include "Nivel2Vista.h"
-#include "FireBarrelVista.h"
 #include "FuegoVista.h"
 #include "../configuration.hpp"
 #include "../logger.h"
@@ -18,7 +17,6 @@ Nivel2Vista::Nivel2Vista(SDL_Renderer *renderer, const char* clientUsername)
 
     barrilVista = new BarrilVista(renderer);
 
-    entidadesVista.push_back(new FireBarrelVista(renderer));
     entidadesVista.push_back(new FuegoVista(N2_POS_X_FUEGO, N2_POS_Y_FUEGO, renderer));
 }
 
