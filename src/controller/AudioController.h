@@ -8,7 +8,10 @@ public:
 
     static void toggleMusic();
     static void checkToggleMusicEvent();
+    static void playSounds(char sounds);
 private:
     static Mix_Music* music;
+    static Mix_Chunk* jumpSound;
+    static Mix_Chunk* deathSound;
     static bool isKeyDown;
 };

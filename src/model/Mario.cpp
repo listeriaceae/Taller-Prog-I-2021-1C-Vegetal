@@ -6,6 +6,7 @@
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO) {
     this->state = SueloState::getInstance();
+    this->audioObserver = new AudioObserver();
     this->isEnabled = true;
     this->lives = 3;
 }
@@ -37,6 +38,7 @@ estadoMario_t Mario::getEstado() {
     } else {
         estadoMario.estado = DESCONECTADO;
     }
+    estadoMario.sounds = this->audioObserver->getState();
     return estadoMario;
 }
 

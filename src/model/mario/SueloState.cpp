@@ -32,6 +32,9 @@ MarioState *SueloState::update(Mario *mario) {
     if (mario->controls.space || !stage->collide(&mario->posX, &mario->posY, &mario->velX, &mario->velY)) {
         mario->velX *= mario->controls.space;
         mario->velY = mario->controls.space * MARIO_VEL_SALTO;
+        if(mario->velY > 0) {
+            mario->audioObserver->update("salto");
+        }
         return AireState::getInstance();
     }
     mario->estado = (mario->estado == DE_ESPALDAS) + (mario->velX != 0) * (CORRIENDO - (mario->estado == DE_ESPALDAS));

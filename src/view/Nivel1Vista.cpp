@@ -4,6 +4,7 @@
 #include "PaulineVista.h"
 #include "DonkeyKongVista.h"
 #include "DefaultConfigVista.h"
+#include "../controller/AudioController.h"
 #include "../utils/Constants.hpp"
 
 Nivel1Vista::Nivel1Vista(SDL_Renderer *renderer, bool defaultConfig, const char* clientUsername)
@@ -31,6 +32,10 @@ Nivel1Vista::Nivel1Vista(SDL_Renderer *renderer, bool defaultConfig, const char*
 
 void Nivel1Vista::update(estadoJuego_t *estadoJuego) {
     estadoNivel_t* estadoNivel = &(estadoJuego->estadoNivel);
+
+    for(unsigned int j = 0; j < this->jugadoresVista.size(); j++) {
+        AudioController::playSounds(estadoNivel->players[j].sounds);
+    }
 
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
@@ -63,8 +68,9 @@ void Nivel1Vista::update(estadoJuego_t *estadoJuego) {
         }
         i++;
     }
-    if(vistaJugadorPrincipal != NULL && estadoMarioPrincipal != NULL)
-        vistaJugadorPrincipal->mostrar(estadoMarioPrincipal->pos, estadoMarioPrincipal->estado);
+    if(vistaJugadorPrincipal != NULL && estadoMarioPrincipal != NULL) {
+        vistaJugadorPrincipal->mostrar(estadoMarioPrincipal->pos, estadoMarioPrincipal->estado); 
+    }  
 }
 
 Nivel1Vista::~Nivel1Vista() {
