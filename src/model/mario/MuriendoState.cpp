@@ -7,8 +7,9 @@
 #define TIEMPO_MURIENDO 96
 #define TIEMPO_RESPAWN 128
 
+const MuriendoState MuriendoState::instance{};
+
 const MuriendoState *MuriendoState::getInstance() {
-    static const MuriendoState instance;
     return &instance;
 }
 

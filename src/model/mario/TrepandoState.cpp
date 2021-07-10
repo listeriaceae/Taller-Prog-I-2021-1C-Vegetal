@@ -3,8 +3,9 @@
 #include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
+const TrepandoState TrepandoState::instance{};
+
 const TrepandoState *TrepandoState::getInstance() {
-    static const TrepandoState instance;
     return &instance;
 }
 

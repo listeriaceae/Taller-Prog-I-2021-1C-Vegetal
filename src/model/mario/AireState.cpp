@@ -5,10 +5,9 @@
 #include "../../utils/Constants.hpp"
 #include "MuriendoState.h"
 
-
+const AireState AireState::instance{};
 
 const AireState *AireState::getInstance() {
-    static const AireState instance;
     return &instance;
 }
 

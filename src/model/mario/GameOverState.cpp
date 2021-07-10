@@ -2,8 +2,10 @@
 #include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
+
+const GameOverState GameOverState::instance{};
+
 const GameOverState *GameOverState::getInstance() {
-    static const GameOverState instance;
     return &instance;
 }
 

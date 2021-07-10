@@ -4,8 +4,9 @@
 #include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
+const SueloState SueloState::instance{};
+
 const SueloState *SueloState::getInstance() {
-    static const SueloState instance;
     return &instance;
 }
 
