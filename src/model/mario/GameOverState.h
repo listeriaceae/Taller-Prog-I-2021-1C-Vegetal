@@ -5,6 +5,7 @@ class GameOverState : public MarioState
 {
 public:
     const MarioState *update(Mario &mario) const;
+    const MarioState *resetPos(float, float, Mario &) const;
     static const GameOverState *getInstance();
 
 private:
