@@ -22,6 +22,7 @@ MuriendoState  *MuriendoState::getInstance() {
 }
 
 MarioState *MuriendoState::update(Mario *mario) {
+    
     switch (mario->estado)
     {
         case MURIENDO_1:

@@ -4,18 +4,33 @@
 
 bool AudioController::isKeyDown = false;
 Mix_Music* AudioController::music = NULL;
+Mix_Chunk* AudioController::jumpSound = NULL;
+Mix_Chunk* AudioController::deathSound = NULL;
 
 const char* const MUSIC_FILE_NAME = "res/Audio/backgroundMusic.wav";
+const char* const JUMP_SOUND_FILE = "res/Audio/jump.wav";
+const char* const DEATH_SOUND_FILE = "res/Audio/death.wav";
+
+const char JUMP_SOUND_CODE = 1;
+const char DEATH_SOUND_CODE = 2;
 
 void AudioController::loadAudioFiles() {
-    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 512) < 0)
         logger::Logger::getInstance().logError("Mixer initialization error");
 
     music = Mix_LoadMUS(MUSIC_FILE_NAME);
     if(music == NULL) 
         logger::Logger::getInstance().logError("Music file not found: " + (std::string)MUSIC_FILE_NAME);
     
+    jumpSound = Mix_LoadWAV(JUMP_SOUND_FILE);
+    if(jumpSound == NULL)
+        logger::Logger::getInstance().logError("jump sound effect file not found: " + (std::string)JUMP_SOUND_FILE);
+
+    deathSound = Mix_LoadWAV(DEATH_SOUND_FILE);
+    if(deathSound == NULL)
+        logger::Logger::getInstance().logError("death sound effect file not found: " + (std::string)DEATH_SOUND_FILE);
     
+
 }
 
 void AudioController::toggleMusic() {
@@ -46,6 +61,17 @@ void AudioController::checkToggleMusicEvent() {
         }
     }
 }
+
+void AudioController::playSounds(sounds_t sounds) {
+    if(sounds.jump) {
+        Mix_PlayChannel(-1, jumpSound, 0);
+    }
+
+    if(sounds.death) {
+        Mix_PlayChannel(-1, deathSound, 0);
+    }
+}
+
 void AudioController::closeAudioFiles() {
     Mix_FreeMusic(music);
     music = NULL;

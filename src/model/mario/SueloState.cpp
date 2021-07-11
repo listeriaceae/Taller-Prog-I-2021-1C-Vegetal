@@ -29,9 +29,14 @@ MarioState *SueloState::update(Mario *mario) {
     mario->velY = GRAVEDAD;
     mario->posX += mario->velX * ((mario->posX < ANCHO_NIVEL - ANCHO_MARIO && 0 < mario->velX) || (0 < mario->posX && mario->velX < 0));
     mario->posY -= mario->velY;
-    if (mario->controls.space || !stage->collide(&mario->posX, &mario->posY, &mario->velX, &mario->velY)) {
-        mario->velX *= mario->controls.space;
-        mario->velY = mario->controls.space * MARIO_VEL_SALTO;
+    if(mario->controls.space) {
+        mario->velY = MARIO_VEL_SALTO;
+        mario->audioObserver->update("salto");
+        return AireState::getInstance();
+    }
+    if (!stage->collide(&mario->posX, &mario->posY, &mario->velX, &mario->velY)) {
+        mario->velX = 0;
+        mario->velY = 0;
         return AireState::getInstance();
     }
     mario->estado = (mario->estado == DE_ESPALDAS) + (mario->velX != 0) * (CORRIENDO - (mario->estado == DE_ESPALDAS));
