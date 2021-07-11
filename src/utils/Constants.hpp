@@ -40,9 +40,6 @@
 #define PAULINE_POS_X 88
 #define PAULINE_POS_Y 34
 
-#define ANCHO_FIRE_BARREL 16
-#define ALTO_FIRE_BARREL 16
-
 #define ANCHO_DEFAULT_CONFIG 108
 #define ALTO_DEFAULT_CONFIG 7
 
@@ -69,9 +66,6 @@
 #define N2_POS_Y_FUEGO 216
 
 #define N2_POS_Y_BARRIL 30
-
-#define POS_X_FIREBARREL 16
-#define POS_Y_FIREBARREL 232
 
 // Common
 #define MARIO_START_Y 232
