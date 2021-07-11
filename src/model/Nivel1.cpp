@@ -55,7 +55,7 @@ void Nivel1::addPlayers(std::vector<Mario> &players) {
     this->players = &players;
     for (auto &player : players) {
         player.setStage(&stage);
-        player.resetPos(MARIO_START_X, MARIO_START_Y);
+        player.reset(MARIO_START_X, MARIO_START_Y);
     }
 }
 
