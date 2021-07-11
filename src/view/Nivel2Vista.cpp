@@ -46,21 +46,21 @@ void Nivel2Vista::update(estadoJuego_t *estadoJuego) {
     }
 
     size_t i = 0;
-    MarioVista* vistaJugadorPrincipal = NULL;
-    estadoMario_t* estadoMarioPrincipal = NULL;
+    MarioVista* vistaMarioCliente = NULL;
+    estadoMario_t* estadoMarioCliente = NULL;
     for(MarioVista *player : this->jugadoresVista) {
         if(strcmp(estadoJuego->players[i].name, clientUsername) != 0) {
             estadoMario_t estado = estadoNivel->players[i];
             player->mostrar(estado.pos, estado.estado);
         }
         else {
-            vistaJugadorPrincipal = player;
-            estadoMarioPrincipal = &(estadoNivel->players[i]);
+            vistaMarioCliente = player;
+            estadoMarioCliente = &(estadoNivel->players[i]);
         }
         i++;
     }
-    if(vistaJugadorPrincipal != NULL && estadoMarioPrincipal != NULL)
-        vistaJugadorPrincipal->mostrar(estadoMarioPrincipal->pos, estadoMarioPrincipal->estado);
+    if(vistaMarioCliente != NULL && estadoMarioCliente != NULL)
+        vistaMarioCliente->mostrar(estadoMarioCliente->pos, estadoMarioCliente->estado);
 }
 
 Nivel2Vista::~Nivel2Vista() {
