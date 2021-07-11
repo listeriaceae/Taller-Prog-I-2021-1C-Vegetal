@@ -16,7 +16,6 @@ public:
     void mover();
     void disable();
     void enable();
-    void resetAudioObserver();
     estadoMario_t getEstado();
     AudioObserver* audioObserver;
     MarioState *die();

@@ -22,10 +22,7 @@ MuriendoState  *MuriendoState::getInstance() {
 }
 
 MarioState *MuriendoState::update(Mario *mario) {
-    if(mario->contador == 0) {
-        mario->audioObserver->update("death");
-    }
-
+    
     switch (mario->estado)
     {
         case MURIENDO_1:

@@ -5,7 +5,7 @@ typedef struct sounds
 {
     unsigned char jump : 1;
     unsigned char death : 1;
-    unsigned char : 5; //Espacio reservado para otros sonidos
+    unsigned char : 6; //Espacio reservado para otros sonidos
 } sounds_t;
 
 typedef struct estadoMario

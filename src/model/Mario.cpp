@@ -52,6 +52,7 @@ void Mario::enable() {
 
 MarioState *Mario::die() {
     this->lives--;
+    this->audioObserver->update("death");
     return MuriendoState::getInstance();;
 }
 
