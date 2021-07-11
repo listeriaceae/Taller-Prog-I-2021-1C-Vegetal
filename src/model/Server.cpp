@@ -172,7 +172,9 @@ void *acceptNewConnections(void* serverArg) {
     Server* server = (Server *)serverArg;
 
     while(true) {
-        int client = accept(server->serverSocket, (struct sockaddr *)&(server->clientAddress), (socklen_t*) &(server->clientAddrLen));
+        struct sockaddr_in cAddr;
+        int cAddrLen;
+        int client = accept(server->serverSocket, (struct sockaddr *)&cAddr, (socklen_t*)&cAddrLen);
 
         handleLoginArgs_t arguments;
         arguments.clientSocket = client;
