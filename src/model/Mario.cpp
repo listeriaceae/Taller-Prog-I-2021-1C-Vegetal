@@ -22,9 +22,10 @@ void Mario::die() {
     if (contador != 0) return;
     ++contador;
     --lives;
+    this->audioObserver.update(DEATH);
     this->state = MuriendoState::getInstance();
 }
 
 estadoMario_t Mario::getEstado() const {
-    return {pos, estado, isEnabled, lives};
+    return {pos, estado, isEnabled, lives, this->audioObserver.getState()};
 }

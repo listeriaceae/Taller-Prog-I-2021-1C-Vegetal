@@ -157,6 +157,7 @@ void Server::startGame() {
                 if (player.second.isConnected) {
                     player.second.isConnected = sendData(player.second.clientSocket, &game) == sizeof(estadoJuego_t);
                 }
+                player.second.mario->audioObserver.reset();
             }
             if (__builtin_expect(nivel->isComplete(), 0)) {
                 getNextLevel(nivel, ++currentLevel);
