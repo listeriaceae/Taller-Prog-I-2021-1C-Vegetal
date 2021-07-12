@@ -40,8 +40,8 @@ void Nivel1Vista::update(const estadoJuego_t &estadoJuego) {
     }
 
     for(unsigned int j = 0; j < this->jugadoresVista.size(); j++) {
-        if(strcmp(estadoJuego->players[j].name, clientUsername) == 0) {
-            AudioController::playSounds(estadoNivel->players[j].sounds);
+        if(strcmp(estadoJuego.players[j].name, clientUsername) == 0) {
+            AudioController::playSounds(estadoJuego.estadoNivel.players[j].sounds);
         }
     }
 
