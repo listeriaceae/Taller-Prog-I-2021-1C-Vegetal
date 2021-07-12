@@ -20,29 +20,29 @@
 #define ERROR_MSG_X 74
 #define ERROR_MSG_Y 138
 
-constexpr const char *USERNAME = "USERNAME";
-constexpr const char *PASSWORD = "PASSWORD";
-constexpr const char *DONE = "DONE";
+const char *const USERNAME = "USERNAME";
+const char *const PASSWORD = "PASSWORD";
+const char *const DONE = "DONE";
 
-constexpr const char *EMPTY_STR = "";
-constexpr const char *MSG_OK = "OK";
-constexpr const char *MSG_ABORTED = "SERVER DISCONNECTED";
-constexpr const char *MSG_INVALID_USER = "INVALID USER";
-constexpr const char *MSG_INVALID_PASS = "INVALID PASSWORD";
-constexpr const char *MSG_USER_ALREADY_CONNECTED = "USER ALREADY CONNECTED";
-constexpr const char *MSG_MAX_USERS_CONNECTED = "MAX USERS CONNECTED";
+const char *const EMPTY_STR = "";
+const char *const MSG_OK = "OK";
+const char *const MSG_ABORTED = "SERVER DISCONNECTED";
+const char *const MSG_INVALID_USER = "INVALID USER";
+const char *const MSG_INVALID_PASS = "INVALID PASSWORD";
+const char *const MSG_USER_ALREADY_CONNECTED = "USER ALREADY CONNECTED";
+const char *const MSG_MAX_USERS_CONNECTED = "MAX USERS CONNECTED";
 
-constexpr SDL_Rect usernameRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
+const SDL_Rect usernameRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(USER_BUTTON_Y * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f),
                                (int)(TEXT_BUTTON_WIDTH * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(BUTTON_HEIGHT * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f)};
 
-constexpr SDL_Rect passwordRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
+const SDL_Rect passwordRect = {(int)(TEXT_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(PASS_BUTTON_Y * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f),
                                (int)(TEXT_BUTTON_WIDTH * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                                (int)(BUTTON_HEIGHT * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f)};
 
-constexpr SDL_Rect doneRect = {(int)(DONE_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
+const SDL_Rect doneRect = {(int)(DONE_BUTTON_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                            (int)(DONE_BUTTON_Y * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f),
                            (int)(DONE_BUTTON_WIDTH * ANCHO_PANTALLA / (float)ANCHO_NIVEL + 0.5f),
                            (int)(BUTTON_HEIGHT * ALTO_PANTALLA / (float)ALTO_NIVEL + 0.5f)};

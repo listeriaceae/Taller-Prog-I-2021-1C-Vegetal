@@ -4,8 +4,9 @@
 #include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
+const SueloState SueloState::instance{};
+
 const SueloState *SueloState::getInstance() {
-    static const SueloState instance;
     return &instance;
 }
 
@@ -25,9 +26,14 @@ const MarioState *SueloState::update(Mario &mario) const {
     mario.velY = GRAVEDAD;
     mario.pos.x += mario.velX * ((mario.pos.x < ANCHO_NIVEL - ANCHO_MARIO && 0 < mario.velX) || (0 < mario.pos.x && mario.velX < 0));
     mario.pos.y -= mario.velY;
-    if (mario.controls.space || !stage->collide(mario.pos.x, mario.pos.y, mario.velX, mario.velY)) {
-        mario.velX *= mario.controls.space;
-        mario.velY = mario.controls.space * MARIO_VEL_SALTO;
+    if (mario.controls.space) {
+        mario.velY = MARIO_VEL_SALTO;
+        mario.audioObserver.update(JUMP);
+        return AireState::getInstance();
+    }
+    if (!stage->collide(mario.pos.x, mario.pos.y, mario.velX, mario.velY)) {
+        mario.velX = 0;
+        mario.velY = 0;
         return AireState::getInstance();
     }
     mario.estado = (mario.estado == DE_ESPALDAS) + (mario.velX != 0) * (CORRIENDO - (mario.estado == DE_ESPALDAS));

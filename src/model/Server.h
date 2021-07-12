@@ -10,8 +10,6 @@ public:
     int startServer();
 
     std::map<std::string, user_t> users;
-    struct sockaddr_in clientAddress;
-    int clientAddrLen;
     int serverSocket;
     size_t maxPlayers;
     std::map<std::string, player_t> connectedPlayers;

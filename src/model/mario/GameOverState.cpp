@@ -2,12 +2,18 @@
 #include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
+
+const GameOverState GameOverState::instance{};
+
 const GameOverState *GameOverState::getInstance() {
-    static const GameOverState instance;
     return &instance;
 }
 
+const MarioState *GameOverState::reset(Mario &) const {
+    return this;
+}
+
 const MarioState *GameOverState::update(Mario &mario) const {
-    mario.pos = {248, 128};
+    mario.estado = GAME_OVER;
     return this;
 }

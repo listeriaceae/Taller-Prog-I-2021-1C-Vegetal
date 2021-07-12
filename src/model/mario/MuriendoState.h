@@ -9,5 +9,5 @@ public:
 
 private:
     MuriendoState() = default;
-    ~MuriendoState() = default;
+    static const MuriendoState instance;
 };

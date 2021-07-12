@@ -7,8 +7,9 @@
 #define TIEMPO_MURIENDO 96
 #define TIEMPO_RESPAWN 128
 
+const MuriendoState MuriendoState::instance{};
+
 const MuriendoState *MuriendoState::getInstance() {
-    static const MuriendoState instance;
     return &instance;
 }
 
@@ -19,7 +20,7 @@ const MarioState *MuriendoState::update(Mario &mario) const {
             return GameOverState::getInstance();
         }
         mario.contador = 0;
-        mario.setPos(MARIO_START_X, MARIO_START_Y);
+        mario.reset();
         return SueloState::getInstance();
     }
     mario.estado = MURIENDO;

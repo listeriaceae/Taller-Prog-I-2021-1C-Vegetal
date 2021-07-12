@@ -9,5 +9,5 @@ public:
 
 private:
     AireState() = default;
-    ~AireState() = default;
+    static const AireState instance;
 };

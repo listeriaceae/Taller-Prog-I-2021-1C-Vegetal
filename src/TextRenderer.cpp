@@ -11,7 +11,7 @@
 #define SPACING 2
 
 const std::string CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.- ";
-constexpr const char *IMG_FONT = "res/font.png";
+const char *const IMG_FONT = "res/font.png";
 
 TextRenderer *TextRenderer::instance{nullptr};
 SDL_Renderer *TextRenderer::renderer{nullptr};
@@ -33,7 +33,7 @@ TextRenderer::TextRenderer(SDL_Renderer *renderer) {
     srcRect = {0, 0, LETTER_WIDTH, LETTER_HEIGHT};
 }
 
-void TextRenderer::renderText(punto_t punto, const char *text, const float resize, color_t color) {
+void TextRenderer::renderText(punto_t punto, const char *text, const float resize, Color color) {
     srcRect.y = color * LETTER_Y;
     dstRect.x = punto.x;
     dstRect.y = punto.y;
