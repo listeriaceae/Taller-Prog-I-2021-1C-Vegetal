@@ -9,6 +9,5 @@ public:
 
 private:
     GameOverState() = default;
-    ~GameOverState() = default;
     static const GameOverState instance;
 };
