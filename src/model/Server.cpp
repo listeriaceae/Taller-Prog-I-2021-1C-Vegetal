@@ -61,7 +61,7 @@ int Server::startServer() {
     logger::Logger::getInstance().setLogLevel(logLevel);
 
     int configPlayers = config->getMaxPlayers();
-    if(configPlayers < 1 || 4 < configPlayers) {
+    if(configPlayers < MIN_PLAYERS || MAX_PLAYERS < configPlayers) {
         logger::Logger::getInstance().logDebug(CANTIDAD_DE_JUGADORES_INVALIDA);
         maxPlayers = DEFAULT_MAX_PLAYERS;
     }

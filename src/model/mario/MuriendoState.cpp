@@ -20,7 +20,7 @@ const MarioState *MuriendoState::update(Mario &mario) const {
             return GameOverState::getInstance();
         }
         mario.contador = 0;
-        mario.setPos(MARIO_START_X, MARIO_START_Y);
+        mario.reset();
         return SueloState::getInstance();
     }
     mario.estado = MURIENDO;

@@ -9,7 +9,11 @@ const GameOverState *GameOverState::getInstance() {
     return &instance;
 }
 
+const MarioState *GameOverState::reset(Mario &) const {
+    return this;
+}
+
 const MarioState *GameOverState::update(Mario &mario) const {
-    mario.pos = {248, 128};
+    mario.estado = GAME_OVER;
     return this;
 }

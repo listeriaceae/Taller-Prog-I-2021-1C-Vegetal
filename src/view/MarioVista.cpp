@@ -76,6 +76,8 @@ void MarioVista::mostrar(const estadoMario_t &estadoMario) {
         case MUERTO:
             updateMuriendo(estadoMario.estado);
             break;
+        case GAME_OVER:
+            return;
         default:
             break;
     }
