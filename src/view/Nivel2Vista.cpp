@@ -28,6 +28,12 @@ void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
         }
     }
 
+    for(unsigned int j = 0; j < this->jugadoresVista.size(); j++) {
+        if(strcmp(estadoJuego->players[j].name, clientUsername) == 0) {
+            AudioController::playSounds(estadoNivel->players[j].sounds);
+        }
+    }
+
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
     for (EntidadEstaticaVista *vista : entidadesVista) {
