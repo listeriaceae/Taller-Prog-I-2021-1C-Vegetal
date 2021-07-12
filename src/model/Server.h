@@ -2,6 +2,7 @@
 #include <arpa/inet.h>
 #include <map>
 #include "../utils/player.h"
+#include "../utils/user.h"
 
 class Server
 {
