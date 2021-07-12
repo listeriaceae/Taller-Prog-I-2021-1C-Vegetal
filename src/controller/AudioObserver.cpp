@@ -1,6 +1,6 @@
 #include "AudioObserver.h"
 
-void AudioObserver::update(sound_codes_t soundCode) {
+void AudioObserver::update(SoundCode soundCode) {
     switch (soundCode) {
         case JUMP:
             sounds.jump = 1;

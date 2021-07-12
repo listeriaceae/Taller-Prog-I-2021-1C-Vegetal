@@ -3,7 +3,7 @@
 
 class AudioObserver {
 public:
-    void update(sound_codes_t soundCode);
+    void update(SoundCode soundCode);
     void reset();
     sounds_t getState() const;
 private:

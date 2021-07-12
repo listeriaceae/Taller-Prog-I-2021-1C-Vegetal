@@ -1,7 +1,7 @@
 #pragma once
 #include "punto.h"
 
-enum sound_codes_t {
+enum SoundCode {
     JUMP,
     DEATH
 };
