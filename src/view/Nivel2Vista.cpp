@@ -1,34 +1,36 @@
 #include "Nivel2Vista.h"
-#include "FireBarrelVista.h"
 #include "FuegoVista.h"
-#include "PaulineVista.h"
-#include "DonkeyKongVista.h"
-#include "DefaultConfigVista.h"
+#include "../configuration.hpp"
+#include "../logger.h"
 #include "../controller/AudioController.h"
 #include "../utils/Constants.hpp"
 
-Nivel2Vista::Nivel2Vista(SDL_Renderer *renderer, bool defaultConfig, const char* clientUsername)
-: NivelVista(renderer) {
-    strcpy(this->clientUsername, clientUsername);
+Nivel2Vista::Nivel2Vista(SDL_Renderer *renderer, const char* clientUsername)
+: NivelVista(renderer, clientUsername) {
+
+    const auto &stages = configuration::GameConfiguration::getInstance(CONFIG_FILE)->getStages();
+    if (stages.size() > 1)
+    {
+        const std::string rutaImagen = stages.at(1).getBackgrounds().at(0);
+        logger::Logger::getInstance().logDebug("Stage 2 background img: " + rutaImagen);
+        this->setBackground(rutaImagen);
+    }
 
     barrilVista = new BarrilVista(renderer);
 
-    entidadesVista.push_back(new FireBarrelVista(renderer));
     entidadesVista.push_back(new FuegoVista(N2_POS_X_FUEGO, N2_POS_Y_FUEGO, renderer));
-
-    entidadesVista.push_back(new PaulineVista(renderer));
-    entidadesVista.push_back(new DonkeyKongVista(renderer));
-
-    if (defaultConfig) entidadesVista.push_back(new DefaultConfigVista(renderer));
-
 }
 
-void Nivel2Vista::update(estadoJuego_t *estadoJuego) {
-    estadoNivel_t* estadoNivel = &(estadoJuego->estadoNivel);
+void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
+    for(unsigned int j = 0; j < this->jugadoresVista.size(); j++) {
+        if(strcmp(estadoJuego.players[j].name, clientUsername) == 0) {
+            AudioController::playSounds(estadoJuego.estadoNivel.players[j].sounds);
+        }
+    }
 
     for(unsigned int j = 0; j < this->jugadoresVista.size(); j++) {
-        if(strcmp(estadoJuego->players[j].name, clientUsername) == 0) {
-            AudioController::playSounds(estadoNivel->players[j].sounds);
+        if(strcmp(estadoJuego.players[j].name, clientUsername) == 0) {
+            AudioController::playSounds(estadoJuego.estadoNivel.players[j].sounds);
         }
     }
 
@@ -39,28 +41,28 @@ void Nivel2Vista::update(estadoJuego_t *estadoJuego) {
     }
 
     barrilVista->startRender();
-    for (punto_t pos : estadoNivel->barrels) {
+    for (auto &pos : estadoJuego.estadoNivel.barrels) {
         if (pos.y == 0) break;
         barrilVista->mover(pos);
         barrilVista->mostrar();
     }
 
     size_t i = 0;
-    MarioVista* vistaMarioCliente = NULL;
-    estadoMario_t* estadoMarioCliente = NULL;
-    for(MarioVista *player : this->jugadoresVista) {
-        if(strcmp(estadoJuego->players[i].name, clientUsername) != 0) {
-            estadoMario_t estado = estadoNivel->players[i];
-            player->mostrar(estado.pos, estado.estado);
+    MarioVista *vistaMarioCliente{nullptr};
+    const estadoMario_t *estadoMarioCliente{nullptr};
+    for (auto &player : this->jugadoresVista) {
+        player.setColor((i + 1) * estadoJuego.estadoNivel.players[i].isEnabled);
+        if (strcmp(estadoJuego.players[i].name, clientUsername) != 0) {
+            player.mostrar(estadoJuego.estadoNivel.players[i]);
         }
         else {
-            vistaMarioCliente = player;
-            estadoMarioCliente = &(estadoNivel->players[i]);
+            vistaMarioCliente = &player;
+            estadoMarioCliente = &(estadoJuego.estadoNivel.players[i]);
         }
-        i++;
+        ++i;
     }
     if(vistaMarioCliente != NULL && estadoMarioCliente != NULL)
-        vistaMarioCliente->mostrar(estadoMarioCliente->pos, estadoMarioCliente->estado);
+        vistaMarioCliente->mostrar(*estadoMarioCliente);
 }
 
 Nivel2Vista::~Nivel2Vista() {

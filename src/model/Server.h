@@ -10,9 +10,9 @@ public:
     int startServer();
 
     std::map<std::string, user_t> users;
-    unsigned int maxPlayers;
     int serverSocket;
-    std::map<std::string, player_t *> connectedPlayers;
+    size_t maxPlayers;
+    std::map<std::string, player_t> connectedPlayers;
 
 private:
     void startGame();

@@ -6,12 +6,10 @@ class Entidad
 public:
     Entidad(float posX, float posY, int ancho, int alto);
     virtual void mover() = 0; //separar entidades en entidades estaticas y dinamicas
-    punto_t getPos();
     virtual ~Entidad() = default;
-    float posX;
-    float posY;
+    punto_t pos;
 
 protected:
-    int ancho;
-    int alto;
+    const int ancho;
+    const int alto;
 };
