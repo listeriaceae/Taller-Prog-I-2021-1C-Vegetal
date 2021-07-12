@@ -27,5 +27,5 @@ void Mario::die() {
 }
 
 estadoMario_t Mario::getEstado() const {
-    return {pos, estado, isEnabled, lives, this->audioObserver.getState()};
+    return {pos, estado, isEnabled, this->audioObserver.getState()};
 }

@@ -19,10 +19,11 @@ public:
     void die();
 
     AudioObserver audioObserver{};
-    controls_t controls{0, 0, 0, 0, 0};
-    char estado{REPOSO};
-    unsigned char contador{0};
     char lives{3};
+    unsigned char score{0};
+    controls_t controls{0, 0, 0, 0, 0};
+    unsigned char contador{0};
+    char estado{REPOSO};
     float velX{0.f};
     float velY{0.f};
     float climbMin{256};
