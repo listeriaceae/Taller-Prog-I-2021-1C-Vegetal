@@ -15,8 +15,8 @@ class MarioState
 {
 public:
     static void setStage(const Stage *stage);
+    virtual const MarioState *reset(Mario &mario) const;
     virtual const MarioState *update(Mario &mario) const = 0;
-    virtual const MarioState *reset(float x, float y, Mario &mario) const;
     virtual ~MarioState() = default;
 
 protected:

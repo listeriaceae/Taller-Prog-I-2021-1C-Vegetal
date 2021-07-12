@@ -5,8 +5,8 @@
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO), state(SueloState::getInstance()) {}
 
-void Mario::reset(const float x, const float y) {
-    this->state = this->state->reset(x, y, *this);
+void Mario::reset() {
+    this->state = this->state->reset(*this);
 }
 
 void Mario::setStage(const Stage *stage) const {

@@ -9,7 +9,7 @@ const GameOverState *GameOverState::getInstance() {
     return &instance;
 }
 
-const MarioState *GameOverState::reset(float, float, Mario &) const {
+const MarioState *GameOverState::reset(Mario &) const {
     return this;
 }
 

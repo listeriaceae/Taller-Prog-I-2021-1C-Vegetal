@@ -78,6 +78,8 @@ void MarioVista::mostrar(const estadoMario_t &estadoMario) {
             break;
         case GAME_OVER:
             return;
+        default:
+            break;
     }
     dstRect.x = nextX;
     dstRect.y = nextY;

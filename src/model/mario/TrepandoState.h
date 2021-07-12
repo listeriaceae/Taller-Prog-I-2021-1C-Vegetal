@@ -9,6 +9,5 @@ public:
 
 private:
     TrepandoState() = default;
-    ~TrepandoState() = default;
     static const TrepandoState instance;
 };

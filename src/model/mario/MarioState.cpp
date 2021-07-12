@@ -5,8 +5,8 @@
 
 const Stage *MarioState::stage{nullptr};
 
-const MarioState *MarioState::reset(const float x, const float y, Mario &mario) const {
-    mario.pos = {x, y};
+const MarioState *MarioState::reset(Mario &mario) const {
+    mario.pos = {MARIO_START_X, MARIO_START_Y};
     mario.estado = REPOSO;
     return SueloState::getInstance();
 }

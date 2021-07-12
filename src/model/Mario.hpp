@@ -9,7 +9,7 @@ class Mario : public Entidad
 {
 public:
     Mario();
-    void reset(float x, float y);
+    void reset();
     void setStage(const Stage *stage) const;
     void mover();
     void disable() { isEnabled = false; controls = {0, 0, 0, 0, 0}; }
