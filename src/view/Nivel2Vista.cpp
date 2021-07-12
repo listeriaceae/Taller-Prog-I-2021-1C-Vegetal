@@ -28,12 +28,6 @@ void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
         }
     }
 
-    for(unsigned int j = 0; j < this->jugadoresVista.size(); j++) {
-        if(strcmp(estadoJuego.players[j].name, clientUsername) == 0) {
-            AudioController::playSounds(estadoJuego.estadoNivel.players[j].sounds);
-        }
-    }
-
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
     for (EntidadEstaticaVista *vista : entidadesVista) {
@@ -59,6 +53,7 @@ void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
             vistaMarioCliente = &player;
             estadoMarioCliente = &(estadoJuego.estadoNivel.players[i]);
         }
+        statsVista.mostrar(estadoJuego.players[i], i);
         ++i;
     }
     if(vistaMarioCliente != NULL && estadoMarioCliente != NULL)

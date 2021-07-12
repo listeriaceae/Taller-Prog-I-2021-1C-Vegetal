@@ -5,7 +5,7 @@
 
 typedef struct player
 {
-    user_t user;
+    char user[4];
     Mario *mario;
     int clientSocket;
     bool isConnected;

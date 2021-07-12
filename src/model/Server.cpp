@@ -29,7 +29,7 @@ typedef struct handleLoginArgs {
 } handleLoginArgs_t;
 
 void getNextLevel(Nivel *&nivel, unsigned char currentLevel);
-estadoJugador_t getEstadoJugador(player_t &player);
+void getEstadoJugadores(estadoJuego_t &estado,  std::map<std::string, player_t> &connectedPlayers);
 
 void *acceptNewConnections(void *serverArg);
 void *handleLogin(void *arguments);
@@ -114,6 +114,7 @@ void Server::startGame() {
 
     unsigned char currentLevel = 0;
     Nivel *nivel{nullptr};
+    estadoJuego_t game;
 
     getNextLevel(nivel, ++currentLevel);
     nivel->addPlayers(marios);
@@ -121,7 +122,8 @@ void Server::startGame() {
     {
         size_t i = 0;
         for(auto &player : connectedPlayers) {
-            player.second.mario = &marios[i++];
+            player.second.mario = &marios[i];
+            strcpy(game.players[i++].name, player.second.user);
         }
     }
 
@@ -145,13 +147,9 @@ void Server::startGame() {
         }
 
         if (updated) {
-            estadoJuego_t game;
             game.estadoNivel = nivel->getEstado();
 
-            size_t i = 0;
-            for(auto &player : connectedPlayers) {
-                game.players[i++] = getEstadoJugador(player.second);
-            }
+            getEstadoJugadores(game, connectedPlayers);
 
             for(auto &player : connectedPlayers) {
                 if (player.second.isConnected) {
@@ -257,7 +255,10 @@ int validateUserLogin(int client, Server *server) {
     // Lo agrego a jugadores conectados
     if (response == -1) {
         response = LOGIN_OK;
-        server->connectedPlayers[user.username] = {user, nullptr, client, true};
+        server->connectedPlayers[user.username] = {{user.username[0], user.username[1], user.username[2], '\0'},
+                                                   nullptr,
+                                                   client,
+                                                   true};
         logger::Logger::getInstance().logInformation(std::string("Accepted new user: ") + user.username);
     }
     pthread_mutex_unlock(&connectedPlayersMutex);
@@ -309,9 +310,10 @@ void getNextLevel(Nivel *&nivel, unsigned char currentLevel) {
     }
 }
 
-estadoJugador_t getEstadoJugador(player_t &player) {
-    estadoJugador_t estado;
-    strcpy(estado.name, player.user.username);
-    //TODO: agregar vidas, puntaje, etc.
-    return estado;
+void getEstadoJugadores(estadoJuego_t &estado,  std::map<std::string, player_t> &connectedPlayers) {
+    size_t i = 0;
+    for (auto &player : connectedPlayers) {
+        estado.players[i].lives = player.second.mario->lives;
+        estado.players[i++].score = player.second.mario->score;
+    }
 }
