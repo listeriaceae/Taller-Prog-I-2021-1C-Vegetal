@@ -2,6 +2,7 @@
 #include "FuegoVista.h"
 #include "../configuration.hpp"
 #include "../logger.h"
+#include "../controller/AudioController.h"
 #include "../utils/Constants.hpp"
 
 Nivel2Vista::Nivel2Vista(SDL_Renderer *renderer, const char* clientUsername)
@@ -21,6 +22,18 @@ Nivel2Vista::Nivel2Vista(SDL_Renderer *renderer, const char* clientUsername)
 }
 
 void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
+    for(unsigned int j = 0; j < this->jugadoresVista.size(); j++) {
+        if(strcmp(estadoJuego.players[j].name, clientUsername) == 0) {
+            AudioController::playSounds(estadoJuego.estadoNivel.players[j].sounds);
+        }
+    }
+
+    for(unsigned int j = 0; j < this->jugadoresVista.size(); j++) {
+        if(strcmp(estadoJuego.players[j].name, clientUsername) == 0) {
+            AudioController::playSounds(estadoJuego.estadoNivel.players[j].sounds);
+        }
+    }
+
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
     for (EntidadEstaticaVista *vista : entidadesVista) {
@@ -35,21 +48,21 @@ void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
     }
 
     size_t i = 0;
-    MarioVista *vistaJugadorPrincipal{nullptr};
-    const estadoMario_t *estadoMarioPrincipal{nullptr};
+    MarioVista *vistaMarioCliente{nullptr};
+    const estadoMario_t *estadoMarioCliente{nullptr};
     for (auto &player : this->jugadoresVista) {
         player.setColor((i + 1) * estadoJuego.estadoNivel.players[i].isEnabled);
         if (strcmp(estadoJuego.players[i].name, clientUsername) != 0) {
             player.mostrar(estadoJuego.estadoNivel.players[i]);
         }
         else {
-            vistaJugadorPrincipal = &player;
-            estadoMarioPrincipal = &(estadoJuego.estadoNivel.players[i]);
+            vistaMarioCliente = &player;
+            estadoMarioCliente = &(estadoJuego.estadoNivel.players[i]);
         }
         ++i;
     }
-    if (vistaJugadorPrincipal != nullptr && estadoMarioPrincipal != nullptr)
-        vistaJugadorPrincipal->mostrar(*estadoMarioPrincipal);
+    if(vistaMarioCliente != NULL && estadoMarioCliente != NULL)
+        vistaMarioCliente->mostrar(*estadoMarioCliente);
 }
 
 Nivel2Vista::~Nivel2Vista() {

@@ -157,6 +157,7 @@ void Server::startGame() {
                 if (player.second.isConnected) {
                     player.second.isConnected = sendData(player.second.clientSocket, &game) == sizeof(estadoJuego_t);
                 }
+                player.second.mario->audioObserver.reset();
             }
             if (__builtin_expect(nivel->isComplete(), 0)) {
                 getNextLevel(nivel, ++currentLevel);
@@ -173,7 +174,9 @@ void *acceptNewConnections(void* serverArg) {
     Server* server = (Server *)serverArg;
 
     while(true) {
-        int client = accept(server->serverSocket, (struct sockaddr *)&(server->clientAddress), (socklen_t*) &(server->clientAddrLen));
+        struct sockaddr_in clientAddress;
+        int clientAddrLen;
+        int client = accept(server->serverSocket, (struct sockaddr *)&clientAddress, (socklen_t*)&clientAddrLen);
 
         handleLoginArgs_t arguments;
         arguments.clientSocket = client;

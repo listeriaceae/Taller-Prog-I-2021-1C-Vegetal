@@ -1,6 +1,7 @@
 #pragma once
 #include "Entidad.h"
 #include "mario/MarioState.h"
+#include "../controller/AudioObserver.h"
 #include "../utils/marioStructs.h"
 
 class MarioState;
@@ -17,6 +18,7 @@ public:
     estadoMario_t getEstado() const;
     void die();
 
+    AudioObserver audioObserver{};
     controls_t controls{0, 0, 0, 0, 0};
     char estado{REPOSO};
     unsigned char contador{0};
