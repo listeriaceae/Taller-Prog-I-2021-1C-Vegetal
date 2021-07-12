@@ -6,10 +6,12 @@ bool AudioController::isKeyDown = false;
 Mix_Music* AudioController::music{nullptr};
 Mix_Chunk* AudioController::jumpSound{nullptr};
 Mix_Chunk* AudioController::deathSound{nullptr};
+Mix_Chunk* AudioController::finishedLevelSound{nullptr};
 
 const char* const MUSIC_FILE_NAME = "res/Audio/backgroundMusic.wav";
 const char* const JUMP_SOUND_FILE = "res/Audio/jump.wav";
 const char* const DEATH_SOUND_FILE = "res/Audio/death.wav";
+const char* const FINISHED_LEVEL_SOUND_FILE = "res/Audio/finishedLevel.wav";
 
 void AudioController::loadAudioFiles() {
     if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 512) < 0)
@@ -27,7 +29,9 @@ void AudioController::loadAudioFiles() {
     if(deathSound == nullptr)
         logger::Logger::getInstance().logError("death sound effect file not found: " + (std::string)DEATH_SOUND_FILE);
     
-
+    finishedLevelSound = Mix_LoadWAV(FINISHED_LEVEL_SOUND_FILE);
+    if(finishedLevelSound == NULL)
+        logger::Logger::getInstance().logError("finished level sound effect file not found: " + (std::string)FINISHED_LEVEL_SOUND_FILE);
 }
 
 void AudioController::toggleMusic() {
@@ -66,6 +70,10 @@ void AudioController::playSounds(sounds_t sounds) {
 
     if(sounds.death) {
         Mix_PlayChannel(-1, deathSound, 0);
+    }
+
+    if(sounds.finishedLevel) {
+        Mix_PlayChannel(-1, finishedLevelSound, 0);
     }
 }
 

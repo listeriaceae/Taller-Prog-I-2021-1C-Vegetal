@@ -14,5 +14,6 @@ private:
     static Mix_Music* music;
     static Mix_Chunk* jumpSound;
     static Mix_Chunk* deathSound;
+    static Mix_Chunk* finishedLevelSound;
     static bool isKeyDown;
 };
