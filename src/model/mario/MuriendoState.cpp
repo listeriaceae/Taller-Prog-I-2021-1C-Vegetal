@@ -2,7 +2,6 @@
 #include "GameOverState.h"
 #include "SueloState.h"
 #include "../Mario.hpp"
-#include "../../utils/Constants.hpp"
 
 #define TIEMPO_MURIENDO 96
 #define TIEMPO_RESPAWN 128

@@ -3,7 +3,6 @@
 #include "MuriendoState.h"
 #include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
-#include "MuriendoState.h"
 
 const AireState AireState::instance{};
 

@@ -1,7 +1,6 @@
 #include "SueloState.h"
 #include "TrepandoState.h"
 #include "../Mario.hpp"
-#include "../../utils/Constants.hpp"
 
 const TrepandoState TrepandoState::instance{};
 
