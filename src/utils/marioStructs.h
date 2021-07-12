@@ -18,3 +18,15 @@ typedef struct controls
     unsigned char right : 1;
     unsigned char : 3;
 } controls_t;
+
+enum
+{
+    REPOSO,
+    DE_ESPALDAS,
+    CORRIENDO,
+    SALTANDO,
+    TREPANDO,
+    MURIENDO,
+    MUERTO,
+    GAME_OVER
+};

@@ -9,6 +9,5 @@ public:
 
 private:
     SueloState() = default;
-    ~SueloState() = default;
     static const SueloState instance;
 };

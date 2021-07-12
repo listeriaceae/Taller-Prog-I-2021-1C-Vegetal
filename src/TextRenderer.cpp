@@ -11,7 +11,7 @@
 #define SPACING 2
 
 const std::string CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.- ";
-constexpr const char *IMG_FONT = "res/font.png";
+const char *const IMG_FONT = "res/font.png";
 
 TextRenderer *TextRenderer::instance{nullptr};
 SDL_Renderer *TextRenderer::renderer{nullptr};

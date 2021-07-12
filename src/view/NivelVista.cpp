@@ -20,7 +20,7 @@ NivelVista::NivelVista(SDL_Renderer *renderer, const char *clientUsername) {
         entidadesVista.push_back(new DefaultConfigVista(renderer));
 
     auto maxPlayers = config->getMaxPlayers();
-    if (maxPlayers < 1) maxPlayers = DEFAULT_MAX_PLAYERS;
+    if (maxPlayers < MIN_PLAYERS || MAX_PLAYERS < maxPlayers) maxPlayers = DEFAULT_MAX_PLAYERS;
     addPlayers(maxPlayers);
 }
 
