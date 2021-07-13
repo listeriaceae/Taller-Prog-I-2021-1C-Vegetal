@@ -1,9 +1,9 @@
 #include "NormalCollider.h"
 
-void collide(Mario* mario, Barril* barril) {
+void NormalCollider::collide(Mario* mario, Barril* barril) {
     mario->die();
 }
 
-void collide(Mario* mario, EnemigoFuego* enemigo) {
+void NormalCollider::collide(Mario* mario, EnemigoFuego* enemigo) {
     mario->die();
 }

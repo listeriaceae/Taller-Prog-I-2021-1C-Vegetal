@@ -1,6 +1,7 @@
 #include "HammerCollider.h"
+#include "NormalCollider.h"
 
-void collide(Mario* mario, Barril* barril) {
+void HammerCollider::collide(Mario* mario, Barril* barril) {
     /*
     if(((mario->direccion == DERECHA) && (mario->pos.x > enemigo.pos.x))
     || ((mario->direccion == IZQUIERDA) && (mario->pos.x < enemigo.pos.x))) {
@@ -8,11 +9,12 @@ void collide(Mario* mario, Barril* barril) {
     }
     else {
         barril->break();
+        decreaseUses(mario);
     }
     */
 }
 
-void collide(Mario* mario, EnemigoFuego* enemigo) {
+void HammerCollider::collide(Mario* mario, EnemigoFuego* enemigo) {
     //TODO: Agregar a mario la direccion a donde esta mirando
 
     /*
@@ -22,6 +24,14 @@ void collide(Mario* mario, EnemigoFuego* enemigo) {
     }
     else {
         enemigo->die();
+        decreaseUses(mario);
     }
     */
+}
+
+void HammerCollider::decreaseUses(Mario* mario) {
+    this->uses--;
+    /*if(uses <= 0) {
+        mario->collider = new NormalCollider();
+    }*/
 }
