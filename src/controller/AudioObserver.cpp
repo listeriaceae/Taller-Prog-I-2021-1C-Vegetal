@@ -21,7 +21,7 @@ void AudioObserver::update(SoundCode soundCode) {
 }
 
 void AudioObserver::reset() {
-    sounds = {0, 0, 0};
+    sounds = {0, 0, 0, 0, 0};
 }
 
 sounds_t AudioObserver::getState() const {
