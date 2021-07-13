@@ -15,5 +15,7 @@ private:
     static Mix_Chunk* jumpSound;
     static Mix_Chunk* deathSound;
     static Mix_Chunk* finishedLevelSound;
+    static Mix_Chunk* itemSound;
+    static Mix_Chunk* enemyDeathSound; 
     static bool isKeyDown;
 };

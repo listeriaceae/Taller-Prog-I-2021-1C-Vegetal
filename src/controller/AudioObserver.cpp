@@ -11,6 +11,12 @@ void AudioObserver::update(SoundCode soundCode) {
         case FINISHED_LEVEL:
             sounds.finishedLevel = 1;
             break;
+        case ITEM:
+            sounds.item = 1;
+            break;
+        case ENEMY_DEATH:
+            sounds.enemyDeath = 1;
+            break;
     }
 }
 
