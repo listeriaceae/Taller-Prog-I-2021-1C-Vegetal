@@ -2,7 +2,7 @@
 
 const int HAMMER_USES = 3;
 
-class HammerCollider {
+class HammerCollider: public Collider {
 public:
     void collide(Mario* mario, Barril* barril);
     void collide(Mario* mario, EnemigoFuego* enemigo);
