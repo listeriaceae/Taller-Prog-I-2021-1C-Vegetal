@@ -4,14 +4,20 @@
 enum SoundCode
 {
     JUMP,
-    DEATH
+    DEATH,
+    FINISHED_LEVEL,
+    ITEM,
+    ENEMY_DEATH
 };
 
 typedef struct sounds 
 {
     unsigned char jump : 1;
     unsigned char death : 1;
-    unsigned char : 6; //Espacio reservado para otros sonidos
+    unsigned char finishedLevel : 1;
+    unsigned char item : 1;
+    unsigned char enemyDeath : 1;
+    unsigned char : 3; //Espacio reservado para otros sonidos
 } sounds_t;
 
 typedef struct estadoMario
