@@ -8,7 +8,8 @@ Nivel1::Nivel1() : Nivel() {
     auto config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
     auto configEnemies = config->getEnemies();
     for (auto &enemy: configEnemies) {
-        if (enemy.getType().compare("Fuego") == 0) this->addEnemies(enemy.getQuantity());
+        if (enemy.getType().compare("Fuego") == 0)
+            this->addEnemies(enemy.getQuantity());
         logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
         logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
     }
@@ -17,9 +18,8 @@ Nivel1::Nivel1() : Nivel() {
 }
 
 void Nivel1::initPlatforms() {
-    for (unsigned int i = 0; i < 12; ++i) {
-        movingPlatforms[i] = new MovingPlatform(i % 3, i / 3);
-        stage.addPlatform(movingPlatforms[i]);
+    for (auto &platform : movingPlatforms) {
+        stage.addPlatform(&platform);
     }
 
     platforms.emplace_back(0.f, 248.f, 48.f, 248.f);
@@ -51,14 +51,6 @@ void Nivel1::initLadders() {
     stage.addLadder({124, 68, 40});
 }
 
-void Nivel1::addPlayers(std::vector<Mario> &players) {
-    this->players = &players;
-    for (auto &player : players) {
-        player.setStage(&stage);
-        player.reset();
-    }
-}
-
 void Nivel1::addEnemies(unsigned int amount) {
     for (unsigned int i = 0; i < amount; ++i) {
         const unsigned int j = 1 + (rand() % (platforms.size() - 1));           // Omite plataforma inicial
@@ -73,15 +65,15 @@ void Nivel1::addEnemies(unsigned int amount) {
 }
 
 void Nivel1::update() {
-    for (MovingPlatform *platform : movingPlatforms) platform->move();
-    for (auto &mario : *players) mario.mover();
+    for (auto &platform : movingPlatforms) platform.move();
     for (auto &enemy : enemies) enemy.mover();
+    for (auto &mario : *players) mario.mover();
 }
 
 const estadoNivel_t &Nivel1::getEstado() {
     size_t i = 0;
     for (; i < 12; ++i) {
-        estadoNivel.platforms[i] = movingPlatforms[i]->getPos();
+        estadoNivel.platforms[i] = movingPlatforms[i].getPos();
     }
     i = 0;
     for (auto &enemy : enemies) {
@@ -95,6 +87,4 @@ const estadoNivel_t &Nivel1::getEstado() {
     return estadoNivel;
 }
 
-Nivel1::~Nivel1() {
-    for (MovingPlatform *platform : movingPlatforms) delete platform;
-}
+Nivel1::~Nivel1() {}
