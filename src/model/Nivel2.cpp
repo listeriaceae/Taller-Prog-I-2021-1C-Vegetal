@@ -45,6 +45,7 @@ void Nivel2::update() {
 
     this->updateBarrels();
     for (auto &mario : *players) mario.mover();
+    checkCollisions();
 }
 
 void Nivel2::addBarrel() {
@@ -73,6 +74,17 @@ const estadoNivel_t &Nivel2::getEstado() {
     }
 
     return estadoNivel;
+}
+
+void Nivel2::checkCollisions () {
+    for (Mario &player : *players) {
+        for (Barril &enemy : this->barriles) {
+            if (collision (player.dimensions(), enemy.dimensions())) {
+                player.die();
+                break;
+            }
+        }
+    }
 }
 
 Nivel2::~Nivel2() {

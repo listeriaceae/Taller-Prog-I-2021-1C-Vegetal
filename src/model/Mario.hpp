@@ -17,6 +17,7 @@ public:
     void enable() { isEnabled = true; }
     estadoMario_t getEstado() const;
     void die();
+    dimensiones_t dimensions();
 
     AudioObserver audioObserver{};
     char lives{3};

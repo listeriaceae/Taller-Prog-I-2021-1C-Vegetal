@@ -10,6 +10,7 @@ public:
     void addPlayers(std::vector<Mario> &players);
     void update();
     const estadoNivel_t &getEstado();
+    void checkCollisions ();
     ~Nivel2();
 
 private:

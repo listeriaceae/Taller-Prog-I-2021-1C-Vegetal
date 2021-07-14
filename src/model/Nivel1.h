@@ -10,6 +10,7 @@ public:
     void addEnemies(unsigned int amount);
     void update();
     const estadoNivel_t &getEstado();
+    void checkCollisions ();
     ~Nivel1();
 
 private:

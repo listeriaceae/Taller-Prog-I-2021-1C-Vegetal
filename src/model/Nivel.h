@@ -14,6 +14,8 @@ public:
     virtual void update() = 0;
     virtual const estadoNivel_t &getEstado() = 0;
     bool isComplete() const;
+    bool collision(dimensiones_t, dimensiones_t);
+    virtual void checkCollisions () = 0;
     virtual ~Nivel();
 
 protected:

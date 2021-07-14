@@ -76,6 +76,7 @@ void Nivel1::update() {
     for (MovingPlatform *platform : movingPlatforms) platform->move();
     for (auto &mario : *players) mario.mover();
     for (auto &enemy : enemies) enemy.mover();
+    checkCollisions();
 }
 
 const estadoNivel_t &Nivel1::getEstado() {
@@ -93,6 +94,17 @@ const estadoNivel_t &Nivel1::getEstado() {
     }
 
     return estadoNivel;
+}
+
+void Nivel1::checkCollisions () {
+    for (Mario &player : *players) {
+        for (EnemigoFuego &enemy : enemies) {
+            if (collision (player.dimensions(), enemy.dimensions())) {
+                player.die();
+                break;
+            }
+        }
+    }
 }
 
 Nivel1::~Nivel1() {
