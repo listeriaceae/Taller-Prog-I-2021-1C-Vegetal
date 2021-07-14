@@ -314,6 +314,6 @@ void getEstadoJugadores(estadoJuego_t &estado,  std::map<std::string, player_t> 
     size_t i = 0;
     for (auto &player : connectedPlayers) {
         estado.players[i].lives = player.second.mario->lives;
-        estado.players[i++].score = player.second.mario->score;
+        estado.players[i++].score = player.second.mario->getScore();
     }
 }

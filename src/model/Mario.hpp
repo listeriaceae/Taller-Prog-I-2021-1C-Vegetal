@@ -3,6 +3,7 @@
 #include "mario/MarioState.h"
 #include "../controller/AudioObserver.h"
 #include "../utils/marioStructs.h"
+#include "../utils/Constants.hpp"
 
 class MarioState;
 
@@ -17,10 +18,11 @@ public:
     void enable() { isEnabled = true; }
     estadoMario_t getEstado() const;
     void die();
+    unsigned int getScore();
+    void addScore(unsigned int points);
 
     AudioObserver audioObserver{};
-    char lives{3};
-    unsigned char score{0};
+    char lives{MARIO_LIVES};
     controls_t controls{0, 0, 0, 0, 0};
     unsigned char contador{0};
     char estado{REPOSO};
@@ -32,4 +34,5 @@ public:
 private:
     const MarioState *state;
     bool isEnabled{true};
+    unsigned int score{0};
 };

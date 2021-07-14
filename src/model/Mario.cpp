@@ -29,3 +29,11 @@ void Mario::die() {
 estadoMario_t Mario::getEstado() const {
     return {pos, estado, isEnabled, this->audioObserver.getState()};
 }
+
+unsigned int Mario::getScore() {
+    return this->score;
+}
+
+void Mario::addScore(unsigned int points) {
+    this->score += points;
+}
