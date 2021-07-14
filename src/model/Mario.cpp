@@ -3,8 +3,8 @@
 #include "mario/SueloState.h"
 #include "mario/MuriendoState.h"
 
-const int MARIO_ANCHO_REAL = 12;
-const int MARIO_Y_DIF = 1;
+const int MARIO_ANCHO_REAL = 8;
+const int MARIO_Y_DIF = 4;
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO), state(SueloState::getInstance()) {}
 
