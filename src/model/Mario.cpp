@@ -4,6 +4,7 @@
 #include "mario/MuriendoState.h"
 
 const int MARIO_ANCHO_REAL = 12;
+const int MARIO_Y_DIF = 1;
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO), state(SueloState::getInstance()) {}
 
@@ -33,5 +34,5 @@ estadoMario_t Mario::getEstado() const {
 }
 
 dimensiones_t Mario::dimensions() {
-    return {pos.x, pos.y, pos.x + MARIO_ANCHO_REAL, pos.y + ALTO_MARIO};
+    return {pos.x + MARIO_Y_DIF, pos.y, pos.x + MARIO_Y_DIF + MARIO_ANCHO_REAL, pos.y + ALTO_MARIO};
  }
