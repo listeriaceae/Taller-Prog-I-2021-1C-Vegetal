@@ -86,5 +86,3 @@ const estadoNivel_t &Nivel1::getEstado() {
 
     return estadoNivel;
 }
-
-Nivel1::~Nivel1() {}
