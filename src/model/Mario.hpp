@@ -12,7 +12,7 @@ class Mario : public Entidad
 public:
     Mario();
     void reset();
-    void setStage(const Stage *stage) const;
+    void setStage(Stage *stage);
     void mover();
     void disable() { isEnabled = false; controls = {0, 0, 0, 0, 0}; }
     void enable() { isEnabled = true; }
@@ -20,6 +20,8 @@ public:
     void die();
     unsigned int getScore();
     void addScore(unsigned int points);
+    bool getIsLevelCompleted();
+    void completeLevel();
 
     AudioObserver audioObserver{};
     char lives{MARIO_LIVES};
@@ -35,4 +37,5 @@ private:
     const MarioState *state;
     bool isEnabled{true};
     unsigned int score{0};
+    bool isLevelCompleted{false};
 };

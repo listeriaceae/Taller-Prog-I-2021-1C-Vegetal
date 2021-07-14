@@ -9,8 +9,9 @@ void Mario::reset() {
     this->state = this->state->reset(*this);
 }
 
-void Mario::setStage(const Stage *stage) const {
+void Mario::setStage(Stage *stage) {
     MarioState::setStage(stage);
+    this->isLevelCompleted = false;
 }
 
 void Mario::mover() {
@@ -36,4 +37,12 @@ unsigned int Mario::getScore() {
 
 void Mario::addScore(unsigned int points) {
     this->score += points;
+}
+
+bool Mario::getIsLevelCompleted() {
+    return this->isLevelCompleted;
+}
+
+void Mario::completeLevel() {
+    this->isLevelCompleted = true;
 }

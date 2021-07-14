@@ -29,7 +29,7 @@ const MarioState *SueloState::update(Mario &mario) const {
     if (mario.controls.space) {
         mario.velY = MARIO_VEL_SALTO;
         mario.audioObserver.update(JUMP);
-        mario.addScore(100);
+        //mario.addScore(100);
         return AireState::getInstance();
     }
     if (!stage->collide(mario.pos.x, mario.pos.y, mario.velX, mario.velY)) {

@@ -12,6 +12,11 @@ const MarioState *TrepandoState::update(Mario &mario) const {
     mario.velY = (mario.controls.up - mario.controls.down) * MARIO_VEL_TREPAR;
     if (mario.climbMin < mario.pos.y || mario.pos.y < mario.climbMax)
     {
+        if (mario.pos.y <= 40) {
+            auto pts = this->stage->getCompleteLevelPoints();
+            mario.addScore(pts);
+            mario.completeLevel();
+        }
         mario.estado = DE_ESPALDAS;
         return SueloState::getInstance();
     }
