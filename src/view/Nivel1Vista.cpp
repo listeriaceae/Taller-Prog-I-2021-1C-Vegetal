@@ -63,8 +63,7 @@ void Nivel1Vista::update(const estadoJuego_t &estadoJuego) {
         player.setColor((i + 1) * estadoJuego.estadoNivel.players[i].isEnabled);
         if (strcmp(estadoJuego.players[i].name, clientUsername) != 0) {
             player.mostrar(estadoJuego.estadoNivel.players[i]);
-        }
-        else {
+        } else {
             vistaMarioCliente = &player;
             estadoMarioCliente = &(estadoJuego.estadoNivel.players[i]);
         }
