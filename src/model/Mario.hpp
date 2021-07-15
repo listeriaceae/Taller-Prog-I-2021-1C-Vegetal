@@ -18,7 +18,7 @@ public:
     void enable() { isEnabled = true; }
     estadoMario_t getEstado() const;
     void die();
-    unsigned int getScore();
+    unsigned char getScore();
     void addPoints(unsigned char points);
     bool getIsLevelCompleted();
 
