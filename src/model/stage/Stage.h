@@ -20,5 +20,5 @@ public:
 
 private:
     std::array<Tile, (ANCHO_NIVEL / ANCHO_TILE + 1) * (ALTO_NIVEL / ALTO_TILE + 1)> grid{};
-    std::stack<unsigned int> points;
+    std::stack<unsigned char> points;
 };

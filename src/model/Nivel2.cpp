@@ -33,14 +33,6 @@ void Nivel2::initLadders() {
     stage.addLadder({124, 68, 40});
 }
 
-void Nivel2::addPlayers(std::vector<Mario> &players) {
-    this->players = &players;
-    for (auto &player : players) {
-        player.setStage(&stage);
-        player.reset();
-    }
-}
-
 void Nivel2::update() {
     if (++tick % 128 == 0) addBarrel();
 
@@ -56,9 +48,11 @@ void Nivel2::addBarrel() {
 void Nivel2::updateBarrels() {
     for (auto it = barriles.begin(); it != barriles.end();) {
         it->mover();
-        if (!it->estaEnNivel()) {
+        if (it->estaEnNivel()) {
+            ++it;
+        } else {
             it = this->barriles.erase(it);
-        } else ++it;
+        }
     }
 }
 

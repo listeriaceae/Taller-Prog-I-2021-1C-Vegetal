@@ -7,11 +7,12 @@ Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO), state(SueloState::getIn
 
 void Mario::reset() {
     this->state = this->state->reset(*this);
+    this->isLevelCompleted = false;
 }
 
-void Mario::setStage(Stage *stage) {
+void Mario::setStageAndReset(Stage *stage) {
     MarioState::setStage(stage);
-    this->isLevelCompleted = false;
+    this->reset();
 }
 
 void Mario::mover() {

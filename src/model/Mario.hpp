@@ -12,7 +12,7 @@ class Mario : public Entidad
 public:
     Mario();
     void reset();
-    void setStage(Stage *stage);
+    void setStageAndReset(Stage *stage);
     void mover();
     void disable() { isEnabled = false; controls = {0, 0, 0, 0, 0}; }
     void enable() { isEnabled = true; }

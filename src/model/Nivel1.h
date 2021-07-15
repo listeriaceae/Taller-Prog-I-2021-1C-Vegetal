@@ -10,10 +10,12 @@ public:
     void addEnemies(unsigned int amount);
     void update();
     const estadoNivel_t &getEstado();
-    ~Nivel1();
 
 private:
-    MovingPlatform *movingPlatforms[12];
+    std::array<MovingPlatform, 12> movingPlatforms {{{0, 0}, {1, 0}, {2, 0},
+                                                     {0, 1}, {1, 1}, {2, 1},
+                                                     {0, 2}, {1, 2}, {2, 2},
+                                                     {0, 3}, {1, 3}, {2, 3}}};
 
     void initPlatforms();
     void updatePlatforms();
