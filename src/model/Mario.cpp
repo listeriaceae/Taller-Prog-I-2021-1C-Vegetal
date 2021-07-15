@@ -32,7 +32,7 @@ estadoMario_t Mario::getEstado() const {
     return {pos, estado, isEnabled, this->audioObserver.getState()};
 }
 
-unsigned int Mario::getScore() {
+unsigned char Mario::getScore() {
     return this->score;
 }
 
