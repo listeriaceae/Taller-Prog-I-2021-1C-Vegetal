@@ -178,14 +178,11 @@ void *receiveDataThread(void *args)
     bool quitRequested = false;
     while (!quitRequested && serverOpen)
     {
-        if (receiveData(clientSocket, &game) == sizeof(estadoJuego_t))
-        {
+        if (receiveData(clientSocket, &game) == sizeof(estadoJuego_t)) {
             pthread_mutex_lock(&mutex);
             estado = &game;
             pthread_mutex_unlock(&mutex);
-        }
-        else
-        {
+        } else {
             serverOpen = false;
         }
         quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;

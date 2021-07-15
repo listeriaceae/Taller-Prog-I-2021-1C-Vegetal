@@ -79,6 +79,8 @@
 #define DEFAULT_CONFIG_X 56
 #define DEFAULT_CONFIG_Y 20
 
+#define MARIO_LIVES 3
+
 // Login
 #define LOGIN_OK 0
 #define LOGIN_ABORTED 1

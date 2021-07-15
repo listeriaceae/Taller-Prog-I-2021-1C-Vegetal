@@ -39,6 +39,7 @@ void Nivel1::initPlatforms() {
     platforms.emplace_back(208.f, 88.f, 224.f, 88.f);
     platforms.emplace_back(160.f, 87.f, 192.f, 87.f);
     platforms.emplace_back(24.f, 84.f, 144.f, 84.f);
+    platforms.emplace_back(88.f, 56.f, 135.f, 56.f); // top
 
     for (auto &platform : platforms) stage.addPlatform(&platform);
 }
