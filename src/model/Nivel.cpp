@@ -13,8 +13,3 @@ bool Nivel::isComplete() const {
     for (auto &mario : *players) result |= (mario.pos.y <= 40);
     return result;
 }
-
-Nivel::~Nivel() {
-    enemies.clear();
-    platforms.clear();
-}

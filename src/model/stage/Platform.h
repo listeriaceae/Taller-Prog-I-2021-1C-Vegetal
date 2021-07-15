@@ -10,7 +10,6 @@ public:
     void getCurrentLimits(float &min, float &max) const;
     float getY(float x) const;
     virtual float getSpeed() const;
-    virtual ~Platform() = default;
 
 protected:
     punto_t start;
