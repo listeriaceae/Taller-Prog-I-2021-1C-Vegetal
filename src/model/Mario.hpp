@@ -19,7 +19,7 @@ public:
     estadoMario_t getEstado() const;
     void die();
     unsigned int getScore();
-    void addScore(unsigned int points);
+    void addPoints(unsigned char points);
     bool getIsLevelCompleted();
     void completeLevel();
 
@@ -36,6 +36,6 @@ public:
 private:
     const MarioState *state;
     bool isEnabled{true};
-    unsigned int score{0};
+    unsigned char score{0};
     bool isLevelCompleted{false};
 };

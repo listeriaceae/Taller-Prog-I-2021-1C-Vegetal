@@ -59,11 +59,11 @@ StatsVista::StatsVista(SDL_Renderer *renderer) {
 void StatsVista::mostrar(const estadoJugador_t &estado, size_t nroJugador) {
     const punto_t top_left{posiciones.at(nroJugador), MARGEN};
     const punto_t score_pos{top_left.x + OFFSET_SCORE_X, top_left.y + OFFSET_SCORE_Y};
-    const char score_str[6]{static_cast<char>('0' + (estado.score / 10000) % 10),
-                            static_cast<char>('0' + (estado.score / 1000) % 10),
-                            static_cast<char>('0' + (estado.score / 100) % 10),
+    const char score_str[6]{static_cast<char>('0' + (estado.score / 100) % 10),
                             static_cast<char>('0' + (estado.score / 10) % 10),
-                            static_cast<char>('0' + estado.score % 10)};
+                            static_cast<char>('0' + estado.score % 10),
+                            '0',
+                            '0'};
 
     srcRect.x = nroJugador * ANCHO_ICON;
     dstRect.x = round(top_left.x + ANCHO_NOMBRE * ANCHO_PANTALLA / (float)ANCHO_NIVEL);

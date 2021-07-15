@@ -35,7 +35,7 @@ unsigned int Mario::getScore() {
     return this->score;
 }
 
-void Mario::addScore(unsigned int points) {
+void Mario::addPoints(unsigned char points) {
     this->score += points;
 }
 

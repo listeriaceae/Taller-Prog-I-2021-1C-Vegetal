@@ -14,13 +14,14 @@ Stage::Stage() {
     // 2° 1500 puntos
     // 3° 1000 puntos 
     // 4° 500 puntos
-    this->points.push(500);
-    this->points.push(1000);
-    this->points.push(1500);
-    this->points.push(2000);
+    // Dividimos todo por 100 para usar menos espacio
+    this->points.push(5);
+    this->points.push(10);
+    this->points.push(15);
+    this->points.push(20);
 }
 
- unsigned int Stage::getCompleteLevelPoints() {
+ unsigned int Stage::getPointsForCompletingLevel() {
     if (this->points.empty()) return 0;
 
     auto pts = this->points.top();

@@ -13,8 +13,7 @@ const MarioState *TrepandoState::update(Mario &mario) const {
     if (mario.climbMin < mario.pos.y || mario.pos.y < mario.climbMax)
     {
         if (mario.pos.y <= 40) {
-            auto pts = this->stage->getCompleteLevelPoints();
-            mario.addScore(pts);
+            mario.addPoints(this->stage->getPointsForCompletingLevel());
             mario.completeLevel();
         }
         mario.estado = DE_ESPALDAS;
