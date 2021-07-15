@@ -80,6 +80,7 @@
 #define DEFAULT_CONFIG_Y 20
 
 #define MARIO_LIVES 3
+#define TOP_LEVEL 40
 
 // Login
 #define LOGIN_OK 0
