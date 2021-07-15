@@ -69,7 +69,3 @@ const estadoNivel_t &Nivel2::getEstado() {
 
     return estadoNivel;
 }
-
-Nivel2::~Nivel2() {
-    barriles.clear();
-}
