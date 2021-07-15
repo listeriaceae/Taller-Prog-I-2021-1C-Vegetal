@@ -7,8 +7,11 @@ const LevelCompletedState *LevelCompletedState::getInstance() {
     return &instance;
 }
 
+bool LevelCompletedState::getIsLevelCompleted() const {
+    return true;
+};
+
 const MarioState *LevelCompletedState::update(Mario &mario) const {
-    mario.completeLevel();
     mario.estado = REPOSO;
     return this;
 }

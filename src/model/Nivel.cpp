@@ -8,12 +8,11 @@ void Nivel::addPlayers(std::vector<Mario> &players) {
 }
 
 bool Nivel::isComplete() const {
-    bool allMariosOnTop = true;
+    bool allMariosHaveCompletedTheLevel = true;
     for (auto &mario : *players) {
-        // TODO: ajustar cuando algún Mario pierde todas las vidas
-        allMariosOnTop &= mario.getIsLevelCompleted();
+        allMariosHaveCompletedTheLevel &= mario.getIsLevelCompleted();
     }
-    return allMariosOnTop;
+    return allMariosHaveCompletedTheLevel;
 }
 
 Nivel::~Nivel() {

@@ -11,6 +11,10 @@ const MarioState *MarioState::reset(Mario &mario) const {
     return SueloState::getInstance();
 }
 
+bool MarioState::getIsLevelCompleted() const {
+    return false;
+}
+
 void MarioState::setStage(Stage *stage_) {
     stage = stage_;
 }

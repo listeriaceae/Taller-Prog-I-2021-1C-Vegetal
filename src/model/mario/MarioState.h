@@ -18,6 +18,7 @@ public:
     static void setStage(Stage *stage);
     virtual const MarioState *reset(Mario &mario) const;
     virtual const MarioState *update(Mario &mario) const = 0;
+    virtual bool getIsLevelCompleted() const;
     virtual ~MarioState() = default;
 
 protected:
