@@ -2,7 +2,7 @@
 
 bool Nivel::isComplete() const {
     bool allMariosOnTop = true;
-    for (auto &mario : *players){
+    for (auto &mario : *players) {
         allMariosOnTop &= ((mario.pos.y <= 40) && mario.getIsLevelCompleted());
     }
     return allMariosOnTop;
