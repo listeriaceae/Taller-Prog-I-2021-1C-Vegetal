@@ -70,7 +70,7 @@
 #define MARIO_START_X 0
 #define MARIO_START_Y 232
 
-// Remplazar por pos inicial para debug
+// Remplazar esta coordenadas iniciales para debug
 // #define MARIO_START_X 208
 // #define MARIO_START_Y 72
 

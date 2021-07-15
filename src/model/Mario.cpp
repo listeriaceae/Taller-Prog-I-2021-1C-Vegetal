@@ -40,5 +40,5 @@ void Mario::addPoints(unsigned char points) {
 }
 
 bool Mario::getIsLevelCompleted() {
-    return this->state->getIsLevelCompleted();
+    return (this->state->getIsLevelCompleted() || !this->isEnabled);
 }
