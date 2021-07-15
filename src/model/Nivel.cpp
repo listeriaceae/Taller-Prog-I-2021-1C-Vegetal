@@ -17,4 +17,5 @@ bool Nivel::isComplete() const {
 Nivel::~Nivel() {
     enemies.clear();
     platforms.clear();
+    hammers.clear();
 }

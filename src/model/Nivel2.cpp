@@ -32,6 +32,14 @@ void Nivel2::initLadders() {
     stage.addLadder({124, 68, 40});
 }
 
+void Nivel2::initHammers() {
+    for (int i = 0; i < MAX_HAMMERS; ++i) {
+        const int platformIndex = rand() % 4 + 2;
+        const auto &platform = platforms[platformIndex];
+        const int shift = (platformIndex + 1) % 2;
+    }
+}
+
 void Nivel2::update() {
     if (++tick % 128 == 0) addBarrel();
 
@@ -61,6 +69,11 @@ const estadoNivel_t &Nivel2::getEstado() {
         estadoNivel.barrels[i++] = barril.pos;
     }
     estadoNivel.barrels[i] = {0, 0};
+    i = 0;
+    for (auto &hammer : hammers) {
+        estadoNivel.hammers[i++] = hammer.pos;
+    }
+    if (i < MAX_HAMMERS) estadoNivel.hammers[i] = {0, 0};
     i = 0;
     for (auto &player : *players) {
         estadoNivel.players[i++] = player.getEstado();

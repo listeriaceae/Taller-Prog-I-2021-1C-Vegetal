@@ -9,6 +9,7 @@
 #define MAX_PLATFORMS 12
 #define MAX_ENEMIES 3
 #define MAX_BARRELS 10
+#define MAX_HAMMERS 2
 #define DEFAULT_MAX_PLAYERS 2 //en caso de que la cant max de jugadores sea negativa en el json
 
 

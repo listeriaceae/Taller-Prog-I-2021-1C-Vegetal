@@ -21,6 +21,7 @@ protected:
     Stage stage;
     estadoNivel_t estadoNivel;
     std::vector<EnemigoFuego> enemies;
+    std::vector<Hammer> hammers;
     std::vector<Platform> platforms;
     std::vector<Mario> *players;
 };

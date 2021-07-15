@@ -15,6 +15,7 @@ struct estadoNivel
     punto_t platforms[MAX_PLATFORMS];
     punto_t enemies[MAX_ENEMIES];
     punto_t barrels[MAX_BARRELS];
+    punto_t hammers[MAX_HAMMERS];
     estadoMario_t players[MAX_PLAYERS];
     unsigned char level;
 };
