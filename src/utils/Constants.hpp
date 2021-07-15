@@ -67,11 +67,12 @@
 #define N2_POS_Y_BARRIL 30
 
 // Common
-// #define MARIO_START_X 0
-// #define MARIO_START_Y 232
+#define MARIO_START_X 0
+#define MARIO_START_Y 232
 
-#define MARIO_START_X 208
-#define MARIO_START_Y 72
+// Remplazar por pos inicial para debug
+// #define MARIO_START_X 208
+// #define MARIO_START_Y 72
 
 #define DONKEYKONG_POS_X 24
 #define DONKEYKONG_POS_Y 50
