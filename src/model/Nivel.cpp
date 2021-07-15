@@ -3,7 +3,8 @@
 bool Nivel::isComplete() const {
     bool allMariosOnTop = true;
     for (auto &mario : *players){
-        allMariosOnTop &= ((mario.pos.y <= 40) && mario.getIsLevelCompleted());
+        // TODO: ajustar cuando algún Mario pierde todas las vidas
+        allMariosOnTop &= mario.getIsLevelCompleted();
     }
     return allMariosOnTop;
 }
