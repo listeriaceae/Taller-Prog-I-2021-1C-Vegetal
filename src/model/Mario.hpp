@@ -21,7 +21,6 @@ public:
     unsigned char getScore();
     void addPoints(unsigned char points);
     bool getIsLevelCompleted();
-    void completeLevel();
 
     AudioObserver audioObserver{};
     char lives{MARIO_LIVES};
@@ -37,5 +36,4 @@ private:
     const MarioState *state;
     bool isEnabled{true};
     unsigned char score{0};
-    bool isLevelCompleted{false};
 };

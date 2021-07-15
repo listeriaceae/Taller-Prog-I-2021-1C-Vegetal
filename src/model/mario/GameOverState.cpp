@@ -11,6 +11,10 @@ const MarioState *GameOverState::reset(Mario &) const {
     return this;
 }
 
+bool GameOverState::getIsLevelCompleted() const {
+    return true;
+};
+
 const MarioState *GameOverState::update(Mario &mario) const {
     mario.estado = GAME_OVER;
     return this;

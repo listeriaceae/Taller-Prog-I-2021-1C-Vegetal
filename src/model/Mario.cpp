@@ -7,7 +7,6 @@ Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO), state(SueloState::getIn
 
 void Mario::reset() {
     this->state = this->state->reset(*this);
-    this->isLevelCompleted = false;
 }
 
 void Mario::setStageAndReset(Stage *stage) {
@@ -41,9 +40,5 @@ void Mario::addPoints(unsigned char points) {
 }
 
 bool Mario::getIsLevelCompleted() {
-    return this->isLevelCompleted;
-}
-
-void Mario::completeLevel() {
-    this->isLevelCompleted = true;
+    return (this->state->getIsLevelCompleted() || !this->isEnabled);
 }

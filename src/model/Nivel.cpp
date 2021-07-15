@@ -8,9 +8,9 @@ void Nivel::addPlayers(std::vector<Mario> &players) {
 }
 
 bool Nivel::isComplete() const {
-    bool allMariosOnTop = true;
+    bool allMariosHaveCompletedTheLevel = true;
     for (auto &mario : *players) {
-        allMariosOnTop &= ((mario.pos.y <= 40) && mario.getIsLevelCompleted());
+        allMariosHaveCompletedTheLevel &= mario.getIsLevelCompleted();
     }
-    return allMariosOnTop;
+    return allMariosHaveCompletedTheLevel;
 }
