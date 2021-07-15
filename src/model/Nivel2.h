@@ -10,7 +10,6 @@ public:
     void addPlayers(std::vector<Mario> &players);
     void update();
     const estadoNivel_t &getEstado();
-    ~Nivel2();
 
 private:
     std::list<Barril> barriles;

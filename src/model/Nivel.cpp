@@ -14,8 +14,3 @@ bool Nivel::isComplete() const {
     }
     return allMariosOnTop;
 }
-
-Nivel::~Nivel() {
-    enemies.clear();
-    platforms.clear();
-}
