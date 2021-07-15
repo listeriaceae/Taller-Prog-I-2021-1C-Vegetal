@@ -10,7 +10,7 @@ void Mario::reset() {
     this->isLevelCompleted = false;
 }
 
-void Mario::setStage(Stage *stage) {
+void Mario::setStageAndReset(Stage *stage) {
     MarioState::setStage(stage);
     this->reset();
 }
