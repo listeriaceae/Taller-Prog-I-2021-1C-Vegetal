@@ -40,6 +40,7 @@ void Nivel1::initPlatforms() {
     platforms.emplace_back(208.f, 88.f, 224.f, 88.f);
     platforms.emplace_back(160.f, 87.f, 192.f, 87.f);
     platforms.emplace_back(24.f, 84.f, 144.f, 84.f);
+    platforms.emplace_back(88.f, 56.f, 135.f, 56.f); // top
 
     for (auto &platform : platforms) stage.addPlatform(&platform);
 }
@@ -60,8 +61,8 @@ void Nivel1::initHammers() {
 
 void Nivel1::addEnemies(unsigned int amount) {
     for (unsigned int i = 0; i < amount; ++i) {
-        const unsigned int j = 1 + (rand() % (platforms.size() - 1));           // Omite plataforma inicial
-        const auto &platform = platforms[j];
+        const unsigned int j = 1 + (rand() % (platforms.size() - 2));           // Omite plataformas inicial y final
+        const Platform &platform = platforms[j];
         punto_t pos = platform.getRandomPoint(ANCHO_ENEMIGO_FUEGO);
         pos.y -= ALTO_ENEMIGO_FUEGO;
         const int direccion = (rand() % 2) ? -1 : 1;

@@ -71,6 +71,10 @@
 #define MARIO_START_X 0
 #define MARIO_START_Y 232
 
+// Remplazar esta coordenadas iniciales para debug
+// #define MARIO_START_X 208
+// #define MARIO_START_Y 72
+
 #define DONKEYKONG_POS_X 24
 #define DONKEYKONG_POS_Y 50
 
@@ -79,6 +83,9 @@
 
 #define DEFAULT_CONFIG_X 56
 #define DEFAULT_CONFIG_Y 20
+
+#define MARIO_LIVES 3
+#define TOP_LEVEL 40
 
 // Login
 #define LOGIN_OK 0
