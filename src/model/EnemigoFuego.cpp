@@ -3,8 +3,8 @@
 
 #define ENEMIGO_FUEGO_VEL 0.5f
 
-const int FUEGO_Y_DIF = 6;
-const int FUEGO_ANCHO_REAL = 12;
+#define FUEGO_X_DIF 2.f
+#define FUEGO_Y_DIF 8.f
 
 EnemigoFuego::EnemigoFuego(punto_t pos, const int direccion, const float min, const float max)
 : Entidad(pos.x, pos.y, ANCHO_ENEMIGO_FUEGO, ALTO_ENEMIGO_FUEGO),
@@ -15,6 +15,6 @@ void EnemigoFuego::mover() {
     pos.x += velX;
 }
 
-dimensiones_t EnemigoFuego::dimensions() {
-    return {pos.x, pos.y + FUEGO_Y_DIF, pos.x + FUEGO_ANCHO_REAL, pos.y + ALTO_ENEMIGO_FUEGO};
+dimensiones_t EnemigoFuego::dimensions() const {
+    return {pos.x + FUEGO_X_DIF, pos.y + FUEGO_Y_DIF, pos.x + (ANCHO_ENEMIGO_FUEGO - FUEGO_X_DIF), pos.y + ALTO_ENEMIGO_FUEGO};
  }

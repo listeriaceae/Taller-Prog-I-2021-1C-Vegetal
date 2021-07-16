@@ -3,8 +3,8 @@
 #include "mario/SueloState.h"
 #include "mario/MuriendoState.h"
 
-const int MARIO_ANCHO_REAL = 8;
-const int MARIO_X_DIF = 4;
+#define MARIO_X_DIF 3.f
+#define MARIO_Y_DIF 2.f
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO), state(SueloState::getInstance()) {}
 
@@ -12,8 +12,9 @@ void Mario::reset() {
     this->state = this->state->reset(*this);
 }
 
-void Mario::setStage(const Stage *stage) const {
+void Mario::setStageAndReset(Stage *stage) {
     MarioState::setStage(stage);
+    this->reset();
 }
 
 void Mario::mover() {
@@ -33,6 +34,18 @@ estadoMario_t Mario::getEstado() const {
     return {pos, estado, isEnabled, this->audioObserver.getState()};
 }
 
-dimensiones_t Mario::dimensions() {
-    return {pos.x + MARIO_X_DIF, pos.y, pos.x + MARIO_X_DIF + MARIO_ANCHO_REAL, pos.y + ALTO_MARIO};
- }
+dimensiones_t Mario::dimensions() const {
+    return {pos.x + MARIO_X_DIF, pos.y + MARIO_Y_DIF, pos.x + (ANCHO_MARIO - MARIO_X_DIF), pos.y + (ALTO_MARIO - MARIO_Y_DIF)};
+}
+
+unsigned char Mario::getScore() {
+    return this->score;
+}
+
+void Mario::addPoints(unsigned char points) {
+    this->score += points;
+}
+
+bool Mario::getIsLevelCompleted() {
+    return (this->state->getIsLevelCompleted() || !this->isEnabled);
+}

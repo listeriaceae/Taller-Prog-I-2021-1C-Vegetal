@@ -9,7 +9,7 @@ public:
     virtual void mover() = 0; //separar entidades en entidades estaticas y dinamicas
     virtual ~Entidad() = default;
     punto_t pos;
-    virtual dimensiones_t dimensions() = 0;
+    virtual dimensiones_t dimensions() const = 0;
 
 protected:
     const int ancho;
