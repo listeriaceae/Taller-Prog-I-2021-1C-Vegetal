@@ -10,6 +10,7 @@ public:
     void addEnemies(unsigned int amount);
     void update();
     const estadoNivel_t &getEstado();
+    void checkCollisions() const;
 
 private:
     std::array<MovingPlatform, 12> movingPlatforms {{{0, 0}, {1, 0}, {2, 0},
