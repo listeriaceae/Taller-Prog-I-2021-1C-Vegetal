@@ -10,14 +10,16 @@ public:
     void addPlayers(std::vector<Mario> &players);
     void update();
     const estadoNivel_t &getEstado();
-    ~Nivel2();
+    void checkCollisions() const;
 
 private:
     std::list<Barril> barriles;
     size_t tick = 0;
 
-    void addBarrel();
-    void updateBarrels();
     void initPlatforms();
     void initLadders();
+    void initHammers();
+
+    void addBarrel();
+    void updateBarrels();
 };

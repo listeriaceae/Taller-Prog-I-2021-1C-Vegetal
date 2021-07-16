@@ -131,7 +131,7 @@ void Server::startGame() {
     previous = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
     std::chrono::milliseconds elapsed;
     std::chrono::milliseconds lag{0};
-    bool updated = false;
+    bool isUpdated = false;
     while (nivel != nullptr) {
         current = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
         elapsed = current - previous;
@@ -139,14 +139,14 @@ void Server::startGame() {
         lag += elapsed;
 
         // Update Model
-        updated = false;
+        isUpdated = false;
         while (lag >= MS_PER_UPDATE) {
             nivel->update();
             lag -= MS_PER_UPDATE;
-            updated = true;
+            isUpdated = true;
         }
 
-        if (updated) {
+        if (isUpdated) {
             game.estadoNivel = nivel->getEstado();
 
             getEstadoJugadores(game, connectedPlayers);
@@ -314,6 +314,6 @@ void getEstadoJugadores(estadoJuego_t &estado,  std::map<std::string, player_t> 
     size_t i = 0;
     for (auto &player : connectedPlayers) {
         estado.players[i].lives = player.second.mario->lives;
-        estado.players[i++].score = player.second.mario->score;
+        estado.players[i++].score = player.second.mario->getScore();
     }
 }
