@@ -55,7 +55,7 @@ void Nivel1::initLadders() {
 
 void Nivel1::initHammers() {
     for (int i = 0; i < MAX_HAMMERS; ++i) {
-        hammers.emplace_back(216.f, 16.f + rand() / (float)RAND_MAX * 176.f);
+        hammers.emplace_back(punto_t{48.f + rand() / (float)RAND_MAX * 160.f, 208.f});
     }
 }
 

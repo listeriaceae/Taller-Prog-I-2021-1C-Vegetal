@@ -3,12 +3,18 @@
 #include <SDL2/SDL.h>
 #include "../utils/punto.h"
 
+enum EstadoHammer
+{
+    LEVANTADO,
+    GOLPEANDO
+};
+
 class HammerVista
 {
 public:
     HammerVista(SDL_Renderer *renderer);
-    void mover(punto_t pos);
-    void mostrar();
+    void setFlip(SDL_RendererFlip flip);
+    void mostrar(punto_t pos, EstadoHammer estado);
     ~HammerVista();
 
 private:
@@ -16,5 +22,5 @@ private:
     static SDL_Texture *texture;
     SDL_Rect srcRect;
     SDL_Rect dstRect;
-
+    SDL_RendererFlip flip{SDL_FLIP_NONE};
 };

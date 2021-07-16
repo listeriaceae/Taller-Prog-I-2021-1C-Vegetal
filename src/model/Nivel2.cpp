@@ -4,6 +4,7 @@
 Nivel2::Nivel2() : Nivel() {
     this->initPlatforms();
     this->initLadders();
+    this->initHammers();
     estadoNivel.level = 2;
 }
 
@@ -35,9 +36,10 @@ void Nivel2::initLadders() {
 
 void Nivel2::initHammers() {
     for (int i = 0; i < MAX_HAMMERS; ++i) {
-        const int platformIndex = rand() % 4 + 2;
-        const auto &platform = platforms[platformIndex];
-        const int shift = (platformIndex + 1) % 2;
+        const int n = rand() % 4;
+        const float t = rand() / (float)RAND_MAX;
+        hammers.emplace_back(punto_t{104 + ((n % 2) * 2 - 1) * (48 * (1 + t)),
+                                     84 + 33 * n + t * 3});
     }
 }
 
