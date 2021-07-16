@@ -54,7 +54,7 @@ void Nivel1::initLadders() {
 
 void Nivel1::addEnemies(unsigned int amount) {
     for (unsigned int i = 0; i < amount; ++i) {
-        const unsigned int j = 1 + (rand() % (platforms.size() - 1));           // Omite plataforma inicial
+        const unsigned int j = 1 + (rand() % (platforms.size() - 2));           // Omite plataformas inicial y final
         const Platform &platform = platforms[j];
         punto_t pos = platform.getRandomPoint(ANCHO_ENEMIGO_FUEGO);
         pos.y -= ALTO_ENEMIGO_FUEGO;
