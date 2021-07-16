@@ -24,6 +24,7 @@ typedef struct estadoMario
 {
     punto_t pos;
     char estado;
+    bool hasHammer;
     bool isEnabled;
     sounds_t sounds;
 } estadoMario_t;
@@ -35,7 +36,8 @@ typedef struct controls
     unsigned char down : 1;
     unsigned char left : 1;
     unsigned char right : 1;
-    unsigned char : 3;
+    unsigned char toggleTestMode : 1;
+    unsigned char : 2;
 } controls_t;
 
 enum

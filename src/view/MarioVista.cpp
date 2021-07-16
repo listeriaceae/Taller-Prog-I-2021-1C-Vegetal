@@ -17,9 +17,11 @@
 #define MARIO_SPRITE_SIZE 24
 
 const std::string IMG_MARIO = "res/Mario.png";
+const std::string IMG_HAMMER = "res/hammer.png";
 
 SDL_Renderer *MarioVista::renderer{nullptr};
 SDL_Texture *MarioVista::texture{nullptr};
+SDL_Texture *MarioVista::hammerTexture{nullptr};
 
 size_t MarioVista::totalJugadores = 0;
 
@@ -36,6 +38,10 @@ MarioVista::MarioVista(SDL_Renderer *renderer) {
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
     }
+    if(hammerTexture == nullptr) {
+        loadHammerTexture();
+    }
+
     srcRect.y = 0;
     srcRect.w = ANCHO_MARIO;
     srcRect.h = ALTO_MARIO;
@@ -61,10 +67,10 @@ void MarioVista::mostrar(const estadoMario_t &estadoMario) {
     switch(estadoMario.estado) {
         case REPOSO:
         case DE_ESPALDAS:
-            updateReposo(estadoMario.estado);
+            updateReposo(estadoMario.estado, estadoMario.hasHammer);
             break;
         case CORRIENDO:
-            updateCorriendo(nextX);
+            updateCorriendo(nextX, estadoMario.hasHammer);
             break;
         case SALTANDO:
             updateSaltando(nextX);
@@ -85,17 +91,32 @@ void MarioVista::mostrar(const estadoMario_t &estadoMario) {
     dstRect.y = nextY;
 
     SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0., NULL, flip);
+    if(estadoMario.estado == CORRIENDO || estadoMario.estado == REPOSO) {
+        drawHammer(estadoMario.estado);
+    }
 }
 
-void MarioVista::updateReposo(char estado) {
-    srcRect.x = (estado == DE_ESPALDAS) * (MARIO_DE_ESPALDAS_INDEX * MARIO_SPRITE_SIZE);
+void MarioVista::updateReposo(char estado, bool hasHammer) {
+    if(hasHammer) {
+        srcRect.x = (9 * MARIO_SPRITE_SIZE);
+    } else {
+        srcRect.x = (estado == DE_ESPALDAS) * (MARIO_DE_ESPALDAS_INDEX * MARIO_SPRITE_SIZE);
+    }
+    
 }
 
-void MarioVista::updateCorriendo(int nextX) {
-    tiempo = (tiempo + (dstRect.x != nextX)) % (TIEMPO_POR_FRAME * CANT_FRAMES);
+void MarioVista::updateCorriendo(int nextX, bool hasHammer) {
+    tiempo = (tiempo + (dstRect.x != nextX)) % (4 * CANT_FRAMES);
     flip = (SDL_RendererFlip)((dstRect.x < nextX) + (int)flip * (dstRect.x == nextX));
-    int frameActual = (tiempo / TIEMPO_POR_FRAME);
-    srcRect.x = ((frameActual & 1) << ((frameActual & 2) >> 1)) * MARIO_SPRITE_SIZE;  // 0, 1, 0, 2...
+    int frameActual = (tiempo / 4);
+    this->frameActual = frameActual;
+    if(hasHammer) {
+        srcRect.x = (8 * MARIO_SPRITE_SIZE) + frameActual * MARIO_SPRITE_SIZE;  // 0, 1, 2, 3..
+    } 
+    else {
+        srcRect.x = ((frameActual & 1) << ((frameActual & 2) >> 1)) * MARIO_SPRITE_SIZE;  // 0, 1, 0, 2...
+    }
+        
 }
 
 void MarioVista::updateSaltando(int nextX) {
@@ -128,4 +149,58 @@ MarioVista::~MarioVista() {
         SDL_DestroyTexture(texture);
         texture = nullptr;
     }
+}
+
+void MarioVista::loadHammerTexture() {
+    SDL_Surface* hammerSurface = IMG_Load(IMG_HAMMER.c_str());
+
+    if(hammerSurface == NULL) {
+        logger::Logger::getInstance().logError("Hammer image not found: " + IMG_HAMMER);
+        logger::Logger::getInstance().logDebug("Loading hammer default image: " + IMG_DEFAULT);
+        hammerSurface = IMG_Load(IMG_DEFAULT.c_str());
+    } else SDL_SetColorKey(hammerSurface, SDL_TRUE, *(Uint32*)(hammerSurface->pixels));
+    hammerTexture = SDL_CreateTextureFromSurface(renderer, hammerSurface);
+    SDL_FreeSurface(hammerSurface);
+
+    hammerSrc.x = 0;
+    hammerSrc.y = 0;
+    hammerSrc.w = 9;
+    hammerSrc.h = 10;
+
+    hammerDst.w = round(9 * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    hammerDst.h = round(10 * ALTO_PANTALLA / (float)ALTO_NIVEL);
+    /*
+    hammerSrc.y = 0;
+    hammerSrc.w = ANCHO_MARIO;
+    hammerSrc.h = ALTO_MARIO;
+
+    hammerDst.w = round(ANCHO_MARIO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    hammerDst.h = round(ALTO_MARIO * ALTO_PANTALLA / (float)ALTO_NIVEL);
+    */
+}
+
+void MarioVista::drawHammer(char estado) {
+    SDL_RendererFlip hammerFlip = flip;
+    
+    if(frameActual % 2 == 0 && (estado != REPOSO)) {
+        hammerSrc.w = 9;
+        hammerDst.w = round(9 * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+        hammerSrc.x = 0;
+        hammerDst.x = dstRect.x + round(4 * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+        hammerDst.y = dstRect.y - hammerDst.h; //alto martillo
+    } else if((frameActual % 2 == 1) || (estado == REPOSO)) {
+        hammerSrc.w = 16;
+        hammerDst.w = round(16 * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+        hammerSrc.x = 9; //ubicacion 2do martillo
+        if(flip == SDL_FLIP_HORIZONTAL) {
+            hammerDst.x = dstRect.x + dstRect.w;
+        } else {
+            hammerDst.x = dstRect.x - hammerDst.w;
+        }
+        hammerDst.y = dstRect.y + round((ALTO_MARIO - 11) * ALTO_PANTALLA / (float)ALTO_NIVEL); //altura manos mario
+    }
+    
+    //printf("Hammer w: %d, h: %d\n", hammerSrc.w, hammerSrc.h);
+    //printf("Pos x: %d, y: %d", hammerDst.x, hammerDst.y);
+    SDL_RenderCopyEx(renderer, hammerTexture, &hammerSrc, &hammerDst, 0., NULL, hammerFlip);
 }
