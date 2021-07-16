@@ -18,6 +18,6 @@ private:
                                                      {0, 3}, {1, 3}, {2, 3}}};
 
     void initPlatforms();
-    void updatePlatforms();
     void initLadders();
+    void initHammers();
 };

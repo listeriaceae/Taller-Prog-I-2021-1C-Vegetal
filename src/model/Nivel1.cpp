@@ -14,6 +14,7 @@ Nivel1::Nivel1() : Nivel() {
         logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
     }
     this->initLadders();
+    this->initHammers();
     estadoNivel.level = 1;
 }
 
@@ -52,9 +53,15 @@ void Nivel1::initLadders() {
     stage.addLadder({124, 68, 40});
 }
 
+void Nivel1::initHammers() {
+    for (int i = 0; i < MAX_HAMMERS; ++i) {
+        hammers.emplace_back(punto_t{48.f + rand() / (float)RAND_MAX * 160.f, 208.f});
+    }
+}
+
 void Nivel1::addEnemies(unsigned int amount) {
     for (unsigned int i = 0; i < amount; ++i) {
-        const unsigned int j = 1 + (rand() % (platforms.size() - 1));           // Omite plataforma inicial
+        const unsigned int j = 1 + (rand() % (platforms.size() - 2));           // Omite plataformas inicial y final
         const Platform &platform = platforms[j];
         punto_t pos = platform.getRandomPoint(ANCHO_ENEMIGO_FUEGO);
         pos.y -= ALTO_ENEMIGO_FUEGO;
@@ -80,6 +87,11 @@ const estadoNivel_t &Nivel1::getEstado() {
     for (auto &enemy : enemies) {
         estadoNivel.enemies[i++] = enemy.pos;
     }
+    i = 0;
+    for (auto &hammer : hammers) {
+        estadoNivel.hammers[i++] = hammer.pos;
+    }
+    if (i < MAX_HAMMERS) estadoNivel.hammers[i] = {0, 0};
     i = 0;
     for (auto &player : *players) {
         estadoNivel.players[i++] = player.getEstado();
