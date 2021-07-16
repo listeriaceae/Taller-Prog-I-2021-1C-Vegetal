@@ -1,20 +1,21 @@
 #include "Nivel.h"
 
+void Nivel::addPlayers(std::vector<Mario> &players) {
+    this->players = &players;
+    for (auto &player : players) {
+        player.setStageAndReset(&stage);
+    }
+}
+
+bool Nivel::collision(dimensiones_t player, dimensiones_t enemy) const {
+    return enemy.x1 < player.x2 && player.x1 < enemy.x2 &&
+           enemy.y1 < player.y2 && player.y1 < enemy.y2;
+}
+
 bool Nivel::isComplete() const {
-    bool result = false;
-    for (auto &mario : *players) result |= (mario.pos.y <= 40);
-    return result;
-}
-
-Nivel::~Nivel() {
-    enemies.clear();
-    platforms.clear();
-}
-
-bool Nivel::collision(dimensiones_t player, dimensiones_t enemy) {
-
-    bool collisionX = enemy.x1 < player.x2 && player.x1 < enemy.x2;
-    bool collisionY = enemy.y1 < player.y2 && player.y1 < enemy.y2;
-
-    return (collisionX && collisionY);
+    bool allMariosHaveCompletedTheLevel = true;
+    for (auto &mario : *players) {
+        allMariosHaveCompletedTheLevel &= mario.getIsLevelCompleted();
+    }
+    return allMariosHaveCompletedTheLevel;
 }

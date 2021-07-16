@@ -4,6 +4,7 @@
 Nivel2::Nivel2() : Nivel() {
     this->initPlatforms();
     this->initLadders();
+    this->initHammers();
     estadoNivel.level = 2;
 }
 
@@ -16,6 +17,7 @@ void Nivel2::initPlatforms() {
     platforms.emplace_back(16.f, 122.f, 224.f, 109.f);
     platforms.emplace_back(136.f, 84.5f, 208.f, 89.f);
     platforms.emplace_back(0.f, 84.f, 130.f, 84.f);
+    platforms.emplace_back(88.f, 56.f, 135.f, 56.f); // top
 
     for (auto &platform : platforms) stage.addPlatform(&platform);
 }
@@ -32,11 +34,12 @@ void Nivel2::initLadders() {
     stage.addLadder({124, 68, 40});
 }
 
-void Nivel2::addPlayers(std::vector<Mario> &players) {
-    this->players = &players;
-    for (auto &player : players) {
-        player.setStage(&stage);
-        player.reset();
+void Nivel2::initHammers() {
+    for (int i = 0; i < MAX_HAMMERS; ++i) {
+        const int n = rand() % 4;
+        const float t = rand() / (float)RAND_MAX;
+        hammers.emplace_back(punto_t{104 + ((n % 2) * 2 - 1) * (48 * (1 + t)),
+                                     84 + 33 * n + t * 3});
     }
 }
 
@@ -56,9 +59,11 @@ void Nivel2::addBarrel() {
 void Nivel2::updateBarrels() {
     for (auto it = barriles.begin(); it != barriles.end();) {
         it->mover();
-        if (!it->estaEnNivel()) {
+        if (it->estaEnNivel()) {
+            ++it;
+        } else {
             it = this->barriles.erase(it);
-        } else ++it;
+        }
     }
 }
 
@@ -69,6 +74,11 @@ const estadoNivel_t &Nivel2::getEstado() {
     }
     estadoNivel.barrels[i] = {0, 0};
     i = 0;
+    for (auto &hammer : hammers) {
+        estadoNivel.hammers[i++] = hammer.pos;
+    }
+    if (i < MAX_HAMMERS) estadoNivel.hammers[i] = {0, 0};
+    i = 0;
     for (auto &player : *players) {
         estadoNivel.players[i++] = player.getEstado();
     }
@@ -76,17 +86,13 @@ const estadoNivel_t &Nivel2::getEstado() {
     return estadoNivel;
 }
 
-void Nivel2::checkCollisions () {
+void Nivel2::checkCollisions() const {
     for (Mario &player : *players) {
-        for (Barril &enemy : this->barriles) {
-            if (collision (player.dimensions(), enemy.dimensions())) {
+        for (auto &enemy : this->barriles) {
+            if (collision(player.dimensions(), enemy.dimensions())) {
                 player.die();
                 break;
             }
         }
     }
-}
-
-Nivel2::~Nivel2() {
-    barriles.clear();
 }

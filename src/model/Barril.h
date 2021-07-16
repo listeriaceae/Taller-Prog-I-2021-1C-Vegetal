@@ -9,7 +9,7 @@ public:
     Barril(float x, float y);
     void mover();
     bool estaEnNivel() const { return pos.y < ALTO_NIVEL; }
-    dimensiones_t dimensions();
+    dimensiones_t dimensions() const;
 
 private:
     float velX;
