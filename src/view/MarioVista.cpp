@@ -195,8 +195,8 @@ void MarioVista::drawHammer(int frame) {
     } else if((frame % 2 == 1)) { //Mario golpeando con el martillo
         hammerDst.w = round((float)WIDTH_MARTILLO_GOLPEANDO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
         hammerSrc.w = WIDTH_MARTILLO_GOLPEANDO;
-        hammerSrc.x = POS_X_SPRITE_MARTILLO_GOLPEANDO; //ubicacion 2do martillo
-        if(flip == SDL_FLIP_HORIZONTAL) {
+        hammerSrc.x = POS_X_SPRITE_MARTILLO_GOLPEANDO;
+        if(flip == SDL_FLIP_HORIZONTAL) { //La posicion del martillo cambia respecto hacia donde esta mirando mario
             hammerDst.x = dstRect.x + dstRect.w;
         } else {
             hammerDst.x = dstRect.x - hammerDst.w;
