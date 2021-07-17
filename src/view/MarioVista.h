@@ -23,13 +23,12 @@ private:
     SDL_Rect hammerDst;
     SDL_RendererFlip flip{SDL_FLIP_HORIZONTAL};
     int tiempo{0};
-
+    int tiempoReposo{0};
     void updateReposo(char estado, bool hasHammer);
     void updateCorriendo(int nextX, bool hasHammer);
     void updateSaltando(int nextX);
     void updateTrepando(int nextY);
     void updateMuriendo(char estado);
     void loadHammerTexture();
-    int frameActual = 0;
-    void drawHammer(char estado);
+    void drawHammer(int frame);
 };

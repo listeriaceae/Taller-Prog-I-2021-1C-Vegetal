@@ -51,3 +51,9 @@ enum
     MUERTO,
     GAME_OVER
 };
+
+enum Direccion 
+{
+    DERECHA,
+    IZQUIERDA
+};

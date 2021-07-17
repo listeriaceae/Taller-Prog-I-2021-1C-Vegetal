@@ -10,14 +10,28 @@
 #define MARIO_SALTANDO_INDEX 14
 #define MARIO_MURIENDO_INDEX 16
 #define MARIO_MUERTO_INDEX 18
+#define MARIO_POSE_MARTILLO_INDEX 8
 
 #define TIEMPO_FRAME_MUERTO 16
 #define TIEMPO_POR_FRAME 2
+#define TIEMPO_FRAME_REPOSO_MARTILLO 8
+#define TIEMPO_FRAME_CORRIENDO_MARTILLO 4
 #define CANT_FRAMES 4
+#define CANT_FRAMES_REPOSO_MARTILLO 2
 #define MARIO_SPRITE_SIZE 24
 
+#define POS_Y_SPRITE_MARTILLO 6
+#define POS_X_SPRITE_MARTILLO_LEVANTADO 4
+#define POS_X_SPRITE_MARTILLO_GOLPEANDO 16
+#define POS_X_MANOS_MARIO_LEVANTANDO 4
+#define POS_Y_MANOS_MARIO_GOLPEANDO 10
+#define WIDTH_MARTILLO_LEVANTADO 9
+#define WIDTH_MARTILLO_GOLPEANDO 16
+#define HEIGHT_MARTILLO_LEVANTADO 10
+#define HEIGHT_MARTILLO_GOLPEANDO 16
+
 const std::string IMG_MARIO = "res/Mario.png";
-const std::string IMG_HAMMER = "res/hammer.png";
+const std::string IMG_HAMMER = "res/Hammer.png";
 
 SDL_Renderer *MarioVista::renderer{nullptr};
 SDL_Texture *MarioVista::texture{nullptr};
@@ -38,9 +52,7 @@ MarioVista::MarioVista(SDL_Renderer *renderer) {
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
     }
-    if(hammerTexture == nullptr) {
-        loadHammerTexture();
-    }
+    loadHammerTexture();
 
     srcRect.y = 0;
     srcRect.w = ANCHO_MARIO;
@@ -89,16 +101,15 @@ void MarioVista::mostrar(const estadoMario_t &estadoMario) {
     }
     dstRect.x = nextX;
     dstRect.y = nextY;
-
     SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0., NULL, flip);
-    if(estadoMario.estado == CORRIENDO || estadoMario.estado == REPOSO) {
-        drawHammer(estadoMario.estado);
-    }
 }
 
 void MarioVista::updateReposo(char estado, bool hasHammer) {
     if(hasHammer) {
-        srcRect.x = (9 * MARIO_SPRITE_SIZE);
+        tiempoReposo = (tiempoReposo + 1) % (TIEMPO_FRAME_REPOSO_MARTILLO * CANT_FRAMES_REPOSO_MARTILLO);
+        int frameReposo = (tiempoReposo / TIEMPO_FRAME_REPOSO_MARTILLO);
+        srcRect.x = (MARIO_POSE_MARTILLO_INDEX * MARIO_SPRITE_SIZE) + frameReposo * MARIO_SPRITE_SIZE;  // 0, 1, 0, 1...
+        drawHammer(frameReposo);
     } else {
         srcRect.x = (estado == DE_ESPALDAS) * (MARIO_DE_ESPALDAS_INDEX * MARIO_SPRITE_SIZE);
     }
@@ -106,12 +117,13 @@ void MarioVista::updateReposo(char estado, bool hasHammer) {
 }
 
 void MarioVista::updateCorriendo(int nextX, bool hasHammer) {
-    tiempo = (tiempo + (dstRect.x != nextX)) % (4 * CANT_FRAMES);
+    tiempo = (tiempo + (dstRect.x != nextX)) % (TIEMPO_FRAME_CORRIENDO_MARTILLO * CANT_FRAMES);
     flip = (SDL_RendererFlip)((dstRect.x < nextX) + (int)flip * (dstRect.x == nextX));
-    int frameActual = (tiempo / 4);
-    this->frameActual = frameActual;
+    int frameActual = (tiempo / TIEMPO_FRAME_CORRIENDO_MARTILLO);
+
     if(hasHammer) {
-        srcRect.x = (8 * MARIO_SPRITE_SIZE) + frameActual * MARIO_SPRITE_SIZE;  // 0, 1, 2, 3..
+        srcRect.x = (MARIO_POSE_MARTILLO_INDEX * MARIO_SPRITE_SIZE) + frameActual * MARIO_SPRITE_SIZE;  // 0, 1, 2, 3..
+        drawHammer(frameActual);
     } 
     else {
         srcRect.x = ((frameActual & 1) << ((frameActual & 2) >> 1)) * MARIO_SPRITE_SIZE;  // 0, 1, 0, 2...
@@ -162,45 +174,35 @@ void MarioVista::loadHammerTexture() {
     hammerTexture = SDL_CreateTextureFromSurface(renderer, hammerSurface);
     SDL_FreeSurface(hammerSurface);
 
-    hammerSrc.x = 0;
-    hammerSrc.y = 0;
-    hammerSrc.w = 9;
-    hammerSrc.h = 10;
+    hammerSrc.x = POS_X_SPRITE_MARTILLO_LEVANTADO;
+    hammerSrc.y = POS_Y_SPRITE_MARTILLO;
+    hammerSrc.w = WIDTH_MARTILLO_LEVANTADO;
+    hammerSrc.h = HEIGHT_MARTILLO_LEVANTADO;
 
-    hammerDst.w = round(9 * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    hammerDst.h = round(10 * ALTO_PANTALLA / (float)ALTO_NIVEL);
-    /*
-    hammerSrc.y = 0;
-    hammerSrc.w = ANCHO_MARIO;
-    hammerSrc.h = ALTO_MARIO;
-
-    hammerDst.w = round(ANCHO_MARIO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    hammerDst.h = round(ALTO_MARIO * ALTO_PANTALLA / (float)ALTO_NIVEL);
-    */
+    hammerDst.w = round((float)WIDTH_MARTILLO_LEVANTADO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    hammerDst.h = round((float)HEIGHT_MARTILLO_LEVANTADO * ALTO_PANTALLA / (float)ALTO_NIVEL);
 }
 
-void MarioVista::drawHammer(char estado) {
+void MarioVista::drawHammer(int frame) {
     SDL_RendererFlip hammerFlip = flip;
-    
-    if(frameActual % 2 == 0 && (estado != REPOSO)) {
-        hammerSrc.w = 9;
-        hammerDst.w = round(9 * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-        hammerSrc.x = 0;
-        hammerDst.x = dstRect.x + round(4 * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-        hammerDst.y = dstRect.y - hammerDst.h; //alto martillo
-    } else if((frameActual % 2 == 1) || (estado == REPOSO)) {
-        hammerSrc.w = 16;
-        hammerDst.w = round(16 * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-        hammerSrc.x = 9; //ubicacion 2do martillo
+
+    if(frame % 2 == 0) { //Mario levantando el martillo
+        hammerDst.w = round((float)WIDTH_MARTILLO_LEVANTADO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+        hammerSrc.w = WIDTH_MARTILLO_LEVANTADO;
+        hammerSrc.x = POS_X_SPRITE_MARTILLO_LEVANTADO;
+        hammerDst.x = dstRect.x + round(POS_X_SPRITE_MARTILLO_LEVANTADO * ANCHO_PANTALLA / (float)ANCHO_NIVEL); //pos_x martillo = pos mario + pos martillo
+        hammerDst.y = dstRect.y - hammerDst.h; //pos_y martillo = pos mario - alto martillo
+    } else if((frame % 2 == 1)) { //Mario golpeando con el martillo
+        hammerDst.w = round((float)WIDTH_MARTILLO_GOLPEANDO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+        hammerSrc.w = WIDTH_MARTILLO_GOLPEANDO;
+        hammerSrc.x = POS_X_SPRITE_MARTILLO_GOLPEANDO; //ubicacion 2do martillo
         if(flip == SDL_FLIP_HORIZONTAL) {
             hammerDst.x = dstRect.x + dstRect.w;
         } else {
             hammerDst.x = dstRect.x - hammerDst.w;
         }
-        hammerDst.y = dstRect.y + round((ALTO_MARIO - 11) * ALTO_PANTALLA / (float)ALTO_NIVEL); //altura manos mario
+        hammerDst.y = dstRect.y + round(((float)ALTO_MARIO - (float)POS_Y_MANOS_MARIO_GOLPEANDO) * ALTO_PANTALLA / (float)ALTO_NIVEL); //
     }
-    
-    //printf("Hammer w: %d, h: %d\n", hammerSrc.w, hammerSrc.h);
-    //printf("Pos x: %d, y: %d", hammerDst.x, hammerDst.y);
+
     SDL_RenderCopyEx(renderer, hammerTexture, &hammerSrc, &hammerDst, 0., NULL, hammerFlip);
 }

@@ -86,11 +86,18 @@ const estadoNivel_t &Nivel2::getEstado() {
     return estadoNivel;
 }
 
-void Nivel2::checkCollisions() const {
+void Nivel2::checkCollisions() {
     for (Mario &player : *players) {
-        for (auto &enemy : this->barriles) {
-            if (collision(player.dimensions(), enemy.dimensions())) {
-                player.die();
+        for (auto &barril : this->barriles) {
+            if (collision(player.dimensions(), barril.dimensions())) {
+                player.collide(&barril);
+                break;
+            }
+        }
+        
+        for(auto &hammer : this->hammers) {
+            if(collision(player.dimensions(), hammer.dimensions())) {
+                player.collide(&hammer);
                 break;
             }
         }

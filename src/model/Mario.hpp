@@ -7,6 +7,7 @@
 #include "collider/NormalCollider.h"
 #include "collider/HammerCollider.h"
 #include "../utils/Constants.hpp"
+#include "Hammer.h"
 
 class MarioState;
 class Collider;
@@ -26,7 +27,9 @@ public:
     unsigned char getScore();
     void addPoints(unsigned char points);
     bool getIsLevelCompleted();
-
+    void collide(EnemigoFuego* fuego);
+    void collide(Barril* barril);
+    void collide(Hammer* barril);
     AudioObserver audioObserver{};
     char lives{MARIO_LIVES};
     controls_t controls{0, 0, 0, 0, 0, 0};
@@ -36,9 +39,12 @@ public:
     float velY{0.f};
     float climbMin{256};
     float climbMax{0};
-    Collider* collider = new HammerCollider();
+    Collider* collider = new NormalCollider();
+    Direccion direccion = DERECHA;
 private:
     const MarioState *state;
     bool isEnabled{true};
     unsigned char score{0};
+    void setCollider(ColliderType colliderType);
+    void toggleTestMode();
 };

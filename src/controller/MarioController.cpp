@@ -1,10 +1,13 @@
 #include <SDL2/SDL.h>
 #include "MarioController.h"
+#include "../logger.h"
 
 bool isKeyUp = true;
 
 unsigned char getTestModeKeyState(const Uint8 *keyboard) {
     if(isKeyUp && keyboard[SDL_SCANCODE_T]) {
+        logger::Logger::getInstance().logDebug("Toggled test mode.");
+        printf("Toggled test mode.\n");
         isKeyUp = false;
         return 1;
     } else if(!keyboard[SDL_SCANCODE_T]){

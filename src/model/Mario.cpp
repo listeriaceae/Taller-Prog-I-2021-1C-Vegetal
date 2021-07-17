@@ -13,6 +13,7 @@ Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO), state(SueloState::getIn
 
 void Mario::reset() {
     this->state = this->state->reset(*this);
+    setCollider(NORMAL);
 }
 
 void Mario::setStageAndReset(Stage *stage) {
@@ -23,15 +24,7 @@ void Mario::setStageAndReset(Stage *stage) {
 void Mario::mover() {
     this->state = this->state->update(*this);
     if(this->controls.toggleTestMode == 1) {
-        if(this->collider->getType() != TEST_MODE) {
-            delete (this->collider);
-            this->collider = new TestCollider();
-            printf("Modo test: ON\n");
-        } else {
-            delete (this->collider);
-            this->collider = new NormalCollider();
-            printf("Modo test: OFF\n");
-        }
+        toggleTestMode();
     } 
         
     controls.space = 0;
@@ -44,6 +37,23 @@ void Mario::die() {
     this->audioObserver.update(DEATH);
     this->state = MuriendoState::getInstance();
 }
+
+void Mario::collide(EnemigoFuego* fuego) {
+    this->collider->collide(this, fuego);
+}
+
+void Mario::collide(Barril* barril) {
+    this->collider->collide(this, barril);
+}
+
+void Mario::collide(Hammer* hammer) {
+    if(this->collider->getType() != TEST_MODE) {
+        delete(this->collider);
+        this->collider = new HammerCollider();
+        hammer->consume();
+    }
+}
+
 
 estadoMario_t Mario::getEstado() const {
     return {pos, estado, (collider->getType() == HAMMER), isEnabled, this->audioObserver.getState()};
@@ -63,4 +73,29 @@ void Mario::addPoints(unsigned char points) {
 
 bool Mario::getIsLevelCompleted() {
     return (this->state->getIsLevelCompleted() || !this->isEnabled);
+}
+
+void Mario::setCollider(ColliderType colliderType) { //para no tener que poner delete cada vez que se quiera cambiar el collider
+    delete (this->collider);
+    switch(colliderType) {
+        case NORMAL: 
+            this->collider = new NormalCollider();
+            break;
+        case TEST_MODE:
+            this->collider = new TestCollider();
+            break;
+        case HAMMER:
+            this->collider = new HammerCollider();
+            break;
+    }
+}
+
+void Mario::toggleTestMode() {
+    if(this->collider->getType() != TEST_MODE) {
+        setCollider(TEST_MODE);
+        printf("Modo test: ON\n");
+    } else {
+        setCollider(NORMAL);
+        printf("Modo test: OFF\n");
+    }
 }

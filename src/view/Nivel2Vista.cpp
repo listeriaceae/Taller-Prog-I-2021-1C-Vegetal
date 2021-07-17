@@ -31,8 +31,9 @@ void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
     for (auto &pos : estadoJuego.estadoNivel.hammers) {
-        if (pos.y == 0) break;
-        hammerVista.mostrar(pos, LEVANTADO);
+        if (pos.y != 0) { //No se muestran los martillos agarrados (tienen pos.y = 0)
+            hammerVista.mostrar(pos, LEVANTADO);
+        }
     }
 
     for (EntidadEstaticaVista *vista : entidadesVista) {
@@ -41,9 +42,10 @@ void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
 
     barrilVista->startRender();
     for (auto &pos : estadoJuego.estadoNivel.barrels) {
-        if (pos.y == 0) break;
-        barrilVista->mover(pos);
-        barrilVista->mostrar();
+        if (pos.y != 0) { //No se muestran los enemigos muertos (tienen pos.y = 0)
+            barrilVista->mover(pos);
+            barrilVista->mostrar();
+        }
     }
 
     size_t i = 0;
