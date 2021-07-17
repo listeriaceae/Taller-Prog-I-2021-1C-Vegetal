@@ -51,6 +51,7 @@ void Mario::collide(Hammer* hammer) {
         delete(this->collider);
         this->collider = new HammerCollider();
         hammer->consume();
+        this->audioObserver.update(ITEM);
     }
 }
 
