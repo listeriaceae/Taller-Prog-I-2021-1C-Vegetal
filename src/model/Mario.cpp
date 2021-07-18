@@ -13,7 +13,9 @@ Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO), state(SueloState::getIn
 
 void Mario::reset() {
     this->state = this->state->reset(*this);
-    setCollider(NORMAL);
+    if(collider->getType() != TEST_MODE) {
+        setCollider(NORMAL);
+    }
 }
 
 void Mario::setStageAndReset(Stage *stage) {

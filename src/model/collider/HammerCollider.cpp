@@ -6,9 +6,11 @@
 HammerCollider::HammerCollider() { }
 
 void HammerCollider::collide(Mario* mario, Barril* barril) {
-    if(((mario->direccion == DERECHA) && (mario->pos.x < barril->pos.x))
-    || ((mario->direccion == IZQUIERDA) && (mario->pos.x > barril->pos.x))
-    || ((mario->estado == DE_ESPALDAS || mario->estado == TREPANDO) && (mario->pos.y > barril->pos.y))) {
+    bool collidedWithHammer = ((mario->direccion == DERECHA) && (mario->pos.x < barril->pos.x))
+    || ((mario->direccion == IZQUIERDA) && (mario->pos.x > barril->pos.x));
+    bool collidedOnLadder = ((mario->estado == DE_ESPALDAS || mario->estado == TREPANDO) && (mario->pos.y > barril->pos.y));
+
+    if(collidedWithHammer || collidedOnLadder) {
         barril->destroy();
         mario->audioObserver.update(ENEMY_DEATH);
         decreaseUses(mario);
@@ -20,9 +22,11 @@ void HammerCollider::collide(Mario* mario, Barril* barril) {
 }
 
 void HammerCollider::collide(Mario* mario, EnemigoFuego* enemigo) {
-    if(((mario->direccion == DERECHA) && (mario->pos.x < enemigo->pos.x))
-    || ((mario->direccion == IZQUIERDA) && (mario->pos.x > enemigo->pos.x))
-    || ((mario->estado == DE_ESPALDAS || mario->estado == TREPANDO) && (mario->pos.y > enemigo->pos.y))) {
+    bool collidedWithHammer = ((mario->direccion == DERECHA) && (mario->pos.x < enemigo->pos.x))
+    || ((mario->direccion == IZQUIERDA) && (mario->pos.x > enemigo->pos.x));
+    bool collidedOnLadder = ((mario->estado == DE_ESPALDAS || mario->estado == TREPANDO) && (mario->pos.y > enemigo->pos.y));
+    
+    if(collidedWithHammer || collidedOnLadder) {
         enemigo->die();
         mario->audioObserver.update(ENEMY_DEATH);
         decreaseUses(mario);
