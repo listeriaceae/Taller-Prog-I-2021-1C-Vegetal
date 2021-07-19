@@ -32,15 +32,18 @@ HammerVista::HammerVista(SDL_Renderer *renderer) {
     dstRect.h = round(ALTO_HAMMER * ALTO_PANTALLA / (float)ALTO_NIVEL);
 }
 
-void HammerVista::setFlip(SDL_RendererFlip flip) {
-    this->flip = flip;
+void HammerVista::mostrar(int x, int y, EstadoHammer estado, SDL_RendererFlip flip) {
+    srcRect.x = estado * ANCHO_HAMMER;
+    dstRect.x = x + (estado) * dstRect.w * (flip == SDL_FLIP_NONE ? -1 : 1);
+    dstRect.y = y - dstRect.h * (1 - estado);
+    SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0., NULL, flip);
 }
 
-void HammerVista::mostrar(punto_t pos, EstadoHammer estado) {
-    srcRect.x = estado;
+void HammerVista::mostrar(punto_t pos) {
+    srcRect.x = 0;
     dstRect.x = round(pos.x * (ANCHO_PANTALLA / (float)ANCHO_NIVEL));
     dstRect.y = round(pos.y * (ALTO_PANTALLA / (float)ALTO_NIVEL));
-    SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0., NULL, flip);
+    SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
 }
 
 HammerVista::~HammerVista() {
