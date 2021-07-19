@@ -7,9 +7,7 @@ public:
     EnemigoFuego(punto_t pos, int direccion, float min, float max);
     void mover();
     dimensiones_t dimensions() const;
-    void die();
 private:
     float velX;
-    const float min, max;
-    bool isDead = false;
+    float min, max;
 };

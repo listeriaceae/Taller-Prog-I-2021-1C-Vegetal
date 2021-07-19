@@ -30,6 +30,7 @@ public:
     void collide(EnemigoFuego* fuego);
     void collide(Barril* barril);
     void collide(Hammer* barril);
+    void toggleTestMode();
     AudioObserver audioObserver{};
     char lives{MARIO_LIVES};
     controls_t controls{0, 0, 0, 0, 0, 0};
@@ -46,5 +47,5 @@ private:
     bool isEnabled{true};
     unsigned char score{0};
     void setCollider(ColliderType colliderType);
-    void toggleTestMode();
+    
 };

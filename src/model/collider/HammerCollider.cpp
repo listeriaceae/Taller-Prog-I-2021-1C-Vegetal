@@ -11,7 +11,7 @@ void HammerCollider::collide(Mario* mario, Barril* barril) {
     bool collidedOnLadder = ((mario->estado == DE_ESPALDAS || mario->estado == TREPANDO) && (mario->pos.y > barril->pos.y));
 
     if(collidedWithHammer || collidedOnLadder) {
-        barril->destroy();
+        barril->isDisabled = true;
         mario->audioObserver.update(ENEMY_DEATH);
         decreaseUses(mario);
     }
@@ -27,7 +27,7 @@ void HammerCollider::collide(Mario* mario, EnemigoFuego* enemigo) {
     bool collidedOnLadder = ((mario->estado == DE_ESPALDAS || mario->estado == TREPANDO) && (mario->pos.y > enemigo->pos.y));
     
     if(collidedWithHammer || collidedOnLadder) {
-        enemigo->die();
+        enemigo->isDisabled = true;
         mario->audioObserver.update(ENEMY_DEATH);
         decreaseUses(mario);
     }

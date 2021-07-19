@@ -24,11 +24,7 @@ void Mario::setStageAndReset(Stage *stage) {
 }
 
 void Mario::mover() {
-    this->state = this->state->update(*this);
-    if(this->controls.toggleTestMode == 1) {
-        toggleTestMode();
-    } 
-        
+    this->state = this->state->update(*this);    
     controls.space = 0;
 }
 

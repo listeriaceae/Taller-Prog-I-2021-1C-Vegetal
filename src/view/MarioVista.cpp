@@ -52,14 +52,24 @@ MarioVista::MarioVista(SDL_Renderer *renderer) {
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
     }
-    loadHammerTexture();
-
+    if(hammerTexture == nullptr) {
+        loadHammerTexture();
+    }
+    //vistaMartillo = HammerVista(renderer);
     srcRect.y = 0;
     srcRect.w = ANCHO_MARIO;
     srcRect.h = ALTO_MARIO;
 
     dstRect.w = round(ANCHO_MARIO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     dstRect.h = round(ALTO_MARIO * ALTO_PANTALLA / (float)ALTO_NIVEL);
+
+    hammerSrc.x = POS_X_SPRITE_MARTILLO_LEVANTADO;
+    hammerSrc.y = POS_Y_SPRITE_MARTILLO;
+    hammerSrc.w = WIDTH_MARTILLO_LEVANTADO;
+    hammerSrc.h = HEIGHT_MARTILLO_LEVANTADO;
+
+    hammerDst.w = round((float)WIDTH_MARTILLO_LEVANTADO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    hammerDst.h = round((float)HEIGHT_MARTILLO_LEVANTADO * ALTO_PANTALLA / (float)ALTO_NIVEL);
 
     ++totalJugadores;
 }
@@ -117,15 +127,18 @@ void MarioVista::updateReposo(char estado, bool hasHammer) {
 }
 
 void MarioVista::updateCorriendo(int nextX, bool hasHammer) {
-    tiempo = (tiempo + (dstRect.x != nextX)) % (TIEMPO_FRAME_CORRIENDO_MARTILLO * CANT_FRAMES);
-    flip = (SDL_RendererFlip)((dstRect.x < nextX) + (int)flip * (dstRect.x == nextX));
-    int frameActual = (tiempo / TIEMPO_FRAME_CORRIENDO_MARTILLO);
-
+    int frameActual;
     if(hasHammer) {
+        tiempoCorriendoConMartillo = (tiempoCorriendoConMartillo + (dstRect.x != nextX)) % (TIEMPO_FRAME_CORRIENDO_MARTILLO * CANT_FRAMES);
+        flip = (SDL_RendererFlip)((dstRect.x < nextX) + (int)flip * (dstRect.x == nextX));
+        frameActual = (tiempoCorriendoConMartillo / TIEMPO_FRAME_CORRIENDO_MARTILLO);
         srcRect.x = (MARIO_POSE_MARTILLO_INDEX * MARIO_SPRITE_SIZE) + frameActual * MARIO_SPRITE_SIZE;  // 0, 1, 2, 3..
         drawHammer(frameActual);
     } 
     else {
+        tiempo = (tiempo + (dstRect.x != nextX)) % (TIEMPO_POR_FRAME * CANT_FRAMES);
+        flip = (SDL_RendererFlip)((dstRect.x < nextX) + (int)flip * (dstRect.x == nextX));
+        frameActual = (tiempo / TIEMPO_POR_FRAME);
         srcRect.x = ((frameActual & 1) << ((frameActual & 2) >> 1)) * MARIO_SPRITE_SIZE;  // 0, 1, 0, 2...
     }
         
@@ -173,26 +186,30 @@ void MarioVista::loadHammerTexture() {
     } else SDL_SetColorKey(hammerSurface, SDL_TRUE, *(Uint32*)(hammerSurface->pixels));
     hammerTexture = SDL_CreateTextureFromSurface(renderer, hammerSurface);
     SDL_FreeSurface(hammerSurface);
-
-    hammerSrc.x = POS_X_SPRITE_MARTILLO_LEVANTADO;
-    hammerSrc.y = POS_Y_SPRITE_MARTILLO;
-    hammerSrc.w = WIDTH_MARTILLO_LEVANTADO;
-    hammerSrc.h = HEIGHT_MARTILLO_LEVANTADO;
-
-    hammerDst.w = round((float)WIDTH_MARTILLO_LEVANTADO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    hammerDst.h = round((float)HEIGHT_MARTILLO_LEVANTADO * ALTO_PANTALLA / (float)ALTO_NIVEL);
 }
 
 void MarioVista::drawHammer(int frame) {
     SDL_RendererFlip hammerFlip = flip;
-
+    /*vistaMartillo.setFlip(flip);
+    vistaMartillo.mostrar({dstRect.x + POS_X_SPRITE_MARTILLO_LEVANTADO, (float)dstRect.y}, LEVANTADO);
+    if(frame % 2 == 0) {
+        vistaMartillo.mostrar({dstRect.x + POS_X_SPRITE_MARTILLO_LEVANTADO, (float)dstRect.y}, LEVANTADO);
+    } else {
+        float posX;
+        if(flip == SDL_FLIP_HORIZONTAL) { //La posicion del martillo cambia respecto hacia donde esta mirando mario
+            posX = dstRect.x + dstRect.w;
+        } else {
+            posX = dstRect.x - hammerDst.w;
+        }
+        vistaMartillo.mostrar({posX, (float)dstRect.y}, GOLPEANDO);
+    }*/
     if(frame % 2 == 0) { //Mario levantando el martillo
         hammerDst.w = round((float)WIDTH_MARTILLO_LEVANTADO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
         hammerSrc.w = WIDTH_MARTILLO_LEVANTADO;
         hammerSrc.x = POS_X_SPRITE_MARTILLO_LEVANTADO;
         hammerDst.x = dstRect.x + round(POS_X_SPRITE_MARTILLO_LEVANTADO * ANCHO_PANTALLA / (float)ANCHO_NIVEL); //pos_x martillo = pos mario + pos martillo
         hammerDst.y = dstRect.y - hammerDst.h; //pos_y martillo = pos mario - alto martillo
-    } else if((frame % 2 == 1)) { //Mario golpeando con el martillo
+    } else { //Mario golpeando con el martillo
         hammerDst.w = round((float)WIDTH_MARTILLO_GOLPEANDO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
         hammerSrc.w = WIDTH_MARTILLO_GOLPEANDO;
         hammerSrc.x = POS_X_SPRITE_MARTILLO_GOLPEANDO;

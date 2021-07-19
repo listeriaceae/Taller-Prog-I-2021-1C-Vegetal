@@ -58,10 +58,9 @@ void Nivel1Vista::update(const estadoJuego_t &estadoJuego) {
 
     enemigoVista->startRender();
     for (auto &pos : estadoJuego.estadoNivel.enemies) {
-        if (pos.y != 0) { //No se muestran los enemigos muertos (tienen pos.y = 0)
-            enemigoVista->mover(pos);
-            enemigoVista->mostrar();
-        }
+        if(pos.y == 0) break; //No se muestran los enemigos muertos
+        enemigoVista->mover(pos);
+        enemigoVista->mostrar();
     }
 
     size_t i = 0;

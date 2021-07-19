@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include "../utils/marioStructs.h"
+#include "HammerVista.h"
 
 class MarioVista
 {
@@ -24,6 +25,7 @@ private:
     SDL_RendererFlip flip{SDL_FLIP_HORIZONTAL};
     int tiempo{0};
     int tiempoReposo{0};
+    int tiempoCorriendoConMartillo{0};
     void updateReposo(char estado, bool hasHammer);
     void updateCorriendo(int nextX, bool hasHammer);
     void updateSaltando(int nextX);

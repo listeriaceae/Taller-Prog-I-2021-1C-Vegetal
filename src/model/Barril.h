@@ -10,9 +10,7 @@ public:
     void mover();
     bool estaEnNivel() const { return pos.y < ALTO_NIVEL; }
     dimensiones_t dimensions() const;
-    void destroy();
 private:
     float velX;
     float velY;
-    bool isBroken = false;
 };
