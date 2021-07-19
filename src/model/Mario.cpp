@@ -36,8 +36,12 @@ void Mario::die() {
     this->state = MuriendoState::getInstance();
 }
 
-void Mario::collide(Entidad* entity) {
-    this->collider->collide(this, entity);
+void Mario::collide(EnemigoFuego* fuego) {
+    this->collider->collide(this, fuego);
+}
+
+void Mario::collide(Barril* barril) {
+    this->collider->collide(this, barril);
 }
 
 void Mario::collide(Hammer* hammer) {

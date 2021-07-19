@@ -12,4 +12,5 @@ public:
 private:
     int uses = HAMMER_USES;
     void decreaseUses(Mario* mario);
+    void collide(Mario* mario, Entidad* entidad);
 };
