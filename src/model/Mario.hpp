@@ -22,6 +22,7 @@ public:
     unsigned char getScore();
     void addPoints(unsigned char points);
     bool getIsLevelCompleted();
+    bool isGameOver();
 
     AudioObserver audioObserver{};
     char lives{MARIO_LIVES};

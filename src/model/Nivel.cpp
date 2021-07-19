@@ -19,3 +19,11 @@ bool Nivel::isComplete() const {
     }
     return allMariosHaveCompletedTheLevel;
 }
+
+bool Nivel::isGameOver() {
+    bool allMariosAreGameOver = true;
+    for (auto &mario : *players) {
+        allMariosAreGameOver &= mario.isGameOver();
+    }
+    return allMariosAreGameOver;
+}

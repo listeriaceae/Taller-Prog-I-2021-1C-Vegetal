@@ -163,6 +163,10 @@ void Server::startGame() {
                     nivel->addPlayers(marios);
                 }
             }
+
+            if (nivel->isGameOver()) {
+                std::cout << "GAME OVER" << '\n';
+            }
         }
     }
 }
