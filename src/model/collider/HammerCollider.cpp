@@ -38,8 +38,7 @@ void HammerCollider::collide(Mario* mario, EnemigoFuego* enemigo) {
 }
 
 void HammerCollider::decreaseUses(Mario* mario) {
-    this->uses--;
-    if(uses <= 0) {
+    if (--uses == 0) {
         delete (mario->collider);
         mario->collider = new NormalCollider();
     }
