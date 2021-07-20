@@ -126,8 +126,7 @@ void Client::startGame()
 
     bool quitRequested = false;
 
-    while (!quitRequested && serverOpen && !isGameOver)
-    {
+    while (!quitRequested && serverOpen && !isGameOver) {
         if (estadoJuego != nullptr) {
             pthread_mutex_lock(&mutex);
             if (currentLevel < estadoJuego->estadoNivel.level)
