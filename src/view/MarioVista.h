@@ -29,5 +29,5 @@ private:
     void updateTrepando(int nextY);
     void updateMuriendo(char estado);
     void drawHammer(int frame);
-    HammerVista* vistaMartillo = nullptr;
+    HammerVista* vistaMartillo{nullptr};
 };

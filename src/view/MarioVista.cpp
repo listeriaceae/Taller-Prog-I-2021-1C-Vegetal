@@ -63,7 +63,7 @@ MarioVista::MarioVista(SDL_Renderer *renderer, HammerVista* vistaMartillo) {
 }
 
 MarioVista::MarioVista(const MarioVista &other)
-: srcRect{other.srcRect}, dstRect{other.dstRect}, flip{other.flip}, tiempo{other.tiempo} {
+: srcRect{other.srcRect}, dstRect{other.dstRect}, flip{other.flip}, tiempo{other.tiempo}, vistaMartillo{other.vistaMartillo} {
     ++totalJugadores;
 }
 
@@ -166,8 +166,7 @@ MarioVista::~MarioVista() {
 
 void MarioVista::drawHammer(int frame) {
     SDL_RendererFlip hammerFlip = flip;
-    if(this->vistaMartillo == nullptr)
-        printf("NULL\n");
+
     if(frame % 2 == 0) { //Mario levantando el martillo
         vistaMartillo->mostrar(dstRect.x + POS_X_SPRITE_MARTILLO_LEVANTADO, dstRect.y, LEVANTADO, hammerFlip);
     } else { //Mario golpeando con el martillo
