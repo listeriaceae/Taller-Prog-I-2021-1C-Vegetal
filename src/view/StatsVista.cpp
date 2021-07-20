@@ -55,8 +55,9 @@ StatsVista::StatsVista(SDL_Renderer *renderer) {
 
 void StatsVista::mostrar(const estadoJugador_t &estado, size_t nroJugador) {
     const punto_t top_left{posiciones.at(nroJugador), MARGEN};
-    const punto_t score_pos{top_left.x + OFFSET_SCORE_X, top_left.y + OFFSET_SCORE_Y};
-    const char score_str[6]{static_cast<char>('0' + (estado.score / 100) % 10),
+    const punto_t score_pos{top_left.x, top_left.y + OFFSET_SCORE_Y};
+    const char score_str[7]{'0',
+                            static_cast<char>('0' + (estado.score / 100) % 10),
                             static_cast<char>('0' + (estado.score / 10) % 10),
                             static_cast<char>('0' + estado.score % 10),
                             '0',
