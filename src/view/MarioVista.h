@@ -7,7 +7,7 @@
 class MarioVista
 {
 public:
-    MarioVista(SDL_Renderer *renderer);
+    MarioVista(SDL_Renderer *renderer, HammerVista* hammer);
     MarioVista(const MarioVista &other);
     void mostrar(const estadoMario_t &estado);
     void setColor(size_t color);
@@ -16,12 +16,9 @@ public:
 private:
     static SDL_Renderer *renderer;
     static SDL_Texture *texture;
-    static SDL_Texture *hammerTexture;
     static size_t totalJugadores;
     SDL_Rect srcRect;
     SDL_Rect dstRect;
-    SDL_Rect hammerSrc;
-    SDL_Rect hammerDst;
     SDL_RendererFlip flip{SDL_FLIP_HORIZONTAL};
     int tiempo{0};
     int tiempoReposo{0};
@@ -31,6 +28,6 @@ private:
     void updateSaltando(int nextX);
     void updateTrepando(int nextY);
     void updateMuriendo(char estado);
-    void loadHammerTexture();
     void drawHammer(int frame);
+    HammerVista* vistaMartillo = nullptr;
 };

@@ -121,10 +121,11 @@ void Nivel1::checkCollisions() {
 }
 
 void Nivel1::deleteDisabledEnemies() {
-    for(int i = enemies.size() - 1; i >= 0; i--) {
-        if(enemies[i].isDisabled) {
-            enemies.erase(enemies.begin() + i);
-            printf("Cant enemigos restantes %ld\n", enemies.size());
+    for(auto it = enemies.begin(); it != enemies.end();) {
+        if(it->isEnabled) {
+            ++it;
+        } else {
+            enemies.erase(it);
         }
     }
 }

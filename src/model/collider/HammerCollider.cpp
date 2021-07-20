@@ -11,7 +11,7 @@ void HammerCollider::collide(Mario* mario, Entidad* entidad) {
     bool collidedOnLadder = ((mario->estado == DE_ESPALDAS || mario->estado == TREPANDO) && (mario->pos.y > entidad->pos.y));
 
     if(collidedWithHammer || collidedOnLadder) {
-        entidad->isDisabled = true;
+        entidad->isEnabled = false;
         mario->audioObserver.update(ENEMY_DEATH);
         decreaseUses(mario);
     }

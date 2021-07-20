@@ -59,7 +59,7 @@ void Nivel2::addBarrel() {
 void Nivel2::updateBarrels() {
     for (auto it = barriles.begin(); it != barriles.end();) {
         it->mover();
-        if (it->estaEnNivel() && !it->isDisabled) {
+        if (it->estaEnNivel() && it->isEnabled) {
             ++it;
         } else {
             it = this->barriles.erase(it);

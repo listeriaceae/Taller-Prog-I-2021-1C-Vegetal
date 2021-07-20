@@ -35,11 +35,10 @@ const std::string IMG_HAMMER = "res/Hammer.png";
 
 SDL_Renderer *MarioVista::renderer{nullptr};
 SDL_Texture *MarioVista::texture{nullptr};
-SDL_Texture *MarioVista::hammerTexture{nullptr};
 
 size_t MarioVista::totalJugadores = 0;
 
-MarioVista::MarioVista(SDL_Renderer *renderer) {
+MarioVista::MarioVista(SDL_Renderer *renderer, HammerVista* vistaMartillo) {
     if (texture == nullptr) {
         this->renderer = renderer;
         SDL_Surface* surface = IMG_Load(IMG_MARIO.c_str());
@@ -52,24 +51,13 @@ MarioVista::MarioVista(SDL_Renderer *renderer) {
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
     }
-    if(hammerTexture == nullptr) {
-        loadHammerTexture();
-    }
-    //vistaMartillo = HammerVista(renderer);
+    this->vistaMartillo = vistaMartillo;
     srcRect.y = 0;
     srcRect.w = ANCHO_MARIO;
     srcRect.h = ALTO_MARIO;
 
     dstRect.w = round(ANCHO_MARIO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     dstRect.h = round(ALTO_MARIO * ALTO_PANTALLA / (float)ALTO_NIVEL);
-
-    hammerSrc.x = POS_X_SPRITE_MARTILLO_LEVANTADO;
-    hammerSrc.y = POS_Y_SPRITE_MARTILLO;
-    hammerSrc.w = WIDTH_MARTILLO_LEVANTADO;
-    hammerSrc.h = HEIGHT_MARTILLO_LEVANTADO;
-
-    hammerDst.w = round((float)WIDTH_MARTILLO_LEVANTADO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    hammerDst.h = round((float)HEIGHT_MARTILLO_LEVANTADO * ALTO_PANTALLA / (float)ALTO_NIVEL);
 
     ++totalJugadores;
 }
@@ -176,50 +164,13 @@ MarioVista::~MarioVista() {
     }
 }
 
-void MarioVista::loadHammerTexture() {
-    SDL_Surface* hammerSurface = IMG_Load(IMG_HAMMER.c_str());
-
-    if(hammerSurface == NULL) {
-        logger::Logger::getInstance().logError("Hammer image not found: " + IMG_HAMMER);
-        logger::Logger::getInstance().logDebug("Loading hammer default image: " + IMG_DEFAULT);
-        hammerSurface = IMG_Load(IMG_DEFAULT.c_str());
-    } else SDL_SetColorKey(hammerSurface, SDL_TRUE, *(Uint32*)(hammerSurface->pixels));
-    hammerTexture = SDL_CreateTextureFromSurface(renderer, hammerSurface);
-    SDL_FreeSurface(hammerSurface);
-}
-
 void MarioVista::drawHammer(int frame) {
     SDL_RendererFlip hammerFlip = flip;
-    /*vistaMartillo.setFlip(flip);
-    vistaMartillo.mostrar({dstRect.x + POS_X_SPRITE_MARTILLO_LEVANTADO, (float)dstRect.y}, LEVANTADO);
-    if(frame % 2 == 0) {
-        vistaMartillo.mostrar({dstRect.x + POS_X_SPRITE_MARTILLO_LEVANTADO, (float)dstRect.y}, LEVANTADO);
-    } else {
-        float posX;
-        if(flip == SDL_FLIP_HORIZONTAL) { //La posicion del martillo cambia respecto hacia donde esta mirando mario
-            posX = dstRect.x + dstRect.w;
-        } else {
-            posX = dstRect.x - hammerDst.w;
-        }
-        vistaMartillo.mostrar({posX, (float)dstRect.y}, GOLPEANDO);
-    }*/
+    if(this->vistaMartillo == nullptr)
+        printf("NULL\n");
     if(frame % 2 == 0) { //Mario levantando el martillo
-        hammerDst.w = round((float)WIDTH_MARTILLO_LEVANTADO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-        hammerSrc.w = WIDTH_MARTILLO_LEVANTADO;
-        hammerSrc.x = POS_X_SPRITE_MARTILLO_LEVANTADO;
-        hammerDst.x = dstRect.x + round(POS_X_SPRITE_MARTILLO_LEVANTADO * ANCHO_PANTALLA / (float)ANCHO_NIVEL); //pos_x martillo = pos mario + pos martillo
-        hammerDst.y = dstRect.y - hammerDst.h; //pos_y martillo = pos mario - alto martillo
+        vistaMartillo->mostrar(dstRect.x + POS_X_SPRITE_MARTILLO_LEVANTADO, dstRect.y, LEVANTADO, hammerFlip);
     } else { //Mario golpeando con el martillo
-        hammerDst.w = round((float)WIDTH_MARTILLO_GOLPEANDO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-        hammerSrc.w = WIDTH_MARTILLO_GOLPEANDO;
-        hammerSrc.x = POS_X_SPRITE_MARTILLO_GOLPEANDO;
-        if(flip == SDL_FLIP_HORIZONTAL) { //La posicion del martillo cambia respecto hacia donde esta mirando mario
-            hammerDst.x = dstRect.x + dstRect.w;
-        } else {
-            hammerDst.x = dstRect.x - hammerDst.w;
-        }
-        hammerDst.y = dstRect.y + round(((float)ALTO_MARIO - (float)POS_Y_MANOS_MARIO_GOLPEANDO) * ALTO_PANTALLA / (float)ALTO_NIVEL); //
+        vistaMartillo->mostrar(dstRect.x, dstRect.y, GOLPEANDO, hammerFlip);
     }
-
-    SDL_RenderCopyEx(renderer, hammerTexture, &hammerSrc, &hammerDst, 0., NULL, hammerFlip);
 }

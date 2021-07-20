@@ -32,7 +32,7 @@ void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
 
     for (auto &pos : estadoJuego.estadoNivel.hammers) {
         if (pos.y != 0) { //No se muestran los martillos agarrados (tienen pos.y = 0)
-            hammerVista.mostrar(pos, LEVANTADO);
+            hammerVista.mostrar(pos);
         }
     }
 

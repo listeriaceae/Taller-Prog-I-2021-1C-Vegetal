@@ -10,7 +10,7 @@ public:
     virtual ~Entidad() = default;
     punto_t pos;
     virtual dimensiones_t dimensions() const = 0;
-    bool isDisabled = false;
+    bool isEnabled = true;
 protected:
     int ancho;
     int alto;
