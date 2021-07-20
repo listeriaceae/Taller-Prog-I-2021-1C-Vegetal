@@ -115,7 +115,7 @@ void Client::startGame()
     auto log_level = configuration->getLogLevel();
     logger::Logger::getInstance().setLogLevel(log_level);
 
-    unsigned char currentLevel = 0;
+    unsigned char currentScene = 0;
     SceneVista *vista{nullptr};
 
     pthread_t sendThread;
@@ -134,8 +134,8 @@ void Client::startGame()
         if (estadoJuego != nullptr)
         {
             pthread_mutex_lock(&mutex);
-            if (currentLevel != estadoJuego->estadoNivel.scene)
-                getNextLevelView(vista, currentLevel, estadoJuego->estadoNivel.scene);
+            if (currentScene != estadoJuego->estadoNivel.scene)
+                getNextLevelView(vista, currentScene, estadoJuego->estadoNivel.scene);
             SDL_RenderClear(renderer);
             vista->update(*estadoJuego);
             estadoJuego = nullptr;
