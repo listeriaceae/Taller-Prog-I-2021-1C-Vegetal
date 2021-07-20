@@ -17,7 +17,7 @@ struct estadoNivel
     punto_t barrels[MAX_BARRELS];
     punto_t hammers[MAX_HAMMERS];
     estadoMario_t players[MAX_PLAYERS];
-    unsigned char level;
+    unsigned char scene;
 };
 
 typedef struct estadoNivel estadoNivel_t;

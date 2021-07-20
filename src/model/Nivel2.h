@@ -6,10 +6,9 @@
 class Nivel2 : public Nivel
 {
 public:
-    Nivel2();
-    void addPlayers(std::vector<Mario> &players);
-    void update();
-    const estadoNivel_t &getEstado();
+    Nivel2(std::vector<Mario> *players);
+    void update() override;
+    const estadoNivel_t &getEstado() override;
     void checkCollisions() const;
 
 private:

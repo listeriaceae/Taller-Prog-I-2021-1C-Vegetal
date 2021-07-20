@@ -5,11 +5,10 @@
 class Nivel1 : public Nivel
 {
 public:
-    Nivel1();
-    void addPlayers(std::vector<Mario> &players);
+    Nivel1(std::vector<Mario> *players);
     void addEnemies(unsigned int amount);
-    void update();
-    const estadoNivel_t &getEstado();
+    void update() override;
+    const estadoNivel_t &getEstado() override;
     void checkCollisions() const;
 
 private:

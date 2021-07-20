@@ -5,6 +5,7 @@
 #include "Client.h"
 #include "../view/Nivel1Vista.h"
 #include "../view/Nivel2Vista.h"
+#include "../view/InterludeVista.h"
 #include "../configuration.hpp"
 #include "../logger.h"
 #include "../TextRenderer.h"
@@ -115,7 +116,7 @@ void Client::startGame()
     logger::Logger::getInstance().setLogLevel(log_level);
 
     unsigned char currentLevel = 0;
-    NivelVista *vista{nullptr};
+    SceneVista *vista{nullptr};
 
     pthread_t sendThread;
     pthread_create(&sendThread, NULL, sendDataThread, &clientSocket);
@@ -133,8 +134,8 @@ void Client::startGame()
         if (estadoJuego != nullptr)
         {
             pthread_mutex_lock(&mutex);
-            if (currentLevel < estadoJuego->estadoNivel.level)
-                getNextLevelView(vista, ++currentLevel);
+            if (currentLevel != estadoJuego->estadoNivel.scene)
+                getNextLevelView(vista, currentLevel, estadoJuego->estadoNivel.scene);
             SDL_RenderClear(renderer);
             vista->update(*estadoJuego);
             estadoJuego = nullptr;
@@ -190,16 +191,26 @@ void *receiveDataThread(void *args)
     return nullptr;
 }
 
-void Client::getNextLevelView(NivelVista *&vista, unsigned char currentLevel)
+void Client::getNextLevelView(SceneVista *&vista, unsigned char &clientScene, unsigned char serverScene)
 {
+    clientScene = serverScene;
+
     delete vista;
-    if (currentLevel == 1)
-    {
-        vista = new Nivel1Vista(renderer, name);
-    }
-    if (currentLevel == 2)
-    {
-        vista = new Nivel2Vista(renderer, name);
+    switch (serverScene) {
+        case 1:
+            vista = new Nivel1Vista(renderer, name);
+            break;
+        case 2:
+            vista = new InterludeVista(renderer);
+            break;
+        case 3:
+            vista = new Nivel2Vista(renderer, name);
+            break;
+        case 4:
+            vista = new InterludeVista(renderer);
+            break;
+        default:
+            vista = nullptr;
     }
 }
 
