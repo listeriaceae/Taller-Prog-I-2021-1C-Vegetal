@@ -3,7 +3,6 @@
 
 class TestCollider: public Collider {
 public:
-    void collide(Mario* mario, Barril* barril);
-    void collide(Mario* mario, EnemigoFuego* enemigo);
+    void collide(Mario* mario, Entidad* entidad);
     ColliderType getType();
 };

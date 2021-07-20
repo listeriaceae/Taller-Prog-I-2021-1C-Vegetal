@@ -2,12 +2,8 @@
 #include "../../logger.h"
 #include "../Mario.hpp"
 
-void TestCollider::collide(Mario* , Barril* ) {
-    logger::Logger::getInstance().logDebug("Collisión con barril");
-}
-
-void TestCollider::collide(Mario* , EnemigoFuego* ) {
-    logger::Logger::getInstance().logDebug("Collisión con enemigo fuego");
+void TestCollider::collide(Mario* , Entidad* ) {
+    logger::Logger::getInstance().logDebug("Collisión con entidad");
 }
 
 ColliderType TestCollider::getType() {

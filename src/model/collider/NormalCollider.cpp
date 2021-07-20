@@ -3,11 +3,7 @@
 
 NormalCollider::NormalCollider() { }
 
-void NormalCollider::collide(Mario* mario, Barril* ) {
-    mario->die();
-}
-
-void NormalCollider::collide(Mario* mario, EnemigoFuego* ) {
+void NormalCollider::collide(Mario* mario, Entidad* ) {
     mario->die();
 }
 

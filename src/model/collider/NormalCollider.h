@@ -4,7 +4,6 @@
 class NormalCollider: public Collider {
 public:
     NormalCollider();
-    void collide(Mario* mario, Barril* barril);
-    void collide(Mario* mario, EnemigoFuego* enemigo);
+    void collide(Mario* mario, Entidad* entidad);
     ColliderType getType();
 };

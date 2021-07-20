@@ -27,9 +27,8 @@ public:
     unsigned char getScore();
     void addPoints(unsigned char points);
     bool getIsLevelCompleted();
-    void collide(EnemigoFuego* fuego);
-    void collide(Barril* barril);
-    void collide(Hammer* barril);
+    void collide(Entidad* entidad);
+    void collide(Hammer* hammer);
     void toggleTestMode();
     AudioObserver audioObserver{};
     char lives{MARIO_LIVES};

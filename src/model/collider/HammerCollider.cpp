@@ -20,14 +20,6 @@ void HammerCollider::collide(Mario* mario, Entidad* entidad) {
     }
 }
 
-void HammerCollider::collide(Mario* mario, Barril* barril) {
-    collide(mario, (Entidad*)barril);    
-}
-
-void HammerCollider::collide(Mario* mario, EnemigoFuego* enemigo) {
-    collide(mario, (Entidad*)enemigo);
-}
-
 void HammerCollider::decreaseUses(Mario* mario) {
     if (--uses == 0) {
         delete (mario->collider);
