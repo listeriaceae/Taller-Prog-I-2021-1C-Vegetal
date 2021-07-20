@@ -28,7 +28,7 @@ typedef struct handleLevelStateArgs
 
 pthread_mutex_t mutex;
 bool serverOpen = true;
-
+bool isGameOver = false;
 
 void *sendDataThread(void *args);
 void *receiveDataThread(void *args);
@@ -47,28 +47,27 @@ Client::Client(char *serverIp, char *port)
 
 int Client::startClient()
 {
-    if (this->connectToServer() == EXIT_FAILURE)
-    {
+    if (this->connectToServer() == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
 
-    if (this->showStartPage() == EXIT_FAILURE)
-    {
+    if (this->showStartPage() == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
 
-    if (serverOpen)
-    {
-    this->showConnectedPage();
-    this->startGame();
+    if (serverOpen) {
+        this->showConnectedPage();
+        this->startGame();
     }
 
-    if (!serverOpen)
-    {
+    if (isGameOver) {
+        this->showGameOver();
+        while (!SDL_QuitRequested()) { }
+    }
+    
+    if (!serverOpen) {
         DesconexionVista::show(renderer);
-        while (!SDL_QuitRequested())
-        {
-        }
+        while (!SDL_QuitRequested()) { }
     }
 
     SDL_DestroyRenderer(renderer);
@@ -85,8 +84,7 @@ int Client::connectToServer()
 
     //socket
     this->clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (clientSocket == -1)
-    {
+    if (clientSocket == -1) {
         return EXIT_FAILURE;
     }
 
@@ -95,8 +93,7 @@ int Client::connectToServer()
     serverAddress.sin_port = htons(atoi(port));
 
     //connect
-    if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) != 0)
-    {
+    if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) != 0) {
         std::cout << "Error al conectarse con el servidor\n";
         return EXIT_FAILURE;
     }
@@ -128,15 +125,18 @@ void Client::startGame()
     pthread_create(&receiveThread, NULL, receiveDataThread, &receiveArgs);
 
     bool quitRequested = false;
-    while (!quitRequested && serverOpen)
+
+    while (!quitRequested && serverOpen && !isGameOver)
     {
-        if (estadoJuego != nullptr)
-        {
+        if (estadoJuego != nullptr) {
             pthread_mutex_lock(&mutex);
             if (currentLevel < estadoJuego->estadoNivel.level)
                 getNextLevelView(vista, ++currentLevel);
             SDL_RenderClear(renderer);
             vista->update(*estadoJuego);
+
+            isGameOver = estadoJuego->estadoNivel.isGameOver;
+
             estadoJuego = nullptr;
             pthread_mutex_unlock(&mutex);
             SDL_RenderPresent(renderer);
@@ -217,12 +217,9 @@ int Client::showStartPage()
         }
 
         response = login(user);
-        if (response == LOGIN_OK)
-        {
+        if (response == LOGIN_OK) {
             strcpy(this->name, user.username);
-        }
-        else
-        {
+        } else {
             startPage.setResponse(response);
         }
     } while (response != LOGIN_OK && serverOpen);
@@ -252,6 +249,18 @@ void Client::showConnectedPage()
     pos.x = (10 + 2) * (ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     pos.y = (110 + 2) * (ALTO_PANTALLA / (float)ALTO_NIVEL);
     TextRenderer::getInstance(renderer)->renderText(pos, "Esperando a jugadores...", 1);
+
+    SDL_RenderPresent(renderer);
+}
+
+void Client::showGameOver()
+{
+    SDL_RenderClear(renderer);
+
+    punto_t pos;
+    pos.x = (50 + 2) * (ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    pos.y = (110 + 2) * (ALTO_PANTALLA / (float)ALTO_NIVEL);
+    TextRenderer::getInstance(renderer)->renderText(pos, "Game Over", 1);
 
     SDL_RenderPresent(renderer);
 }

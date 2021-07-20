@@ -21,8 +21,8 @@ public:
     dimensiones_t dimensions() const;
     unsigned char getScore();
     void addPoints(unsigned char points);
-    bool getIsLevelCompleted();
-    bool isGameOver();
+    bool getIsLevelCompletedOrDisabled();
+    bool getIsGameOver();
 
     AudioObserver audioObserver{};
     char lives{MARIO_LIVES};

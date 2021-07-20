@@ -98,6 +98,8 @@ const estadoNivel_t &Nivel1::getEstado() {
         estadoNivel.players[i++] = player.getEstado();
     }
 
+    estadoNivel.isGameOver = this->getIsGameOver();
+
     return estadoNivel;
 }
 
