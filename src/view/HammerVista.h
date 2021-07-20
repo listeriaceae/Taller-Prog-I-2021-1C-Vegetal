@@ -18,9 +18,8 @@ public:
     ~HammerVista();
 
 private:
-    static SDL_Renderer *renderer;
-    static SDL_Texture *texture;
+    SDL_Renderer *renderer;
+    SDL_Texture *texture;
     SDL_Rect srcRect;
     SDL_Rect dstRect;
-    SDL_RendererFlip flip{SDL_FLIP_NONE};
 };

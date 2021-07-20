@@ -20,9 +20,6 @@
 
 const std::string IMG_ICONS{"res/PlayerIcon.png"};
 
-SDL_Renderer *StatsVista::renderer{nullptr};
-SDL_Texture *StatsVista::iconsTexture{nullptr};
-
 StatsVista::StatsVista(SDL_Renderer *renderer) {
     if (iconsTexture == nullptr) {
         this->renderer = renderer;

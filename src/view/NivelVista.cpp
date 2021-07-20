@@ -43,7 +43,5 @@ void NivelVista::setBackground(const std::string &rutaImagen) {
 
 NivelVista::~NivelVista() {
     SDL_DestroyTexture(texture);
-
-    jugadoresVista.clear();
-    entidadesVista.clear();
+    for (auto vista : entidadesVista) delete vista;
 }

@@ -5,7 +5,7 @@ class DesconexionVista
 {
 public:
     static void show(SDL_Renderer *renderer);
+    DesconexionVista() = delete;
 
 private:
-    DesconexionVista() {}
 };
