@@ -9,4 +9,5 @@ public:
     void update(const estadoJuego_t &estadoJuego) override;
 private:
     SDL_Renderer *renderer;
+    size_t maxPlayers;
 };

@@ -21,18 +21,17 @@
 const std::string IMG_ICONS{"res/PlayerIcon.png"};
 
 StatsVista::StatsVista(SDL_Renderer *renderer) {
-    if (iconsTexture == nullptr) {
-        this->renderer = renderer;
-        SDL_Surface* surface = IMG_Load(IMG_ICONS.c_str());
-        if (surface == NULL) {
-            logger::Logger::getInstance().logError("Image not found: " + IMG_ICONS);
-            logger::Logger::getInstance().logDebug("Loading default image: " + IMG_DEFAULT);
-            surface = IMG_Load(IMG_DEFAULT.c_str());
-        }
-        SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 0, 0));
-        iconsTexture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_FreeSurface(surface);
+    this->renderer = renderer;
+    SDL_Surface* surface = IMG_Load(IMG_ICONS.c_str());
+    if (surface == NULL) {
+        logger::Logger::getInstance().logError("Image not found: " + IMG_ICONS);
+        logger::Logger::getInstance().logDebug("Loading default image: " + IMG_DEFAULT);
+        surface = IMG_Load(IMG_DEFAULT.c_str());
     }
+    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 0, 0));
+    iconsTexture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+
     auto maxPlayers = configuration::GameConfiguration::getInstance(CONFIG_FILE)->getMaxPlayers();
     if (maxPlayers < MIN_PLAYERS || MAX_PLAYERS < maxPlayers)
         maxPlayers = DEFAULT_MAX_PLAYERS;
