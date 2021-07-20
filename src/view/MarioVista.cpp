@@ -165,11 +165,5 @@ MarioVista::~MarioVista() {
 }
 
 void MarioVista::drawHammer(int frame) {
-    SDL_RendererFlip hammerFlip = flip;
-
-    if(frame % 2 == 0) { //Mario levantando el martillo
-        vistaMartillo->mostrar(dstRect.x + POS_X_SPRITE_MARTILLO_LEVANTADO, dstRect.y, LEVANTADO, hammerFlip);
-    } else { //Mario golpeando con el martillo
-        vistaMartillo->mostrar(dstRect.x, dstRect.y, GOLPEANDO, hammerFlip);
-    }
+    vistaMartillo->mostrar(dstRect.x, dstRect.y, (EstadoHammer)(frame % 2), flip);
 }
