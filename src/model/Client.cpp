@@ -176,8 +176,7 @@ void *receiveDataThread(void *args)
     estadoJuego_t game;
 
     bool quitRequested = false;
-    while (!quitRequested && serverOpen)
-    {
+    while (!quitRequested && serverOpen) {
         if (receiveData(clientSocket, &game) == sizeof(estadoJuego_t)) {
             pthread_mutex_lock(&mutex);
             estado = &game;
