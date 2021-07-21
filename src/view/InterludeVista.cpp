@@ -23,10 +23,6 @@ InterludeVista::InterludeVista(SDL_Renderer *renderer) : SceneVista(), renderer{
 void InterludeVista::update(const estadoJuego_t &estadoJuego) {
     punto_t statsJugadorPos{X_POS_USER, Y_POS_USER};
     auto textRenderer = TextRenderer::getInstance(renderer);
-    if (estadoJuego.estadoNivel.scene == 4) {
-        textRenderer->renderText({X_POS_CONGRATS, Y_POS_CONGRATS}, "CONGRATULATIONS", 1.25f, YELLOW);
-        textRenderer->renderText({X_POS_GAME_OVER, Y_POS_GAME_OVER}, "YOU WON", 1.25, YELLOW);
-    }
 
     textRenderer->renderText(statsJugadorPos, "USER", 1.25f, YELLOW);
     textRenderer->renderText({statsJugadorPos.x + OFFSET_SCORE, statsJugadorPos.y}, "SCORE", 1.25f, YELLOW);
