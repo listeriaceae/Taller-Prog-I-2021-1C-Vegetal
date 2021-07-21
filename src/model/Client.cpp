@@ -58,6 +58,8 @@ int Client::startClient()
         this->showConnectedPage();
         ClientExitStatus exitStatus = this->startGame();
         processExit(exitStatus);
+    } else {
+        processExit(CLIENT_CONNECTION_CLOSED);
     }
 
     SDL_DestroyRenderer(renderer);
