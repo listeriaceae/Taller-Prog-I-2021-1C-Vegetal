@@ -82,6 +82,7 @@ void Client::processExit(ClientExitStatus clientExitStatus) {
             break;
         case CLIENT_QUIT_REQUESTED:
             logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "QUIT_REQUESTED");
+            break;
         default:
             break;
     }
