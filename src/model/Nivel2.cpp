@@ -1,11 +1,11 @@
 #include "Nivel2.h"
 #include "../utils/Constants.hpp"
 
-Nivel2::Nivel2() : Nivel() {
+Nivel2::Nivel2(std::vector<Mario> *players) : Nivel(players) {
     this->initPlatforms();
     this->initLadders();
     this->initHammers();
-    estadoNivel.level = 2;
+    estadoNivel.scene = 3;
 }
 
 void Nivel2::initPlatforms() {

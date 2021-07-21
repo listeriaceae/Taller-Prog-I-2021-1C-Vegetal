@@ -11,6 +11,7 @@
 #include "../logger.h"
 #include "Nivel1.h"
 #include "Nivel2.h"
+#include "Interlude.h"
 #include "Mario.hpp"
 #include "../logger.h"
 #include "../utils/Constants.hpp"
@@ -28,7 +29,7 @@ typedef struct handleLoginArgs {
     int clientSocket;
 } handleLoginArgs_t;
 
-void getNextLevel(Nivel *&nivel, unsigned char currentLevel);
+void getNextLevel(Scene *&scene, std::vector<Mario> *marios, unsigned char currentLevel);
 void getEstadoJugadores(estadoJuego_t &estado,  std::map<std::string, player_t> &connectedPlayers);
 
 void *acceptNewConnections(void *serverArg);
@@ -113,11 +114,10 @@ void Server::startGame() {
     }
 
     unsigned char currentLevel = 0;
-    Nivel *nivel{nullptr};
+    Scene *scene{nullptr};
     estadoJuego_t game;
 
-    getNextLevel(nivel, ++currentLevel);
-    nivel->addPlayers(marios);
+    getNextLevel(scene, &marios, ++currentLevel);
 
     {
         size_t i = 0;
@@ -132,7 +132,7 @@ void Server::startGame() {
     std::chrono::milliseconds elapsed;
     std::chrono::milliseconds lag{0};
     bool isUpdated = false;
-    while (nivel != nullptr) {
+    while (scene != nullptr) {
         current = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
         elapsed = current - previous;
         previous = current;
@@ -141,13 +141,13 @@ void Server::startGame() {
         // Update Model
         isUpdated = false;
         while (lag >= MS_PER_UPDATE) {
-            nivel->update();
+            scene->update();
             lag -= MS_PER_UPDATE;
             isUpdated = true;
         }
 
         if (isUpdated) {
-            game.estadoNivel = nivel->getEstado();
+            game.estadoNivel = scene->getEstado();
 
             getEstadoJugadores(game, connectedPlayers);
 
@@ -157,11 +157,8 @@ void Server::startGame() {
                 }
                 player.second.mario->audioObserver.reset();
             }
-            if (__builtin_expect(nivel->isComplete(), 0)) {
-                getNextLevel(nivel, ++currentLevel);
-                if (nivel != nullptr) {
-                    nivel->addPlayers(marios);
-                }
+            if (__builtin_expect(scene->isComplete(), 0)) {
+                getNextLevel(scene, &marios, ++currentLevel);
             }
         }
     }
@@ -293,20 +290,27 @@ void *handleCommand(void *player) {
     return nullptr;
 }
 
-void getNextLevel(Nivel *&nivel, unsigned char currentLevel) {
-    delete nivel;
-    if (currentLevel == 1) {
-        logger::Logger::getInstance().logInformation("Level 1 starts");
-        nivel = new Nivel1();
-    }
-    else if (currentLevel == 2) {
-        logger::Logger::getInstance().logInformation("End of Level 1");
-        nivel = new Nivel2();
-        logger::Logger::getInstance().logInformation("Level 2 starts");
-    }
-    else {
-        logger::Logger::getInstance().logInformation("End of Level 2");
-        nivel = nullptr;
+void getNextLevel(Scene *&scene, std::vector<Mario> *marios, unsigned char currentScene) {
+    delete scene;
+    switch(currentScene) {
+        case 1:
+            logger::Logger::getInstance().logInformation("Level 1 starts");
+            scene = new Nivel1(marios);
+            break;
+        case 2:
+            logger::Logger::getInstance().logInformation("End of Level 1");
+            scene = new Interlude(currentScene);
+            break;
+        case 3:
+            logger::Logger::getInstance().logInformation("Level 2 starts");
+            scene = new Nivel2(marios);
+            break;
+        case 4:
+            logger::Logger::getInstance().logInformation("End of Level 2");
+            scene = new Interlude(currentScene);
+            break;
+        default:
+            scene = nullptr;
     }
 }
 
