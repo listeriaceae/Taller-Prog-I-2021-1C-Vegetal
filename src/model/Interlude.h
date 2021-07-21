@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 
-#define INTERLUDE_DURATION 600
+#define INTERLUDE_DURATION 300
 
 class Interlude : public Scene
 {
