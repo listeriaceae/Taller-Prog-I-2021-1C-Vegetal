@@ -7,6 +7,7 @@ public:
     const MarioState *update(Mario &mario) const;
     const MarioState *reset(Mario &) const;
     bool getIsLevelCompleted() const;
+    bool getIsGameOver() const;
     static const GameOverState *getInstance();
 
 private:
