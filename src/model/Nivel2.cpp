@@ -5,7 +5,7 @@ Nivel2::Nivel2(std::vector<Mario> *players) : Nivel(players) {
     this->initPlatforms();
     this->initLadders();
     this->initHammers();
-    estadoNivel.scene = 3;
+    estadoNivel.sceneNumber = 3;
 }
 
 void Nivel2::initPlatforms() {
@@ -82,6 +82,8 @@ const estadoNivel_t &Nivel2::getEstado() {
     for (auto &player : *players) {
         estadoNivel.players[i++] = player.getEstado();
     }
+
+    estadoNivel.isGameOver = this->getIsGameOver();
 
     return estadoNivel;
 }

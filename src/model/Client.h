@@ -5,6 +5,13 @@
 #include "../utils/user.h"
 #include "../view/SceneVista.h"
 
+enum ClientExitStatus
+{
+    CLIENT_QUIT_REQUESTED,
+    CLIENT_CONNECTION_CLOSED,
+    CLIENT_GAME_OVER,
+};
+
 class Client
 {
 public:
@@ -12,7 +19,7 @@ public:
     int startClient();
     int showStartPage();
     int connectToServer();
-    void startGame();
+    ClientExitStatus startGame();
     int login(user_t user);
 
 private:
@@ -24,5 +31,7 @@ private:
     struct sockaddr_in serverAddress;
     char name[4];
     void showConnectedPage();
-    void getNextLevelView(SceneVista *&vista, unsigned char &clientScene, unsigned char serverScene);
+    void getSceneView(SceneVista *&vista, unsigned char serverScene);
+    void showGameOver();
+    void processExit(ClientExitStatus clientExitStatus);
 };

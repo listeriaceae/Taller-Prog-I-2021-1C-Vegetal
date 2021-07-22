@@ -15,7 +15,15 @@ bool Nivel::collision(dimensiones_t player, dimensiones_t enemy) const {
 bool Nivel::isComplete() const {
     bool allMariosHaveCompletedTheLevel = true;
     for (auto &mario : *players) {
-        allMariosHaveCompletedTheLevel &= mario.getIsLevelCompleted();
+        allMariosHaveCompletedTheLevel &= mario.getIsLevelCompletedOrDisabled();
     }
     return allMariosHaveCompletedTheLevel;
+}
+
+bool Nivel::getIsGameOver() {
+    bool allMariosAreGameOver = true;
+    for (auto &mario : *players) {
+        allMariosAreGameOver &= mario.getIsGameOver();
+    }
+    return allMariosAreGameOver;
 }

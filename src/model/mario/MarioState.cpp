@@ -15,6 +15,10 @@ bool MarioState::getIsLevelCompleted() const {
     return false;
 }
 
+bool MarioState::getIsGameOver() const {
+    return false;
+}
+
 void MarioState::setStage(Stage *stage_) {
     stage = stage_;
 }
