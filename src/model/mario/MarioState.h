@@ -19,6 +19,7 @@ public:
     virtual const MarioState *reset(Mario &mario) const;
     virtual const MarioState *update(Mario &mario) const = 0;
     virtual bool getIsLevelCompleted() const;
+    virtual bool getIsGameOver() const;
     virtual ~MarioState() = default;
 
 protected:

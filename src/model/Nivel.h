@@ -16,6 +16,7 @@ public:
     virtual const estadoNivel_t &getEstado() = 0;
     bool isComplete() const;
     bool collision(dimensiones_t, dimensiones_t) const;
+    bool getIsGameOver();
     virtual ~Nivel() = default;
 
 protected:

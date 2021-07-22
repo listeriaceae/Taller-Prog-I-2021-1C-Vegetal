@@ -46,12 +46,12 @@ Server::Server(char *port) {
 
     std::cout << "Aplicación iniciada en modo servidor en el puerto: " << port << '\n';
 
-    logger::Logger::getInstance().logInformation("Loading valid users...");
+    logger::Logger::getInstance().logInformation("[server] Loading valid users...");
     auto config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
     for (auto &u : config->getUsers())
     {
         this->users[u.username] = u;
-        logger::Logger::getInstance().logDebug(std::string("user: ") + u.username + " " + u.password);
+        logger::Logger::getInstance().logDebug(std::string("[server] user: ") + u.username + " " + u.password);
     }
 }
 
@@ -62,7 +62,7 @@ int Server::startServer() {
 
     int configPlayers = config->getMaxPlayers();
     if(configPlayers < MIN_PLAYERS || MAX_PLAYERS < configPlayers) {
-        logger::Logger::getInstance().logDebug(CANTIDAD_DE_JUGADORES_INVALIDA);
+        logger::Logger::getInstance().logDebug(std::string("[server] ") + CANTIDAD_DE_JUGADORES_INVALIDA);
         maxPlayers = DEFAULT_MAX_PLAYERS;
     }
     else {
@@ -85,7 +85,7 @@ int Server::startServer() {
         return EXIT_FAILURE;
     }
 
-    logger::Logger::getInstance().logInformation("Waiting for players...");
+    logger::Logger::getInstance().logInformation("[server] Waiting for players...");
 
     pthread_t acceptConnectionsThread;
     pthread_create(&acceptConnectionsThread, nullptr, acceptNewConnections, this);
@@ -157,12 +157,20 @@ void Server::startGame() {
                 }
                 player.second.mario->audioObserver.reset();
             }
+
             if (__builtin_expect(nivel->isComplete(), 0)) {
+
+                if (nivel->getIsGameOver()) {
+                    std::cout << "GAME OVER" << '\n';
+                    return;
+                }
+
                 getNextLevel(nivel, ++currentLevel);
                 if (nivel != nullptr) {
                     nivel->addPlayers(marios);
                 }
             }
+
         }
     }
 }
@@ -205,21 +213,21 @@ void *handleLogin(void* arguments) {
 int validateUserLogin(int client, Server *server) {
     user_t user;
     if (receiveData(client, &user) != sizeof(user_t)) {
-        logger::Logger::getInstance().logDebug("Lost connection to client");
+        logger::Logger::getInstance().logDebug("[server] Lost connection to client");
         return LOGIN_ABORTED;
     }
 
     char response = -1;
 
     if (server->users.count(user.username) == 0) {
-        logger::Logger::getInstance().logDebug(std::string("[") + user.username + "] invalid user");
+        logger::Logger::getInstance().logDebug(std::string("[server] [") + user.username + "] invalid user");
         response = LOGIN_INVALID_USER;
         sendData(client, &response);
         return LOGIN_INVALID_USER;
     }
 
     if (strcmp(server->users.at(user.username).password, user.password) != 0) {
-        logger::Logger::getInstance().logDebug(std::string("[") + user.username + "] incorrect password");
+        logger::Logger::getInstance().logDebug(std::string("[server] [") + user.username + "] incorrect password");
         response = LOGIN_INVALID_USER_PASS;
         sendData(client, &response);
         return LOGIN_INVALID_USER_PASS;
@@ -230,7 +238,7 @@ int validateUserLogin(int client, Server *server) {
         player_t &player = server->connectedPlayers.at(user.username);
         if (player.isConnected) {
             pthread_mutex_unlock(&connectedPlayersMutex);
-            logger::Logger::getInstance().logDebug(std::string("[") + user.username + "] user already connected");
+            logger::Logger::getInstance().logDebug(std::string("[server] [") + user.username + "] user already connected");
             response = LOGIN_USER_ALREADY_CONNECTED;
             sendData(client, &response);
             return LOGIN_USER_ALREADY_CONNECTED;
@@ -240,7 +248,7 @@ int validateUserLogin(int client, Server *server) {
             player.clientSocket = client;
             response = LOGIN_OK;
             player.isConnected = true;
-            logger::Logger::getInstance().logInformation(std::string("Succesfully reconnected ") + user.username);
+            logger::Logger::getInstance().logInformation(std::string("[server] Successfully reconnected ") + user.username);
         }
     }
 
@@ -259,7 +267,7 @@ int validateUserLogin(int client, Server *server) {
                                                    nullptr,
                                                    client,
                                                    true};
-        logger::Logger::getInstance().logInformation(std::string("Accepted new user: ") + user.username);
+        logger::Logger::getInstance().logInformation(std::string("[server] Accepted new user: ") + user.username);
     }
     pthread_mutex_unlock(&connectedPlayersMutex);
 
@@ -299,16 +307,16 @@ void *handleCommand(void *player) {
 void getNextLevel(Nivel *&nivel, unsigned char currentLevel) {
     delete nivel;
     if (currentLevel == 1) {
-        logger::Logger::getInstance().logInformation("Level 1 starts");
+        logger::Logger::getInstance().logInformation("[server] Level 1 starts");
         nivel = new Nivel1();
     }
     else if (currentLevel == 2) {
-        logger::Logger::getInstance().logInformation("End of Level 1");
+        logger::Logger::getInstance().logInformation("[server] End of Level 1");
         nivel = new Nivel2();
-        logger::Logger::getInstance().logInformation("Level 2 starts");
+        logger::Logger::getInstance().logInformation("[server] Level 2 starts");
     }
     else {
-        logger::Logger::getInstance().logInformation("End of Level 2");
+        logger::Logger::getInstance().logInformation("[server] End of Level 2");
         nivel = nullptr;
     }
 }

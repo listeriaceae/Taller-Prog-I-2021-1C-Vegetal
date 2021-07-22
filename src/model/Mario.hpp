@@ -28,7 +28,8 @@ public:
     dimensiones_t dimensions() const;
     unsigned char getScore();
     void addPoints(unsigned char points);
-    bool getIsLevelCompleted();
+    bool getIsLevelCompletedOrDisabled();
+    bool getIsGameOver();
     void collide(Entidad* entidad);
     void collide(Hammer* hammer);
     void toggleTestMode();
