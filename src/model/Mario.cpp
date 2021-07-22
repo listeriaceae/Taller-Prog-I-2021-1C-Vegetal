@@ -11,6 +11,14 @@
 
 Mario::Mario() : Entidad(0, 0, ANCHO_MARIO, ALTO_MARIO), state(SueloState::getInstance()) {}
 
+Mario::Mario(const Mario &other) : Entidad(other.pos.x, other.pos.y, other.ancho, other.alto), 
+audioObserver{other.audioObserver}, lives{other.lives}, 
+controls{other.controls}, contador{other.contador}, estado{other.estado}, velX{other.velX}, velY{other.velY}, 
+climbMin{other.climbMin}, climbMax{other.climbMax}, direccion{other.direccion},
+state{other.state}, isEnabled{isEnabled}, score{other.score}{ 
+    collider = new NormalCollider();
+    }
+
 void Mario::reset() {
     this->state = this->state->reset(*this);
     if(collider->getType() != TEST_MODE) {
@@ -93,4 +101,8 @@ void Mario::toggleTestMode() {
         setCollider(NORMAL);
         printf("Modo test: OFF\n");
     }
+}
+
+Mario::~Mario() {
+    delete collider;
 }

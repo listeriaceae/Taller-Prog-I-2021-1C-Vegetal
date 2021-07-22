@@ -16,6 +16,8 @@ class Mario : public Entidad
 {
 public:
     Mario();
+    Mario(const Mario &other);
+    ~Mario();
     void reset();
     void setStageAndReset(Stage *stage);
     void mover();
