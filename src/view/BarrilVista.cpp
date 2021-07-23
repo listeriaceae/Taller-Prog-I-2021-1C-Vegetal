@@ -36,7 +36,7 @@ void BarrilVista::startRender() {
     updated = 0;
 }
 
-void BarrilVista::mover(const punto_t &pos) {
+void BarrilVista::mover(punto_t pos) {
     dstRect.x = round(pos.x * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
     dstRect.y = round(pos.y * ALTO_PANTALLA / (float)ALTO_NIVEL);
     flip = (110 - ALTO_BARRIL < pos.y && pos.y < 142.75 - ALTO_BARRIL)
