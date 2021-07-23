@@ -9,7 +9,6 @@ public:
     Nivel2();
     void update();
     const estadoNivel_t &getEstado();
-    void checkCollisions() const;
 
 private:
     std::list<Barril> barriles;
@@ -20,4 +19,6 @@ private:
     void initHammers();
 
     void updateBarrels();
+    void checkCollisions();
+    void deleteDisabledBarrels();
 };

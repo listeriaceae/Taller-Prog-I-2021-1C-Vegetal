@@ -11,7 +11,6 @@ public:
     void updateDirection(float, float);
     bool estaEnNivel() const { return pos.x < ANCHO_NIVEL; }
     dimensiones_t dimensions() const;
-    size_t direcciones_index{};
 
 private:
     static constexpr std::array<std::pair<punto_t,punto_t>, 12> direcciones {
@@ -29,4 +28,5 @@ private:
         {}
     };
     punto_t vel;
+    size_t direcciones_index{};
 };

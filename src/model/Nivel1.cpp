@@ -77,6 +77,7 @@ void Nivel1::update() {
     for (auto &enemy : enemies) enemy.mover();
     for (auto &mario : *players) mario.mover();
     checkCollisions();
+    deleteDisabledEnemies();
 }
 
 const estadoNivel_t &Nivel1::getEstado() {
@@ -88,6 +89,7 @@ const estadoNivel_t &Nivel1::getEstado() {
     for (auto &enemy : enemies) {
         estadoNivel.enemies[i++] = enemy.pos;
     }
+    if (i < MAX_ENEMIES) estadoNivel.enemies[i] = {0, 0};
     i = 0;
     for (auto &hammer : hammers) {
         estadoNivel.hammers[i++] = hammer.pos;
@@ -103,13 +105,29 @@ const estadoNivel_t &Nivel1::getEstado() {
     return estadoNivel;
 }
 
-void Nivel1::checkCollisions() const {
+void Nivel1::checkCollisions() {
     for (Mario &player : *players) {
         for (auto &enemy : enemies) {
-            if (collision(player.dimensions(), enemy.dimensions())) {
-                player.die();
+            if (collision(player.dimensions(), enemy.dimensions()) && player.estado != MURIENDO && player.estado != MUERTO) {
+                player.collide(&enemy);
                 break;
             }
+        }
+        
+        for(auto &hammer : hammers) {
+            if(collision(player.dimensions(), hammer.dimensions())) {
+                player.collide(&hammer);
+            }
+        }
+    }
+}
+
+void Nivel1::deleteDisabledEnemies() {
+    for(auto it = enemies.begin(); it != enemies.end();) {
+        if(it->isEnabled) {
+            ++it;
+        } else {
+            it = enemies.erase(it);
         }
     }
 }
