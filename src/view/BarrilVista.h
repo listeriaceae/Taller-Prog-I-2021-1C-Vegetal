@@ -8,7 +8,7 @@ class BarrilVista
 public:
     BarrilVista(SDL_Renderer *renderer);
     void startRender();
-    void mover(const punto_t &pos);
+    void mover(punto_t pos);
     void mostrar();
     ~BarrilVista();
 
