@@ -1,6 +1,7 @@
 #include <iostream>
 #include <pthread.h>
 #include <string>
+#include <SDL2/SDL_image.h>
 
 #include "Client.h"
 #include "../view/Nivel1Vista.h"
@@ -10,7 +11,7 @@
 #include "../logger.h"
 #include "../TextRenderer.h"
 #include "../StartPageView.h"
-#include "../view/DesconexionVista.h"
+#include "../view/exitVista.h"
 #include "../utils/window.hpp"
 #include "../utils/Constants.hpp"
 #include "../utils/estadoJuego.h"
@@ -30,7 +31,6 @@ typedef struct handleLevelStateArgs
 pthread_mutex_t mutex;
 bool serverOpen = true;
 
-
 void *sendDataThread(void *args);
 void *receiveDataThread(void *args);
 
@@ -48,28 +48,20 @@ Client::Client(char *serverIp, char *port)
 
 int Client::startClient()
 {
-    if (this->connectToServer() == EXIT_FAILURE)
-    {
+    if (this->connectToServer() == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
 
-    if (this->showStartPage() == EXIT_FAILURE)
-    {
+    if (this->showStartPage() == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
 
-    if (serverOpen)
-    {
-    this->showConnectedPage();
-    this->startGame();
-    }
-
-    if (!serverOpen)
-    {
-        DesconexionVista::show(renderer);
-        while (!SDL_QuitRequested())
-        {
-        }
+    if (serverOpen) {
+        this->showConnectedPage();
+        ClientExitStatus exitStatus = this->startGame();
+        processExit(exitStatus);
+    } else {
+        processExit(CLIENT_CONNECTION_CLOSED);
     }
 
     SDL_DestroyRenderer(renderer);
@@ -80,14 +72,32 @@ int Client::startClient()
     return EXIT_SUCCESS;
 }
 
+void Client::processExit(ClientExitStatus clientExitStatus) {
+    switch (clientExitStatus) {
+        case CLIENT_GAME_OVER:
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME_OVER");
+            exitVista::showGameOver(renderer);
+            break;
+        case CLIENT_CONNECTION_CLOSED:
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "CONNECTION_CLOSED");
+            exitVista::showDesconexion(renderer);
+            break;
+        case CLIENT_QUIT_REQUESTED:
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "QUIT_REQUESTED");
+            break;
+        default:
+            break;
+    }
+    while (!SDL_QuitRequested()) { };
+}
+
 int Client::connectToServer()
 {
     std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port << '\n';
 
     //socket
     this->clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (clientSocket == -1)
-    {
+    if (clientSocket == -1) {
         return EXIT_FAILURE;
     }
 
@@ -96,8 +106,7 @@ int Client::connectToServer()
     serverAddress.sin_port = htons(atoi(port));
 
     //connect
-    if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) != 0)
-    {
+    if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)) != 0) {
         std::cout << "Error al conectarse con el servidor\n";
         return EXIT_FAILURE;
     }
@@ -105,7 +114,7 @@ int Client::connectToServer()
     return EXIT_SUCCESS;
 }
 
-void Client::startGame()
+ClientExitStatus Client::startGame()
 {
     AudioController::toggleMusic();
 
@@ -129,15 +138,18 @@ void Client::startGame()
     pthread_create(&receiveThread, NULL, receiveDataThread, &receiveArgs);
 
     bool quitRequested = false;
-    while (!quitRequested && serverOpen)
-    {
-        if (estadoJuego != nullptr)
-        {
+    bool isGameOver = false;
+
+    while (!quitRequested && serverOpen && !isGameOver) {
+        if (estadoJuego != nullptr) {
             pthread_mutex_lock(&mutex);
             if (currentScene != estadoJuego->estadoNivel.scene)
                 getNextLevelView(vista, currentScene, estadoJuego->estadoNivel.scene);
             SDL_RenderClear(renderer);
             vista->update(*estadoJuego);
+
+            isGameOver = estadoJuego->estadoNivel.isGameOver;
+
             estadoJuego = nullptr;
             pthread_mutex_unlock(&mutex);
             SDL_RenderPresent(renderer);
@@ -147,7 +159,9 @@ void Client::startGame()
         quitRequested = SDL_QuitRequested();
     }
 
-    logger::Logger::getInstance().logInformation("Game over");
+    if (isGameOver) return CLIENT_GAME_OVER;
+    if (!serverOpen) return CLIENT_CONNECTION_CLOSED;
+    return CLIENT_QUIT_REQUESTED;
 }
 
 void *sendDataThread(void *args)
@@ -177,8 +191,7 @@ void *receiveDataThread(void *args)
     estadoJuego_t game;
 
     bool quitRequested = false;
-    while (!quitRequested && serverOpen)
-    {
+    while (!quitRequested && serverOpen) {
         if (receiveData(clientSocket, &game) == sizeof(estadoJuego_t)) {
             pthread_mutex_lock(&mutex);
             estado = &game;
@@ -222,18 +235,14 @@ int Client::showStartPage()
     do
     {
         user_t user = startPage.getLoginUser(quitRequested);
-        if (quitRequested)
-        {
+        if (quitRequested) {
             return EXIT_FAILURE;
         }
 
         response = login(user);
-        if (response == LOGIN_OK)
-        {
+        if (response == LOGIN_OK) {
             strcpy(this->name, user.username);
-        }
-        else
-        {
+        } else {
             startPage.setResponse(response);
         }
     } while (response != LOGIN_OK && serverOpen);

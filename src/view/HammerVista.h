@@ -13,7 +13,7 @@ class HammerVista
 {
 public:
     HammerVista(SDL_Renderer *renderer);
-    void mostrar(int x, int y,EstadoHammer estado, SDL_RendererFlip flip);
+    void mostrar(int x, int y, EstadoHammer estado, SDL_RendererFlip flip);
     void mostrar(punto_t pos);
     ~HammerVista();
 

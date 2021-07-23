@@ -9,7 +9,7 @@
 #include "../utils/Constants.hpp"
 
 NivelVista::NivelVista(SDL_Renderer *renderer, const char *clientUsername)
-: SceneVista(), renderer{renderer}, statsVista(renderer), hammerVista(renderer) {
+: renderer{renderer}, statsVista(renderer), hammerVista(renderer) {
     strcpy(this->clientUsername, clientUsername);
 
     entidadesVista.push_back(new PaulineVista(renderer));
@@ -26,7 +26,7 @@ NivelVista::NivelVista(SDL_Renderer *renderer, const char *clientUsername)
 
 void NivelVista::addPlayers(size_t n) {
     for (size_t i = 0; i < n; ++i) {
-        jugadoresVista.emplace_back(renderer);
+        jugadoresVista.emplace_back(renderer, &hammerVista);
     }
 }
 
