@@ -11,10 +11,8 @@ EnemigoFuego::EnemigoFuego(punto_t pos, const int direccion, const float min, co
 velX(direccion * ENEMIGO_FUEGO_VEL), min(min - ancho / 2), max(max - ancho / 2) {}
 
 void EnemigoFuego::mover() {
-    if(isEnabled) {
-        velX -= 2 * velX * (pos.x < min || pos.x > max);
-        pos.x += velX;
-    }
+    velX -= 2 * velX * (pos.x < min || pos.x > max);
+    pos.x += velX;
 }
 
 dimensiones_t EnemigoFuego::dimensions() const {

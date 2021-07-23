@@ -2,9 +2,7 @@
 #include "../../logger.h"
 #include "../Mario.hpp"
 
-void TestCollider::collide(Mario* , Entidad* ) {
-    logger::Logger::getInstance().logDebug("Collisión con entidad");
-}
+void TestCollider::collide(Mario* , Entidad* ) { }
 
 ColliderType TestCollider::getType() {
     return TEST_MODE;

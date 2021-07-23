@@ -8,9 +8,8 @@ HammerCollider::HammerCollider() { }
 void HammerCollider::collide(Mario* mario, Entidad* entidad) {
     bool collidedWithHammer = ((mario->direccion == DERECHA) && (mario->pos.x < entidad->pos.x))
     || ((mario->direccion == IZQUIERDA) && (mario->pos.x > entidad->pos.x));
-    bool collidedOnLadder = ((mario->estado == DE_ESPALDAS || mario->estado == TREPANDO) && (mario->pos.y > entidad->pos.y));
 
-    if(collidedWithHammer || collidedOnLadder) {
+    if(collidedWithHammer && mario->velY == 0) {
         entidad->isEnabled = false;
         mario->audioObserver.update(ENEMY_DEATH);
         decreaseUses(mario);
