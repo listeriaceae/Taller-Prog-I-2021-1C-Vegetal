@@ -5,7 +5,6 @@ const int HAMMER_USES = 3;
 
 class HammerCollider: public Collider {
 public:
-    HammerCollider();
     void collide(Mario* mario, Entidad* entidad);
     ColliderType getType();
 private:
