@@ -32,6 +32,5 @@ private:
     char name[4];
     void showConnectedPage();
     void getSceneView(SceneVista *&vista, unsigned char serverScene);
-    void showGameOver();
     void processExit(ClientExitStatus clientExitStatus);
 };
