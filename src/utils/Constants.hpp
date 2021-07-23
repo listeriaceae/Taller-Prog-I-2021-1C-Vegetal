@@ -101,3 +101,10 @@ const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
 const std::string CONFIG_FILE = "archivo.json";
 // Default
 const std::string IMG_DEFAULT = "res/default.png";
+
+enum ColliderType
+{
+    NORMAL,
+    TEST_MODE,
+    HAMMER
+};

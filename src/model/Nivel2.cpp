@@ -59,7 +59,7 @@ void Nivel2::addBarrel() {
 void Nivel2::updateBarrels() {
     for (auto it = barriles.begin(); it != barriles.end();) {
         it->mover();
-        if (it->estaEnNivel()) {
+        if (it->estaEnNivel() && it->isEnabled) {
             ++it;
         } else {
             it = this->barriles.erase(it);
@@ -72,7 +72,7 @@ const estadoNivel_t &Nivel2::getEstado() {
     for (auto &barril : barriles) {
         estadoNivel.barrels[i++] = barril.pos;
     }
-    estadoNivel.barrels[i] = {0, 0};
+    if (i < MAX_BARRELS) estadoNivel.barrels[i] = {0, 0};
     i = 0;
     for (auto &hammer : hammers) {
         estadoNivel.hammers[i++] = hammer.pos;
@@ -88,11 +88,18 @@ const estadoNivel_t &Nivel2::getEstado() {
     return estadoNivel;
 }
 
-void Nivel2::checkCollisions() const {
+void Nivel2::checkCollisions() {
     for (Mario &player : *players) {
-        for (auto &enemy : this->barriles) {
-            if (collision(player.dimensions(), enemy.dimensions())) {
-                player.die();
+        for (auto &barril : this->barriles) {
+            if (collision(player.dimensions(), barril.dimensions())) {
+                player.collide(&barril);
+                break;
+            }
+        }
+        
+        for(auto &hammer : this->hammers) {
+            if(collision(player.dimensions(), hammer.dimensions())) {
+                player.collide(&hammer);
                 break;
             }
         }
