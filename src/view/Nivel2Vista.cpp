@@ -18,7 +18,8 @@ Nivel2Vista::Nivel2Vista(SDL_Renderer *renderer, const char* clientUsername)
 
     barrilVista = new BarrilVista(renderer);
 
-    entidadesVista.push_back(new FuegoVista(N2_POS_X_FUEGO, N2_POS_Y_FUEGO, renderer));
+    entidadesVista.push_back(new FuegoVista(N2_POS_X_FUEGO_1, N2_POS_Y_FUEGO_1, renderer));
+    entidadesVista.push_back(new FuegoVista(N2_POS_X_FUEGO_2, N2_POS_Y_FUEGO_2, renderer));
 }
 
 void Nivel2Vista::update(const estadoJuego_t &estadoJuego) {
