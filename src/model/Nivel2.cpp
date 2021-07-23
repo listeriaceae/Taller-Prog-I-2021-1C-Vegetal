@@ -9,8 +9,8 @@ Nivel2::Nivel2() : Nivel() {
 }
 
 void Nivel2::initPlatforms() {
-    platforms.emplace_back(0.f, 248.f, 112.f, 248.f);
-    platforms.emplace_back(124.f, 248.f, 224.f, 241.f);
+    platforms.emplace_back(0.f, 248.f, 120.f, 248.f);
+    platforms.emplace_back(112.f, 248.f, 224.f, 241.f);
     platforms.emplace_back(0.f, 208.f, 208.f, 221.f);
     platforms.emplace_back(16.f, 188.f, 224.f, 175.f);
     platforms.emplace_back(0.f, 142.f, 208.f, 155.f);
@@ -18,19 +18,6 @@ void Nivel2::initPlatforms() {
     platforms.emplace_back(136.f, 84.5f, 208.f, 89.f);
     platforms.emplace_back(0.f, 84.f, 130.f, 84.f);
     platforms.emplace_back(88.f, 56.f, 135.f, 56.f); // top
-
-    directionalPoints.push_front((directionalPoint_t){136.f, 84 - ALTO_BARRIL, 0.935f, 0.065f});
-    directionalPoints.push_front((directionalPoint_t){208.f, 89 - ALTO_BARRIL, 0.f, 1.f});
-    directionalPoints.push_front((directionalPoint_t){208.f, 110 - ALTO_BARRIL, -0.941f, 0.059f});
-    directionalPoints.push_front((directionalPoint_t){16 - ANCHO_BARRIL, 122 - ALTO_BARRIL, 0.f, 1.f});
-    directionalPoints.push_front((directionalPoint_t){16 - ANCHO_BARRIL, 143 - ALTO_BARRIL, 0.941f, 0.059f});
-    directionalPoints.push_front((directionalPoint_t){208.f, 156 - ALTO_BARRIL, 0.f, 1.f});
-    directionalPoints.push_front((directionalPoint_t){208.f, 176 - ALTO_BARRIL, -0.941f, 0.059f});
-    directionalPoints.push_front((directionalPoint_t){16 - ANCHO_BARRIL, 189 - ALTO_BARRIL, 0.f, 1.f});
-    directionalPoints.push_front((directionalPoint_t){16 - ANCHO_BARRIL, 209 - ALTO_BARRIL, 0.941f, 0.059f});
-    directionalPoints.push_front((directionalPoint_t){208.f, 222 - ALTO_BARRIL, 0.f, 1.f});
-    directionalPoints.push_front((directionalPoint_t){208.f, 242 - ALTO_BARRIL, -0.941f, 0.059f});
-    directionalPoints.push_front((directionalPoint_t){112, 248 - ALTO_BARRIL, 0.f, 1.f});
 
     for (auto &platform : platforms) stage.addPlatform(&platform);
 }
@@ -57,22 +44,17 @@ void Nivel2::initHammers() {
 }
 
 void Nivel2::update() {
-    if (++tick % 180 == 0 && (int)barriles.size() < MAX_BARRELS) 
-        addBarrel();
+    if (++tick % 180 == 0) 
+        this->barriles.emplace_back();
 
     this->updateBarrels();
     for (auto &mario : *players) mario.mover();
     checkCollisions();
 }
 
-void Nivel2::addBarrel() {
-    this->barriles.emplace_back((float)N2_POS_X_BARRIL, (float)N2_POS_Y_BARRIL);
-}
-
 void Nivel2::updateBarrels() {
     for (auto it = barriles.begin(); it != barriles.end();) {
-        updateBarrelDirection(&(*it));
-        (*it).mover();
+        it->mover();
         if (it->estaEnNivel()) {
             ++it;
         } else {
@@ -81,21 +63,12 @@ void Nivel2::updateBarrels() {
     }
 }
 
-void Nivel2::updateBarrelDirection(Barril* barril) {
-    for (directionalPoint_t directionalPoint : directionalPoints) {
-        if ((int)barril->pos.x == (int)directionalPoint.x && (int)barril->pos.y == (int)directionalPoint.y) {
-            barril->updateDirection(directionalPoint.xDirection,directionalPoint.yDirection);
-            break;
-        }
-    }
-}
-
 const estadoNivel_t &Nivel2::getEstado() {
     size_t i = 0;
     for (auto &barril : barriles) {
-        estadoNivel.barrels[i++] = barril.getDirectionalPos();
+        estadoNivel.barrels[i++] = barril.pos;
     }
-    estadoNivel.barrels[i] = {0, 0, 0, 0};
+    estadoNivel.barrels[i] = {0, 0};
     i = 0;
     for (auto &hammer : hammers) {
         estadoNivel.hammers[i++] = hammer.pos;

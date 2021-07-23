@@ -2,7 +2,6 @@
 #include "marioStructs.h"
 #include "punto.h"
 #include "../utils/Constants.hpp"
-#include "../utils/directionalPoint.h"
 
 typedef struct estadoJugador
 {
@@ -19,7 +18,7 @@ typedef struct estadoNivel
             punto_t enemies[MAX_ENEMIES];
         };
         struct {
-            directionalPoint_t barrels[MAX_BARRELS];
+            punto_t barrels[MAX_BARRELS];
         };
     };
     punto_t hammers[MAX_HAMMERS];

@@ -6,7 +6,6 @@ class Nivel1 : public Nivel
 {
 public:
     Nivel1();
-    void addPlayers(std::vector<Mario> &players);
     void addEnemies(unsigned int amount);
     void update();
     const estadoNivel_t &getEstado();
