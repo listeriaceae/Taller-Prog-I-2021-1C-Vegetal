@@ -167,6 +167,7 @@ ClientExitStatus Client::startGame()
         AudioController::checkToggleMusicEvent();
         quitRequested = SDL_QuitRequested();
     }
+    shutdown(clientSocket, SHUT_RDWR);
     pthread_join(sendThread, NULL);
     pthread_join(receiveThread, NULL);
     delete vista;
