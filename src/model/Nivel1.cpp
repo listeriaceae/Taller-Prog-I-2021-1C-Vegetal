@@ -127,7 +127,7 @@ void Nivel1::deleteDisabledEnemies() {
         if(it->isEnabled) {
             ++it;
         } else {
-            enemies.erase(it);
+            it = enemies.erase(it);
         }
     }
 }

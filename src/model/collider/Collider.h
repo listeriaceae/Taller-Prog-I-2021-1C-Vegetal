@@ -1,9 +1,14 @@
 #pragma once
-#include "../Barril.h"
-#include "../EnemigoFuego.h"
-#include "../../utils/Constants.hpp"
+#include "../Entidad.h"
 
 class Mario;
+
+enum ColliderType
+{
+    NORMAL,
+    TEST_MODE,
+    HAMMER
+};
 
 class Collider {
 public:

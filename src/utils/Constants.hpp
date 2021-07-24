@@ -8,7 +8,7 @@
 //estadoNivel
 #define MAX_PLATFORMS 12
 #define MAX_ENEMIES 3
-#define MAX_BARRELS 10
+#define MAX_BARRELS 8
 #define MAX_HAMMERS 2
 #define DEFAULT_MAX_PLAYERS 2 //en caso de que la cant max de jugadores sea negativa en el json
 
@@ -65,7 +65,8 @@
 #define N2_POS_X_FUEGO 16
 #define N2_POS_Y_FUEGO 216
 
-#define N2_POS_Y_BARRIL 30
+#define N2_POS_X_BARRIL 20
+#define N2_POS_Y_BARRIL 74
 
 // Common
 #define MARIO_START_X 0
@@ -101,10 +102,3 @@ const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
 const std::string CONFIG_FILE = "archivo.json";
 // Default
 const std::string IMG_DEFAULT = "res/default.png";
-
-enum ColliderType
-{
-    NORMAL,
-    TEST_MODE,
-    HAMMER
-};
