@@ -168,8 +168,7 @@ ClientExitStatus Client::startGame()
         quitRequested = SDL_QuitRequested();
     }
 
-    if (quitRequested) exitStatus = CLIENT_QUIT_REQUESTED;
-    return exitStatus;
+    return quitRequested ? CLIENT_QUIT_REQUESTED : exitStatus;
 }
 
 void *sendDataThread(void *args)
