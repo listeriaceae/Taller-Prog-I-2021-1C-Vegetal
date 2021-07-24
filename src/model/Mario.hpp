@@ -33,6 +33,7 @@ public:
     void collide(Entidad* entidad);
     void collide(Hammer* hammer);
     void toggleTestMode();
+    void setCollider(ColliderType colliderType);
 
     AudioObserver audioObserver{};
     char lives{MARIO_LIVES};
@@ -48,5 +49,4 @@ public:
 private:
     const MarioState *state;
     unsigned char score{0};
-    void setCollider(ColliderType colliderType);
 };
