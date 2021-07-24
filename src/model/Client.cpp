@@ -1,15 +1,17 @@
 #include <iostream>
 #include <pthread.h>
 #include <string>
+#include <SDL2/SDL_image.h>
 
 #include "Client.h"
 #include "../view/Nivel1Vista.h"
 #include "../view/Nivel2Vista.h"
+#include "../view/InterludeVista.h"
 #include "../configuration.hpp"
 #include "../logger.h"
 #include "../TextRenderer.h"
 #include "../StartPageView.h"
-#include "../view/DesconexionVista.h"
+#include "../view/exitVista.h"
 #include "../utils/window.hpp"
 #include "../utils/Constants.hpp"
 #include "../utils/estadoJuego.h"
@@ -28,6 +30,7 @@ typedef struct handleLevelStateArgs
 
 pthread_mutex_t mutex;
 bool serverOpen = true;
+bool quitRequested = false;
 
 void *sendDataThread(void *args);
 void *receiveDataThread(void *args);
@@ -42,6 +45,13 @@ Client::Client(char *serverIp, char *port)
     window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     AudioController::loadAudioFiles();
+}
+
+Client::~Client() {
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    IMG_Quit();
+    SDL_Quit();
 }
 
 int Client::startClient()
@@ -62,27 +72,26 @@ int Client::startClient()
         processExit(CLIENT_CONNECTION_CLOSED);
     }
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    IMG_Quit();
-    SDL_Quit();
-
     return EXIT_SUCCESS;
 }
 
 void Client::processExit(ClientExitStatus clientExitStatus) {
     switch (clientExitStatus) {
-        case CLIENT_GAME_OVER:
-            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME_OVER");
-            this->showGameOver();
-            break;
         case CLIENT_CONNECTION_CLOSED:
             logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "CONNECTION_CLOSED");
-            DesconexionVista::show(renderer);
+            exitVista::showDesconexion(renderer);
             break;
+        case CLIENT_GAME_OVER:
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME_OVER");
+            exitVista::showGameOver(renderer);
+            break;
+        /* case CLIENT_GAME_COMPLETE:
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME_COMPLETE");
+            exitVista::showGameComplete(renderer);
+            break; */
         case CLIENT_QUIT_REQUESTED:
             logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "QUIT_REQUESTED");
-            break;
+            return;
         default:
             break;
     }
@@ -122,8 +131,8 @@ ClientExitStatus Client::startGame()
     auto log_level = configuration->getLogLevel();
     logger::Logger::getInstance().setLogLevel(log_level);
 
-    unsigned char currentLevel = 0;
-    NivelVista *vista{nullptr};
+    unsigned char currentScene{};
+    SceneVista *vista{nullptr};
 
     pthread_t sendThread;
     pthread_create(&sendThread, NULL, sendDataThread, &clientSocket);
@@ -135,49 +144,49 @@ ClientExitStatus Client::startGame()
     pthread_t receiveThread;
     pthread_create(&receiveThread, NULL, receiveDataThread, &receiveArgs);
 
-    bool quitRequested = false;
-    bool isGameOver = false;
+    ClientExitStatus exitStatus = CLIENT_CONNECTION_CLOSED;
 
-    while (!quitRequested && serverOpen && !isGameOver) {
+    while (!quitRequested && serverOpen) {
         if (estadoJuego != nullptr) {
-            pthread_mutex_lock(&mutex);
-            if (currentLevel < estadoJuego->estadoNivel.level)
-                getNextLevelView(vista, ++currentLevel);
-            SDL_RenderClear(renderer);
-            vista->update(*estadoJuego);
+            if (currentScene == estadoJuego->estadoNivel.sceneNumber) {
+                SDL_RenderClear(renderer);
 
-            isGameOver = estadoJuego->estadoNivel.isGameOver;
+                pthread_mutex_lock(&mutex);
+                vista->update(*estadoJuego);
+                estadoJuego = nullptr;
+                pthread_mutex_unlock(&mutex);
 
-            estadoJuego = nullptr;
-            pthread_mutex_unlock(&mutex);
-            SDL_RenderPresent(renderer);
+                SDL_RenderPresent(renderer);
+            } else {
+                currentScene = estadoJuego->estadoNivel.sceneNumber;
+                getSceneView(vista, estadoJuego->estadoNivel.sceneNumber);
+                exitStatus = static_cast<ClientExitStatus>(estadoJuego->estadoNivel.exitStatus);
+            }
         }
 
         AudioController::checkToggleMusicEvent();
         quitRequested = SDL_QuitRequested();
     }
-
-    if (isGameOver) return CLIENT_GAME_OVER;
-    if (!serverOpen) return CLIENT_CONNECTION_CLOSED;
-    return CLIENT_QUIT_REQUESTED;
+    shutdown(clientSocket, SHUT_RDWR);
+    pthread_join(sendThread, NULL);
+    pthread_join(receiveThread, NULL);
+    delete vista;
+    return quitRequested ? CLIENT_QUIT_REQUESTED : exitStatus;
 }
 
 void *sendDataThread(void *args)
 {
     int clientSocket = *(int *)args;
-    controls_t controls = getControls();
+    controls_t controls = MarioController::getControls();
 
-    bool quitRequested = false;
     while (!quitRequested && serverOpen)
     {
 
-        if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls())))
+        if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = MarioController::getControls())))
         {
             if (sendData(clientSocket, &controls) < sizeof(controls_t))
                 serverOpen = false;
         }
-
-        quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
     return nullptr;
 }
@@ -188,7 +197,6 @@ void *receiveDataThread(void *args)
     const estadoJuego_t *&estado = ((handleLevelStateArgs_t *)args)->estado;
     estadoJuego_t game;
 
-    bool quitRequested = false;
     while (!quitRequested && serverOpen) {
         if (receiveData(clientSocket, &game) == sizeof(estadoJuego_t)) {
             pthread_mutex_lock(&mutex);
@@ -197,21 +205,28 @@ void *receiveDataThread(void *args)
         } else {
             serverOpen = false;
         }
-        quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
     return nullptr;
 }
 
-void Client::getNextLevelView(NivelVista *&vista, unsigned char currentLevel)
+void Client::getSceneView(SceneVista *&vista, unsigned char serverScene)
 {
     delete vista;
-    if (currentLevel == 1)
-    {
-        vista = new Nivel1Vista(renderer, name);
-    }
-    if (currentLevel == 2)
-    {
-        vista = new Nivel2Vista(renderer, name);
+    switch (serverScene) {
+        case 1:
+            vista = new Nivel1Vista(renderer, name);
+            break;
+        case 2:
+            vista = new InterludeVista(renderer);
+            break;
+        case 3:
+            vista = new Nivel2Vista(renderer, name);
+            break;
+        case 4:
+            vista = new InterludeVista(renderer);
+            break;
+        default:
+            vista = nullptr;
     }
 }
 
@@ -256,22 +271,9 @@ void Client::showConnectedPage()
 {
     SDL_RenderClear(renderer);
 
-    punto_t pos;
-    pos.x = (10 + 2) * (ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    pos.y = (110 + 2) * (ALTO_PANTALLA / (float)ALTO_NIVEL);
+    const punto_t pos{12 * ANCHO_PANTALLA / (float)ANCHO_NIVEL,
+                      112 * ALTO_PANTALLA / (float)ALTO_NIVEL};
     TextRenderer::getInstance(renderer)->renderText(pos, "Esperando a jugadores...", 1);
-
-    SDL_RenderPresent(renderer);
-}
-
-void Client::showGameOver()
-{
-    SDL_RenderClear(renderer);
-
-    punto_t pos;
-    pos.x = (30 + 2) * (ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    pos.y = (110 + 2) * (ALTO_PANTALLA / (float)ALTO_NIVEL);
-    TextRenderer::getInstance(renderer)->renderText(pos, "Game Over", 2);
 
     SDL_RenderPresent(renderer);
 }

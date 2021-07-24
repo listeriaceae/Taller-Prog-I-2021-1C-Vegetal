@@ -3,19 +3,14 @@
 #include <SDL2/SDL.h>
 #include <arpa/inet.h>
 #include "../utils/user.h"
-#include "../view/NivelVista.h"
-
-enum ClientExitStatus
-{
-    CLIENT_QUIT_REQUESTED,
-    CLIENT_CONNECTION_CLOSED,
-    CLIENT_GAME_OVER,
-};
+#include "../view/SceneVista.h"
+#include "../utils/exitStatus.h"
 
 class Client
 {
 public:
     Client(char *serverIp, char *port);
+    ~Client();
     int startClient();
     int showStartPage();
     int connectToServer();
@@ -31,7 +26,6 @@ private:
     struct sockaddr_in serverAddress;
     char name[4];
     void showConnectedPage();
-    void showGameOver();
-    void getNextLevelView(NivelVista *&vista, unsigned char currentLevel);
+    void getSceneView(SceneVista *&vista, unsigned char serverScene);
     void processExit(ClientExitStatus clientExitStatus);
 };
