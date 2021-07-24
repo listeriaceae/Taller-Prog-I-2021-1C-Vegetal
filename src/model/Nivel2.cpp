@@ -1,6 +1,8 @@
 #include "Nivel2.h"
 #include "../utils/Constants.hpp"
 
+#define PERIODO_BARRILES 180
+
 Nivel2::Nivel2(std::vector<Mario> *players) : Nivel(players) {
     this->initPlatforms();
     this->initLadders();
@@ -44,7 +46,7 @@ void Nivel2::initHammers() {
 }
 
 void Nivel2::update() {
-    if (++tick % 180 == 0) 
+    if (++tick % PERIODO_BARRILES == 1) // lo cambio a uno para que mande uno al principio
         this->barriles.emplace_back();
 
     this->updateBarrels();

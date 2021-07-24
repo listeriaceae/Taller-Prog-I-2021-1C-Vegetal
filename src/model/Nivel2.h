@@ -13,7 +13,7 @@ public:
 private:
     std::list<Barril> barriles;
     size_t tick = 0;
-    
+
     void initPlatforms();
     void initLadders();
     void initHammers();
