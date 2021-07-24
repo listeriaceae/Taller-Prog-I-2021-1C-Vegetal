@@ -29,7 +29,7 @@ typedef struct handleLoginArgs {
     int clientSocket;
 } handleLoginArgs_t;
 
-void getNextLevel(Scene *&scene, std::vector<Mario> *marios, unsigned char currentLevel);
+void getNextScene(Scene *&scene, std::vector<Mario> *marios);
 void getEstadoJugadores(estadoJuego_t &estado,  std::map<std::string, player_t> &connectedPlayers);
 
 void *acceptNewConnections(void *serverArg);
@@ -113,11 +113,10 @@ void Server::startGame() {
         marios.emplace_back();
     }
 
-    unsigned char currentLevel = 0;
     Scene *scene{nullptr};
     estadoJuego_t game;
 
-    getNextLevel(scene, &marios, ++currentLevel);
+    getNextScene(scene, &marios);
 
     {
         size_t i = 0;
@@ -148,7 +147,6 @@ void Server::startGame() {
 
         if (isUpdated) {
             game.estadoNivel = scene->getEstado();
-
             getEstadoJugadores(game, connectedPlayers);
 
             for(auto &player : connectedPlayers) {
@@ -157,10 +155,9 @@ void Server::startGame() {
                 }
                 player.second.mario->audioObserver.reset();
             }
-            if (__builtin_expect(scene->isComplete(), 0)) {
-                getNextLevel(scene, &marios, ++currentLevel);
+            if (scene->isComplete()) {
+                getNextScene(scene, &marios);
             }
-
         }
     }
 }
@@ -282,6 +279,9 @@ void *handleCommand(void *player) {
     while (clientOpen) {
         if (receiveData(clientSocket, &controls) == sizeof(controls_t)) {
             mario.controls = controls;
+            if(mario.controls.toggleTestMode == 1) {
+                mario.toggleTestMode();
+            } 
         } else {
             clientOpen = false;
         }
@@ -291,16 +291,21 @@ void *handleCommand(void *player) {
     return nullptr;
 }
 
-void getNextLevel(Scene *&scene, std::vector<Mario> *marios, unsigned char currentScene) {
+void getNextScene(Scene *&scene, std::vector<Mario> *marios) {
+    bool gameOver = true;
+    for (auto &mario : *marios) {
+            gameOver &= mario.getIsGameOver() || !mario.isEnabled;
+    }
     delete scene;
-    switch(currentScene) {
+    static int currentScene = 0;
+    switch(++currentScene) {
         case 1:
             logger::Logger::getInstance().logInformation("Level 1 starts");
             scene = new Nivel1(marios);
             break;
         case 2:
             logger::Logger::getInstance().logInformation("End of Level 1");
-            scene = new Interlude(currentScene);
+            scene = new Interlude(gameOver, currentScene);
             break;
         case 3:
             logger::Logger::getInstance().logInformation("Level 2 starts");
@@ -308,10 +313,14 @@ void getNextLevel(Scene *&scene, std::vector<Mario> *marios, unsigned char curre
             break;
         case 4:
             logger::Logger::getInstance().logInformation("End of Level 2");
-            scene = new Interlude(currentScene);
+            scene = new Interlude(gameOver, currentScene);
             break;
         default:
+            logger::Logger::getInstance().logGameOver();
             scene = nullptr;
+    }
+    if (gameOver) {
+        currentScene = 5;
     }
 }
 

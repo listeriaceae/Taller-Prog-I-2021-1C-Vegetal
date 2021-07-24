@@ -12,7 +12,6 @@ class Nivel : public Scene
 public:
     Nivel(std::vector<Mario> *players);
     bool isComplete() const override;
-    bool getIsGameOver();
 
 protected:
     bool collision(dimensiones_t, dimensiones_t) const;

@@ -24,7 +24,7 @@ namespace exitVista {
 
         const punto_t pos{32 * ANCHO_PANTALLA / (float)ANCHO_NIVEL,
                         112 * ALTO_PANTALLA / (float)ALTO_NIVEL};
-        TextRenderer::getInstance(renderer)->renderText(pos, "Game Over", 2);
+        TextRenderer::getInstance(renderer)->renderText(pos, "GAME OVER", 2);
 
         SDL_RenderPresent(renderer);
     }

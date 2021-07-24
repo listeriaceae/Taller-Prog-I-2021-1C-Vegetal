@@ -4,18 +4,13 @@
 #include <arpa/inet.h>
 #include "../utils/user.h"
 #include "../view/SceneVista.h"
-
-enum ClientExitStatus
-{
-    CLIENT_QUIT_REQUESTED,
-    CLIENT_CONNECTION_CLOSED,
-    CLIENT_GAME_OVER,
-};
+#include "../utils/exitStatus.h"
 
 class Client
 {
 public:
     Client(char *serverIp, char *port);
+    ~Client();
     int startClient();
     int showStartPage();
     int connectToServer();

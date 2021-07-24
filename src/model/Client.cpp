@@ -30,6 +30,7 @@ typedef struct handleLevelStateArgs
 
 pthread_mutex_t mutex;
 bool serverOpen = true;
+bool quitRequested = false;
 
 void *sendDataThread(void *args);
 void *receiveDataThread(void *args);
@@ -44,6 +45,13 @@ Client::Client(char *serverIp, char *port)
     window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     AudioController::loadAudioFiles();
+}
+
+Client::~Client() {
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    IMG_Quit();
+    SDL_Quit();
 }
 
 int Client::startClient()
@@ -64,24 +72,23 @@ int Client::startClient()
         processExit(CLIENT_CONNECTION_CLOSED);
     }
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    IMG_Quit();
-    SDL_Quit();
-
     return EXIT_SUCCESS;
 }
 
 void Client::processExit(ClientExitStatus clientExitStatus) {
     switch (clientExitStatus) {
-        case CLIENT_GAME_OVER:
-            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME_OVER");
-            exitVista::showGameOver(renderer);
-            break;
         case CLIENT_CONNECTION_CLOSED:
             logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "CONNECTION_CLOSED");
             exitVista::showDesconexion(renderer);
             break;
+        case CLIENT_GAME_OVER:
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME_OVER");
+            exitVista::showGameOver(renderer);
+            break;
+        /* case CLIENT_GAME_COMPLETE:
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME_COMPLETE");
+            exitVista::showGameComplete(renderer);
+            break; */
         case CLIENT_QUIT_REQUESTED:
             logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "QUIT_REQUESTED");
             return;
@@ -138,7 +145,6 @@ ClientExitStatus Client::startGame()
     pthread_create(&receiveThread, NULL, receiveDataThread, &receiveArgs);
 
     ClientExitStatus exitStatus = CLIENT_CONNECTION_CLOSED;
-    bool quitRequested = false;
 
     while (!quitRequested && serverOpen) {
         if (estadoJuego != nullptr) {
@@ -154,10 +160,7 @@ ClientExitStatus Client::startGame()
             } else {
                 currentScene = estadoJuego->estadoNivel.sceneNumber;
                 getSceneView(vista, estadoJuego->estadoNivel.sceneNumber);
-                if (estadoJuego->estadoNivel.isGameOver) {
-                    exitStatus = CLIENT_GAME_OVER;
-                }
-
+                exitStatus = static_cast<ClientExitStatus>(estadoJuego->estadoNivel.exitStatus);
             }
         }
 
@@ -172,19 +175,16 @@ ClientExitStatus Client::startGame()
 void *sendDataThread(void *args)
 {
     int clientSocket = *(int *)args;
-    controls_t controls = getControls();
+    controls_t controls = MarioController::getControls();
 
-    bool quitRequested = false;
     while (!quitRequested && serverOpen)
     {
 
-        if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = getControls())))
+        if (*reinterpret_cast<char *>(&controls) != *reinterpret_cast<char *>(&(controls = MarioController::getControls())))
         {
             if (sendData(clientSocket, &controls) < sizeof(controls_t))
                 serverOpen = false;
         }
-
-        quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
     return nullptr;
 }
@@ -195,7 +195,6 @@ void *receiveDataThread(void *args)
     const estadoJuego_t *&estado = ((handleLevelStateArgs_t *)args)->estado;
     estadoJuego_t game;
 
-    bool quitRequested = false;
     while (!quitRequested && serverOpen) {
         if (receiveData(clientSocket, &game) == sizeof(estadoJuego_t)) {
             pthread_mutex_lock(&mutex);
@@ -204,7 +203,6 @@ void *receiveDataThread(void *args)
         } else {
             serverOpen = false;
         }
-        quitRequested = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0;
     }
     return nullptr;
 }

@@ -6,7 +6,7 @@
 class Interlude : public Scene
 {
 public:
-    Interlude(unsigned char sceneNumber) : Scene() { estadoNivel.sceneNumber = sceneNumber; };
+    Interlude(bool gameOver, int sceneNumber);
     void update() override { ++ticks; };
     const estadoNivel_t &getEstado() override { return estadoNivel; };
     bool isComplete() const override { return ticks > INTERLUDE_DURATION; };
