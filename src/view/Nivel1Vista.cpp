@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Nivel1Vista.h"
 #include "PoleaVista.h"
 #include "FuegoVista.h"

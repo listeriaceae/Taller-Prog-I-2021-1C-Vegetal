@@ -1,6 +1,5 @@
 #include <unordered_set>
 #include "Stage.h"
-#include <stack>
 
 #define ANCHO_HITBOX 8
 #define STAGE_WIDTH (ANCHO_NIVEL / ANCHO_TILE)

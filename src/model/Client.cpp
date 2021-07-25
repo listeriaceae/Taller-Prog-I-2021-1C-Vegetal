@@ -11,7 +11,7 @@
 #include "../logger.h"
 #include "../TextRenderer.h"
 #include "../StartPageView.h"
-#include "../view/exitVista.h"
+#include "../view/showMessage.h"
 #include "../utils/window.hpp"
 #include "../utils/Constants.hpp"
 #include "../utils/estadoJuego.h"
@@ -42,12 +42,13 @@ Client::Client(char *serverIp, char *port)
     this->serverIp = serverIp;
     this->port = port;
     SDL_Init(SDL_INIT_EVERYTHING);
-    window = SDL_CreateWindow(NOMBRE_JUEGO.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow(NOMBRE_JUEGO, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_PANTALLA, ALTO_PANTALLA, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     AudioController::loadAudioFiles();
 }
 
 Client::~Client() {
+    AudioController::closeAudioFiles();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();
@@ -65,7 +66,7 @@ int Client::startClient()
     }
 
     if (serverOpen) {
-        this->showConnectedPage();
+        showMessage::waitingLobby(renderer);
         ClientExitStatus exitStatus = this->startGame();
         processExit(exitStatus);
     } else {
@@ -78,24 +79,26 @@ int Client::startClient()
 void Client::processExit(ClientExitStatus clientExitStatus) {
     switch (clientExitStatus) {
         case CLIENT_CONNECTION_CLOSED:
-            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "CONNECTION_CLOSED");
-            exitVista::showDesconexion(renderer);
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "CONNECTION CLOSED");
+            showMessage::disconnection(renderer);
             break;
         case CLIENT_GAME_OVER:
-            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME_OVER");
-            exitVista::showGameOver(renderer);
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME OVER");
+            showMessage::gameOver(renderer);
             break;
-        /* case CLIENT_GAME_COMPLETE:
-            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME_COMPLETE");
-            exitVista::showGameComplete(renderer);
-            break; */
+        case CLIENT_GAME_COMPLETE:
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME COMPLETE");
+            showMessage::gameComplete(renderer);
+            break;
         case CLIENT_QUIT_REQUESTED:
-            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "QUIT_REQUESTED");
+            logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "QUIT REQUESTED");
             return;
         default:
             break;
     }
-    while (!SDL_QuitRequested()) { };
+    while (!SDL_QuitRequested()) {
+        AudioController::checkToggleMusicEvent();
+    };
 }
 
 int Client::connectToServer()
@@ -234,7 +237,6 @@ int Client::showStartPage()
 {
     StartPage startPage{renderer};
     int response;
-    bool quitRequested = false;
     do
     {
         user_t user = startPage.getLoginUser(quitRequested);
@@ -265,15 +267,4 @@ int Client::login(user_t user)
     }
 
     return response;
-}
-
-void Client::showConnectedPage()
-{
-    SDL_RenderClear(renderer);
-
-    const punto_t pos{12 * ANCHO_PANTALLA / (float)ANCHO_NIVEL,
-                      112 * ALTO_PANTALLA / (float)ALTO_NIVEL};
-    TextRenderer::getInstance(renderer)->renderText(pos, "Esperando a jugadores...", 1);
-
-    SDL_RenderPresent(renderer);
 }

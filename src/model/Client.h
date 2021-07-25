@@ -25,7 +25,6 @@ private:
     int clientSocket;
     struct sockaddr_in serverAddress;
     char name[4];
-    void showConnectedPage();
     void getSceneView(SceneVista *&vista, unsigned char serverScene);
     void processExit(ClientExitStatus clientExitStatus);
 };
