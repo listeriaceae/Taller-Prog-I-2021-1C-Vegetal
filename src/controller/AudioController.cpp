@@ -19,7 +19,7 @@ namespace AudioController {
     Mix_Chunk* enemyDeathSound{nullptr};
 
     void loadAudioFiles() {
-        if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 512) < 0)
+        if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 512) < 0)
             logger::Logger::getInstance().logError("Mixer initialization error");
 
         music = Mix_LoadMUS(MUSIC_FILE_NAME);
@@ -37,7 +37,8 @@ namespace AudioController {
         finishedLevelSound = Mix_LoadWAV(FINISHED_LEVEL_SOUND_FILE);
         if(finishedLevelSound == NULL)
             logger::Logger::getInstance().logError("finished level sound effect file not found: " + (std::string)FINISHED_LEVEL_SOUND_FILE);
-
+        else
+            finishedLevelSound->volume = 48;
         itemSound = Mix_LoadWAV(ITEM_SOUND_FILE);
         if(itemSound == nullptr)
             logger::Logger::getInstance().logError("item sound effect file not found: " + (std::string)ITEM_SOUND_FILE);
