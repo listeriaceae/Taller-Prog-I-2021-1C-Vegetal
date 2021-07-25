@@ -100,12 +100,20 @@ namespace AudioController {
     }
 
     void closeAudioFiles() {
-        Mix_FreeMusic(music);
-        Mix_FreeChunk(jumpSound);
-        Mix_FreeChunk(deathSound);
-        Mix_FreeChunk(finishedLevelSound);
-        Mix_FreeChunk(itemSound);
-        Mix_FreeChunk(enemyDeathSound);
+        if (music != nullptr)
+            Mix_FreeMusic(music);
+        if (jumpSound != nullptr)
+            Mix_FreeChunk(jumpSound);
+        if (deathSound != nullptr)
+            Mix_FreeChunk(deathSound);
+        if (finishedLevelSound != nullptr)
+            Mix_FreeChunk(finishedLevelSound);
+        if (itemSound != nullptr)
+            Mix_FreeChunk(itemSound);
+        if (enemyDeathSound != nullptr)
+            Mix_FreeChunk(enemyDeathSound);
+        music = nullptr;
+        jumpSound = deathSound = finishedLevelSound = itemSound = enemyDeathSound = nullptr;
         while (Mix_Init(0)) {
             Mix_Quit();
         }
