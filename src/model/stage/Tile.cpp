@@ -17,6 +17,5 @@ void Tile::setLadderTop(const Ladder *ladder) {
 }
 
 Tile::~Tile() {
-    platforms.clear();
     delete ladderBottom;
 }

@@ -8,7 +8,6 @@ class Barril : public Enemy
 public:
     Barril();
     void mover();
-    void updateDirection(float, float);
     bool estaEnNivel() const { return pos.x < ANCHO_NIVEL; }
     dimensiones_t dimensions() const;
     unsigned char getPoints();

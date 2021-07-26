@@ -2,9 +2,9 @@
 #include "../utils/Constants.hpp"
 #include "mario/SueloState.h"
 #include "mario/MuriendoState.h"
-#include "collider/Collider.h"
 #include "collider/TestCollider.h"
 #include "collider/NormalCollider.h"
+#include "collider/HammerCollider.h"
 
 #define MARIO_X_DIF 3.f
 #define MARIO_Y_DIF 2.f

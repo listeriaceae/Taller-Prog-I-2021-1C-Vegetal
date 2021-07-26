@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 typedef struct user
 {
     char username[11];

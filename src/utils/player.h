@@ -1,5 +1,6 @@
 #pragma once
-#include "../model/Mario.hpp"
+
+class Mario;
 
 typedef struct player
 {

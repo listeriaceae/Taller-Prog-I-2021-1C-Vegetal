@@ -96,7 +96,7 @@
 #define LOGIN_INVALID_USER 5
 
 // Name
-const std::string NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
+const char *const NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
 // Config
 const std::string CONFIG_FILE = "archivo.json";
 // Default

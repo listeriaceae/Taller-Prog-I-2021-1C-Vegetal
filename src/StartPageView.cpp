@@ -1,8 +1,6 @@
-#include <SDL2/SDL_image.h>
 #include "StartPageView.h"
 #include "utils/Constants.hpp"
 #include "utils/window.hpp"
-#include "model/Client.h"
 
 #define MS_PER_UPDATE 50
 

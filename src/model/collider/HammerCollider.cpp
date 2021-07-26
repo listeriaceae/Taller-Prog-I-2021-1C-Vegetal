@@ -4,7 +4,7 @@
 
 void HammerCollider::collide(Mario* mario, Enemy* enemy) {
     const bool collidedWithHammer = ((mario->direccion == DERECHA) && (mario->pos.x < enemy->pos.x))
-                               || ((mario->direccion == IZQUIERDA) && (mario->pos.x > enemy->pos.x));
+                                 || ((mario->direccion == IZQUIERDA) && (mario->pos.x > enemy->pos.x));
 
     if(collidedWithHammer && mario->estado <= CORRIENDO) {
         enemy->isEnabled = false;
