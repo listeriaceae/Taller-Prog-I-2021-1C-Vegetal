@@ -14,7 +14,7 @@ public:
     int startClient();
     int showStartPage();
     int connectToServer();
-    ClientExitStatus startGame();
+    ExitStatus startGame();
     int login(user_t user);
 
 private:
@@ -26,5 +26,5 @@ private:
     struct sockaddr_in serverAddress;
     char name[4];
     void getSceneView(SceneVista *&vista, unsigned char serverScene);
-    void processExit(ClientExitStatus clientExitStatus);
+    void processExit(ExitStatus clientExitStatus);
 };

@@ -67,7 +67,7 @@ int Client::startClient()
 
     if (serverOpen) {
         showMessage::waitingLobby(renderer);
-        ClientExitStatus exitStatus = this->startGame();
+        ExitStatus exitStatus = this->startGame();
         processExit(exitStatus);
     } else {
         processExit(CLIENT_CONNECTION_CLOSED);
@@ -76,8 +76,8 @@ int Client::startClient()
     return EXIT_SUCCESS;
 }
 
-void Client::processExit(ClientExitStatus clientExitStatus) {
-    switch (clientExitStatus) {
+void Client::processExit(ExitStatus exitStatus) {
+    switch (exitStatus) {
         case CLIENT_CONNECTION_CLOSED:
             logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "CONNECTION CLOSED");
             showMessage::disconnection(renderer);
@@ -124,7 +124,7 @@ int Client::connectToServer()
     return EXIT_SUCCESS;
 }
 
-ClientExitStatus Client::startGame()
+ExitStatus Client::startGame()
 {
     AudioController::toggleMusic();
 
@@ -147,7 +147,7 @@ ClientExitStatus Client::startGame()
     pthread_t receiveThread;
     pthread_create(&receiveThread, NULL, receiveDataThread, &receiveArgs);
 
-    ClientExitStatus exitStatus = CLIENT_CONNECTION_CLOSED;
+    ExitStatus exitStatus = CLIENT_CONNECTION_CLOSED;
 
     while (!quitRequested && serverOpen) {
         if (estadoJuego != nullptr) {
@@ -163,7 +163,7 @@ ClientExitStatus Client::startGame()
             } else {
                 currentScene = estadoJuego->estadoNivel.sceneNumber;
                 getSceneView(vista, estadoJuego->estadoNivel.sceneNumber);
-                exitStatus = static_cast<ClientExitStatus>(estadoJuego->estadoNivel.exitStatus);
+                exitStatus = static_cast<ExitStatus>(estadoJuego->estadoNivel.exitStatus);
             }
         }
 
