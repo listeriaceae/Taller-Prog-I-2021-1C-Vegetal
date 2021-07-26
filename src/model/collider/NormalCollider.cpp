@@ -1,7 +1,7 @@
 #include "NormalCollider.h"
 #include "../Mario.hpp"
 
-void NormalCollider::collide(Mario* mario, Entidad* ) {
+void NormalCollider::collide(Mario* mario, Enemy* ) {
     mario->die();
 }
 

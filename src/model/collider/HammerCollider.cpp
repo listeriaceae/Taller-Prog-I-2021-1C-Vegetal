@@ -2,14 +2,15 @@
 #include "NormalCollider.h"
 #include "../Mario.hpp"
 
-void HammerCollider::collide(Mario* mario, Entidad* entidad) {
-    const bool collidedWithHammer = ((mario->direccion == DERECHA) && (mario->pos.x < entidad->pos.x))
-                               || ((mario->direccion == IZQUIERDA) && (mario->pos.x > entidad->pos.x));
+void HammerCollider::collide(Mario* mario, Enemy* enemy) {
+    const bool collidedWithHammer = ((mario->direccion == DERECHA) && (mario->pos.x < enemy->pos.x))
+                               || ((mario->direccion == IZQUIERDA) && (mario->pos.x > enemy->pos.x));
 
     if(collidedWithHammer && mario->estado <= CORRIENDO) {
-        entidad->isEnabled = false;
+        enemy->isEnabled = false;
         mario->audioObserver.update(ENEMY_DEATH);
         decreaseUses(mario);
+        mario->addPoints(enemy->getPoints());
     }
     else {
         mario->die();

@@ -1,9 +1,9 @@
 #pragma once
 #include <array>
-#include "Entidad.h"
+#include "Enemy.h"
 #include "../utils/Constants.hpp"
 
-class Barril : public Entidad
+class Barril : public Enemy
 {
 public:
     Barril();
@@ -11,6 +11,7 @@ public:
     void updateDirection(float, float);
     bool estaEnNivel() const { return pos.x < ANCHO_NIVEL; }
     dimensiones_t dimensions() const;
+    unsigned char getPoints();
 
 private:
     static constexpr std::array<std::pair<punto_t,punto_t>, 12> direcciones {
