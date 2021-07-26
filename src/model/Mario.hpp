@@ -5,6 +5,7 @@
 #include "../controller/AudioObserver.h"
 #include "../utils/marioStructs.h"
 #include "Hammer.h"
+#include "Enemy.h"
 
 class Mario : public Entidad
 {
@@ -24,7 +25,7 @@ public:
     void addPoints(unsigned char points);
     bool getIsLevelCompletedOrDisabled() const;
     bool getIsGameOver() const;
-    void collide(Entidad* entidad);
+    void collide(Enemy* enemy);
     void collide(Hammer* hammer);
     void toggleTestMode();
     void setCollider(ColliderType colliderType);

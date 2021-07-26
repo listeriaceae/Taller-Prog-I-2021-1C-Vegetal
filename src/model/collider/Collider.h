@@ -1,5 +1,5 @@
 #pragma once
-#include "../Entidad.h"
+#include "../Enemy.h"
 
 class Mario;
 
@@ -13,7 +13,7 @@ enum ColliderType
 class Collider {
 public:
     virtual ~Collider() = default;
-    virtual void collide(Mario* mario, Entidad* entidad) = 0;
+    virtual void collide(Mario* mario, Enemy* enemy) = 0;
     virtual ColliderType getType() = 0;
 private:
 };
