@@ -1,9 +1,9 @@
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <vector>
 #include <string>
 #include <unistd.h>
-#include <string.h>
+#include <cstring>
 #include <chrono>
 
 #include "Server.h"
@@ -15,7 +15,6 @@
 #include "Mario.hpp"
 #include "../logger.h"
 #include "../utils/Constants.hpp"
-#include "../utils/Messages.h"
 #include "../utils/window.hpp"
 #include "../utils/estadoJuego.h"
 #include "../utils/player.h"
@@ -63,7 +62,7 @@ int Server::startServer() {
 
     int configPlayers = config->getMaxPlayers();
     if(configPlayers < MIN_PLAYERS || MAX_PLAYERS < configPlayers) {
-        logger::Logger::getInstance().logDebug(std::string("[server] ") + CANTIDAD_DE_JUGADORES_INVALIDA);
+        logger::Logger::getInstance().logDebug("[server] The number of players must be between 1 and 4.");
         maxPlayers = DEFAULT_MAX_PLAYERS;
     }
     else {

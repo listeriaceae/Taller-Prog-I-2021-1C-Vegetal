@@ -1,16 +1,10 @@
 #pragma once
 #include "Entidad.h"
 #include "mario/MarioState.h"
+#include "collider/NormalCollider.h"
 #include "../controller/AudioObserver.h"
 #include "../utils/marioStructs.h"
-#include "collider/TestCollider.h"
-#include "collider/NormalCollider.h"
-#include "collider/HammerCollider.h"
-#include "../utils/Constants.hpp"
 #include "Hammer.h"
-
-class MarioState;
-class Collider;
 
 class Mario : public Entidad
 {

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string.h>
+#include <cstring>
 #include "model/Client.h"
 #include "model/Server.h"
 
