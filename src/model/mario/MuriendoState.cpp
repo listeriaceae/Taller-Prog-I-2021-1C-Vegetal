@@ -1,30 +1,39 @@
-#include "MuriendoState.h"
-#include "GameOverState.h"
-#include "SueloState.h"
+#include "MuriendoState.hpp"
+#include "GameOverState.hpp"
+#include "SueloState.hpp"
 #include "../Mario.hpp"
-
-#define TIEMPO_MURIENDO 96
-#define TIEMPO_RESPAWN 180
 
 const MuriendoState MuriendoState::instance{};
 
-const MuriendoState *MuriendoState::getInstance() {
-    return &instance;
+const MuriendoState *
+  MuriendoState::getInstance()
+{
+  return &instance;
 }
 
-const MarioState *MuriendoState::update(Mario &mario) const {
-    ++mario.contador;
-    if (mario.contador > TIEMPO_RESPAWN) {
-        if (mario.lives == 0) {
-            return GameOverState::getInstance();
-        }
-        mario.contador = 0;
-        mario.reset();
-        return SueloState::getInstance();
+void MuriendoState::reset(Mario &mario) const
+{
+  if (0 < mario.lives) {
+    MarioState::reset(mario);
+  } else {
+    mario.state = GameOverState::getInstance();
+  }
+}
+
+void MuriendoState::update(Mario &mario, std::uint8_t) const
+{
+  ++mario.contador;
+  if (static constexpr decltype(mario.contador) respawn_ticks = 180;
+      mario.contador > respawn_ticks) {
+    if (mario.lives == 0) {
+      mario.state = GameOverState::getInstance();
+    } else {
+      mario.contador = 0;
+      mario.reset();
+      mario.state = SueloState::getInstance();
     }
-    mario.estado = MURIENDO;
-    if (mario.contador > TIEMPO_MURIENDO) {
-        mario.estado = MUERTO;
-    }
-    return this;
+  } else {
+    static constexpr decltype(mario.contador) dying_ticks = 90;
+    mario.estado = mario.contador < dying_ticks ? Estado::MURIENDO : Estado::MUERTO;
+  }
 }

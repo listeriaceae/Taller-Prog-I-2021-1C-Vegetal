@@ -1,25 +1,29 @@
-#include "GameOverState.h"
+#include "GameOverState.hpp"
 #include "../Mario.hpp"
 
 const GameOverState GameOverState::instance{};
 
-const GameOverState *GameOverState::getInstance() {
-    return &instance;
+const GameOverState *
+  GameOverState::getInstance()
+{
+  return &instance;
 }
 
-const MarioState *GameOverState::reset(Mario &) const {
-    return this;
+void GameOverState::reset(Mario &) const
+{
 }
 
-bool GameOverState::getIsLevelCompleted() const {
-    return true;
-};
-
-bool GameOverState::getIsGameOver() const {
-    return true;
+bool GameOverState::isAlive() const
+{
+  return false;
 }
 
-const MarioState *GameOverState::update(Mario &mario) const {
-    mario.estado = GAME_OVER;
-    return this;
+bool GameOverState::isPlaying() const
+{
+  return false;
+}
+
+void GameOverState::update(Mario &mario, std::uint8_t) const
+{
+  mario.estado = Estado::GAME_OVER;
 }

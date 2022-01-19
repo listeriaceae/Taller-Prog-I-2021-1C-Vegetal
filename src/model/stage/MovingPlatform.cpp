@@ -1,40 +1,29 @@
-#include "MovingPlatform.h"
-#include "../../utils/Constants.hpp"
 
-#define MIN_X 17
-#define MAX_X 191
-#define LEVEL_0_Y 124
+#include "MovingPlatform.hpp"
 
-#define X_PLAT_INDEX 58
-#define Y_PLAT_INDEX 40
-#define PLATFORMS_PER_CABLE 3
-#define PLATFORM_SPEED 0.25
+static constexpr auto per_cable = 3;
+static constexpr auto level0_y = to_fixed32(124);
+static constexpr auto x_gap = to_fixed32(58);
+static constexpr auto y_gap = to_fixed32(40);
+static constexpr auto platform_speed = to_fixed32(0.25);
 
-MovingPlatform::MovingPlatform(const int platform, const int level)
-: Platform(0, 0, 0, 0), direction(((level + 1) & 2) - 1) {
-    const int limit = ((MAX_X + MIN_X) / 2) + direction * ((MAX_X - MIN_X) / 2);
+MovingPlatform::MovingPlatform(int platform, int level)
+  : Platform{ 0, 0, 0, 0 }, direction{ ((level + 1) & 2) - 1 }
+{
+  speed = direction * platform_speed;
+  const fixed32_t limit =
+    ((right_limit + left_limit) / 2) + direction * ((right_limit - left_limit) / 2);
 
-    start.x = limit - direction * platform * X_PLAT_INDEX;
-    start.y = LEVEL_0_Y + (level / 2) * Y_PLAT_INDEX + (level % 2) * ALTO_PLATAFORMA;
-    end.x = start.x + ANCHO_PLATAFORMA;
-    end.y = start.y;
+  start.x = limit - direction * platform * x_gap;
+  start.y = level0_y + (level / 2) * y_gap + (level % 2) * to_fixed32(ALTO_PLATAFORMA);
+  end.x = start.x + to_fixed32(ANCHO_PLATAFORMA);
+  end.y = start.y;
 }
 
-void MovingPlatform::getLimits(float &min, float &max) const {
-    min = MIN_X;
-    max = MAX_X + ANCHO_PLATAFORMA;
-}
-
-float MovingPlatform::getSpeed() const {
-    return this->direction * PLATFORM_SPEED;
-}
-
-void MovingPlatform::move() {
-    start.x += this->direction * PLATFORM_SPEED;
-    start.x -= this->direction * (PLATFORMS_PER_CABLE * X_PLAT_INDEX) * ((start.x < MIN_X) || (MAX_X < start.x));
-    end.x = start.x + ANCHO_PLATAFORMA;
-}
-
-punto_t MovingPlatform::getPos() const {
-    return start;
+void MovingPlatform::move()
+{
+  start.x += speed;
+  if (start.x < left_limit || right_limit < start.x)
+    start.x -= this->direction * (per_cable * x_gap);
+  end.x = start.x + to_fixed32(ANCHO_PLATAFORMA);
 }

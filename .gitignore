@@ -1,14 +1,9 @@
-# Exclude Vagrant files
-.vagrant/
-ubuntu-xenial-16.04-cloudimg-console.log
+# executables
+/bin/
 
-sudo apt-get install libsdl2-2.0 libsdl2-dev
-main
-myapp
-*.d
+###
 /.vscode/
-/obj/
 
 # Logs
-log.txt
-game.log
+*.log
+

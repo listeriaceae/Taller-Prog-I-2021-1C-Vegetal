@@ -1,31 +1,40 @@
-#include <string>
-#include <SDL2/SDL_image.h>
-#include "PaulineVista.h"
-#include "../logger.h"
+#include <SDL2/SDL.h>
+#include "PaulineVista.hpp"
 #include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
-const std::string IMG_PAULINE = "res/Pauline.png";
+#define HELP_ANCHO 24
+#define HELP_ALTO 8
+#define HELP_POS_X 104
+#define HELP_POS_Y 30
 
-PaulineVista::PaulineVista(SDL_Renderer* renderer)
-: EntidadEstaticaVista() {
-    this->renderer = renderer;
-    SDL_Surface* surface = IMG_Load(IMG_PAULINE.c_str());
-    if (surface == NULL) {
-        logger::Logger::getInstance().logError("Image not found: " + IMG_PAULINE);
-        logger::Logger::getInstance().logDebug("Loading default image: " + IMG_DEFAULT);
-        surface = IMG_Load(IMG_DEFAULT.c_str());
-    }
-    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 255, 0));
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
+extern SDL_Renderer *renderer;
+extern SDL_Texture *texture;
 
-    rect.x = round(PAULINE_POS_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    rect.y = round(PAULINE_POS_Y * ALTO_PANTALLA / (float)ALTO_NIVEL);
-    rect.w = round(PAULINE_ANCHO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    rect.h = round(PAULINE_ALTO * ALTO_PANTALLA / (float)ALTO_NIVEL);
-}
+void PaulineVista::mostrar()
+{
+  constexpr SDL_Rect dstRect{
+    static_cast<int>(round(PAULINE_POS_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
+    static_cast<int>(round(PAULINE_POS_Y * ALTO_PANTALLA / (float)ALTO_NIVEL)),
+    static_cast<int>(round(PAULINE_ANCHO * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
+    static_cast<int>(round(PAULINE_ALTO * ALTO_PANTALLA / (float)ALTO_NIVEL))
+  };
+  constexpr SDL_Rect helpDstRect{
+    static_cast<int>(round(HELP_POS_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
+    static_cast<int>(round(HELP_POS_Y * ALTO_PANTALLA / (float)ALTO_NIVEL)),
+    static_cast<int>(round(HELP_ANCHO * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
+    static_cast<int>(round(HELP_ALTO * ALTO_PANTALLA / (float)ALTO_NIVEL))
+  };
+  const SDL_Rect helpSrcRect{ 352, 282, HELP_ANCHO, HELP_ALTO };
 
-void PaulineVista::mostrar() {
-    SDL_RenderCopy(renderer, texture, NULL, &rect);
+  ++counter;
+  int animate = 32 <= counter && counter < 96;
+  const SDL_Rect srcRect{ 288 + ((animate & (1 - ((counter >> 3) & 1))) << 4),
+    282,
+    PAULINE_ANCHO,
+    PAULINE_ALTO };
+  SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
+
+  if (animate)
+    SDL_RenderCopy(renderer, texture, &helpSrcRect, &helpDstRect);
 }

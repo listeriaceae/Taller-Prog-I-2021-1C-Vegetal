@@ -1,94 +1,85 @@
 #include <unordered_set>
-#include "Stage.h"
+#include "Stage.hpp"
 
-#define ANCHO_HITBOX 8
-#define STAGE_WIDTH (ANCHO_NIVEL / ANCHO_TILE)
-#define STAGE_HEIGHT (ALTO_NIVEL / ALTO_TILE)
-#define GRID_COLUMNS (STAGE_WIDTH + 1)
-#define SLOPE 0.03125f
+static constexpr auto stage_width = to_fixed32(ANCHO_NIVEL / ANCHO_TILE);
+static constexpr auto stage_height = to_fixed32(ALTO_NIVEL / ALTO_TILE);
+static constexpr auto grid_columns = (ANCHO_NIVEL / ANCHO_TILE) + 1;
+static constexpr auto slope = to_fixed32(0.03125);
+static constexpr auto hitbox_width = to_fixed32(8);
+static constexpr auto mario_width = to_fixed32(ANCHO_MARIO);
+static constexpr auto mario_height = to_fixed32(ALTO_MARIO);
 
-Stage::Stage() {
-    // Al finalizar cada nivel se otorgan los siguientes puntajes según el orden de llegada
-    // 1° 2000 puntos
-    // 2° 1500 puntos
-    // 3° 1000 puntos 
-    // 4° 500 puntos
-    // Dividimos todo por 100 para usar menos espacio
-    this->points.push(5);
-    this->points.push(10);
-    this->points.push(15);
-    this->points.push(20);
+void Stage::addLadder(Ladder ladder)
+{
+  const std::size_t x = (ladder.x + mario_width / 2) / stage_width;
+  {
+    const std::size_t y = ladder.bottom / stage_height;
+    grid[y * grid_columns + x].setLadderBottom(ladder);
+  }
+  const std::size_t y = ladder.top / stage_height;
+  grid[y * grid_columns + x].setLadderTop(ladder);
 }
 
- unsigned int Stage::getPointsForCompletingLevel() {
-    if (this->points.empty()) return 0;
-
-    auto pts = this->points.top();
-    this->points.pop();
-    return pts;
- }
-
-void Stage::addLadder(const Ladder &ladder_) {
-    const int x = ((int)ladder_.x + ANCHO_MARIO / 2) / STAGE_WIDTH;
-    int y = (int)ladder_.bottom / STAGE_HEIGHT;
-    Ladder *ladder = new Ladder(ladder_);
-    grid[y * GRID_COLUMNS + x].setLadderBottom(ladder);
-
-    y = (int)ladder_.top / STAGE_HEIGHT;
-    grid[y * GRID_COLUMNS + x].setLadderTop(ladder);
+std::optional<Ladder>
+  Stage::getLadder(fixed32_t x, fixed32_t y, int direction) const
+{
+  const std::size_t i =
+    (y / stage_height) * grid_columns + (x + mario_width / 2) / stage_width;
+  if (0 < direction)
+    return grid[i].ladderBottom;
+  if (direction < 0)
+    return grid[i].ladderTop;
+  return std::nullopt;
 }
 
-const Ladder *Stage::getLadder(const float x, const float y, const int direction) const {
-    const size_t i = ((int)y / STAGE_HEIGHT) * GRID_COLUMNS + ((int)x + ANCHO_MARIO / 2) / STAGE_WIDTH;
-    if (0 < direction) return grid[i].getLadderBottom();
-    if (direction < 0) return grid[i].getLadderTop();
-    return nullptr;
+void Stage::addPlatform(const Platform *platform)
+{
+  auto [x, max] = platform->getLimits();
+  std::size_t i;
+  do {
+    i = (platform->getY(x) / stage_height) * grid_columns + x / stage_width;
+    grid[i].addPlatform(platform);
+    x += ANCHO_TILE;
+  } while (x < max);
+  Tile &tile =
+    grid[(platform->getY(max) / stage_height) * grid_columns + max / stage_width];
+  if (&grid[i] != &tile) {
+    tile.addPlatform(platform);
+  }
 }
 
-void Stage::addPlatform(const Platform *platform) {
-    float x, max;
-    platform->getLimits(x, max);
-    size_t i;
-    while (x < max) {
-        i = ((size_t)platform->getY(x) / STAGE_HEIGHT) * GRID_COLUMNS + (size_t)x / STAGE_WIDTH;
-        grid[i].addPlatform(platform);
-        x += ANCHO_TILE;
-    }
-    Tile &tile = grid[((size_t)platform->getY(max) / STAGE_HEIGHT) * GRID_COLUMNS + (size_t)max / STAGE_WIDTH];
-    if (&grid[i] != &tile) {
-        tile.addPlatform(platform);
-    }
-}
-
-bool Stage::collide(float &x, float &y, float &dx, float &dy) const {
-    const size_t i = ((int)y / STAGE_HEIGHT) * GRID_COLUMNS + (int)x / STAGE_WIDTH;
-    std::unordered_set<const Platform *> platforms;
+bool Stage::collide(fixed32_t &x, fixed32_t &y, fixed32_t &dx, fixed32_t &dy) const
+{
+  std::unordered_set<const Platform *> platforms;
+  platforms.reserve(8);
+  {
+    const std::size_t i = (y / stage_height) * grid_columns + x / stage_width;
     grid[i].getPlatforms(platforms);
     grid[i + 1].getPlatforms(platforms);
-    grid[i + GRID_COLUMNS].getPlatforms(platforms);
-    grid[i + (GRID_COLUMNS + 1)].getPlatforms(platforms);
+    grid[i + grid_columns].getPlatforms(platforms);
+    grid[i + (grid_columns + 1)].getPlatforms(platforms);
+  }
+  bool is_standing = false;
+  for (auto it = platforms.begin(); it != platforms.end(); ++it) {
+    const auto [min, max] = (*it)->getCurrentLimits();
+    const auto distanceLeft = x - min + (mario_width / 2 + hitbox_width / 2);
+    const auto distanceRight = max - x - (mario_width / 2 - hitbox_width / 2);
+    if (0 < distanceLeft && 0 < distanceRight) {
+      const auto distanceY = y + mario_height - (*it)->getY(x);
+      if (0 <= distanceY) {
+        const bool hit_wall = distanceY <= to_fixed32(3 * ALTO_MARIO / 4) && (distanceRight <= to_fixed32(1) || distanceLeft <= to_fixed32(1));
+        x -= distanceLeft * (distanceLeft <= to_fixed32(1) && hit_wall);
+        x += distanceRight * (distanceRight <= to_fixed32(1) && hit_wall);
+        dx &= hit_wall - 1;
 
-    bool is_standing = false;
-    float min, max;
-    for (auto it = platforms.begin(); it != platforms.end(); ++it) {
-        (*it)->getCurrentLimits(min, max);
-        const float distanceLeft = x - min + (ANCHO_MARIO / 2 + ANCHO_HITBOX / 2);
-        const float distanceRight = max - x - (ANCHO_MARIO / 2 - ANCHO_HITBOX / 2);
-        if (0 < distanceLeft && 0 < distanceRight) {
-            const float distanceY = y + ALTO_MARIO - (*it)->getY(x);
-            if (0 <= distanceY) {
-                const int hit_wall = distanceY <= 3 * ALTO_MARIO / 4  && (distanceRight <= 1 || distanceLeft <= 1);
-                x -= distanceLeft * (distanceLeft <= 1 && hit_wall);
-                x += distanceRight * (distanceRight <= 1 && hit_wall);
-                dx *= !hit_wall;
-
-                const int hit_floor = !hit_wall && (distanceY <= SLOPE - dy || (distanceY <= 1 && dy <= 0));
-                y -= distanceY * hit_floor;
-                dy *= !hit_floor;
-                x += hit_floor * (*it)->getSpeed();
-                is_standing |= hit_floor;
-            }
-        }
+        const bool hit_floor =
+          !hit_wall && (distanceY <= slope - dy || (distanceY <= to_fixed32(1) && dy <= 0));
+        y -= distanceY & (-hit_floor);
+        dy &= hit_floor - 1;
+        x += (*it)->getSpeed() & (-hit_floor);
+        is_standing |= hit_floor;
+      }
     }
-    return is_standing;
+  }
+  return is_standing;
 }

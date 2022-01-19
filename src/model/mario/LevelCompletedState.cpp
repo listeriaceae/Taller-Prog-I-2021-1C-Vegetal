@@ -1,17 +1,20 @@
-#include "LevelCompletedState.h"
+#include "LevelCompletedState.hpp"
 #include "../Mario.hpp"
 
 const LevelCompletedState LevelCompletedState::instance{};
 
-const LevelCompletedState *LevelCompletedState::getInstance() {
-    return &instance;
+const LevelCompletedState *
+  LevelCompletedState::getInstance()
+{
+  return &instance;
 }
 
-bool LevelCompletedState::getIsLevelCompleted() const {
-    return true;
-};
+bool LevelCompletedState::isPlaying() const
+{
+  return false;
+}
 
-const MarioState *LevelCompletedState::update(Mario &mario) const {
-    mario.estado = REPOSO;
-    return this;
+void LevelCompletedState::update(Mario &mario, std::uint8_t) const
+{
+  mario.estado = Estado::NIVEL_COMPLETO;
 }

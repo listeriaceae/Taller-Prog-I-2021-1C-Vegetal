@@ -1,49 +1,35 @@
-#include <string>
-#include <SDL2/SDL_image.h>
-#include "EnemigoFuegoVista.h"
-#include "../logger.h"
+#include "EnemigoFuegoVista.hpp"
 #include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 
-#define TIEMPO_POR_FRAME 8
-#define CANT_FRAMES 2
-#define SPRITE_INDEX_SIZE 24
+extern SDL_Renderer *renderer;
+extern SDL_Texture *texture;
 
-const std::string IMG_ENEMIGO_FUEGO = "res/Enemy1.png";
-
-EnemigoFuegoVista::EnemigoFuegoVista(SDL_Renderer *renderer) : srcRect{0, 0, ANCHO_ENEMIGO_FUEGO, ALTO_ENEMIGO_FUEGO} {
-    this->renderer = renderer;
-    SDL_Surface* surface = IMG_Load(IMG_ENEMIGO_FUEGO.c_str());
-    if (surface == NULL) {
-        logger::Logger::getInstance().logError("Image not found: " + IMG_ENEMIGO_FUEGO);
-        logger::Logger::getInstance().logDebug("Loading default image: " + IMG_DEFAULT);
-        surface = IMG_Load(IMG_DEFAULT.c_str());
-    }
-    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 255, 0));
-    this->texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
-
-    dstRect.w = round(ANCHO_ENEMIGO_FUEGO * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
-    dstRect.h = round(ALTO_ENEMIGO_FUEGO * ALTO_PANTALLA / (float)ALTO_NIVEL);
+EnemigoFuegoVista::EnemigoFuegoVista()
+  : dstRect{ 0,
+      0,
+      static_cast<int>(round(ANCHO_ENEMIGO_FUEGO * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
+      static_cast<int>(round(ALTO_ENEMIGO_FUEGO * ALTO_PANTALLA / (float)ALTO_NIVEL)) }
+{
 }
 
-void EnemigoFuegoVista::startRender() {
-    updated = 0;
-}
+void EnemigoFuegoVista::mostrar(punto16_t pos)
+{
+  const int next_x = static_cast<int>(from_fixed16<float>(pos.x) * (ANCHO_PANTALLA / (float)ANCHO_NIVEL));
+  const SDL_RendererFlip flip = static_cast<SDL_RendererFlip>(dstRect.x < next_x);
+  static constexpr auto frame_duration = 8;
+  static constexpr auto frame_count = 2;
+  tiempo = (tiempo + 1) & (frame_duration * frame_count - 1);
 
-void EnemigoFuegoVista::mover(punto_t pos) {
-    dstRect.x = round(pos.x * (ANCHO_PANTALLA / (float)ANCHO_NIVEL));
-    dstRect.y = round(pos.y * (ALTO_PANTALLA / (float)ALTO_NIVEL));
-}
+  static constexpr auto x_offset = 288;
+  static constexpr auto y_offset = 266;
+  static constexpr auto sprite_gap_size = 15;
+  const SDL_Rect srcRect = { x_offset + (tiempo >> 3) * sprite_gap_size,
+    y_offset,
+    ANCHO_ENEMIGO_FUEGO,
+    ALTO_ENEMIGO_FUEGO };
+  dstRect.x = next_x;
+  dstRect.y = static_cast<int>(from_fixed16<float>(pos.y) * (ALTO_PANTALLA / (float)ALTO_NIVEL));
 
-void EnemigoFuegoVista::mostrar() {
-    tiempo = (tiempo + (updated == 0)) % (TIEMPO_POR_FRAME * CANT_FRAMES);
-    srcRect.x = (tiempo / TIEMPO_POR_FRAME) * SPRITE_INDEX_SIZE;
-
-    SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
-    updated = 1;
-}
-
-EnemigoFuegoVista::~EnemigoFuegoVista() {
-    SDL_DestroyTexture(texture);
+  SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0.0, NULL, flip);
 }

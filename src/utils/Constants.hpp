@@ -1,16 +1,14 @@
-#pragma once
-
-#include <string>
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 
 #define MIN_PLAYERS 1
 #define MAX_PLAYERS 4
 
-//estadoNivel
+// estadoNivel
 #define MAX_PLATFORMS 12
 #define MAX_ENEMIES 3
 #define MAX_BARRELS 8
 #define MAX_HAMMERS 2
-#define DEFAULT_MAX_PLAYERS 2 //en caso de que la cant max de jugadores sea inválida en el json
 
 // Dimensiones
 #define ANCHO_NIVEL 224
@@ -37,14 +35,11 @@
 #define ANCHO_MARIO 16
 #define ALTO_MARIO 16
 
-#define DONKEYKONG_ANCHO 40
-#define DONKEYKONG_ALTO 34
+#define DONKEYKONG_ANCHO 48
+#define DONKEYKONG_ALTO 32
 
 #define PAULINE_POS_X 88
 #define PAULINE_POS_Y 34
-
-#define ANCHO_DEFAULT_CONFIG 108
-#define ALTO_DEFAULT_CONFIG 7
 
 // Nivel 1
 #define N1_POS_X_FUEGO1 48
@@ -71,12 +66,8 @@
 #define MARIO_START_X 0
 #define MARIO_START_Y 232
 
-// Remplazar esta coordenadas iniciales para debug
-// #define MARIO_START_X 208
-// #define MARIO_START_Y 72
-
-#define DONKEYKONG_POS_X 24
-#define DONKEYKONG_POS_Y 50
+#define DONKEYKONG_POS_X 20
+#define DONKEYKONG_POS_Y 52
 
 #define PAULINE_ANCHO 16
 #define PAULINE_ALTO 22
@@ -85,19 +76,19 @@
 #define DEFAULT_CONFIG_Y 20
 
 #define MARIO_LIVES 3
-#define TOP_LEVEL 40
+#define TOP_LEVEL 40.5f
 
 // Login
-#define LOGIN_OK 0
-#define LOGIN_ABORTED 1
-#define LOGIN_INVALID_USER_PASS 2
-#define LOGIN_USER_ALREADY_CONNECTED 3
-#define LOGIN_MAX_USERS_CONNECTED 4
-#define LOGIN_INVALID_USER 5
+enum class Login {
+  OK,
+  ABORTED,
+  INVALID_USER_PASS,
+  USER_ALREADY_CONNECTED,
+  MAX_USERS_CONNECTED,
+  INVALID_USER
+};
 
-// Name
-const char *const NOMBRE_JUEGO = "Donkey Kong 2 Jumpman Returns";
 // Config
-const std::string CONFIG_FILE = "archivo.json";
-// Default
-const std::string IMG_DEFAULT = "res/default.png";
+const char CONFIG_FILE[] = "archivo.json";
+
+#endif// CONSTANTS_H

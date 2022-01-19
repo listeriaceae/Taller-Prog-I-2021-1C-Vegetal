@@ -1,29 +1,22 @@
-#include "HammerCollider.h"
-#include "NormalCollider.h"
+#include "HammerCollider.hpp"
+#include "NormalCollider.hpp"
 #include "../Mario.hpp"
 
-void HammerCollider::collide(Mario* mario, Enemy* enemy) {
-    const bool collidedWithHammer = ((mario->direccion == DERECHA) && (mario->pos.x < enemy->pos.x))
-                                 || ((mario->direccion == IZQUIERDA) && (mario->pos.x > enemy->pos.x));
+const HammerCollider HammerCollider::instance{};
 
-    if(collidedWithHammer && mario->estado <= CORRIENDO) {
-        enemy->isEnabled = false;
-        mario->audioObserver.update(ENEMY_DEATH);
-        decreaseUses(mario);
-        mario->addPoints(enemy->getPoints());
-    }
-    else {
-        mario->die();
-    }
-}
+bool HammerCollider::collide(Mario &mario, Enemy &enemy) const
+{
+  const bool collidedWithHammer =
+    ((mario.direccion == Direccion::DERECHA) && (mario.pos.x < enemy.pos.x)) || ((mario.direccion == Direccion::IZQUIERDA) && (mario.pos.x >= enemy.pos.x));
 
-void HammerCollider::decreaseUses(Mario* mario) {
-    if (--uses == 0) {
-        delete (mario->collider);
-        mario->collider = new NormalCollider();
-    }
-}
-
-ColliderType HammerCollider::getType() {
-    return HAMMER;
+  if (collidedWithHammer && mario.estado <= Estado::CORRIENDO) {
+    mario.audioObserver.update(ENEMY_DEATH);
+    if (--mario.hammerUses == 0)
+      mario.collider = NormalCollider::getInstance();
+    mario.score += enemy.getPoints();
+    return true;
+  } else {
+    mario.die();
+    return false;
+  }
 }

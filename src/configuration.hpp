@@ -1,65 +1,52 @@
-#pragma once
+#ifndef CONFIGURATION_H
+#define CONFIGURATION_H
 
 #include <string>
 #include <vector>
 #include <jsoncpp/json/json.h>
-#include "utils/user.h"
+#include "utils/user.hpp"
 
-namespace configuration
+namespace configuration {
+class Enemy
 {
-    class Enemy
-    {
-    public:
-        Enemy() = default;
-        Enemy(const std::string &t, const unsigned int q) : type(t), quantity(q) {};
-        ~Enemy() = default;
+public:
+  Enemy(const std::string &t, unsigned int q) : type{ t }, quantity{ q } {}
+  Enemy(std::string &&t, unsigned int q) noexcept : type{ std::move(t) }, quantity{ q } {}
 
-        const std::string getType() const { return type; };
-        unsigned int getQuantity() const { return quantity; };
+  const std::string &getType() const & { return type; }
+  std::string getType() const && { return type; }
+  unsigned int getQuantity() const { return quantity; }
 
-    private:
-        std::string type;
-        unsigned int quantity;
-    };
+private:
+  std::string type;
+  unsigned int quantity;
+};
 
-    class Stage
-    {
-    public:
-        Stage() = default;
-        Stage(const std::vector<std::string> bgs) : backgrounds(bgs) {};
+class GameConfiguration
+{
+public:
+  static GameConfiguration &getInstance(const char *json_filename);
 
-        const std::vector<std::string> getBackgrounds() const { return backgrounds; };
+  int getLogLevel() const { return logLevel; }
+  const std::vector<user_t> &getUsers() const & { return users; }
+  std::vector<user_t> getUsers() const && { return users; }
+  const std::vector<configuration::Enemy> &getEnemies() const & { return enemies; }
+  std::vector<configuration::Enemy> getEnemies() const && { return enemies; }
+  std::size_t getMaxPlayers() const { return maxPlayers; }
+  bool getDefaultConfigFlag() const { return useDefaultConfig; }
 
-    private:
-        std::vector<std::string> backgrounds;
-    };
+private:
+  GameConfiguration(const char *json_filename);
+  static GameConfiguration *instance;
+  int logLevel;
+  std::vector<user_t> users;
+  std::vector<Enemy> enemies;
+  std::size_t maxPlayers;
+  bool useDefaultConfig;
 
-    class GameConfiguration
-    {
-    public:
-        static GameConfiguration *getInstance(const std::string &json_filename);
-        ~GameConfiguration();
+  static const Json::Value getJsonValue(const Json::Value &root, std::string name);
+  bool loadFromFile(const char *configFileName);
+};
+}// namespace configuration
 
-        const std::string getLogLevel() const { return logLevel; };
-        const std::vector<configuration::Enemy> getEnemies() const { return enemies; };
-        const std::vector<configuration::Stage> getStages() const { return stages; };
-        int getMaxPlayers() const { return maxPlayers; };
-        bool getDefaultConfigFlag() const { return this->useDefaultConfig; };
-;
-        std::vector<user_t> getUsers() const { return users; };
-
-    private:
-        GameConfiguration(const std::string &json_filename);
-        static GameConfiguration *instance;
-        std::string logLevel;
-        std::vector<Enemy> enemies;
-        std::vector<Stage> stages;
-        std::vector<user_t> users;
-        int maxPlayers;
-        bool useDefaultConfig;
-
-        static const Json::Value getJsonValue(const Json::Value &root, const std::string &name);
-        bool loadFromFile(std::string configFileName);
-
-    };
-}
+#endif// CONFIGURATION_H

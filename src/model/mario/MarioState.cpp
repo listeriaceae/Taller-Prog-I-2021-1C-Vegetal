@@ -1,24 +1,30 @@
-#include "MarioState.h"
-#include "SueloState.h"
+#include "MarioState.hpp"
+#include "SueloState.hpp"
 #include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
-Stage *MarioState::stage{nullptr};
+const Stage *MarioState::stage{ nullptr };
+unsigned char MarioState::points{ 4 };
 
-const MarioState *MarioState::reset(Mario &mario) const {
-    mario.pos = {MARIO_START_X, MARIO_START_Y};
-    mario.estado = REPOSO;
-    return SueloState::getInstance();
+void MarioState::reset(Mario &mario) const
+{
+  mario.pos = { to_fixed32(MARIO_START_X), to_fixed32(MARIO_START_Y) };
+  mario.estado = Estado::REPOSO;
+  mario.state = SueloState::getInstance();
 }
 
-bool MarioState::getIsLevelCompleted() const {
-    return false;
+bool MarioState::isPlaying() const
+{
+  return true;
 }
 
-bool MarioState::getIsGameOver() const {
-    return false;
+bool MarioState::isAlive() const
+{
+  return true;
 }
 
-void MarioState::setStage(Stage *stage_) {
-    stage = stage_;
+void MarioState::resetStage(const Stage *stage_)
+{
+  stage = stage_;
+  points = 4;
 }

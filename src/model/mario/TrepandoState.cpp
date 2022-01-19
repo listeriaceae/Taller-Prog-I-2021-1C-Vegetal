@@ -1,30 +1,34 @@
-#include "SueloState.h"
-#include "TrepandoState.h"
-#include "LevelCompletedState.h"
+#include "SueloState.hpp"
+#include "TrepandoState.hpp"
+#include "LevelCompletedState.hpp"
 #include "../Mario.hpp"
 
 const TrepandoState TrepandoState::instance{};
 
-const TrepandoState *TrepandoState::getInstance() {
-    return &instance;
+const TrepandoState *
+  TrepandoState::getInstance()
+{
+  return &instance;
 }
 
-const MarioState *TrepandoState::update(Mario &mario) const {
-    mario.velY = (mario.controls.up - mario.controls.down) * MARIO_VEL_TREPAR;
-    if (mario.climbMin < mario.pos.y || mario.pos.y < mario.climbMax)
-    {
-        if (mario.pos.y <= TOP_LEVEL) {
-            if(mario.collider->getType() == HAMMER) { // para que no siga martillando cuando termina el nivel
-                mario.setCollider(NORMAL);
-            }
-            mario.audioObserver.update(FINISHED_LEVEL);
-            mario.addPoints(this->stage->getPointsForCompletingLevel());
-            return LevelCompletedState::getInstance();
-        }
-        mario.estado = DE_ESPALDAS;
-        return SueloState::getInstance();
+void TrepandoState::update(Mario &mario, std::uint8_t controls) const
+{
+  mario.vel.y =
+    (((controls & UP) >> 1) - ((controls & DOWN) >> 2)) * climb_speed;
+  if (mario.climbMin < mario.pos.y || mario.pos.y < mario.climbMax) {
+    if (mario.pos.y <= to_fixed32(TOP_LEVEL)) {
+      mario.resetCollider();
+      mario.audioObserver.update(FINISHED_LEVEL);
+      mario.score += points * 5;
+      mario.pos.x -= (4 - points) * to_fixed32(13);
+      points -= 1;
+      mario.state = LevelCompletedState::getInstance();
+    } else {
+      mario.estado = Estado::DE_ESPALDAS;
+      mario.state = SueloState::getInstance();
     }
-    mario.pos.y -= mario.velY;
-    mario.estado = TREPANDO;
-    return this;
+  } else {
+    mario.pos.y -= mario.vel.y;
+    mario.estado = Estado::TREPANDO;
+  }
 }

@@ -1,10 +1,10 @@
-#include "NormalCollider.h"
+#include "NormalCollider.hpp"
 #include "../Mario.hpp"
 
-void NormalCollider::collide(Mario* mario, Enemy* ) {
-    mario->die();
-}
+const NormalCollider NormalCollider::instance{};
 
-ColliderType NormalCollider::getType() {
-    return NORMAL;
+bool NormalCollider::collide(Mario &mario, Enemy &) const
+{
+  mario.die();
+  return false;
 }

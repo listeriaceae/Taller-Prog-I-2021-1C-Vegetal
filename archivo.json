@@ -1,42 +1,35 @@
 {
     "configuration": {
         "log": {
-            "level": "DEBUG"
+            "level": "ERROR"
         },
-        "players": 2,
+        "players": 1,
         "game": {
             "enemies": [
                 {
                     "type": "Fuego",
                     "quantity": 3
                 }
-            ],
-            "stages": [
-                {
-                    "fondo1": "res/Nivel1.png"
-                },
-                {
-                    "fondo1": "res/Nivel2.png"
-                }
             ]
         },
         "users": [
             {
-                "username": "nac",
-                "password": "nac"
+                "username": "NACHO",
+                "password": "QWERTY"
             },
             {
-                "username": "kai",
-                "password": "kai"
+                "username": "TINCHO",
+                "password": "PASSWORD"
             },
             {
-                "username": "aln",
-                "password": "aln"
+                "username": "MANU",
+                "password": "INCORRECT"
             },
             {
-                "username": "jid",
-                "password": "jid"
+                "username": "FRAN",
+                "password": "123456"
             }
         ]
     }
 }
+
