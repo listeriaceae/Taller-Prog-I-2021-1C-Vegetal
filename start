@@ -1,20 +1,23 @@
 #!/bin/sh
 input=$1
-target=""
-ip=""
+bin="bin"
+client="client"
+server="server"
+
 while [ -z $target ]; do
 	case $input in
 		s|S|server|bin/server|./bin/client)
-			target="bin/server";;
+			target=$server;;
 		c|C|client|bin/client|./bin/client)
-			target="bin/client"
+			target=$client
 			ip="127.0.0.1";;
-		*) read -p "[client/server]: " input;;
+		*) read -p "[$client/$server]: " input;;
 	esac
 done
 
 # build
-make $target
+[ -d $bin ] || mkdir $bin
+make $bin/$target
 
 # start
-./$target $ip 5555
+./$bin/$target $ip 5555

@@ -19,10 +19,10 @@ EXE_C		:= client
 all: $(BIN)/$(EXE_S) $(BIN)/$(EXE_C)
  
 $(BIN)/$(EXE_S): $(SRC)/*.cpp $(SRC)/main/main_server.cpp $(SRC)/model/*.cpp $(SRC)/model/mario/*.cpp $(SRC)/model/stage/*.cpp $(SRC)/model/collider/*.cpp $(SRC)/utils/dataTransfer.cpp
-				 $(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $(WARNINGS) $^ -o $@ $(LIBRARIES_S) $(LD_FLAGS_S)
+	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $(WARNINGS) $^ -o $@ $(LIBRARIES_S) $(LD_FLAGS_S)
  
 $(BIN)/$(EXE_C): $(SRC)/*.cpp $(SRC)/main/main_client.cpp $(SRC)/view/*.cpp $(SRC)/controller/*.cpp $(SRC)/utils/*.cpp
-				 $(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $(WARNINGS) $^ -o $@ $(LIBRARIES_C) $(LD_FLAGS_C)
+	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $(WARNINGS) $^ -o $@ $(LIBRARIES_C) $(LD_FLAGS_C)
 
 install:
 	sudo apt-get install libsdl2-2.0 libsdl2-dev -y

@@ -13,20 +13,16 @@
 $ make install
 ```
 
-## Compilar
-```sh
-$ make
-```
-
 ## Correr el juego
 ### Servidor
 ```sh
-$ start server
+$ ./start server
 ```
 ### Cliente
 ```sh
-$ start client
+$ ./start client
 ```
+
 ## Controles
 * Movimiento: Flechas
 * Salto: Barra espaciadora
