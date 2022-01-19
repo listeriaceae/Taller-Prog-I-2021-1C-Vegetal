@@ -24,6 +24,12 @@ $(BIN)/$(EXE_S): $(SRC)/*.cpp $(SRC)/main/main_server.cpp $(SRC)/model/*.cpp $(S
 $(BIN)/$(EXE_C): $(SRC)/*.cpp $(SRC)/main/main_client.cpp $(SRC)/view/*.cpp $(SRC)/controller/*.cpp $(SRC)/utils/*.cpp
 				 $(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $(WARNINGS) $^ -o $@ $(LIBRARIES_C) $(LD_FLAGS_C)
 
+install:
+	sudo apt-get install libsdl2-2.0 libsdl2-dev -y
+	sudo apt-get install libsdl2-image-2.0-0 libsdl2-image-dev libsdl2-mixer-dev -y
+	sudo apt-get install libjsoncpp-dev -y
+	sudo apt-get install build-essential gdb -y
+
 format:
 	xargs clang-format -i < .clang-files
 
