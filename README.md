@@ -10,7 +10,7 @@
 
 ## Instalar dependencias
 ```sh
-$ make install
+$ make deps
 ```
 
 ## Correr el juego
@@ -32,7 +32,6 @@ $ ./start client
 
 ## video
 [Donkey Kong 2 Gameplay YouTube Video](https://www.youtube.com/watch?v=y4xnoOdqmMU)
-
 
 ## juego online
 [Donkey Kong 2 online](https://www.retrogames.cc/arcade-games/donkey-kong-ii-jumpman-returns-v1-2-hack.html)
