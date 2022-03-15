@@ -1,6 +1,5 @@
-
 CXX		:= g++
-CXX_FLAGS	:= -std=c++20 -O2
+CXX_FLAGS	:= -std=c++20 -O3
 
 LD_FLAGS_S	:= -fconcepts
 LD_FLAGS_C	:= -fconcepts
@@ -41,4 +40,3 @@ touch:
 
 clean:
 	-rm $(BIN)/*
-
