@@ -1,16 +1,17 @@
 #!/bin/sh
+
 input=$1
-bin="bin"
-client="client"
-server="server"
+bin='bin'
+client='client'
+server='server'
 
 while [ -z $target ]; do
 	case $input in
-		s|S|server|bin/server|./bin/client)
+		*s*)
 			target=$server;;
-		c|C|client|bin/client|./bin/client)
+		*c*)
 			target=$client
-			ip="127.0.0.1";;
+			ip='127.0.0.1';;
 		*) read -p "[$client/$server]: " input;;
 	esac
 done
