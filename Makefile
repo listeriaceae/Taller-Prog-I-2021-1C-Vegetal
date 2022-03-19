@@ -4,19 +4,22 @@ CXX_FLAGS	:= -std=c++20 -O3
 LD_FLAGS_S	:= -fconcepts
 LD_FLAGS_C	:= -fconcepts
 WARNINGS	:= 
- 
+
 BIN		:= bin
 SRC		:= src
 INCLUDE		:= include
 LIB		:= lib
- 
+
 LIBRARIES_S	:= -ljsoncpp -pthread
 LIBRARIES_C	:= -lSDL2 -lSDL2_image -lSDL2_mixer -ljsoncpp -pthread
 EXE_S		:= server
 EXE_C		:= client
- 
+
+PRIVILEGE	:= $(shell command -v sudo || command -v doas)
+PKGS		:= $(shell command -v apt-get && echo install build-essential libsdl2-2.0 libsdl2-dev libsdl2-image-2.0-0 libsdl2-image-dev libsdl2-mixer-dev libjsoncpp-dev || command -v pacman && echo -S sdl2 sdl2_image sdl2_mixer jsoncpp)
+
 all: $(BIN)/$(EXE_S) $(BIN)/$(EXE_C)
- 
+
 $(BIN)/$(EXE_S): $(SRC)/*.cpp $(SRC)/main/main_server.cpp $(SRC)/model/*.cpp $(SRC)/model/mario/*.cpp $(SRC)/model/stage/*.cpp $(SRC)/model/collider/*.cpp $(SRC)/utils/dataTransfer.cpp
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $(WARNINGS) $^ -o $@ $(LIBRARIES_S) $(LD_FLAGS_S)
  
@@ -24,10 +27,7 @@ $(BIN)/$(EXE_C): $(SRC)/*.cpp $(SRC)/main/main_client.cpp $(SRC)/view/*.cpp $(SR
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $(WARNINGS) $^ -o $@ $(LIBRARIES_C) $(LD_FLAGS_C)
 
 deps:
-	sudo apt-get install build-essential gdb -y
-	sudo apt-get install libsdl2-2.0 libsdl2-dev -y
-	sudo apt-get install libsdl2-image-2.0-0 libsdl2-image-dev libsdl2-mixer-dev -y
-	sudo apt-get install libjsoncpp-dev -y
+	$(PRIVILEGE) $(PKGS)
 
 format:
 	xargs clang-format -i < .clang-files
