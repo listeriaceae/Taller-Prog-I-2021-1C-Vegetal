@@ -6,19 +6,20 @@ client='client'
 server='server'
 
 while [ -z $target ]; do
-	case $input in
-		*s*)
-			target=$server;;
-		*c*)
-			target=$client
-			ip='127.0.0.1';;
-		*) read -p "[$client/$server]: " input;;
-	esac
+  case $input in
+    *s*) target=$server;;
+    *c*)
+      target=$client
+      ip='127.0.0.1';;
+    *) read -p "[$client/$server]: " input;;
+  esac
 done
 
 # build
-[ -d $bin ] || mkdir $bin
-make $bin/$target
+if [ ! -x $bin/$target ]; then
+  mkdir $bin
+  make $bin/$target
+fi
 
 # start
-./$bin/$target $ip 5555
+$bin/$target $ip 5555
