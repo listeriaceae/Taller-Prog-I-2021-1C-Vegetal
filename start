@@ -1,25 +1,23 @@
 #!/bin/sh
 
 input=$1
-bin='bin'
-client='client'
-server='server'
+BINDIR='bin'
+CLIENT='client'
+SERVER='server'
 
 while [ -z $target ]; do
   case $input in
-    *s*) target=$server;;
-    *c*)
-      target=$client
+    [Ss]*) target=$SERVER;;
+    [Cc]*)
+      target=$CLIENT
       ip='127.0.0.1';;
-    *) read -p "[$client/$server]: " input;;
+    *) read -p "[$CLIENT/$SERVER]: " input;;
   esac
 done
 
-# build
-if [ ! -x $bin/$target ]; then
-  mkdir $bin
-  make $bin/$target
+if [ ! -x $BINDIR/$target ]; then
+  mkdir -p $BINDIR
+  make $BINDIR/$target
 fi
 
-# start
-$bin/$target $ip 5555
+$BINDIR/$target $ip 5555
