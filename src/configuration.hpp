@@ -25,7 +25,7 @@ private:
 class GameConfiguration
 {
 public:
-  static GameConfiguration &getInstance(const char *json_filename);
+  static const GameConfiguration &getInstance(const char *json_filename);
 
   int getLogLevel() const { return logLevel; }
   const std::vector<user_t> &getUsers() const & { return users; }
@@ -37,7 +37,6 @@ public:
 
 private:
   GameConfiguration(const char *json_filename);
-  static GameConfiguration *instance;
   int logLevel;
   std::vector<user_t> users;
   std::vector<Enemy> enemies;

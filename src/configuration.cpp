@@ -6,12 +6,10 @@
 #include "logger.hpp"
 
 namespace configuration {
-GameConfiguration *GameConfiguration::instance{ nullptr };
-
-GameConfiguration &
+const GameConfiguration &
   GameConfiguration::getInstance(const char *jsonFileName)
 {
-  static GameConfiguration instance{ jsonFileName };
+  static const GameConfiguration instance{ jsonFileName };
   return instance;
 }
 
