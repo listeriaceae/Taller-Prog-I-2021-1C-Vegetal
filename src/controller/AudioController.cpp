@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <fmt/format.h>
 #include "AudioController.hpp"
 #include "../logger.hpp"
 #include "../utils/marioStructs.hpp"
@@ -28,36 +29,36 @@ void loadAudioFiles()
   music = Mix_LoadMUS(MUSIC_FILE_NAME);
   if (music == nullptr)
     logger::Logger::getInstance().logError(
-      "Music file not found: res/Audio/backgroundMusic.wav");
+      fmt::format("Music file not found: '{}'", MUSIC_FILE_NAME));
 
   jumpSound = Mix_LoadWAV(JUMP_SOUND_FILE);
   if (jumpSound == nullptr)
     logger::Logger::getInstance().logError(
-      "jump sound effect file not found: res/Audio/jump.wav");
+      fmt::format("jump sound effect file not found: '{}'", JUMP_SOUND_FILE));
 
   deathSound = Mix_LoadWAV(DEATH_SOUND_FILE);
   if (deathSound == nullptr)
     logger::Logger::getInstance().logError(
-      "death sound effect file not found: "
-      "res/Audio/death.wav");
+      fmt::format("death sound effect file not found: '{}'",
+        DEATH_SOUND_FILE));
 
   finishedLevelSound = Mix_LoadWAV(FINISHED_LEVEL_SOUND_FILE);
   if (finishedLevelSound == NULL)
     logger::Logger::getInstance().logError(
-      "finished level sound effect file not found: "
-      "res/Audio/finishedLevel.wav");
+      fmt::format("finished level sound effect file not found: '{}'",
+        FINISHED_LEVEL_SOUND_FILE));
   else
-    finishedLevelSound->volume = 48;
+    finishedLevelSound->volume = 40;
   itemSound = Mix_LoadWAV(ITEM_SOUND_FILE);
   if (itemSound == nullptr)
     logger::Logger::getInstance().logError(
-      "item sound effect file not found: res/Audio/item.wav");
+      fmt::format("item sound effect file not found: '{}'", ITEM_SOUND_FILE));
 
   enemyDeathSound = Mix_LoadWAV(ENEMY_DEATH_SOUND_FILE);
   if (deathSound == nullptr)
     logger::Logger::getInstance().logError(
-      "enemy death sound effect file not found: "
-      "res/Audio/enemyDeath.wav");
+      fmt::format("enemy death sound effect file not found: '{}'",
+        ENEMY_DEATH_SOUND_FILE));
 }
 
 void toggleMusic()
@@ -81,11 +82,8 @@ void checkToggleMusicEvent()
       isKeyDown = true;
       toggleMusic();
     }
-  } else {
-    if (!keyboard[SDL_SCANCODE_M]) {
+  } else if (!keyboard[SDL_SCANCODE_M])
       isKeyDown = false;
-    }
-  }
 }
 
 void playSounds(unsigned char sounds)
@@ -93,25 +91,16 @@ void playSounds(unsigned char sounds)
   if (sounds == 0)
     return;
 
-  if (sounds & JUMP) {
+  if (sounds & JUMP)
     Mix_PlayChannel(-1, jumpSound, 0);
-  }
-
-  if (sounds & DEATH) {
+  if (sounds & DEATH)
     Mix_PlayChannel(-1, deathSound, 0);
-  }
-
-  if (sounds & FINISHED_LEVEL) {
+  if (sounds & FINISHED_LEVEL)
     Mix_PlayChannel(-1, finishedLevelSound, 0);
-  }
-
-  if (sounds & ITEM) {
+  if (sounds & ITEM)
     Mix_PlayChannel(-1, itemSound, 0);
-  }
-
-  if (sounds & ENEMY_DEATH) {
+  if (sounds & ENEMY_DEATH)
     Mix_PlayChannel(-1, enemyDeathSound, 0);
-  }
 }
 
 void closeAudioFiles()
@@ -130,9 +119,8 @@ void closeAudioFiles()
     Mix_FreeChunk(enemyDeathSound);
   music = nullptr;
   jumpSound = deathSound = finishedLevelSound = itemSound = enemyDeathSound = nullptr;
-  while (Mix_Init(0)) {
+  while (Mix_Init(0))
     Mix_Quit();
-  }
   Mix_CloseAudio();
 }
 }// namespace AudioController

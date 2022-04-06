@@ -1,9 +1,10 @@
+#include <random>
+#include <algorithm>
+#include <fmt/format.h>
 #include "Nivel1.hpp"
 #include "../configuration.hpp"
 #include "../logger.hpp"
 #include "../utils/Constants.hpp"
-#include <random>
-#include <algorithm>
 
 Nivel1::Nivel1(std::vector<Mario> *players_) : Nivel{ players_ }
 {
@@ -12,8 +13,8 @@ Nivel1::Nivel1(std::vector<Mario> *players_) : Nivel{ players_ }
   for (const auto &enemy : configEnemies) {
     if (enemy.getType() == "Fuego")
       this->addEnemies(enemy.getQuantity());
-    logger::Logger::getInstance().logDebug("Enemy type: " + enemy.getType());
-    logger::Logger::getInstance().logDebug("Enemy quantity: " + std::to_string(enemy.getQuantity()));
+    logger::Logger::getInstance().logDebug(fmt::format("Enemy type: '{}'", enemy.getType()));
+    logger::Logger::getInstance().logDebug(fmt::format("Enemy quantity: {}", enemy.getQuantity()));
   }
   this->initPlatforms();
   this->initLadders();

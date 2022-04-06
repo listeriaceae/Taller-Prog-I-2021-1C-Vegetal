@@ -1,8 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <cstring>
+#include <fmt/format.h>
 #include "configuration.hpp"
 #include "logger.hpp"
-#include <cstring>
 
 namespace configuration {
 GameConfiguration *GameConfiguration::instance{ nullptr };
@@ -31,10 +32,10 @@ GameConfiguration::GameConfiguration(const char *jsonFileName)
       this->useDefaultConfig = !loadFromFile(jsonFileName);
     } catch (const std::exception &e) {
       logger::Logger::getInstance().logError(
-        std::string("Configuration file corrupted: ") + e.what());
+        fmt::format("Configuration file corrupted: {}", e.what()));
     }
   } else {
-    logger::Logger::getInstance().logError("Configuration file not found: " + std::string(jsonFileName));
+    logger::Logger::getInstance().logError(fmt::format("Configuration file not found: '{}'", jsonFileName));
   }
 
   if (this->useDefaultConfig) {
@@ -59,11 +60,11 @@ bool GameConfiguration::loadFromFile(const char *configFileName)
     jsonFile >> jsonRoot;
   }
   // Get configuration
-  auto configuration = getJsonValue(jsonRoot, "configuration");
+  const auto configuration = getJsonValue(jsonRoot, "configuration");
 
   // Get log
   {
-    auto log = getJsonValue(configuration, "log");
+    const auto log = getJsonValue(configuration, "log");
 
     // Get log level
     const auto logLevelString = getJsonValue(log, "level").asString();
@@ -114,7 +115,7 @@ const Json::Value
 {
   const auto value = root[name];
   if (value.empty()) {
-    const std::string error_message = std::string("JSON value not found: ") + name;
+    const auto error_message = fmt::format("JSON value not found: '{}'", name);
     logger::Logger::getInstance().logError(error_message);
     throw std::runtime_error(error_message);
   }

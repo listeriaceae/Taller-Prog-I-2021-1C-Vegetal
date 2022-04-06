@@ -23,21 +23,17 @@ void Logger::log(std::string_view message, std::string_view type) const
 
 void Logger::logNewGame(void) const
 {
-  std::ofstream file(filepath.data(), std::ofstream::app);
-  file << R"(
+  logInformation(R"(
 -------------------------
  STARTING DONKEY KONG II
--------------------------)"
-       << std::endl;
+-------------------------)");
 }
 
 void Logger::logGameOver(void) const
 {
-  std::ofstream file(filepath.data(), std::ofstream::app);
-  file << R"(
+  logInformation(R"(
 -------------------------
   ENDING DONKEY KONG II
--------------------------)"
-       << std::endl;
+-------------------------)");
 }
 }// namespace logger

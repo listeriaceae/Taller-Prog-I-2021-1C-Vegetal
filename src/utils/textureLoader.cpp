@@ -12,7 +12,7 @@ void load()
   SDL_Surface *surface = IMG_Load("res/Images/DonkeyKong.png");
 
   if (surface == NULL) {
-    logger::Logger::getInstance().logError("[client] : Image file not found");
+    logger::Logger::getInstance().logError("[client] Image file not found");
     throw std::runtime_error("Image file not found");
   }
   SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0xf4, 0x43, 0x36));

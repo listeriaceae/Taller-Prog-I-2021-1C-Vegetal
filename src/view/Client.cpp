@@ -9,6 +9,7 @@
 #include <condition_variable>
 #include <SDL2/SDL_image.h>
 #include <arpa/inet.h>
+#include <fmt/format.h>
 
 #include "Client.hpp"
 #include "Nivel1Vista.hpp"
@@ -121,19 +122,19 @@ void Client::processExit(ExitStatus exitStatus)
 {
   switch (exitStatus) {
   case ExitStatus::CONNECTION_CLOSED:
-    logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "CONNECTION CLOSED");
+    logger::Logger::getInstance().logInformation(fmt::format("[{}] connection closed", this->name));
     showMessage::disconnection();
     break;
   case ExitStatus::GAME_OVER:
-    logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME OVER");
+    logger::Logger::getInstance().logInformation(fmt::format("[{}] game over", this->name));
     showMessage::gameOver();
     break;
   case ExitStatus::GAME_COMPLETE:
-    logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "GAME COMPLETE");
+    logger::Logger::getInstance().logInformation(fmt::format("[{}] game complete", this->name));
     showMessage::gameComplete();
     break;
   case ExitStatus::QUIT_REQUESTED:
-    logger::Logger::getInstance().logInformation(std::string("[") + this->name + "] " + "QUIT REQUESTED");
+    logger::Logger::getInstance().logInformation(fmt::format("[{}] quit requested", this->name));
     return;
   default:
     break;

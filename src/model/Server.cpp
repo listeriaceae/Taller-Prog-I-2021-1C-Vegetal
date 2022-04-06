@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <thread>
 #include <arpa/inet.h>
+#include <fmt/format.h>
 
 #include "Server.hpp"
 #include "../configuration.hpp"
@@ -15,7 +16,6 @@
 #include "Nivel2.hpp"
 #include "Interlude.hpp"
 #include "Mario.hpp"
-#include "../logger.hpp"
 #include "../utils/Constants.hpp"
 #include "../utils/window.hpp"
 #include "../utils/estadoJuego.hpp"
@@ -75,7 +75,6 @@ Server::Server()
     this->users.emplace(std::string(u.username), std::string(u.password));
   }
   connectedPlayers.players.reserve(config.getMaxPlayers());
-  logger::Logger::getInstance().logNewGame();
 }
 
 int Server::startServer()
@@ -86,6 +85,7 @@ int Server::startServer()
     maxPlayers = config.getMaxPlayers();
   }
 
+  logger::Logger::getInstance().logNewGame();
   std::thread acceptConnections;
 
   {
@@ -162,10 +162,9 @@ void Server::startGame()
       scene = getNextScene(&marios);
     }
   }
-  for (auto &player : connectedPlayers.players) {
+  for (auto &player : connectedPlayers.players)
     if (player.isConnected)
       shutdown(player.clientSocket, SHUT_RDWR);
-  }
 }
 
 // START LOGIN
@@ -209,18 +208,18 @@ static Login
 {
   user_t user;
   if (!dataTransfer::receiveData(client, &user, sizeof user)) {
-    logger::Logger::getInstance().logDebug("[server] Lost connection to client");
+    logger::Logger::getInstance().logInformation("[server] Lost connection to client");
     close(client);
     return Login::ABORTED;
   }
 
   if (server->users.find(user.username) == std::end(server->users)) {
-    logger::Logger::getInstance().logDebug(std::string("[server] [") + user.username + "] invalid user");
+    logger::Logger::getInstance().logInformation(fmt::format("[server] invalid user: '{}'", user.username));
     return Login::INVALID_USER;
   }
 
   if (strcmp(server->users.at(user.username).c_str(), user.password) != 0) {
-    logger::Logger::getInstance().logDebug(std::string("[server] [") + user.username + "] incorrect password");
+    logger::Logger::getInstance().logInformation(fmt::format("[server] incorrect password for user: '{}'", user.username));
     return Login::INVALID_USER_PASS;
   }
 
@@ -229,8 +228,8 @@ static Login
   for (auto &player : server->connectedPlayers.players) {
     if (strncmp(player.user, user.username, 3) == 0) {
       if (player.isConnected) {
-        logger::Logger::getInstance().logDebug(
-          std::string("[server] [") + user.username + "] user already connected");
+        logger::Logger::getInstance().logInformation(
+          fmt::format("[server] user '{}' already connected", user.username));
         return Login::USER_ALREADY_CONNECTED;
       } else {
         close(player.clientSocket);
@@ -241,9 +240,8 @@ static Login
         std::thread receiver{ receiveControls, client, player.mario };
         receiver.detach();
         logger::Logger::getInstance().logInformation(
-          std::string("[server] Successfully "
-                      "reconnected ")
-          + user.username);
+          fmt::format("[server] successfully "
+                      "reconnected user '{}'", user.username));
       }
     }
   }
@@ -258,7 +256,7 @@ static Login
         true,
         { user.username[0], user.username[1], user.username[2] } });
       logger::Logger::getInstance().logInformation(
-        std::string("[server] Accepted new user: ") + user.username);
+        fmt::format("[server] accepted new user: '{}'", user.username));
       if (server->connectedPlayers.players.size() == server->maxPlayers) {
         server->start_game_cv.mtx.unlock();
         server->start_game_cv.cv.notify_one();
@@ -290,10 +288,10 @@ static Scene *
 {
   switch (static int currentScene = 0; ++currentScene) {
   case 1:
-    logger::Logger::getInstance().logInformation("Level 1 starts");
+    logger::Logger::getInstance().logDebug("Level 1 starts");
     return new Nivel1{ marios };
   case 2:
-    logger::Logger::getInstance().logInformation("End of Level 1");
+    logger::Logger::getInstance().logDebug("End of Level 1");
     {
       const bool gameOver =
         std::none_of(std::cbegin(*marios), std::cend(*marios), &isAlive);
@@ -301,10 +299,10 @@ static Scene *
       return new Interlude{ gameOver };
     }
   case 3:
-    logger::Logger::getInstance().logInformation("Level 2 starts");
+    logger::Logger::getInstance().logDebug("Level 2 starts");
     return new Nivel2{ marios };
   case 4:
-    logger::Logger::getInstance().logInformation("End of Level 2");
+    logger::Logger::getInstance().logDebug("End of Level 2");
     return new Interlude{ true };
   default:
     logger::Logger::getInstance().logGameOver();

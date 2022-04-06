@@ -10,8 +10,8 @@ SRC		:= src
 INCLUDE		:= include
 LIB		:= lib
 
-LIBRARIES_S	:= -ljsoncpp -pthread
-LIBRARIES_C	:= -lSDL2 -lSDL2_image -lSDL2_mixer -ljsoncpp -pthread
+LIBRARIES_S	:= -ljsoncpp -pthread -lfmt
+LIBRARIES_C	:= -lSDL2 -lSDL2_image -lSDL2_mixer -ljsoncpp -pthread -lfmt
 EXE_S		:= server
 EXE_C		:= client
 
