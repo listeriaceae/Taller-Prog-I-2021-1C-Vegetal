@@ -192,7 +192,6 @@ ExitStatus
           : ExitStatus::CONNECTION_CLOSED;
     }
 
-    AudioController::checkToggleMusicEvent();
     quitRequested = SDL_QuitRequested();
   }
   shutdown(clientSocket, SHUT_RDWR);
