@@ -5,9 +5,9 @@ namespace AudioController {
 void loadAudioFiles();
 void closeAudioFiles();
 
-void toggleMusic();
-void checkToggleMusicEvent();
-void playSounds(unsigned char sounds);
+void startMusic();
+void checkToggleMusicEvent(int m_state);
+void playSounds(int sounds);
 }// namespace AudioController
 
 #endif// AUDIO_CONTROLLER_H

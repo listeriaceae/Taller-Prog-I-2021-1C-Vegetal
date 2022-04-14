@@ -1,6 +1,6 @@
-#include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <fmt/format.h>
+#include <mutex>
 #include "AudioController.hpp"
 #include "../logger.hpp"
 #include "../utils/marioStructs.hpp"
@@ -13,7 +13,6 @@ static const char ITEM_SOUND_FILE[] = "res/Audio/item.wav";
 static const char ENEMY_DEATH_SOUND_FILE[] = "res/Audio/enemyDeath.wav";
 
 namespace AudioController {
-static bool isKeyDown = false;
 static Mix_Music *music{ nullptr };
 static Mix_Chunk *jumpSound{ nullptr };
 static Mix_Chunk *deathSound{ nullptr };
@@ -61,32 +60,33 @@ void loadAudioFiles()
         ENEMY_DEATH_SOUND_FILE));
 }
 
-void toggleMusic()
+void startMusic()
 {
-  if (Mix_PlayingMusic() == 0) {
-    Mix_PlayMusic(music, -1);
-  } else {
-    if (Mix_PausedMusic() == 1) {
+  static std::once_flag flag;
+  std::call_once(flag, Mix_PlayMusic, music, -1);
+}
+
+static void toggleMusic()
+{
+  if (Mix_PlayingMusic())
+    if (Mix_PausedMusic())
       Mix_ResumeMusic();
-    } else {
+    else
       Mix_PauseMusic();
-    }
-  }
+  else
+    startMusic();
 }
 
-void checkToggleMusicEvent()
+void checkToggleMusicEvent(int m_state)
 {
-  const Uint8 *keyboard = SDL_GetKeyboardState(NULL);
-  if (!isKeyDown) {
-    if (keyboard[SDL_SCANCODE_M]) {
-      isKeyDown = true;
-      toggleMusic();
-    }
-  } else if (!keyboard[SDL_SCANCODE_M])
-      isKeyDown = false;
+  static bool isKeyDown = false;
+
+  if (!isKeyDown && m_state)
+    toggleMusic();
+  isKeyDown = m_state;
 }
 
-void playSounds(unsigned char sounds)
+void playSounds(int sounds)
 {
   if (sounds == 0)
     return;
