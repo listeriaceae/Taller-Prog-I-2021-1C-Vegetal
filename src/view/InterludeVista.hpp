@@ -1,8 +1,8 @@
 #ifndef INTERLUDE_VISTA_H
 #define INTERLUDE_VISTA_H
 
-#include "SceneVista.hpp"
 #include <cstddef>
+#include "SceneVista.hpp"
 
 class InterludeVista : public SceneVista
 {

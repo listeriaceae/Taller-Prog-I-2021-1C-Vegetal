@@ -84,7 +84,7 @@ Client::Client()
                             SDL_WINDOWPOS_UNDEFINED,
                             ANCHO_PANTALLA,
                             ALTO_PANTALLA,
-                            SDL_WINDOW_SHOWN);
+                            SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
   textureHandler::load();
   AudioController::loadAudioFiles();

@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
 #include "DonkeyKongVista.hpp"
 #include "../utils/Constants.hpp"
-#include "../utils/window.hpp"
 
 #define DK_X_OFFSET 288
 #define DK_Y_OFFSET 342
@@ -16,12 +15,8 @@ void DonkeyKongVista::mostrar()
     DK_Y_OFFSET,
     DONKEYKONG_ANCHO,
     DONKEYKONG_ALTO };
-  static constexpr SDL_Rect dstRect{
-    static_cast<int>(round(DONKEYKONG_POS_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
-    static_cast<int>(round(DONKEYKONG_POS_Y * ALTO_PANTALLA / (float)ALTO_NIVEL)),
-    static_cast<int>(round(DONKEYKONG_ANCHO * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
-    static_cast<int>(round(DONKEYKONG_ALTO * ALTO_PANTALLA / (float)ALTO_NIVEL))
-  };
+  static constexpr SDL_Rect dstRect{ DONKEYKONG_POS_X, DONKEYKONG_POS_Y,
+                                     DONKEYKONG_ANCHO, DONKEYKONG_ALTO };
   SDL_RenderCopyEx(renderer,
     texture,
     &srcRect,

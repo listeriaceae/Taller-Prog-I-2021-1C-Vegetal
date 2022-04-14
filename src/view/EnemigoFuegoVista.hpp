@@ -11,7 +11,7 @@ public:
   void mostrar(punto16_t pos);
 
 private:
-  SDL_Rect dstRect;
+  int lastX{};
   int tiempo{};
 };
 

@@ -2,17 +2,16 @@
 #include "TextRenderer.hpp"
 #include "../configuration.hpp"
 #include "../utils/Constants.hpp"
-#include "../utils/window.hpp"
 
-#define X_POS_CONGRATS static_cast<int>(28 * ANCHO_PANTALLA / (float)ANCHO_NIVEL)
-#define Y_POS_CONGRATS static_cast<int>(36 * ALTO_PANTALLA / (float)ALTO_NIVEL)
-#define X_POS_GAME_OVER static_cast<int>(72 * ANCHO_PANTALLA / (float)ANCHO_NIVEL)
-#define Y_POS_GAME_OVER static_cast<int>(48 * ALTO_PANTALLA / (float)ALTO_NIVEL)
+#define X_POS_CONGRATS 28
+#define Y_POS_CONGRATS 36
+#define X_POS_GAME_OVER 72
+#define Y_POS_GAME_OVER 48
 
-#define X_POS_USER static_cast<int>(48 * ANCHO_PANTALLA / (float)ANCHO_NIVEL)
-#define Y_POS_USER static_cast<int>(100 * ALTO_PANTALLA / (float)ALTO_NIVEL)
-#define Y_DIF_USERS static_cast<int>(20 * ALTO_PANTALLA / (float)ALTO_NIVEL)
-#define OFFSET_SCORE static_cast<int>(64 * ANCHO_PANTALLA / (float)ANCHO_NIVEL)
+#define X_POS_USER 48
+#define Y_POS_USER 100
+#define Y_DIF_USERS 20
+#define OFFSET_SCORE 64
 
 InterludeVista::InterludeVista()
   : SceneVista{}, maxPlayers{

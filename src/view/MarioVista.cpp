@@ -2,7 +2,6 @@
 #include "MarioVista.hpp"
 #include "HammerVista.hpp"
 #include "../utils/Constants.hpp"
-#include "../utils/window.hpp"
 
 #define MARIO_TREPANDO_INDEX 3
 #define MARIO_DE_ESPALDAS_INDEX 6
@@ -22,12 +21,8 @@ extern SDL_Renderer *renderer;
 extern SDL_Texture *texture;
 
 MarioVista::MarioVista()
-  : srcRect{ 0, 256, ANCHO_MARIO, ALTO_MARIO }, dstRect{
-      0,
-      0,
-      static_cast<int>(round(ANCHO_MARIO * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
-      static_cast<int>(round(ALTO_MARIO * ALTO_PANTALLA / (float)ALTO_NIVEL))
-    }
+  : srcRect{ 0, 256, ANCHO_MARIO, ALTO_MARIO },
+    dstRect{ 0, 0, ANCHO_MARIO, ALTO_MARIO }
 {
 }
 
@@ -38,8 +33,8 @@ void MarioVista::setColor(int color)
 
 void MarioVista::mostrar(const PlayerState &estadoMario)
 {
-  const int nextX = static_cast<int>(round(from_fixed16<float>(estadoMario.pos.x) * (ANCHO_PANTALLA / (float)ANCHO_NIVEL)));
-  const int nextY = static_cast<int>(round(from_fixed16<float>(estadoMario.pos.y) * (ANCHO_PANTALLA / (float)ANCHO_NIVEL)));
+  const auto nextX = from_fixed16<int>(estadoMario.pos.x);
+  const auto nextY = from_fixed16<int>(estadoMario.pos.y);
   switch (estadoMario.estado) {
   case Estado::REPOSO:
   case Estado::DE_ESPALDAS:
@@ -93,12 +88,13 @@ void MarioVista::updateCorriendo(int nextX, ColliderType collider)
   tiempo = (tiempo + (dstRect.x != nextX)) % (TIEMPO_POR_FRAME_CORRIENDO * CANT_FRAMES);
   switch (collider) {
   case ColliderType::NORMAL:
-    srcRect.x = sprite_index[(tiempo / TIEMPO_POR_FRAME_CORRIENDO) & 3] << 4;
+    srcRect.x = sprite_index[(tiempo / TIEMPO_POR_FRAME_CORRIENDO) % sprite_index.size()] * 16;
     break;
 
   case ColliderType::HAMMER:
     drawHammer();
-    srcRect.x = (sprite_index[(tiempo / TIEMPO_POR_FRAME_CORRIENDO) & 3] << 5) + (hammerTime & 16) + MARIO_POSE_MARTILLO_INDEX * MARIO_SPRITE_SIZE;
+    srcRect.x = (sprite_index[(tiempo / TIEMPO_POR_FRAME_CORRIENDO) % sprite_index.size()] * 32) +
+                (hammerTime & 16) + MARIO_POSE_MARTILLO_INDEX * MARIO_SPRITE_SIZE;
     break;
   }
 }
@@ -120,8 +116,8 @@ void MarioVista::updateMuriendo(Estado estado)
 {
   tiempo = srcRect.x >= MARIO_MURIENDO_INDEX * MARIO_SPRITE_SIZE ? tiempo + 1 : 0;
   if (estado == Estado::MURIENDO) {
-    const int sprite = (tiempo >> 4) & 3;
-    srcRect.x = (MARIO_MURIENDO_INDEX + 1 - (sprite & 1)) << 4;
+    const int sprite = (tiempo / 16) % 4;
+    srcRect.x = (MARIO_MURIENDO_INDEX + 1 - (sprite & 1)) * 16;
     flip = static_cast<SDL_RendererFlip>((sprite > 1) * (sprite - 1));
   } else {
     flip = SDL_FLIP_NONE;

@@ -5,7 +5,6 @@
 #include <vector>
 #include "../utils/estadoJuego.hpp"
 #include "../utils/Constants.hpp"
-#include "../utils/window.hpp"
 
 class StatsVista
 {

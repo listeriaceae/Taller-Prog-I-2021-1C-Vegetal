@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
 #include "PaulineVista.hpp"
 #include "../utils/Constants.hpp"
-#include "../utils/window.hpp"
 
 #define HELP_ANCHO 24
 #define HELP_ALTO 8
@@ -13,18 +12,10 @@ extern SDL_Texture *texture;
 
 void PaulineVista::mostrar()
 {
-  constexpr SDL_Rect dstRect{
-    static_cast<int>(round(PAULINE_POS_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
-    static_cast<int>(round(PAULINE_POS_Y * ALTO_PANTALLA / (float)ALTO_NIVEL)),
-    static_cast<int>(round(PAULINE_ANCHO * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
-    static_cast<int>(round(PAULINE_ALTO * ALTO_PANTALLA / (float)ALTO_NIVEL))
-  };
-  constexpr SDL_Rect helpDstRect{
-    static_cast<int>(round(HELP_POS_X * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
-    static_cast<int>(round(HELP_POS_Y * ALTO_PANTALLA / (float)ALTO_NIVEL)),
-    static_cast<int>(round(HELP_ANCHO * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
-    static_cast<int>(round(HELP_ALTO * ALTO_PANTALLA / (float)ALTO_NIVEL))
-  };
+  static constexpr SDL_Rect dstRect{ PAULINE_POS_X, PAULINE_POS_Y,
+                                     PAULINE_ANCHO, PAULINE_ALTO };
+  static constexpr SDL_Rect helpDstRect{ HELP_POS_X, HELP_POS_Y,
+                                         HELP_ANCHO, HELP_ALTO };
   const SDL_Rect helpSrcRect{ 352, 282, HELP_ANCHO, HELP_ALTO };
 
   ++counter;

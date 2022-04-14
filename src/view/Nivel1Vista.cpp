@@ -27,11 +27,9 @@ void Nivel1Vista::update(const GameState &state)
     SDL_RenderCopy(renderer, texture, &srcRect, NULL);
   }
 
-  for (auto &pos : state.level.hammers) {
-    if (pos.y != 0) {
+  for (auto &pos : state.level.hammers)
+    if (pos.y != 0)
       HammerVista::mostrar(pos);
-    }
-  }
 
   paulineVista.mostrar();
   dkVista.mostrar();
@@ -39,18 +37,15 @@ void Nivel1Vista::update(const GameState &state)
   if (defaultConfig)
     DefaultConfigVista::mostrar();
 
-  for (auto &polea : poleas) {
+  for (auto &polea : poleas)
     polea.mostrar();
-  }
 
-  for (auto &fuego : fuegos) {
+  for (auto &fuego : fuegos)
     fuego.mostrar();
-  }
 
   const auto &lvl = std::get<0>(state.level.v);
-  for (auto &pos : lvl.platforms) {
+  for (auto &pos : lvl.platforms)
     PlataformaMovilVista::mostrar(pos);
-  }
 
   std::size_t i = 0;
   for (auto it = enemigosVista.begin(); it != enemigosVista.end();) {
@@ -65,9 +60,8 @@ void Nivel1Vista::update(const GameState &state)
   i = 0;
   for (auto &player : this->jugadoresVista) {
     player.setColor((i + 1) * state.level.players[i].isEnabled);
-    if (i != playerIndex) {
+    if (i != playerIndex)
       player.mostrar(state.level.players[i]);
-    }
     statsVista.mostrar(state.players[i], i);
     ++i;
   }

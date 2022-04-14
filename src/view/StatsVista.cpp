@@ -2,16 +2,16 @@
 #include "TextRenderer.hpp"
 #include "../configuration.hpp"
 
-#define MARGEN int(4 * ALTO_PANTALLA / (float)ALTO_NIVEL)
+#define MARGEN 4
 
-#define POS_LEFT int(4 * ANCHO_PANTALLA / (float)ANCHO_NIVEL)
-#define POS_CENTER_LEFT int(59 * ANCHO_PANTALLA / (float)ANCHO_NIVEL)
-#define POS_CENTER int(86 * ANCHO_PANTALLA / (float)ANCHO_NIVEL)
-#define POS_CENTER_RIGHT int(115 * ANCHO_PANTALLA / (float)ANCHO_NIVEL)
-#define POS_RIGHT int(170 * ANCHO_PANTALLA / (float)ANCHO_NIVEL)
+#define POS_LEFT 4
+#define POS_CENTER_LEFT 59
+#define POS_CENTER 86
+#define POS_CENTER_RIGHT 115
+#define POS_RIGHT 170
 
-#define OFFSET_SCORE_X int(2 * ANCHO_PANTALLA / (float)ANCHO_NIVEL)
-#define OFFSET_SCORE_Y int(11 * ALTO_PANTALLA / (float)ALTO_NIVEL)
+#define OFFSET_SCORE_X 2
+#define OFFSET_SCORE_Y 11
 
 #define ANCHO_ICON 7
 #define ANCHO_NOMBRE 27
@@ -56,13 +56,10 @@ void StatsVista::mostrar(const PlayerInfo &estado, std::size_t nroJugador)
     ICON_Y_OFFSET,
     ANCHO_ICON,
     ALTO_ICON };
-  SDL_Rect dstRect{ static_cast<int>(round(top_left.x + ANCHO_NOMBRE * ANCHO_PANTALLA / (float)ANCHO_NIVEL)),
-    int(4 * ALTO_PANTALLA / (float)ALTO_NIVEL),
-    int(7 * ANCHO_PANTALLA / (float)ALTO_NIVEL),
-    int(8 * ALTO_PANTALLA / (float)ALTO_NIVEL) };
+  SDL_Rect dstRect{ top_left.x + ANCHO_NOMBRE, 4, 7, 8 };
   for (int i = 0; i < estado.lives; ++i) {
     SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
-    dstRect.x += round(ANCHO_ICON * ANCHO_PANTALLA / (float)ANCHO_NIVEL);
+    dstRect.x += ANCHO_ICON;
   }
 
   TextRenderer::renderText(top_left, estado.name, 1, Color::WHITE);

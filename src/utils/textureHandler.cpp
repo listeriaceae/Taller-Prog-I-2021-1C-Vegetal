@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <SDL2/SDL_image.h>
 #include "textureHandler.hpp"
+#include "Constants.hpp"
 #include "../logger.hpp"
 
 extern SDL_Renderer *renderer;
@@ -18,5 +19,6 @@ void load()
   SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0xf4, 0x43, 0x36));
   texture = SDL_CreateTextureFromSurface(renderer, surface);
   SDL_FreeSurface(surface);
+  SDL_RenderSetLogicalSize(renderer, ANCHO_NIVEL, ALTO_NIVEL);
 }
 }// namespace textureHandler

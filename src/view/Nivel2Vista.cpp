@@ -17,11 +17,9 @@ void Nivel2Vista::update(const GameState &state)
     const SDL_Rect srcRect{ 224, 0, 224, 256 };
     SDL_RenderCopy(renderer, texture, &srcRect, NULL);
   }
-  for (auto &pos : state.level.hammers) {
-    if (pos.y != 0) {
+  for (auto &pos : state.level.hammers)
+    if (pos.y != 0)
       HammerVista::mostrar(pos);
-    }
-  }
 
   paulineVista.mostrar();
   dkVista.mostrar();
@@ -41,9 +39,8 @@ void Nivel2Vista::update(const GameState &state)
   std::size_t i = 0;
   for (auto &player : this->jugadoresVista) {
     player.setColor((i + 1) * state.level.players[i].isEnabled);
-    if (i != playerIndex) {
+    if (i != playerIndex)
       player.mostrar(state.level.players[i]);
-    }
     statsVista.mostrar(state.players[i], i);
     ++i;
   }
