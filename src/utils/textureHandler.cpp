@@ -1,12 +1,12 @@
 #include <stdexcept>
 #include <SDL2/SDL_image.h>
-#include "textureLoader.hpp"
+#include "textureHandler.hpp"
 #include "../logger.hpp"
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *texture;
 
-namespace textureLoader {
+namespace textureHandler {
 void load()
 {
   SDL_Surface *surface = IMG_Load("res/Images/DonkeyKong.png");
@@ -19,4 +19,4 @@ void load()
   texture = SDL_CreateTextureFromSurface(renderer, surface);
   SDL_FreeSurface(surface);
 }
-}// namespace textureLoader
+}// namespace textureHandler
