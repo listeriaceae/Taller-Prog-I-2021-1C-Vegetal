@@ -25,7 +25,7 @@
 #include "../utils/Constants.hpp"
 #include "../utils/estadoJuego.hpp"
 #include "../utils/dataTransfer.hpp"
-#include "../utils/textureLoader.hpp"
+#include "../utils/textureHandler.hpp"
 
 #define SERVER_CONNECTION_SUCCESS 0
 #define START_PAGE_SUCCESS 0
@@ -80,13 +80,13 @@ Client::Client()
 {
   SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
   window = SDL_CreateWindow("Donkey Kong 2: Jumpman Returns",
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    ANCHO_PANTALLA,
-    ALTO_PANTALLA,
-    SDL_WINDOW_SHOWN);
+                            SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED,
+                            ANCHO_PANTALLA,
+                            ALTO_PANTALLA,
+                            SDL_WINDOW_SHOWN);
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
-  textureLoader::load();
+  textureHandler::load();
   AudioController::loadAudioFiles();
 
   puts("Aplicación iniciada en modo cliente");
@@ -104,9 +104,8 @@ Client::~Client()
 
 int Client::startClient()
 {
-  if (this->showStartPage() == EXIT_FAILURE) {
+  if (this->showStartPage() == EXIT_FAILURE)
     return EXIT_FAILURE;
-  }
 
   if (serverOpen.load(std::memory_order_consume)) {
     showMessage::waitingLobby();
@@ -122,33 +121,37 @@ void Client::processExit(ExitStatus exitStatus)
 {
   switch (exitStatus) {
   case ExitStatus::CONNECTION_CLOSED:
-    logger::Logger::getInstance().logInformation(fmt::format("[{}] connection closed", this->name));
+    logger::Logger::getInstance()
+        .logInformation(fmt::format("[{}] connection closed", this->name));
     showMessage::disconnection();
     break;
   case ExitStatus::GAME_OVER:
-    logger::Logger::getInstance().logInformation(fmt::format("[{}] game over", this->name));
+    logger::Logger::getInstance()
+        .logInformation(fmt::format("[{}] game over", this->name));
     showMessage::gameOver();
     break;
   case ExitStatus::GAME_COMPLETE:
-    logger::Logger::getInstance().logInformation(fmt::format("[{}] game complete", this->name));
+    logger::Logger::getInstance()
+        .logInformation(fmt::format("[{}] game complete", this->name));
     showMessage::gameComplete();
     break;
   case ExitStatus::QUIT_REQUESTED:
-    logger::Logger::getInstance().logInformation(fmt::format("[{}] quit requested", this->name));
+    logger::Logger::getInstance()
+        .logInformation(fmt::format("[{}] quit requested", this->name));
     return;
   default:
     break;
   }
   while (!SDL_QuitRequested()) {
     std::this_thread::sleep_for(std::chrono::milliseconds{ 100 });
-    AudioController::checkToggleMusicEvent();
+    AudioController::checkToggleMusicEvent(SDL_GetKeyboardState(NULL)[SDL_SCANCODE_M]);
   };
 }
 
 ExitStatus
   Client::startGame()
 {
-  AudioController::toggleMusic();
+  AudioController::startMusic();
 
   logger::Logger::getInstance().setLogLevel(
     configuration::GameConfiguration::getInstance(CONFIG_FILE).getLogLevel());
@@ -165,8 +168,8 @@ ExitStatus
   for (std::size_t i = 0; i < MAX_PLAYERS; ++i)
     if (strncmp(level_state.estado.players[i].name, name, 3) == 0)
       level_state.playerIndex = i;
-  ExitStatus exitStatus = ExitStatus::CONNECTION_CLOSED;
 
+  ExitStatus exitStatus = ExitStatus::CONNECTION_CLOSED;
   while (!quitRequested && serverOpen.load(std::memory_order_consume)) {
     level_state.ready.wait(false);
     level_state.ready = false;
@@ -206,7 +209,8 @@ static void
 
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
     if (const auto aux = controls;
-        aux != (controls = MarioController::getControls()) && !dataTransfer::sendData(clientSocket, &controls, sizeof controls))
+        aux != (controls = MarioController::getControls()) &&
+        !dataTransfer::sendData(clientSocket, &controls, sizeof controls))
       serverOpen.store(false, std::memory_order_release);
     std::this_thread::sleep_for(std::chrono::milliseconds{ 10 });
   }
@@ -216,12 +220,11 @@ static void
   receiveState(level_state_handler *lsh)
 {
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
-    if (dataTransfer::receiveData(clientSocket, &(lsh->estado), sizeof lsh->estado)) {
+    if (dataTransfer::receiveData(clientSocket, &(lsh->estado), sizeof lsh->estado))
       AudioController::playSounds(
         lsh->estado.level.players[lsh->playerIndex].sounds);
-    } else {
+    else
       serverOpen.store(false, std::memory_order_release);
-    }
     lsh->ready = true;
     lsh->ready.notify_all();
   }
@@ -267,8 +270,7 @@ Login Client::login(user_t user)
 {
   dataTransfer::sendData(clientSocket, &user, sizeof user);
   auto response = Login::ABORTED;
-  if (!dataTransfer::receiveData(clientSocket, &response, sizeof response)) {
+  if (!dataTransfer::receiveData(clientSocket, &response, sizeof response))
     serverOpen.store(false, std::memory_order_release);
-  }
   return response;
 }
