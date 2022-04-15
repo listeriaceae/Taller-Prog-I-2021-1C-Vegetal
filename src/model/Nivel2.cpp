@@ -19,14 +19,14 @@ void Nivel2::initPlatforms()
 
 void Nivel2::initLadders()
 {
-  stage.addLadder({ to_fixed32(180), to_fixed32(203.25f), to_fixed32(227.75f) });
-  stage.addLadder({ to_fixed32(92), to_fixed32(167.25f), to_fixed32(197.75f) });
-  stage.addLadder({ to_fixed32(28), to_fixed32(171.25f), to_fixed32(193.75f) });
-  stage.addLadder({ to_fixed32(108), to_fixed32(132.75f), to_fixed32(166.25f) });
-  stage.addLadder({ to_fixed32(180), to_fixed32(137.25f), to_fixed32(161.75f) });
-  stage.addLadder({ to_fixed32(68), to_fixed32(102.75f), to_fixed32(130.25f) });
-  stage.addLadder({ to_fixed32(28), to_fixed32(105.25f), to_fixed32(127.75f) });
-  stage.addLadder({ to_fixed32(180), to_fixed32(71.25f), to_fixed32(95.75f) });
+  stage.addLadder({ to_fixed32(180), to_fixed32(203), to_fixed32(227) });
+  stage.addLadder({ to_fixed32(92), to_fixed32(166), to_fixed32(198) });
+  stage.addLadder({ to_fixed32(28), to_fixed32(170), to_fixed32(194) });
+  stage.addLadder({ to_fixed32(108), to_fixed32(133), to_fixed32(165) });
+  stage.addLadder({ to_fixed32(180), to_fixed32(137), to_fixed32(161) });
+  stage.addLadder({ to_fixed32(68), to_fixed32(102), to_fixed32(130) });
+  stage.addLadder({ to_fixed32(28), to_fixed32(104), to_fixed32(128) });
+  stage.addLadder({ to_fixed32(180), to_fixed32(71), to_fixed32(95) });
   stage.addLadder({ to_fixed32(124), to_fixed32(40), to_fixed32(68) });
 }
 
@@ -50,11 +50,12 @@ void Nivel2::update()
   if (++tick % period == 1)
     barriles.emplace_back();
 
-  for (auto &barril : barriles)
-    barril.mover();
+  for (auto it = barriles.begin(); it != barriles.end();) {
+    it->mover();
+    it = erase_out_of_bounds(it);
+  }
   for (auto &mario : *players)
     mario.mover();
-  erase_out_of_bounds();
   checkCollisions();
 }
 
@@ -90,30 +91,25 @@ void Nivel2::checkCollisions()
 {
   for (Mario &player : *players) {
     const auto player_dimensions = player.get_dimensions();
-    for (auto it = barriles.begin(); it != barriles.end();) {
-      if (intersect(player_dimensions, it->get_dimensions())) {
+    for (auto it = barriles.begin(); it != barriles.end();)
+      if (intersect(player_dimensions, it->get_dimensions()))
         if (player.collide(*it))
           it = barriles.erase(it);
         else
           break;
-      } else
+      else
         ++it;
-    }
 
-    for (auto &hammer : this->hammers) {
+    for (auto &hammer : this->hammers)
       if (intersect(player_dimensions, hammer.get_dimensions()))
         player.collide(hammer);
-    }
   }
 }
 
-void Nivel2::erase_out_of_bounds()
+std::vector<Barril>::iterator Nivel2::erase_out_of_bounds(std::vector<Barril>::iterator it)
 {
-  for (auto it = barriles.begin(); it != barriles.end();) {
-    if (it->out_of_bounds()) {
-      it = barriles.erase(it);
-    } else {
-      ++it;
-    }
-  }
+    if (it->out_of_bounds())
+      return barriles.erase(it);
+    else
+      return ++it;
 }

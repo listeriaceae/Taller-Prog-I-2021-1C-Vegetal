@@ -7,28 +7,22 @@
 class Platform
 {
 public:
-  constexpr Platform(fixed32_t x1, fixed32_t y1, fixed32_t x2, fixed32_t y2) noexcept
-    : start{ x1, y1 }, end{ x2, y2 }
+  constexpr Platform(fixed32_t x1, fixed32_t x2, fixed32_t y_)
+    : start{ x1 }, width{ x2 - x1 }, y{ y_ }
   {
   }
-  inline punto32_t getRandomPoint() const
+  [[nodiscard]] inline punto32_t getRandomPoint() const
   {
     std::mt19937 mt{ std::random_device{}() };
-    const float t = std::uniform_real_distribution<float>{}(mt);
-    return { start.x + static_cast<fixed32_t>(t * (end.x - start.x)),
-      start.y + static_cast<fixed32_t>(t * (end.y - start.y)) };
+    const auto x = std::uniform_int_distribution<fixed32_t>{start, start + width}(mt);
+    return { x, y };
   }
-  virtual punto32_t getLimits() const { return getCurrentLimits(); }
-  constexpr punto32_t getCurrentLimits() const { return { start.x, end.x }; }
-  constexpr fixed32_t getY(fixed32_t x) const
+  [[nodiscard]] constexpr punto32_t getLimits() const
   {
-    return start.y + from_fixed32<float>(x - start.x) / from_fixed32<float>(end.x - start.x) * (end.y - start.y);
+    return { start, start + width };
   }
-  constexpr fixed32_t getSpeed() const { return speed; }
-  virtual ~Platform() = default;
 
-  punto32_t start, end;
-  fixed32_t speed{};
+  fixed32_t start, width, y;
 };
 
 #endif

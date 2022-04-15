@@ -30,14 +30,14 @@ void SueloState::update(Mario &mario, std::uint8_t controls) const
         mario.pos.x = ladder->x;
         mario.pos.y -= y_direction * climb_speed;
         mario.climbMin = ladder->bottom;
-        mario.climbMax = ladder->top + climb_speed;
+        mario.climbMax = ladder->top;
         mario.state = TrepandoState::getInstance();
         return;
       }
     }
   }
   mario.vel.x = (((controls & RIGHT) >> 4) - ((controls & LEFT) >> 3)) * x_speed;
-  mario.vel.y = g;
+  mario.vel.y = to_fixed32(-1);
   mario.pos.x += mario.vel.x * ((mario.pos.x < to_fixed32(ANCHO_NIVEL - ANCHO_MARIO) && 0 < mario.vel.x) || (0 < mario.pos.x && mario.vel.x < 0));
   mario.pos.y -= mario.vel.y;
   if (controls & SPACE) {

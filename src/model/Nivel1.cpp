@@ -23,9 +23,8 @@ Nivel1::Nivel1(std::vector<Mario> *players_) : Nivel{ players_ }
 
 void Nivel1::initPlatforms()
 {
-  for (const auto &platform : movingPlatforms) {
-    stage.addPlatform(&platform);
-  }
+  for (const auto &mplatform : movingPlatforms)
+    stage.addPlatform(&mplatform);
 
   for (const auto &platform : platforms)
     stage.addPlatform(&platform);
@@ -43,10 +42,9 @@ void Nivel1::initLadders()
 void Nivel1::initHammers()
 {
   std::mt19937 mt{ std::random_device{}() };
-  std::uniform_int_distribution<fixed32_t> fixed32_rng{ to_fixed32(48.f), to_fixed32(208.f) };
-  for (int i = 0; i < MAX_HAMMERS; ++i) {
-    hammers.emplace_back(punto32_t{ fixed32_rng(mt), to_fixed32(208.f) });
-  }
+  std::uniform_int_distribution<fixed32_t> fixed32_rng{ to_fixed32(48), to_fixed32(208) };
+  for (int i = 0; i < MAX_HAMMERS; ++i)
+    hammers.emplace_back(punto32_t{ fixed32_rng(mt), to_fixed32(208) });
 }
 
 void Nivel1::addEnemies(unsigned int amount)
@@ -110,19 +108,17 @@ void Nivel1::checkCollisions()
 {
   for (Mario &player : *players) {
     const auto player_dimensions = player.get_dimensions();
-    for (auto it = enemies.begin(); it != enemies.end();) {
-      if (intersect(player_dimensions, it->get_dimensions())) {
+    for (auto it = enemies.begin(); it != enemies.end();)
+      if (intersect(player_dimensions, it->get_dimensions()))
         if (player.collide(*it))
           it = enemies.erase(it);
         else
           break;
-      } else
+      else
         ++it;
-    }
 
-    for (auto &hammer : hammers) {
+    for (auto &hammer : hammers)
       if (intersect(player_dimensions, hammer.get_dimensions()))
         player.collide(hammer);
-    }
   }
 }
