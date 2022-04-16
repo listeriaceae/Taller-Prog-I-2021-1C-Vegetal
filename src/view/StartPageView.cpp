@@ -92,12 +92,11 @@ user_t
   while (!loginDone && !quitRequested) {
     inicio = SDL_GetTicks();
 
-    while (SDL_PollEvent(&event)) {
-      if (event.type == SDL_QUIT) {
+    while (!loginDone && SDL_PollEvent(&event))
+      if (event.type == SDL_QUIT)
         quitRequested = true;
-      } else if (event.type != SDL_MOUSEMOTION)
+      else if (event.type != SDL_MOUSEMOTION)
         loginDone = handle(event);
-    }
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -166,8 +165,9 @@ bool StartPage::handle(const SDL_Event &event)
       focus = 0;
     else if (mouseOnPasswordButton(x, y))
       focus = 1;
-    else if (mouseOnDoneButton(x, y))
+    else if (mouseOnDoneButton(x, y)) {
       return true;
+    }
   } else if (event.type == SDL_KEYDOWN) {
     switch (event.key.keysym.sym) {
     case SDLK_BACKSPACE:
