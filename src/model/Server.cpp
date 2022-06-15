@@ -136,7 +136,7 @@ void Server::startGame()
       lag += elapsed;
     }
     {
-      static constexpr long frames_per_s = 60L;
+      constexpr long frames_per_s = 60L;
       using frame_duration_t =
         std::chrono::duration<int64_t, std::ratio<1, frames_per_s>>;
       static constexpr auto ns_per_frame =
@@ -271,12 +271,14 @@ static Login
 static void
   receiveControls(int clientSocket, Mario *mario)
 {
-  std::uint8_t controls, aux = 255;
+  std::uint8_t controls, aux = 0xff;
   while (dataTransfer::receiveData(clientSocket, &controls, sizeof controls)) {
-    std::uint8_t old = mario->controls;
-    std::uint8_t new_controls = (old & SPACE) | (controls & aux);
-    while (!mario->controls.compare_exchange_weak(old, new_controls))
-      new_controls = (old & SPACE) | (controls & aux);
+    auto old = mario->controls.load(std::memory_order_relaxed);
+    do
+      std::uint8_t new_controls = (old & SPACE) | (controls & aux);
+    while (!mario->controls.compare_exchange_weak(old, new_controls,
+						  std::memory_order_relaxed,
+						  std::memory_order_relaxed));
     aux = ~(controls & SPACE);
   }
   mario->disable();
