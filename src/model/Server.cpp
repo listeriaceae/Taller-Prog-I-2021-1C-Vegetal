@@ -271,11 +271,11 @@ static Login
 static void
   receiveControls(int clientSocket, Mario *mario)
 {
-  std::uint8_t controls, aux = 0xff;
+  std::uint8_t controls, new_controls, aux = 0xff;
   while (dataTransfer::receiveData(clientSocket, &controls, sizeof controls)) {
     auto old = mario->controls.load(std::memory_order_relaxed);
     do
-      std::uint8_t new_controls = (old & SPACE) | (controls & aux);
+      new_controls = (old & SPACE) | (controls & aux);
     while (!mario->controls.compare_exchange_weak(old, new_controls,
 						  std::memory_order_relaxed,
 						  std::memory_order_relaxed));

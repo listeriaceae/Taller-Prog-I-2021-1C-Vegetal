@@ -33,8 +33,7 @@
 struct level_state_handler
 {
   std::size_t playerIndex;
-  GameState estado;
-  std::atomic<bool> ready;
+  std::atomic<GameState> estado;
 };
 
 bool quitRequested{ false };
@@ -107,7 +106,7 @@ int Client::startClient()
   if (this->showStartPage() == EXIT_FAILURE)
     return EXIT_FAILURE;
 
-  if (serverOpen.load(std::memory_order_consume)) {
+  if (serverOpen.load(std::memory_order_relaxed)) {
     showMessage::waitingLobby();
     processExit(startGame());
   } else {
@@ -163,17 +162,16 @@ ExitStatus
   std::thread receiver{ receiveState, &level_state };
   std::thread sender{ sendControls };
 
-  level_state.ready.wait(false);
-
-  for (std::size_t i = 0; i < MAX_PLAYERS; ++i)
-    if (strncmp(level_state.estado.players[i].name, name, 3) == 0)
+  level_state.estado.wait({}, std::memory_order_relaxed);
+  for (const auto game_state = level_state.estado.load(std::memory_order_relaxed);
+       std::size_t i = 0; i < MAX_PLAYERS; ++i)
+    if (strncmp(game_state.players[i].name, name, 3) == 0)
       level_state.playerIndex = i;
 
   ExitStatus exitStatus = ExitStatus::CONNECTION_CLOSED;
-  while (!quitRequested && serverOpen.load(std::memory_order_consume)) {
-    level_state.ready.wait(false);
-    level_state.ready = false;
-    const auto game_state = level_state.estado;
+  while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
+    level_state.estado.wait({}, std::memory_order_relaxed);
+    const auto game_state = level_state.estado.exchange({}, std::memory_order_relaxed);
 
     if (currentScene == game_state.level.v.index()) {
       SDL_RenderClear(renderer);
@@ -207,11 +205,11 @@ static void
   unsigned char controls{};
 
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
+    std::this_thread::sleep_for(std::chrono::milliseconds{ 10 });
     if (const auto aux = controls;
         aux != (controls = MarioController::getControls()) &&
         !dataTransfer::sendData(clientSocket, &controls, sizeof controls))
-      serverOpen.store(false, std::memory_order_release);
-    std::this_thread::sleep_for(std::chrono::milliseconds{ 10 });
+      serverOpen.store(false, std::memory_order_relaxed);
   }
 }
 
@@ -219,13 +217,14 @@ static void
   receiveState(level_state_handler *lsh)
 {
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
-    if (dataTransfer::receiveData(clientSocket, &(lsh->estado), sizeof lsh->estado))
-      AudioController::playSounds(
-        lsh->estado.level.players[lsh->playerIndex].sounds);
+    decltype(lsh->estado) new_state{};
+    if (!dataTransfer::receiveData(clientSocket, &new_state, sizeof new_state))
+      serverOpen.store(false, std::memory_order_relaxed);
     else
-      serverOpen.store(false, std::memory_order_release);
-    lsh->ready = true;
-    lsh->ready.notify_all();
+      AudioController::playSounds(
+        new_state.level.players[lsh->playerIndex].sounds);
+    lsh->estado.store(new_state, std::memory_order_relaxed);
+    lsh->estado.notify_all();
   }
 }
 
@@ -270,6 +269,6 @@ Login Client::login(user_t user)
   dataTransfer::sendData(clientSocket, &user, sizeof user);
   auto response = Login::ABORTED;
   if (!dataTransfer::receiveData(clientSocket, &response, sizeof response))
-    serverOpen.store(false, std::memory_order_release);
+    serverOpen.store(false, std::memory_order_relaxed);
   return response;
 }
