@@ -29,7 +29,8 @@ void Nivel2Vista::update(const GameState &state)
     DefaultConfigVista::mostrar();
 
   barrilVista.startRender();
-  for (auto &pos : std::get<1>(state.level.v)) {
+  for (const auto lvl = std::get_if<lv2>(&state.level.v);
+       const auto &pos : *lvl) {
     if (pos.y == 0)
       break;
     barrilVista.mostrar(pos);

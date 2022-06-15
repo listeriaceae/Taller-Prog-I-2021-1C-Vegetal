@@ -43,13 +43,13 @@ void Nivel1Vista::update(const GameState &state)
   for (auto &fuego : fuegos)
     fuego.mostrar();
 
-  const auto &lvl = std::get<0>(state.level.v);
-  for (auto &pos : lvl.platforms)
+  const auto lvl = std::get_if<lv1>(&state.level.v);
+  for (auto &pos : lvl->platforms)
     PlataformaMovilVista::mostrar(pos);
 
   std::size_t i = 0;
   for (auto it = enemigosVista.begin(); it != enemigosVista.end();) {
-    const auto &pos = lvl.enemies[i++];
+    const auto &pos = lvl->enemies[i++];
     if (pos.y == 0)
       it = enemigosVista.erase(it);
     else
