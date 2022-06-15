@@ -19,12 +19,7 @@ void Mario::setStageAndReset(Stage *stage)
 
 void Mario::mover()
 {
-  std::uint8_t old = controls;
-  {
-    std::uint8_t aux = controls & ~SPACE;
-    while (!controls.compare_exchange_weak(old, aux))
-      aux = controls & ~SPACE;
-  }
+  auto old = controls.fetch_and(~SPACE, std::memory_order_relaxed);
   this->state->update(*this, old);
 }
 
