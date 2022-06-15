@@ -2,16 +2,15 @@
 
 input=$1
 BINDIR='bin'
-CLIENT='client'
-SERVER='server'
 
 while [ -z $target ]; do
   case $input in
-    [Ss]*) target=$SERVER;;
+    [Ss]*)
+      target='server';;
     [Cc]*)
-      target=$CLIENT
-      ip='127.0.0.1';;
-    *) read -p "[$CLIENT/$SERVER]: " input;;
+      ip='127.0.0.1'
+      target='client';;
+    *) read -p "['client'/'server']: " input;;
   esac
 done
 
