@@ -6,7 +6,6 @@
 #include "../utils/exitStatus.hpp"
 #include "SceneVista.hpp"
 
-struct level_state_handler;
 enum class Login;
 
 class Client
