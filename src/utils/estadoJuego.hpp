@@ -20,11 +20,13 @@ struct lv1
   std::array<punto16_t, MAX_ENEMIES> enemies;
 };
 
+using lv2 = std::array<punto16_t, MAX_BARRELS>;
+
 struct LevelState
 {
   std::array<punto16_t, MAX_HAMMERS> hammers;
   std::array<PlayerState, MAX_PLAYERS> players;
-  std::variant<lv1, std::array<punto16_t, MAX_BARRELS>, bool> v;
+  std::variant<std::monostate, lv1, lv2, bool> v;
 };
 
 struct GameState
