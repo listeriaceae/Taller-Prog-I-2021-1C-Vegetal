@@ -30,12 +30,6 @@
 #define SERVER_CONNECTION_SUCCESS 0
 #define START_PAGE_SUCCESS 0
 
-struct level_state_handler
-{
-  std::size_t playerIndex;
-  std::atomic<GameState> estado;
-};
-
 bool quitRequested{ false };
 SDL_Renderer *renderer{ nullptr };
 SDL_Texture *texture{ nullptr };
@@ -44,7 +38,7 @@ static SDL_Window *window{ nullptr };
 static std::atomic<bool> serverOpen{ true };
 static int clientSocket{ -1 };
 
-static void receiveState(level_state_handler *lsh);
+static void receiveState(std::atomic<GameState> *lsh);
 static void sendControls();
 
 int Client::connectToServer(const char *serverIp, std::uint16_t port)
@@ -157,21 +151,27 @@ ExitStatus
 
   std::size_t currentScene{ std::numeric_limits<std::size_t>::max() };
   std::unique_ptr<SceneVista> vista{};
+  std::atomic<GameState> level_state{};
 
-  level_state_handler level_state{};
   std::thread receiver{ receiveState, &level_state };
   std::thread sender{ sendControls };
 
-  level_state.estado.wait({}, std::memory_order_relaxed);
-  for (const auto game_state = level_state.estado.load(std::memory_order_relaxed);
-       std::size_t i = 0; i < MAX_PLAYERS; ++i)
-    if (strncmp(game_state.players[i].name, name, 3) == 0)
-      level_state.playerIndex = i;
+  level_state.wait({}, std::memory_order_relaxed);
+  const std::size_t playerIndex = [&](){
+    std::size_t match{ std::numeric_limits<std::size_t>::max() };
+    const auto game_state = level_state.load(std::memory_order_relaxed);
+    for (std::size_t i = 0; i < MAX_PLAYERS; ++i)
+      if (strncmp(game_state.players[i].name, name, 3) == 0)
+        match = i;
+    return match;
+  }();
 
   ExitStatus exitStatus = ExitStatus::CONNECTION_CLOSED;
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
-    level_state.estado.wait({}, std::memory_order_relaxed);
-    const auto game_state = level_state.estado.exchange({}, std::memory_order_relaxed);
+    level_state.wait({}, std::memory_order_relaxed);
+    const auto game_state = level_state.exchange({}, std::memory_order_relaxed);
+    AudioController::playSounds(
+      game_state.level.players[playerIndex].sounds);
 
     if (currentScene == game_state.level.v.index()) {
       SDL_RenderClear(renderer);
@@ -181,10 +181,10 @@ ExitStatus
       SDL_RenderPresent(renderer);
     } else {
       currentScene = game_state.level.v.index();
-      vista = getSceneView(currentScene, level_state.playerIndex);
+      vista = getSceneView(currentScene, playerIndex);
       exitStatus =
-        std::holds_alternative<bool>(game_state.level.v) && std::get<bool>(game_state.level.v)
-          ? game_state.players[level_state.playerIndex].lives == 0
+        std::holds_alternative<bool>(game_state.level.v) && *std::get_if<bool>(&game_state.level.v)
+          ? game_state.players[playerIndex].lives == 0
               ? ExitStatus::GAME_OVER
               : ExitStatus::GAME_COMPLETE
           : ExitStatus::CONNECTION_CLOSED;
@@ -214,17 +214,14 @@ static void
 }
 
 static void
-  receiveState(level_state_handler *lsh)
+  receiveState(std::atomic<GameState> *lsh)
 {
+  GameState new_state{ { { "---" } } };
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
-    decltype(lsh->estado) new_state{};
     if (!dataTransfer::receiveData(clientSocket, &new_state, sizeof new_state))
       serverOpen.store(false, std::memory_order_relaxed);
-    else
-      AudioController::playSounds(
-        new_state.level.players[lsh->playerIndex].sounds);
-    lsh->estado.store(new_state, std::memory_order_relaxed);
-    lsh->estado.notify_all();
+    lsh->store(new_state, std::memory_order_relaxed);
+    lsh->notify_all();
   }
 }
 
@@ -232,11 +229,11 @@ std::unique_ptr<SceneVista>
   Client::getSceneView(std::size_t sceneNumber, std::size_t playerIndex)
 {
   switch (sceneNumber) {
-  case 0:
-    return std::make_unique<Nivel1Vista>(playerIndex);
   case 1:
-    return std::make_unique<Nivel2Vista>(playerIndex);
+    return std::make_unique<Nivel1Vista>(playerIndex);
   case 2:
+    return std::make_unique<Nivel2Vista>(playerIndex);
+  case 3:
     return std::make_unique<InterludeVista>();
   default:
     return {};
