@@ -11,7 +11,7 @@ INCLUDE		:= include
 LIB		:= lib
 
 SLIBS		:= $(shell pkg-config --libs fmt jsoncpp) -pthread
-CLIBS		:= $(shell pkg-config --libs sdl2 SDL2_mixer SDL2_image fmt jsoncpp) -pthread
+CLIBS		:= $(shell pkg-config --libs sdl2 SDL2_mixer SDL2_image fmt jsoncpp) -pthread -latomic
 EXE_S		:= server
 EXE_C		:= client
 
