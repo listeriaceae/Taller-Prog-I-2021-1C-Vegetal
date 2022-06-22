@@ -5,6 +5,7 @@
 #include <cstring>
 #include <chrono>
 #include <algorithm>
+#include <memory>
 #include <thread>
 #include <arpa/inet.h>
 #include <fmt/format.h>
@@ -24,7 +25,7 @@
 
 static int serverSocket{ -1 };
 
-static Scene *getNextScene(std::vector<Mario> *marios);
+static std::unique_ptr<Scene> getNextScene(std::vector<Mario> *marios);
 static void getEstadoJugadores(GameState &estado, const std::vector<player_t> &connectedPlayers);
 
 static void acceptNewConnections(Server *server);
@@ -113,7 +114,7 @@ void Server::startGame()
 {
   std::vector<Mario> marios{ maxPlayers };
 
-  Scene *scene = getNextScene(&marios);
+  auto scene = getNextScene(&marios);
   GameState game{};
 
   {
@@ -158,7 +159,6 @@ void Server::startGame()
       player.mario->audioObserver.reset();
     }
     if (scene->isComplete()) {
-      delete scene;
       scene = getNextScene(&marios);
     }
   }
@@ -285,27 +285,27 @@ static void
   shutdown(clientSocket, SHUT_RD);
 }
 
-static Scene *
+static std::unique_ptr<Scene>
   getNextScene(std::vector<Mario> *marios)
 {
   switch (static int currentScene = 0; ++currentScene) {
   case 1:
     logger::Logger::getInstance().logDebug("Level 1 starts");
-    return new Nivel1{ marios };
+    return std::make_unique<Nivel1>(marios);
   case 2:
     logger::Logger::getInstance().logDebug("End of Level 1");
     {
       const bool gameOver =
         std::none_of(std::cbegin(*marios), std::cend(*marios), &isAlive);
       currentScene = gameOver ? -1 : currentScene;
-      return new Interlude{ gameOver };
+      return std::make_unique<Interlude>(gameOver);
     }
   case 3:
     logger::Logger::getInstance().logDebug("Level 2 starts");
-    return new Nivel2{ marios };
+    return std::make_unique<Nivel2>(marios);
   case 4:
     logger::Logger::getInstance().logDebug("End of Level 2");
-    return new Interlude{ true };
+    return std::make_unique<Interlude>(true);
   default:
     logger::Logger::getInstance().logGameOver();
     return nullptr;
