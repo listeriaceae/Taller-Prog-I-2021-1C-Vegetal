@@ -91,7 +91,6 @@ src/model/Nivel1.cpp
 src/model/Mario.hpp
 src/model/Interlude.hpp
 src/model/Scene.hpp
-src/model/Entidad.hpp
 src/model/Server.hpp
 src/model/Server.cpp
 src/model/Nivel2.hpp
