@@ -18,7 +18,6 @@
 #include "Interlude.hpp"
 #include "Mario.hpp"
 #include "../utils/Constants.hpp"
-#include "../utils/window.hpp"
 #include "../utils/estadoJuego.hpp"
 #include "../utils/player.hpp"
 #include "../utils/dataTransfer.hpp"

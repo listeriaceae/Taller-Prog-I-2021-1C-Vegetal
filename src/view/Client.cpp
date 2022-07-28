@@ -21,7 +21,6 @@
 #include "../logger.hpp"
 #include "../controller/MarioController.hpp"
 #include "../controller/AudioController.hpp"
-#include "../utils/window.hpp"
 #include "../utils/Constants.hpp"
 #include "../utils/estadoJuego.hpp"
 #include "../utils/dataTransfer.hpp"
@@ -75,8 +74,8 @@ Client::Client()
   window = SDL_CreateWindow("Donkey Kong 2: Jumpman Returns",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
-                            ANCHO_PANTALLA,
-                            ALTO_PANTALLA,
+                            448,
+                            512,
                             SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
   textureHandler::load();
