@@ -7,7 +7,7 @@
 
 
 Mario::Mario()
-  : Entidad{ {} }, collider{ NormalCollider::getInstance() }, state{ SueloState::getInstance() }
+  : collider{ NormalCollider::getInstance() }, state{ SueloState::getInstance() }
 {
 }
 

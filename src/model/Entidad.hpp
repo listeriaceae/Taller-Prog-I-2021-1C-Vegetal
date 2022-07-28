@@ -3,16 +3,6 @@
 
 #include "../utils/punto.hpp"
 
-class Entidad
-{
-public:
-  constexpr Entidad(punto32_t pos_) noexcept : pos{ pos_ } {};
-  virtual ~Entidad() = default;
-
-  punto32_t pos;
-  bool isEnabled = true;
-};
-
 template<typename T>
 concept has_pos = requires(T t) { t.pos; };
 

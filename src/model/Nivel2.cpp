@@ -1,4 +1,5 @@
 #include "Nivel2.hpp"
+#include "Entidad.hpp"
 #include "../utils/Constants.hpp"
 #include <random>
 #include <algorithm>
@@ -63,7 +64,7 @@ static inline std::array<punto16_t, MAX_BARRELS>
   to_array(const std::vector<Barril> &in)
 {
   std::array<punto16_t, MAX_BARRELS> out{};
-  std::transform(std::cbegin(in), std::cend(in), std::begin(out), get_pos<Entidad>);
+  std::transform(std::cbegin(in), std::cend(in), std::begin(out), get_pos<Barril>);
   return out;
 }
 

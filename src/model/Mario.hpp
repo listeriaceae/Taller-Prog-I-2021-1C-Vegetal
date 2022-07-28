@@ -2,15 +2,15 @@
 #define MARIO_H
 
 #include <atomic>
-#include "Entidad.hpp"
 #include "mario/MarioState.hpp"
 #include "collider/NormalCollider.hpp"
 #include "mario/AudioObserver.hpp"
 #include "../utils/marioStructs.hpp"
+#include "../utils/punto.hpp"
 #include "Hammer.hpp"
 #include "Enemy.hpp"
 
-class Mario : public Entidad
+class Mario
 {
 public:
   Mario();
@@ -30,28 +30,32 @@ public:
   inline void enable() { isEnabled = true; }
   inline dimensions get_dimensions() const
   {
-    return { pos.x + x_diff,
+    return {
+      pos.x + x_diff,
       pos.y + y_diff,
       pos.x + (width - x_diff),
-      pos.y + (height - y_diff) };
+      pos.y + (height - y_diff)
+    };
   }
   inline void resetCollider() { this->collider = NormalCollider::getInstance(); }
   inline bool collide(Enemy &enemy) { return this->collider->collide(*this, enemy); }
   void collide(Hammer &hammer);
 
-  Estado estado{ Estado::REPOSO };
-  AudioObserver audioObserver{};
+  punto32_t pos{};
   const Collider *collider;
   const MarioState *state;
   punto32_t vel{};
   fixed32_t climbMin{};
   fixed32_t climbMax{};
-  Direccion direccion = Direccion::DERECHA;
+  Direccion direccion{ Direccion::DERECHA };
+  bool isEnabled{ true };
   std::int8_t lives{ MARIO_LIVES };
+  Estado estado{ Estado::REPOSO };
+  AudioObserver audioObserver{};
   std::uint8_t score{ 0 };
   std::uint8_t contador{ 0 };
-  std::int8_t hammerUses{};
-  std::atomic<std::uint8_t> controls{};
+  std::int8_t hammerUses{ 0 };
+  std::atomic<std::uint8_t> controls{ 0 };
 
 private:
   static constexpr auto width = to_fixed32(ANCHO_MARIO);

@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <fmt/format.h>
 #include "Nivel1.hpp"
+#include "Entidad.hpp"
 #include "../configuration.hpp"
 #include "../logger.hpp"
 #include "../utils/Constants.hpp"
@@ -79,7 +80,7 @@ static inline lv1
   lv1 out{};
   std::transform(std::cbegin(mp), std::cend(mp), std::begin(out.platforms), get_start);
 
-  std::transform(std::cbegin(e), std::cend(e), std::begin(out.enemies), get_pos<Entidad>);
+  std::transform(std::cbegin(e), std::cend(e), std::begin(out.enemies), get_pos<EnemigoFuego>);
 
   return out;
 }
