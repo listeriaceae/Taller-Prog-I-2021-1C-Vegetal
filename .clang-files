@@ -2,7 +2,6 @@ src/logger.cpp
 src/configuration.hpp
 src/main/main_server.cpp
 src/main/main_client.cpp
-src/utils/window.hpp
 src/utils/Constants.hpp
 src/utils/player.hpp
 src/utils/textureLoader.hpp
