@@ -6,8 +6,8 @@
 class AudioObserver
 {
 public:
-  constexpr void update(SoundCode soundCode) noexcept { sounds |= soundCode; }
-  constexpr void reset() noexcept { sounds = {}; }
+  constexpr void update(SoundCode soundCode) { sounds |= soundCode; }
+  constexpr void reset() { sounds = {}; }
   constexpr std::uint8_t getState() const { return sounds; }
 
 private:
