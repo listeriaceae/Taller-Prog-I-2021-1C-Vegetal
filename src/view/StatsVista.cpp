@@ -25,7 +25,8 @@ extern SDL_Texture *texture;
 
 StatsVista::StatsVista()
 {
-  switch (configuration::GameConfiguration::getInstance(CONFIG_FILE).getMaxPlayers()) {
+  switch (configuration::GameConfiguration::getInstance(CONFIG_FILE)
+            .getMaxPlayers()) {
   case 1:
     posiciones.assign({ POS_CENTER });
     break;
@@ -36,7 +37,8 @@ StatsVista::StatsVista()
     posiciones.assign({ POS_LEFT, POS_CENTER, POS_RIGHT });
     break;
   case 4:
-    posiciones.assign({ POS_LEFT, POS_CENTER_LEFT, POS_CENTER_RIGHT, POS_RIGHT });
+    posiciones.assign(
+      { POS_LEFT, POS_CENTER_LEFT, POS_CENTER_RIGHT, POS_RIGHT });
     break;
   }
 }
@@ -52,7 +54,8 @@ void StatsVista::mostrar(const PlayerInfo &estado, std::size_t nroJugador)
     '0',
     '0' };
 
-  const SDL_Rect srcRect{ ICON_X_OFFSET + static_cast<int>(nroJugador) * ANCHO_ICON,
+  const SDL_Rect srcRect{ ICON_X_OFFSET
+                            + static_cast<int>(nroJugador) * ANCHO_ICON,
     ICON_Y_OFFSET,
     ANCHO_ICON,
     ALTO_ICON };

@@ -11,7 +11,9 @@ class Enemy
 {
 public:
   Enemy(const std::string &t, unsigned int q) : type{ t }, quantity{ q } {}
-  Enemy(std::string &&t, unsigned int q) noexcept : type{ std::move(t) }, quantity{ q } {}
+  Enemy(std::string &&t, unsigned int q) noexcept
+    : type{ std::move(t) }, quantity{ q }
+  {}
 
   const std::string &getType() const & { return type; }
   std::string getType() const && { return type; }
@@ -30,7 +32,10 @@ public:
   int getLogLevel() const { return logLevel; }
   const std::vector<user_t> &getUsers() const & { return users; }
   std::vector<user_t> getUsers() const && { return users; }
-  const std::vector<configuration::Enemy> &getEnemies() const & { return enemies; }
+  const std::vector<configuration::Enemy> &getEnemies() const &
+  {
+    return enemies;
+  }
   std::vector<configuration::Enemy> getEnemies() const && { return enemies; }
   std::size_t getMaxPlayers() const { return maxPlayers; }
   bool getDefaultConfigFlag() const { return useDefaultConfig; }
@@ -43,7 +48,8 @@ private:
   std::size_t maxPlayers;
   bool useDefaultConfig;
 
-  static const Json::Value getJsonValue(const Json::Value &root, std::string name);
+  static const Json::Value getJsonValue(const Json::Value &root,
+    std::string name);
   bool loadFromFile(const char *configFileName);
 };
 }// namespace configuration

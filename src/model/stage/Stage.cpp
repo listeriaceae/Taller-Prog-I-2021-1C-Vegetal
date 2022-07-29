@@ -25,10 +25,8 @@ std::optional<Ladder>
 {
   const std::size_t i =
     (y / stage_height) * grid_columns + (x + mario_width / 2) / stage_width;
-  if (0 < direction)
-    return grid[i].ladderBottom;
-  if (direction < 0)
-    return grid[i].ladderTop;
+  if (0 < direction) return grid[i].ladderBottom;
+  if (direction < 0) return grid[i].ladderTop;
   return std::nullopt;
 }
 
@@ -43,8 +41,7 @@ void Stage::addPlatform(const Platform *platform)
     x += ANCHO_TILE;
   } while (x < max);
 
-  if (i != (i = j + max / stage_width))
-    grid[i].addPlatform(platform);
+  if (i != (i = j + max / stage_width)) grid[i].addPlatform(platform);
 }
 
 
@@ -59,11 +56,13 @@ void Stage::addPlatform(const MovingPlatform *mplatform)
     x += ANCHO_TILE;
   } while (x < max);
 
-  if (i != (i = j + max / stage_width))
-    grid[i].addPlatform(mplatform);
+  if (i != (i = j + max / stage_width)) grid[i].addPlatform(mplatform);
 }
 
-bool Stage::collide(fixed32_t &x, fixed32_t &y, fixed32_t &dx, fixed32_t &dy) const
+bool Stage::collide(fixed32_t &x,
+  fixed32_t &y,
+  fixed32_t &dx,
+  fixed32_t &dy) const
 {
   std::unordered_set<const Platform *> platforms{ 3 };
   std::unordered_set<const MovingPlatform *> mplatforms{ 6 };
@@ -86,7 +85,8 @@ bool Stage::collide(fixed32_t &x, fixed32_t &y, fixed32_t &dx, fixed32_t &dy) co
           y -= distanceY;
           dy = 0;
           is_standing = true;
-        } else if (to_fixed32(2) < distanceY && distanceY <= to_fixed32(3 * ALTO_MARIO / 4)) {
+        } else if (to_fixed32(2) < distanceY
+                   && distanceY <= to_fixed32(3 * ALTO_MARIO / 4)) {
           if (distanceLeft <= to_fixed32(1))
             x -= distanceLeft;
           else if (distanceRight <= to_fixed32(1))
@@ -103,7 +103,8 @@ bool Stage::collide(fixed32_t &x, fixed32_t &y, fixed32_t &dx, fixed32_t &dy) co
     if (0 < distanceLeft && 0 < distanceRight) {
       const auto distanceY = y + mario_height - (*it)->pos.y;
       if (0 <= distanceY) {
-        if (distanceY <= to_fixed32(3 * ALTO_MARIO / 4) && std::min(distanceLeft, distanceRight) <= to_fixed32(1)) {
+        if (distanceY <= to_fixed32(3 * ALTO_MARIO / 4)
+            && std::min(distanceLeft, distanceRight) <= to_fixed32(1)) {
           if (distanceLeft <= to_fixed32(1))
             x -= distanceLeft;
           else if (distanceRight <= to_fixed32(1))

@@ -17,15 +17,15 @@ InterludeVista::InterludeVista()
   : SceneVista{}, maxPlayers{
       configuration::GameConfiguration::getInstance(CONFIG_FILE).getMaxPlayers()
     }
-{
-}
+{}
 
 void InterludeVista::update(const GameState &estadoJuego)
 {
   punto<int> statsJugadorPos{ X_POS_USER, Y_POS_USER };
 
   TextRenderer::renderText(statsJugadorPos, "USER", 1.25f, Color::YELLOW);
-  TextRenderer::renderText({ statsJugadorPos.x + OFFSET_SCORE, statsJugadorPos.y },
+  TextRenderer::renderText(
+    { statsJugadorPos.x + OFFSET_SCORE, statsJugadorPos.y },
     "SCORE",
     1.25f,
     Color::YELLOW);
@@ -34,16 +34,15 @@ void InterludeVista::update(const GameState &estadoJuego)
     statsJugadorPos.y += Y_DIF_USERS;
     TextRenderer::renderText(
       statsJugadorPos, estadoJuego.players[i].name, 1.25f, Color::MAGENTA);
-    const char score_str[7] = {
-      '0',
+    const char score_str[7] = { '0',
       static_cast<char>('0' + (estadoJuego.players[i].score / 100) % 10),
       static_cast<char>('0' + (estadoJuego.players[i].score / 10) % 10),
       static_cast<char>('0' + estadoJuego.players[i].score % 10),
       '0',
-      '0'
-    };
+      '0' };
 
-    TextRenderer::renderText({ statsJugadorPos.x + OFFSET_SCORE, statsJugadorPos.y },
+    TextRenderer::renderText(
+      { statsJugadorPos.x + OFFSET_SCORE, statsJugadorPos.y },
       score_str,
       1.25f,
       Color::LIME);

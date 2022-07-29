@@ -4,14 +4,11 @@
 extern SDL_Renderer *renderer;
 extern SDL_Texture *texture;
 
-EnemigoFuegoVista::EnemigoFuegoVista()
-{
-}
+EnemigoFuegoVista::EnemigoFuegoVista() {}
 
 void EnemigoFuegoVista::mostrar(punto16_t pos)
 {
-  const SDL_RendererFlip flip = static_cast<SDL_RendererFlip>(
-                                  lastX < pos.x);
+  const SDL_RendererFlip flip = static_cast<SDL_RendererFlip>(lastX < pos.x);
   lastX = pos.x;
   static constexpr auto frame_duration = 8;
   static constexpr auto frame_count = 2;
@@ -25,10 +22,9 @@ void EnemigoFuegoVista::mostrar(punto16_t pos)
     ANCHO_ENEMIGO_FUEGO,
     ALTO_ENEMIGO_FUEGO };
   const SDL_Rect dstRect{ from_fixed16<int>(pos.x),
-                          from_fixed16<int>(pos.y),
-                          ANCHO_ENEMIGO_FUEGO,
-                          ALTO_ENEMIGO_FUEGO
-  };
+    from_fixed16<int>(pos.y),
+    ANCHO_ENEMIGO_FUEGO,
+    ALTO_ENEMIGO_FUEGO };
 
   SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0.0, NULL, flip);
 }

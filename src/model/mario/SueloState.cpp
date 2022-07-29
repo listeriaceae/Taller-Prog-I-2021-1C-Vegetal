@@ -4,26 +4,18 @@
 #include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
-static constexpr int
-  sign(fixed32_t x) noexcept
-{
-  return (0 < x) - (x < 0);
-}
+static constexpr int sign(fixed32_t x) noexcept { return (0 < x) - (x < 0); }
 
 const SueloState SueloState::instance{};
 
-const SueloState *
-  SueloState::getInstance()
-{
-  return &instance;
-}
+const SueloState *SueloState::getInstance() { return &instance; }
 
 void SueloState::update(Mario &mario, std::uint8_t controls) const
 {
   {
-    const int y_direction =
-      ((controls & UP) >> 1) - ((controls & DOWN) >> 2);
-    if (const auto ladder = stage->getLadder(mario.pos.x, mario.pos.y, y_direction);
+    const int y_direction = ((controls & UP) >> 1) - ((controls & DOWN) >> 2);
+    if (const auto ladder =
+          stage->getLadder(mario.pos.x, mario.pos.y, y_direction);
         ladder.has_value()) {
       if (const auto distance = ladder->x - mario.pos.x;
           to_fixed32(-4) <= distance && distance <= to_fixed32(4)) {
@@ -36,15 +28,20 @@ void SueloState::update(Mario &mario, std::uint8_t controls) const
       }
     }
   }
-  mario.vel.x = (((controls & RIGHT) >> 4) - ((controls & LEFT) >> 3)) * x_speed;
+  mario.vel.x =
+    (((controls & RIGHT) >> 4) - ((controls & LEFT) >> 3)) * x_speed;
   mario.vel.y = to_fixed32(-1);
-  mario.pos.x += mario.vel.x * ((mario.pos.x < to_fixed32(ANCHO_NIVEL - ANCHO_MARIO) && 0 < mario.vel.x) || (0 < mario.pos.x && mario.vel.x < 0));
+  mario.pos.x +=
+    mario.vel.x
+    * ((mario.pos.x < to_fixed32(ANCHO_NIVEL - ANCHO_MARIO) && 0 < mario.vel.x)
+       || (0 < mario.pos.x && mario.vel.x < 0));
   mario.pos.y -= mario.vel.y;
   if (controls & SPACE) {
     mario.vel.y = jump_speed;
     mario.audioObserver.update(JUMP);
     mario.state = AireState::getInstance();
-  } else if (!stage->collide(mario.pos.x, mario.pos.y, mario.vel.x, mario.vel.y)) {
+  } else if (!stage->collide(
+               mario.pos.x, mario.pos.y, mario.vel.x, mario.vel.y)) {
     mario.vel = {};
     mario.state = AireState::getInstance();
   } else {

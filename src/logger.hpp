@@ -25,13 +25,11 @@ public:
   inline void logError(std::string_view text) const { log(text, "[ERROR]"); }
   inline void logInformation(std::string_view text) const
   {
-    if (log_level >= 1)
-      log(text, "[INFO]");
+    if (log_level >= 1) log(text, "[INFO]");
   }
   inline void logDebug(std::string_view text) const
   {
-    if (log_level >= 2)
-      log(text, "[DEBUG]");
+    if (log_level >= 2) log(text, "[DEBUG]");
   }
 };
 }// namespace logger

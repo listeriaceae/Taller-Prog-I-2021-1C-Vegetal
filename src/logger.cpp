@@ -3,8 +3,7 @@
 #include "logger.hpp"
 
 namespace logger {
-Logger &
-  Logger::getInstance()
+Logger &Logger::getInstance()
 {
   static Logger instance{};
   return instance;

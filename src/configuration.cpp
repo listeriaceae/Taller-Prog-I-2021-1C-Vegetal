@@ -6,15 +6,14 @@
 #include "logger.hpp"
 
 namespace configuration {
-const GameConfiguration &
-  GameConfiguration::getInstance(const char *jsonFileName)
+const GameConfiguration &GameConfiguration::getInstance(
+  const char *jsonFileName)
 {
   static const GameConfiguration instance{ jsonFileName };
   return instance;
 }
 
-inline static bool
-  exists(const char *filename)
+inline static bool exists(const char *filename)
 {
   std::ifstream f(filename);
   return f.good();
@@ -33,7 +32,8 @@ GameConfiguration::GameConfiguration(const char *jsonFileName)
         fmt::format("Configuration file corrupted: {}", e.what()));
     }
   } else {
-    logger::Logger::getInstance().logError(fmt::format("Configuration file not found: '{}'", jsonFileName));
+    logger::Logger::getInstance().logError(
+      fmt::format("Configuration file not found: '{}'", jsonFileName));
   }
 
   if (this->useDefaultConfig) {
@@ -83,15 +83,16 @@ bool GameConfiguration::loadFromFile(const char *configFileName)
   }
 
   // Get enemies
-  for (const auto &enemy : getJsonValue(getJsonValue(configuration, "game"), "enemies")) {
+  for (const auto &enemy :
+    getJsonValue(getJsonValue(configuration, "game"), "enemies")) {
     if (const auto enemy_quantity = getJsonValue(enemy, "quantity").asInt();
         enemy_quantity < 0) {
       logger::Logger::getInstance().logError(
         "Enemy quantity must be positive or zero");
       return false;
     } else {
-      this->enemies.emplace_back(getJsonValue(enemy, "type").asString(),
-        enemy_quantity);
+      this->enemies.emplace_back(
+        getJsonValue(enemy, "type").asString(), enemy_quantity);
     }
   }
 
@@ -108,8 +109,8 @@ bool GameConfiguration::loadFromFile(const char *configFileName)
   return true;
 }
 
-const Json::Value
-  GameConfiguration::getJsonValue(const Json::Value &root, std::string name)
+const Json::Value GameConfiguration::getJsonValue(const Json::Value &root,
+  std::string name)
 {
   const auto value = root[name];
   if (value.empty()) {

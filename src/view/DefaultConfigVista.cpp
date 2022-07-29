@@ -4,8 +4,6 @@
 
 void DefaultConfigVista::mostrar()
 {
-  TextRenderer::renderText({ DEFAULT_CONFIG_X, DEFAULT_CONFIG_Y },
-                           "DEFAULT CONFIG",
-                           1,
-                           Color::RED);
+  TextRenderer::renderText(
+    { DEFAULT_CONFIG_X, DEFAULT_CONFIG_Y }, "DEFAULT CONFIG", 1, Color::RED);
 }

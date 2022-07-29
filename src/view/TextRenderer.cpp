@@ -11,12 +11,16 @@
 extern SDL_Renderer *renderer;
 extern SDL_Texture *texture;
 
-void TextRenderer::renderText(punto<int> punto, const char *text, float resize, Color color)
+void TextRenderer::renderText(punto<int> punto,
+  const char *text,
+  float resize,
+  Color color)
 {
   SDL_Rect srcRect{ 0, 336, LETTER_WIDTH, LETTER_HEIGHT };
   srcRect.y = 336 + static_cast<int>(color) * LETTER_Y;
 
-  SDL_Rect dstRect = { punto.x, punto.y,
+  SDL_Rect dstRect = { punto.x,
+    punto.y,
     static_cast<int>(round(resize * LETTER_WIDTH)),
     static_cast<int>(round(resize * LETTER_HEIGHT)) };
   char c;

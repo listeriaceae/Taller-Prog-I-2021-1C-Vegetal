@@ -26,8 +26,7 @@ private:
     { 1, 3 },
     { 2, 3 } } };
   static constexpr std::array<Platform, 18> platforms{
-    Platform
-    { to_fixed32(64), to_fixed32(88), to_fixed32(248) },
+    Platform{ to_fixed32(64), to_fixed32(88), to_fixed32(248) },
     { to_fixed32(104), to_fixed32(128), to_fixed32(248) },
     { to_fixed32(144), to_fixed32(168), to_fixed32(248) },
     { to_fixed32(184), to_fixed32(224), to_fixed32(248) },

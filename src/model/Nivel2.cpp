@@ -14,8 +14,7 @@ Nivel2::Nivel2(std::vector<Mario> *players_) : Nivel{ players_ }
 
 void Nivel2::initPlatforms()
 {
-  for (const auto &platform : platforms)
-    stage.addPlatform(&platform);
+  for (const auto &platform : platforms) stage.addPlatform(&platform);
 }
 
 void Nivel2::initLadders()
@@ -39,37 +38,35 @@ void Nivel2::initHammers()
   for (int i = 0; i < MAX_HAMMERS; ++i) {
     const int n = int_rng(mt);
     const fixed32_t t = fixed32_rng(mt);
-    hammers.emplace_back(punto32_t{
-      to_fixed32(104) + (n % 2 ? 1 : -1) * (to_fixed32(48) + 16 * t),
-      to_fixed32(84) + to_fixed32(33) * n + t });
+    hammers.emplace_back(
+      punto32_t{ to_fixed32(104) + (n % 2 ? 1 : -1) * (to_fixed32(48) + 16 * t),
+        to_fixed32(84) + to_fixed32(33) * n + t });
   }
 }
 
 void Nivel2::update()
 {
   static constexpr size_t period = 180;
-  if (++tick % period == 1)
-    barriles.emplace_back();
+  if (++tick % period == 1) barriles.emplace_back();
 
   for (auto it = barriles.begin(); it != barriles.end();) {
     it->mover();
     it = erase_out_of_bounds(it);
   }
-  for (auto &mario : *players)
-    mario.mover();
+  for (auto &mario : *players) mario.mover();
   checkCollisions();
 }
 
-static inline std::array<punto16_t, MAX_BARRELS>
-  to_array(const std::vector<Barril> &in)
+static inline std::array<punto16_t, MAX_BARRELS> to_array(
+  const std::vector<Barril> &in)
 {
   std::array<punto16_t, MAX_BARRELS> out{};
-  std::transform(std::cbegin(in), std::cend(in), std::begin(out), get_pos<Barril>);
+  std::transform(
+    std::cbegin(in), std::cend(in), std::begin(out), get_pos<Barril>);
   return out;
 }
 
-LevelState
-  Nivel2::getEstado() const
+LevelState Nivel2::getEstado() const
 {
   LevelState l_state{};
 
@@ -101,16 +98,19 @@ void Nivel2::checkCollisions()
       else
         ++it;
 
-    for (auto &hammer : this->hammers)
-      if (intersect(player_dimensions, hammer.get_dimensions()))
-        player.collide(hammer);
+    for (auto &hammer : hammers)
+      if (intersect(player_dimensions, hammer.get_dimensions())) {
+        player.grabHammer();
+        hammer.consume();
+      }
   }
 }
 
-std::vector<Barril>::iterator Nivel2::erase_out_of_bounds(std::vector<Barril>::iterator it)
+std::vector<Barril>::iterator Nivel2::erase_out_of_bounds(
+  std::vector<Barril>::iterator it)
 {
-    if (it->out_of_bounds())
-      return barriles.erase(it);
-    else
-      return ++it;
+  if (it->out_of_bounds())
+    return barriles.erase(it);
+  else
+    return ++it;
 }

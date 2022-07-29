@@ -9,13 +9,14 @@ void BarrilVista::mostrar(punto16_t pos)
 {
   static constexpr int width = ANCHO_BARRIL;
   static constexpr int height = ALTO_BARRIL;
-  const SDL_Rect dstRect = { from_fixed16<int>(pos.x), from_fixed16<int>(pos.y),
-                             width, height };
-  const auto flip =
-    static_cast<SDL_RendererFlip>((to_fixed16(110 - ALTO_BARRIL) < pos.y &&
-                                   pos.y < to_fixed16(142.75f - ALTO_BARRIL)) ||
-                                  (to_fixed16(175.5f - ALTO_BARRIL) < pos.y &&
-                                   pos.y < to_fixed16(208.25f - ALTO_BARRIL)));
+  const SDL_Rect dstRect = {
+    from_fixed16<int>(pos.x), from_fixed16<int>(pos.y), width, height
+  };
+  const auto flip = static_cast<SDL_RendererFlip>(
+    (to_fixed16(110 - ALTO_BARRIL) < pos.y
+      && pos.y < to_fixed16(142.75f - ALTO_BARRIL))
+    || (to_fixed16(175.5f - ALTO_BARRIL) < pos.y
+        && pos.y < to_fixed16(208.25f - ALTO_BARRIL)));
 
   static constexpr auto frame_duration = 4;
   static constexpr auto frame_count = 4;
@@ -25,9 +26,10 @@ void BarrilVista::mostrar(punto16_t pos)
   static constexpr auto y_offset = 374;
   static constexpr auto sprite_gap_size = 12;
 
-  const SDL_Rect srcRect = {
-    x_offset + (tiempo >> 2) * sprite_gap_size, y_offset, ANCHO_BARRIL, ALTO_BARRIL
-  };
+  const SDL_Rect srcRect = { x_offset + (tiempo >> 2) * sprite_gap_size,
+    y_offset,
+    ANCHO_BARRIL,
+    ALTO_BARRIL };
   SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0., NULL, flip);
   update = 0;
 }

@@ -2,8 +2,7 @@
 #define PUNTO_H
 #include "fixed_point.hpp"
 
-template<arithmetic T>
-struct punto
+template<arithmetic T> struct punto
 {
   T x{};
   T y{};

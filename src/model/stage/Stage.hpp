@@ -16,13 +16,16 @@ class Stage
 {
 public:
   void addLadder(Ladder ladder);
-  std::optional<Ladder> getLadder(fixed32_t x, fixed32_t y, int direction) const;
+  std::optional<Ladder>
+    getLadder(fixed32_t x, fixed32_t y, int direction) const;
   void addPlatform(const Platform *platform);
   void addPlatform(const MovingPlatform *mplatform);
   bool collide(fixed32_t &x, fixed32_t &y, fixed32_t &dx, fixed32_t &dy) const;
 
 private:
-  std::array<Tile, (ANCHO_NIVEL / ANCHO_TILE + 1) * (ALTO_NIVEL / ALTO_TILE + 1)> grid{};
+  std::array<Tile,
+    (ANCHO_NIVEL / ANCHO_TILE + 1) * (ALTO_NIVEL / ALTO_TILE + 1)>
+    grid{};
 };
 
 #endif// STAGE_H

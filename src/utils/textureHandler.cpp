@@ -16,7 +16,8 @@ void load()
     logger::Logger::getInstance().logError("[client] Image file not found");
     throw std::runtime_error("Image file not found");
   }
-  SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0xf4, 0x43, 0x36));
+  SDL_SetColorKey(
+    surface, SDL_TRUE, SDL_MapRGB(surface->format, 0xf4, 0x43, 0x36));
   texture = SDL_CreateTextureFromSurface(renderer, surface);
   SDL_FreeSurface(surface);
   SDL_RenderSetLogicalSize(renderer, ANCHO_NIVEL, ALTO_NIVEL);

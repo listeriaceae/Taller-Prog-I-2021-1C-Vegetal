@@ -42,7 +42,8 @@ static void sendControls();
 
 int Client::connectToServer(const char *serverIp, std::uint16_t port)
 {
-  std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port << '\n';
+  std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port
+            << '\n';
 
   // socket
   clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -59,7 +60,9 @@ int Client::connectToServer(const char *serverIp, std::uint16_t port)
   serverAddress.sin_port = htons(port);
 
   // connect
-  if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof serverAddress) != 0) {
+  if (connect(
+        clientSocket, (struct sockaddr *)&serverAddress, sizeof serverAddress)
+      != 0) {
     perror("ERROR connecting");
     close(clientSocket);
     return EXIT_FAILURE;
@@ -72,11 +75,11 @@ Client::Client()
 {
   SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
   window = SDL_CreateWindow("Donkey Kong 2: Jumpman Returns",
-                            SDL_WINDOWPOS_UNDEFINED,
-                            SDL_WINDOWPOS_UNDEFINED,
-                            448,
-                            512,
-                            SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
+    SDL_WINDOWPOS_UNDEFINED,
+    SDL_WINDOWPOS_UNDEFINED,
+    448,
+    512,
+    SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
   textureHandler::load();
   AudioController::loadAudioFiles();
@@ -96,8 +99,7 @@ Client::~Client()
 
 int Client::startClient()
 {
-  if (this->showStartPage() == EXIT_FAILURE)
-    return EXIT_FAILURE;
+  if (this->showStartPage() == EXIT_FAILURE) return EXIT_FAILURE;
 
   if (serverOpen.load(std::memory_order_relaxed)) {
     showMessage::waitingLobby();
@@ -113,35 +115,35 @@ void Client::processExit(ExitStatus exitStatus)
 {
   switch (exitStatus) {
   case ExitStatus::CONNECTION_CLOSED:
-    logger::Logger::getInstance()
-        .logInformation(fmt::format("[{}] connection closed", this->name));
+    logger::Logger::getInstance().logInformation(
+      fmt::format("[{}] connection closed", this->name));
     showMessage::disconnection();
     break;
   case ExitStatus::GAME_OVER:
-    logger::Logger::getInstance()
-        .logInformation(fmt::format("[{}] game over", this->name));
+    logger::Logger::getInstance().logInformation(
+      fmt::format("[{}] game over", this->name));
     showMessage::gameOver();
     break;
   case ExitStatus::GAME_COMPLETE:
-    logger::Logger::getInstance()
-        .logInformation(fmt::format("[{}] game complete", this->name));
+    logger::Logger::getInstance().logInformation(
+      fmt::format("[{}] game complete", this->name));
     showMessage::gameComplete();
     break;
   case ExitStatus::QUIT_REQUESTED:
-    logger::Logger::getInstance()
-        .logInformation(fmt::format("[{}] quit requested", this->name));
+    logger::Logger::getInstance().logInformation(
+      fmt::format("[{}] quit requested", this->name));
     return;
   default:
     break;
   }
   while (!SDL_QuitRequested()) {
     std::this_thread::sleep_for(std::chrono::milliseconds{ 100 });
-    AudioController::checkToggleMusicEvent(SDL_GetKeyboardState(NULL)[SDL_SCANCODE_M]);
+    AudioController::checkToggleMusicEvent(
+      SDL_GetKeyboardState(NULL)[SDL_SCANCODE_M]);
   };
 }
 
-ExitStatus
-  Client::startGame()
+ExitStatus Client::startGame()
 {
   AudioController::startMusic();
 
@@ -156,12 +158,11 @@ ExitStatus
   std::thread sender{ sendControls };
 
   level_state.wait({}, std::memory_order_relaxed);
-  const std::size_t playerIndex = [&](){
+  const std::size_t playerIndex = [&]() {
     std::size_t match{ std::numeric_limits<std::size_t>::max() };
     const auto game_state = level_state.load(std::memory_order_relaxed);
     for (std::size_t i = 0; i < MAX_PLAYERS; ++i)
-      if (strncmp(game_state.players[i].name, name, 3) == 0)
-        match = i;
+      if (strncmp(game_state.players[i].name, name, 3) == 0) match = i;
     return match;
   }();
 
@@ -169,8 +170,7 @@ ExitStatus
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
     level_state.wait({}, std::memory_order_relaxed);
     const auto game_state = level_state.exchange({}, std::memory_order_relaxed);
-    AudioController::playSounds(
-      game_state.level.players[playerIndex].sounds);
+    AudioController::playSounds(game_state.level.players[playerIndex].sounds);
 
     if (currentScene == game_state.level.v.index()) {
       SDL_RenderClear(renderer);
@@ -181,12 +181,12 @@ ExitStatus
     } else {
       currentScene = game_state.level.v.index();
       vista = getSceneView(currentScene, playerIndex);
-      exitStatus =
-        std::holds_alternative<bool>(game_state.level.v) && *std::get_if<bool>(&game_state.level.v)
-          ? game_state.players[playerIndex].lives == 0
-              ? ExitStatus::GAME_OVER
-              : ExitStatus::GAME_COMPLETE
-          : ExitStatus::CONNECTION_CLOSED;
+      exitStatus = std::holds_alternative<bool>(game_state.level.v)
+                       && *std::get_if<bool>(&game_state.level.v)
+                     ? game_state.players[playerIndex].lives == 0
+                         ? ExitStatus::GAME_OVER
+                         : ExitStatus::GAME_COMPLETE
+                     : ExitStatus::CONNECTION_CLOSED;
     }
 
     quitRequested = SDL_QuitRequested();
@@ -198,22 +198,20 @@ ExitStatus
   return quitRequested ? ExitStatus::QUIT_REQUESTED : exitStatus;
 }
 
-static void
-  sendControls()
+static void sendControls()
 {
   unsigned char controls{};
 
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
     std::this_thread::sleep_for(std::chrono::milliseconds{ 10 });
     if (const auto aux = controls;
-        aux != (controls = MarioController::getControls()) &&
-        !dataTransfer::sendData(clientSocket, &controls, sizeof controls))
+        aux != (controls = MarioController::getControls())
+        && !dataTransfer::sendData(clientSocket, &controls, sizeof controls))
       serverOpen.store(false, std::memory_order_relaxed);
   }
 }
 
-static void
-  receiveState(std::atomic<GameState> *lsh)
+static void receiveState(std::atomic<GameState> *lsh)
 {
   GameState new_state{ { { "---" } } };
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
@@ -224,8 +222,8 @@ static void
   }
 }
 
-std::unique_ptr<SceneVista>
-  Client::getSceneView(std::size_t sceneNumber, std::size_t playerIndex)
+std::unique_ptr<SceneVista> Client::getSceneView(std::size_t sceneNumber,
+  std::size_t playerIndex)
 {
   switch (sceneNumber) {
   case 1:
@@ -245,8 +243,7 @@ int Client::showStartPage()
   Login response;
   do {
     const auto user = startPage.getLoginUser();
-    if (quitRequested)
-      return EXIT_FAILURE;
+    if (quitRequested) return EXIT_FAILURE;
 
     response = login(user);
     if (response == Login::OK) {

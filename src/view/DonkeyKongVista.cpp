@@ -15,8 +15,9 @@ void DonkeyKongVista::mostrar()
     DK_Y_OFFSET,
     DONKEYKONG_ANCHO,
     DONKEYKONG_ALTO };
-  static constexpr SDL_Rect dstRect{ DONKEYKONG_POS_X, DONKEYKONG_POS_Y,
-                                     DONKEYKONG_ANCHO, DONKEYKONG_ALTO };
+  static constexpr SDL_Rect dstRect{
+    DONKEYKONG_POS_X, DONKEYKONG_POS_Y, DONKEYKONG_ANCHO, DONKEYKONG_ALTO
+  };
   SDL_RenderCopyEx(renderer,
     texture,
     &srcRect,

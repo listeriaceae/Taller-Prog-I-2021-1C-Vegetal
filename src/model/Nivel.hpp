@@ -15,8 +15,7 @@ class Nivel : public Scene
 public:
   Nivel(std::vector<Mario> *players_) : Scene{}, players{ players_ }
   {
-    for (auto &player : *players)
-      player.setStageAndReset(&stage);
+    for (auto &player : *players) player.setStageAndReset(&stage);
   }
   [[nodiscard]] bool isComplete() const noexcept override
   {

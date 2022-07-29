@@ -21,8 +21,7 @@ enum KeyCode : std::uint8_t {
   RIGHT = 1 << 4
 };
 
-enum class ColliderType : std::uint8_t { NORMAL,
-  HAMMER };
+enum class ColliderType : std::uint8_t { NORMAL, HAMMER };
 
 enum class Estado : std::uint8_t {
   REPOSO,
@@ -36,8 +35,7 @@ enum class Estado : std::uint8_t {
   GAME_OVER
 };
 
-enum class Direccion : std::uint8_t { IZQUIERDA,
-  DERECHA };
+enum class Direccion : std::uint8_t { IZQUIERDA, DERECHA };
 
 struct PlayerState
 {

@@ -21,13 +21,13 @@ public:
   punto32_t pos{};
   fixed32_t speed{};
   static constexpr auto width = to_fixed32(ANCHO_PLATAFORMA);
+
 private:
   static constexpr auto left_limit = to_fixed32(17);
   static constexpr auto right_limit = to_fixed32(191);
 };
 
-[[nodiscard]] constexpr punto16_t
-  get_start(const MovingPlatform &mp)
+[[nodiscard]] constexpr punto16_t get_start(const MovingPlatform &mp)
 {
   return { static_cast<fixed16_t>(mp.pos.x), static_cast<fixed16_t>(mp.pos.y) };
 }

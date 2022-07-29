@@ -13,15 +13,9 @@ void MarioState::reset(Mario &mario) const
   mario.state = SueloState::getInstance();
 }
 
-bool MarioState::isPlaying() const
-{
-  return true;
-}
+bool MarioState::isPlaying() const { return true; }
 
-bool MarioState::isAlive() const
-{
-  return true;
-}
+bool MarioState::isAlive() const { return true; }
 
 void MarioState::resetStage(const Stage *stage_)
 {

@@ -2,14 +2,8 @@
 #include "../utils/Constants.hpp"
 #include "mario/SueloState.hpp"
 #include "mario/MuriendoState.hpp"
-#include "collider/NormalCollider.hpp"
-#include "collider/HammerCollider.hpp"
 
-
-Mario::Mario()
-  : collider{ NormalCollider::getInstance() }, state{ SueloState::getInstance() }
-{
-}
+Mario::Mario() : state{ SueloState::getInstance() } {}
 
 void Mario::setStageAndReset(Stage *stage)
 {
@@ -25,18 +19,9 @@ void Mario::mover()
 
 void Mario::die()
 {
-  if (contador != 0)
-    return;
-  ++contador;
+  if (ticks_dead != 0) return;
+  ++ticks_dead;
   --lives;
   this->audioObserver.update(DEATH);
   this->state = MuriendoState::getInstance();
-}
-
-void Mario::collide(Hammer &hammer)
-{
-  this->collider = HammerCollider::getInstance();
-  hammer.consume();
-  hammerUses = 3;
-  this->audioObserver.update(ITEM);
 }

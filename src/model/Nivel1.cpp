@@ -9,13 +9,15 @@
 
 Nivel1::Nivel1(std::vector<Mario> *players_) : Nivel{ players_ }
 {
-  const auto &config = configuration::GameConfiguration::getInstance(CONFIG_FILE);
+  const auto &config =
+    configuration::GameConfiguration::getInstance(CONFIG_FILE);
   const auto configEnemies = config.getEnemies();
   for (const auto &enemy : configEnemies) {
-    if (enemy.getType() == "Fuego")
-      this->addEnemies(enemy.getQuantity());
-    logger::Logger::getInstance().logDebug(fmt::format("Enemy type: '{}'", enemy.getType()));
-    logger::Logger::getInstance().logDebug(fmt::format("Enemy quantity: {}", enemy.getQuantity()));
+    if (enemy.getType() == "Fuego") this->addEnemies(enemy.getQuantity());
+    logger::Logger::getInstance().logDebug(
+      fmt::format("Enemy type: '{}'", enemy.getType()));
+    logger::Logger::getInstance().logDebug(
+      fmt::format("Enemy quantity: {}", enemy.getQuantity()));
   }
   this->initPlatforms();
   this->initLadders();
@@ -24,11 +26,9 @@ Nivel1::Nivel1(std::vector<Mario> *players_) : Nivel{ players_ }
 
 void Nivel1::initPlatforms()
 {
-  for (const auto &mplatform : movingPlatforms)
-    stage.addPlatform(&mplatform);
+  for (const auto &mplatform : movingPlatforms) stage.addPlatform(&mplatform);
 
-  for (const auto &platform : platforms)
-    stage.addPlatform(&platform);
+  for (const auto &platform : platforms) stage.addPlatform(&platform);
 }
 
 void Nivel1::initLadders()
@@ -43,7 +43,8 @@ void Nivel1::initLadders()
 void Nivel1::initHammers()
 {
   std::mt19937 mt{ std::random_device{}() };
-  std::uniform_int_distribution<fixed32_t> fixed32_rng{ to_fixed32(48), to_fixed32(208) };
+  std::uniform_int_distribution<fixed32_t> fixed32_rng{ to_fixed32(48),
+    to_fixed32(208) };
   for (int i = 0; i < MAX_HAMMERS; ++i)
     hammers.emplace_back(punto32_t{ fixed32_rng(mt), to_fixed32(208) });
 }
@@ -56,7 +57,9 @@ void Nivel1::addEnemies(unsigned int amount)
   for (decltype(amount) i = 0; i < amount; ++i) {
     const unsigned int j = int_rng(mt);
     const Platform &platform = platforms[j];
-    const auto pos = platform.getRandomPoint() - punto32_t{ to_fixed32(ANCHO_ENEMIGO_FUEGO) / 2, to_fixed32(ALTO_ENEMIGO_FUEGO) };
+    const auto pos = platform.getRandomPoint()
+                     - punto32_t{ to_fixed32(ANCHO_ENEMIGO_FUEGO) / 2,
+                         to_fixed32(ALTO_ENEMIGO_FUEGO) };
     const int direccion = bernoulli_rng(mt) ? -1 : 1;
     const auto [min, max] = platform.getLimits();
     this->enemies.emplace_back(pos, direccion, min, max);
@@ -65,28 +68,28 @@ void Nivel1::addEnemies(unsigned int amount)
 
 void Nivel1::update()
 {
-  for (auto &platform : movingPlatforms)
-    platform.move();
-  for (auto &enemy : enemies)
-    enemy.mover();
-  for (auto &mario : *players)
-    mario.mover();
+  for (auto &platform : movingPlatforms) platform.move();
+  for (auto &enemy : enemies) enemy.mover();
+  for (auto &mario : *players) mario.mover();
   checkCollisions();
 }
 
-static inline lv1
-  to_lv1(const std::array<MovingPlatform, 12UL> &mp, const std::vector<EnemigoFuego> &e)
+static inline lv1 to_lv1(const std::array<MovingPlatform, 12UL> &mp,
+  const std::vector<EnemigoFuego> &e)
 {
   lv1 out{};
-  std::transform(std::cbegin(mp), std::cend(mp), std::begin(out.platforms), get_start);
+  std::transform(
+    std::cbegin(mp), std::cend(mp), std::begin(out.platforms), get_start);
 
-  std::transform(std::cbegin(e), std::cend(e), std::begin(out.enemies), get_pos<EnemigoFuego>);
+  std::transform(std::cbegin(e),
+    std::cend(e),
+    std::begin(out.enemies),
+    get_pos<EnemigoFuego>);
 
   return out;
 }
 
-LevelState
-  Nivel1::getEstado() const
+LevelState Nivel1::getEstado() const
 {
   LevelState l_state{};
 
@@ -119,7 +122,9 @@ void Nivel1::checkCollisions()
         ++it;
 
     for (auto &hammer : hammers)
-      if (intersect(player_dimensions, hammer.get_dimensions()))
-        player.collide(hammer);
+      if (intersect(player_dimensions, hammer.get_dimensions())) {
+        player.grabHammer();
+        hammer.consume();
+      }
   }
 }
