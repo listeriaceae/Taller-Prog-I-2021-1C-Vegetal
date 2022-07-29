@@ -9,6 +9,7 @@ main(int argc, char *argv[])
     std::cerr << "ERROR, no port provided\n";
     return EXIT_FAILURE;
   }
+
   std::uint16_t port;
   auto res = std::from_chars(argv[1], nullptr, port);
   if (res.ec == std::errc::invalid_argument
