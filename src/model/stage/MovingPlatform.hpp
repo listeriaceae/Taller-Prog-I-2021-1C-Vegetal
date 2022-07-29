@@ -9,11 +9,13 @@ class MovingPlatform
 public:
   MovingPlatform(int platform, int level);
   void move();
-  [[nodiscard]] constexpr punto32_t getLimits() const
+  [[nodiscard]] constexpr punto32_t
+  getLimits() const
   {
     return { pos.x, pos.x + width };
   }
-  [[nodiscard]] static constexpr punto32_t getRange()
+  [[nodiscard]] static constexpr punto32_t
+  getRange()
   {
     return { left_limit, right_limit + width };
   }
@@ -27,7 +29,8 @@ private:
   static constexpr auto right_limit = to_fixed32(191);
 };
 
-[[nodiscard]] constexpr punto16_t get_start(const MovingPlatform &mp)
+[[nodiscard]] constexpr punto16_t
+get_start(const MovingPlatform &mp)
 {
   return { static_cast<fixed16_t>(mp.pos.x), static_cast<fixed16_t>(mp.pos.y) };
 }

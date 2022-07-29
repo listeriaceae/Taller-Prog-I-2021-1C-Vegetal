@@ -40,7 +40,8 @@ static int clientSocket{ -1 };
 static void receiveState(std::atomic<GameState> *lsh);
 static void sendControls();
 
-int Client::connectToServer(const char *serverIp, std::uint16_t port)
+int
+Client::connectToServer(const char *serverIp, std::uint16_t port)
 {
   std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port
             << '\n';
@@ -61,7 +62,7 @@ int Client::connectToServer(const char *serverIp, std::uint16_t port)
 
   // connect
   if (connect(
-        clientSocket, (struct sockaddr *)&serverAddress, sizeof serverAddress)
+        clientSocket, (struct sockaddr *) &serverAddress, sizeof serverAddress)
       != 0) {
     perror("ERROR connecting");
     close(clientSocket);
@@ -75,11 +76,11 @@ Client::Client()
 {
   SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
   window = SDL_CreateWindow("Donkey Kong 2: Jumpman Returns",
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    448,
-    512,
-    SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
+                            SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED,
+                            448,
+                            512,
+                            SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
   textureHandler::load();
   AudioController::loadAudioFiles();
@@ -97,9 +98,11 @@ Client::~Client()
   SDL_Quit();
 }
 
-int Client::startClient()
+int
+Client::startClient()
 {
-  if (this->showStartPage() == EXIT_FAILURE) return EXIT_FAILURE;
+  if (this->showStartPage() == EXIT_FAILURE)
+    return EXIT_FAILURE;
 
   if (serverOpen.load(std::memory_order_relaxed)) {
     showMessage::waitingLobby();
@@ -111,7 +114,8 @@ int Client::startClient()
   return EXIT_SUCCESS;
 }
 
-void Client::processExit(ExitStatus exitStatus)
+void
+Client::processExit(ExitStatus exitStatus)
 {
   switch (exitStatus) {
   case ExitStatus::CONNECTION_CLOSED:
@@ -143,7 +147,8 @@ void Client::processExit(ExitStatus exitStatus)
   };
 }
 
-ExitStatus Client::startGame()
+ExitStatus
+Client::startGame()
 {
   AudioController::startMusic();
 
@@ -162,7 +167,8 @@ ExitStatus Client::startGame()
     std::size_t match{ std::numeric_limits<std::size_t>::max() };
     const auto game_state = level_state.load(std::memory_order_relaxed);
     for (std::size_t i = 0; i < MAX_PLAYERS; ++i)
-      if (strncmp(game_state.players[i].name, name, 3) == 0) match = i;
+      if (strncmp(game_state.players[i].name, name, 3) == 0)
+        match = i;
     return match;
   }();
 
@@ -198,7 +204,8 @@ ExitStatus Client::startGame()
   return quitRequested ? ExitStatus::QUIT_REQUESTED : exitStatus;
 }
 
-static void sendControls()
+static void
+sendControls()
 {
   unsigned char controls{};
 
@@ -211,7 +218,8 @@ static void sendControls()
   }
 }
 
-static void receiveState(std::atomic<GameState> *lsh)
+static void
+receiveState(std::atomic<GameState> *lsh)
 {
   GameState new_state{ { { "---" } } };
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
@@ -222,8 +230,8 @@ static void receiveState(std::atomic<GameState> *lsh)
   }
 }
 
-std::unique_ptr<SceneVista> Client::getSceneView(std::size_t sceneNumber,
-  std::size_t playerIndex)
+std::unique_ptr<SceneVista>
+Client::getSceneView(std::size_t sceneNumber, std::size_t playerIndex)
 {
   switch (sceneNumber) {
   case 1:
@@ -237,13 +245,15 @@ std::unique_ptr<SceneVista> Client::getSceneView(std::size_t sceneNumber,
   }
 }
 
-int Client::showStartPage()
+int
+Client::showStartPage()
 {
   StartPage startPage{};
   Login response;
   do {
     const auto user = startPage.getLoginUser();
-    if (quitRequested) return EXIT_FAILURE;
+    if (quitRequested)
+      return EXIT_FAILURE;
 
     response = login(user);
     if (response == Login::OK) {
@@ -257,7 +267,8 @@ int Client::showStartPage()
   return EXIT_SUCCESS;
 }
 
-Login Client::login(user_t user)
+Login
+Client::login(user_t user)
 {
   dataTransfer::sendData(clientSocket, &user, sizeof user);
   auto response = Login::ABORTED;

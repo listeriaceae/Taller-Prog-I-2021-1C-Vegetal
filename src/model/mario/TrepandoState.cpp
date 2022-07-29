@@ -5,9 +5,14 @@
 
 const TrepandoState TrepandoState::instance{};
 
-const TrepandoState *TrepandoState::getInstance() { return &instance; }
+const TrepandoState *
+TrepandoState::getInstance()
+{
+  return &instance;
+}
 
-void TrepandoState::update(Mario &mario, std::uint8_t controls) const
+void
+TrepandoState::update(Mario &mario, std::uint8_t controls) const
 {
   mario.vel.y =
     (((controls & UP) >> 1) - ((controls & DOWN) >> 2)) * climb_speed;

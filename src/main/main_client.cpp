@@ -2,7 +2,8 @@
 #include <charconv>
 #include "../view/Client.hpp"
 
-int main(int argc, char *argv[])
+int
+main(int argc, char *argv[])
 {
   if (argc < 3) {
     std::cerr << "Use:" << argv[0] << "hostname port\n";

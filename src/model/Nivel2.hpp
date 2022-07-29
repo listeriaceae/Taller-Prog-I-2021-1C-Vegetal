@@ -20,8 +20,8 @@ private:
   void initHammers();
 
   void checkCollisions();
-  std::vector<Barril>::iterator erase_out_of_bounds(
-    std::vector<Barril>::iterator it);
+  std::vector<Barril>::iterator
+  erase_out_of_bounds(std::vector<Barril>::iterator it);
 
 private:
   static constexpr std::array<Platform, 66> platforms{

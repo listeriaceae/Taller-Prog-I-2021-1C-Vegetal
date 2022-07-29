@@ -2,7 +2,8 @@
 #include <charconv>
 #include "../model/Server.hpp"
 
-int main(int argc, char *argv[])
+int
+main(int argc, char *argv[])
 {
   if (argc < 2) {
     std::cerr << "ERROR, no port provided\n";
@@ -15,7 +16,8 @@ int main(int argc, char *argv[])
     std::cerr << "ERROR, invalid port\n";
     return EXIT_FAILURE;
   }
-  if (Server::serverListen(port) == EXIT_FAILURE) return EXIT_FAILURE;
+  if (Server::serverListen(port) == EXIT_FAILURE)
+    return EXIT_FAILURE;
 
   Server server{};
   server.startServer();

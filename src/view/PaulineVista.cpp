@@ -10,7 +10,8 @@
 extern SDL_Renderer *renderer;
 extern SDL_Texture *texture;
 
-void PaulineVista::mostrar()
+void
+PaulineVista::mostrar()
 {
   static constexpr SDL_Rect dstRect{
     PAULINE_POS_X, PAULINE_POS_Y, PAULINE_ANCHO, PAULINE_ALTO
@@ -23,10 +24,11 @@ void PaulineVista::mostrar()
   ++counter;
   int animate = 32 <= counter && counter < 96;
   const SDL_Rect srcRect{ 288 + ((animate & (1 - ((counter >> 3) & 1))) << 4),
-    282,
-    PAULINE_ANCHO,
-    PAULINE_ALTO };
+                          282,
+                          PAULINE_ANCHO,
+                          PAULINE_ALTO };
   SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
 
-  if (animate) SDL_RenderCopy(renderer, texture, &helpSrcRect, &helpDstRect);
+  if (animate)
+    SDL_RenderCopy(renderer, texture, &helpSrcRect, &helpDstRect);
 }

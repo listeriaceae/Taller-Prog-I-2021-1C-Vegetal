@@ -20,7 +20,8 @@ static Mix_Chunk *finishedLevelSound{ nullptr };
 static Mix_Chunk *itemSound{ nullptr };
 static Mix_Chunk *enemyDeathSound{ nullptr };
 
-void loadAudioFiles()
+void
+loadAudioFiles()
 {
   if (Mix_OpenAudio(
         MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 512)
@@ -46,7 +47,7 @@ void loadAudioFiles()
   if (finishedLevelSound == NULL)
     logger::Logger::getInstance().logError(
       fmt::format("finished level sound effect file not found: '{}'",
-        FINISHED_LEVEL_SOUND_FILE));
+                  FINISHED_LEVEL_SOUND_FILE));
   else
     finishedLevelSound->volume = 40;
   itemSound = Mix_LoadWAV(ITEM_SOUND_FILE);
@@ -60,13 +61,15 @@ void loadAudioFiles()
       "enemy death sound effect file not found: '{}'", ENEMY_DEATH_SOUND_FILE));
 }
 
-void startMusic()
+void
+startMusic()
 {
   static std::once_flag flag;
   std::call_once(flag, Mix_PlayMusic, music, -1);
 }
 
-static void toggleMusic()
+static void
+toggleMusic()
 {
   if (Mix_PlayingMusic())
     if (Mix_PausedMusic())
@@ -77,37 +80,54 @@ static void toggleMusic()
     startMusic();
 }
 
-void checkToggleMusicEvent(int m_state)
+void
+checkToggleMusicEvent(int m_state)
 {
   static bool isKeyDown = false;
 
-  if (!isKeyDown && m_state) toggleMusic();
+  if (!isKeyDown && m_state)
+    toggleMusic();
   isKeyDown = m_state;
 }
 
-void playSounds(int sounds)
+void
+playSounds(int sounds)
 {
-  if (sounds == 0) return;
+  if (sounds == 0)
+    return;
 
-  if (sounds & JUMP) Mix_PlayChannel(-1, jumpSound, 0);
-  if (sounds & DEATH) Mix_PlayChannel(-1, deathSound, 0);
-  if (sounds & FINISHED_LEVEL) Mix_PlayChannel(-1, finishedLevelSound, 0);
-  if (sounds & ITEM) Mix_PlayChannel(-1, itemSound, 0);
-  if (sounds & ENEMY_DEATH) Mix_PlayChannel(-1, enemyDeathSound, 0);
+  if (sounds & JUMP)
+    Mix_PlayChannel(-1, jumpSound, 0);
+  if (sounds & DEATH)
+    Mix_PlayChannel(-1, deathSound, 0);
+  if (sounds & FINISHED_LEVEL)
+    Mix_PlayChannel(-1, finishedLevelSound, 0);
+  if (sounds & ITEM)
+    Mix_PlayChannel(-1, itemSound, 0);
+  if (sounds & ENEMY_DEATH)
+    Mix_PlayChannel(-1, enemyDeathSound, 0);
 }
 
-void closeAudioFiles()
+void
+closeAudioFiles()
 {
-  if (music != nullptr) Mix_FreeMusic(music);
-  if (jumpSound != nullptr) Mix_FreeChunk(jumpSound);
-  if (deathSound != nullptr) Mix_FreeChunk(deathSound);
-  if (finishedLevelSound != nullptr) Mix_FreeChunk(finishedLevelSound);
-  if (itemSound != nullptr) Mix_FreeChunk(itemSound);
-  if (enemyDeathSound != nullptr) Mix_FreeChunk(enemyDeathSound);
+  if (music != nullptr)
+    Mix_FreeMusic(music);
+  if (jumpSound != nullptr)
+    Mix_FreeChunk(jumpSound);
+  if (deathSound != nullptr)
+    Mix_FreeChunk(deathSound);
+  if (finishedLevelSound != nullptr)
+    Mix_FreeChunk(finishedLevelSound);
+  if (itemSound != nullptr)
+    Mix_FreeChunk(itemSound);
+  if (enemyDeathSound != nullptr)
+    Mix_FreeChunk(enemyDeathSound);
   music = nullptr;
   jumpSound = deathSound = finishedLevelSound = itemSound = enemyDeathSound =
     nullptr;
-  while (Mix_Init(0)) Mix_Quit();
+  while (Mix_Init(0))
+    Mix_Quit();
   Mix_CloseAudio();
 }
 }// namespace AudioController

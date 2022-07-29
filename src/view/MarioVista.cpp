@@ -21,15 +21,19 @@ extern SDL_Renderer *renderer;
 extern SDL_Texture *texture;
 
 MarioVista::MarioVista()
-  : srcRect{ 0, 256, ANCHO_MARIO, ALTO_MARIO }, dstRect{ 0,
-      0,
-      ANCHO_MARIO,
-      ALTO_MARIO }
+  : srcRect{ 0, 256, ANCHO_MARIO, ALTO_MARIO }, dstRect{
+      0, 0, ANCHO_MARIO, ALTO_MARIO
+    }
 {}
 
-void MarioVista::setColor(int color) { srcRect.y = 256 + (color << 4); }
+void
+MarioVista::setColor(int color)
+{
+  srcRect.y = 256 + (color << 4);
+}
 
-void MarioVista::mostrar(const PlayerState &estadoMario)
+void
+MarioVista::mostrar(const PlayerState &estadoMario)
 {
   const auto nextX = from_fixed16<int>(estadoMario.pos.x);
   const auto nextY = from_fixed16<int>(estadoMario.pos.y);
@@ -62,7 +66,8 @@ void MarioVista::mostrar(const PlayerState &estadoMario)
   SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0., NULL, flip);
 }
 
-void MarioVista::updateReposo(Estado estado, ColliderType collider)
+void
+MarioVista::updateReposo(Estado estado, ColliderType collider)
 {
   switch (collider) {
   case ColliderType::NORMAL:
@@ -79,7 +84,8 @@ void MarioVista::updateReposo(Estado estado, ColliderType collider)
   }
 }
 
-void MarioVista::updateCorriendo(int nextX, ColliderType collider)
+void
+MarioVista::updateCorriendo(int nextX, ColliderType collider)
 {
   static constexpr std::array<int, 4> sprite_index{ 0, 1, 0, 2 };
 
@@ -98,27 +104,30 @@ void MarioVista::updateCorriendo(int nextX, ColliderType collider)
     drawHammer();
     srcRect.x =
       (sprite_index[(tiempo / TIEMPO_POR_FRAME_CORRIENDO) % sprite_index.size()]
-        * 32)
+       * 32)
       + (hammerTime & 16) + MARIO_POSE_MARTILLO_INDEX * MARIO_SPRITE_SIZE;
     break;
   }
 }
 
-void MarioVista::updateSaltando(int nextX)
+void
+MarioVista::updateSaltando(int nextX)
 {
   flip = static_cast<SDL_RendererFlip>(
     (dstRect.x < nextX) | (static_cast<int>(flip) & (dstRect.x == nextX)));
   srcRect.x = MARIO_SALTANDO_INDEX * MARIO_SPRITE_SIZE;
 }
 
-void MarioVista::updateTrepando(int nextY)
+void
+MarioVista::updateTrepando(int nextY)
 {
   tiempo += dstRect.y != nextY;
   flip = static_cast<SDL_RendererFlip>((tiempo & 8) >> 3);
   srcRect.x = MARIO_TREPANDO_INDEX * MARIO_SPRITE_SIZE;
 }
 
-void MarioVista::updateMuriendo(Estado estado)
+void
+MarioVista::updateMuriendo(Estado estado)
 {
   tiempo =
     srcRect.x >= MARIO_MURIENDO_INDEX * MARIO_SPRITE_SIZE ? tiempo + 1 : 0;
@@ -132,17 +141,19 @@ void MarioVista::updateMuriendo(Estado estado)
   }
 }
 
-void MarioVista::updateNivelCompleto()
+void
+MarioVista::updateNivelCompleto()
 {
   flip = SDL_FLIP_NONE;
   srcRect.x = 0;
 }
 
-void MarioVista::drawHammer()
+void
+MarioVista::drawHammer()
 {
   hammerTime += 2;
   HammerVista::mostrar(dstRect.x,
-    dstRect.y,
-    static_cast<EstadoHammer>((hammerTime & 16) >> 4),
-    flip);
+                       dstRect.y,
+                       static_cast<EstadoHammer>((hammerTime & 16) >> 4),
+                       flip);
 }

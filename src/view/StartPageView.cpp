@@ -35,41 +35,42 @@ static constexpr char MSG_INVALID_PASS[] = "INVALID PASSWORD";
 static constexpr char MSG_USER_ALREADY_CONNECTED[] = "USER ALREADY CONNECTED";
 static constexpr char MSG_MAX_USERS_CONNECTED[] = "MAX USERS CONNECTED";
 
-static constexpr SDL_Rect usernameRect = { TEXT_BUTTON_X,
-  USER_BUTTON_Y,
-  TEXT_BUTTON_WIDTH,
-  BUTTON_HEIGHT };
+static constexpr SDL_Rect usernameRect = {
+  TEXT_BUTTON_X, USER_BUTTON_Y, TEXT_BUTTON_WIDTH, BUTTON_HEIGHT
+};
 
-static constexpr SDL_Rect passwordRect = { TEXT_BUTTON_X,
-  PASS_BUTTON_Y,
-  TEXT_BUTTON_WIDTH,
-  BUTTON_HEIGHT };
+static constexpr SDL_Rect passwordRect = {
+  TEXT_BUTTON_X, PASS_BUTTON_Y, TEXT_BUTTON_WIDTH, BUTTON_HEIGHT
+};
 
-static constexpr SDL_Rect doneRect = { DONE_BUTTON_X,
-  DONE_BUTTON_Y,
-  DONE_BUTTON_WIDTH,
-  BUTTON_HEIGHT };
+static constexpr SDL_Rect doneRect = {
+  DONE_BUTTON_X, DONE_BUTTON_Y, DONE_BUTTON_WIDTH, BUTTON_HEIGHT
+};
 
-static int setFocusColor(int focus)
+static int
+setFocusColor(int focus)
 {
   return SDL_SetRenderDrawColor(
     renderer, 128 + focus * 127, (1 - focus) * 128, (1 - focus) * 128, 255);
 }
 
 namespace {
-constexpr bool mouseOnUsernameButton(int x, int y)
+constexpr bool
+mouseOnUsernameButton(int x, int y)
 {
   return usernameRect.y <= y && y <= usernameRect.y + usernameRect.h
          && usernameRect.x <= x && x <= usernameRect.x + usernameRect.w;
 }
 
-constexpr bool mouseOnPasswordButton(int x, int y)
+constexpr bool
+mouseOnPasswordButton(int x, int y)
 {
   return passwordRect.y <= y && y <= passwordRect.y + passwordRect.h
          && passwordRect.x <= x && x <= passwordRect.x + passwordRect.w;
 }
 
-constexpr bool mouseOnDoneButton(int x, int y)
+constexpr bool
+mouseOnDoneButton(int x, int y)
 {
   return doneRect.y <= y && y <= doneRect.y + doneRect.h && doneRect.x <= x
          && x <= doneRect.x + doneRect.w;
@@ -78,7 +79,8 @@ constexpr bool mouseOnDoneButton(int x, int y)
 
 StartPage::StartPage() : resultMsg{ "" } {}
 
-user_t StartPage::getLoginUser()
+user_t
+StartPage::getLoginUser()
 {
   SDL_StartTextInput();
 
@@ -114,7 +116,8 @@ user_t StartPage::getLoginUser()
   return user;
 }
 
-void StartPage::show() const
+void
+StartPage::show() const
 {
   SDL_RenderClear(renderer);
 
@@ -146,14 +149,16 @@ void StartPage::show() const
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
 
-void StartPage::showError() const
+void
+StartPage::showError() const
 {
   const punto<int> pos{ TEXT_BUTTON_X + static_cast<int>(2 * RESIZE),
-    ERROR_MSG_Y };
+                        ERROR_MSG_Y };
   TextRenderer::renderText(pos, resultMsg, 1, Color::RED);
 }
 
-bool StartPage::handle(const SDL_Event &event)
+bool
+StartPage::handle(const SDL_Event &event)
 {
   if (event.type == SDL_MOUSEBUTTONDOWN
       && event.button.button == SDL_BUTTON_LEFT) {
@@ -177,7 +182,8 @@ bool StartPage::handle(const SDL_Event &event)
       break;
     case SDLK_KP_ENTER:
     case SDLK_RETURN:
-      if (focus) return true;
+      if (focus)
+        return true;
       [[fallthrough]];
     case SDLK_TAB:
       focus = (focus + 1) % 3;
@@ -196,7 +202,8 @@ bool StartPage::handle(const SDL_Event &event)
   return false;
 }
 
-void StartPage::setResponse(Login response)
+void
+StartPage::setResponse(Login response)
 {
   switch (response) {
   case Login::INVALID_USER_PASS:

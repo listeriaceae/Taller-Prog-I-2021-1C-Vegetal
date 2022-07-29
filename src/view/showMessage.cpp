@@ -7,7 +7,8 @@ extern SDL_Renderer *renderer;
 extern SDL_Texture *texture;
 
 namespace showMessage {
-void waitingLobby()
+void
+waitingLobby()
 {
   SDL_RenderClear(renderer);
   {
@@ -17,7 +18,8 @@ void waitingLobby()
   SDL_RenderPresent(renderer);
 }
 
-void disconnection()
+void
+disconnection()
 {
   SDL_RenderClear(renderer);
   {
@@ -31,7 +33,8 @@ void disconnection()
   SDL_RenderPresent(renderer);
 }
 
-void gameOver()
+void
+gameOver()
 {
   SDL_RenderClear(renderer);
   {
@@ -41,7 +44,8 @@ void gameOver()
   SDL_RenderPresent(renderer);
 }
 
-void gameComplete()
+void
+gameComplete()
 {
   SDL_RenderClear(renderer);
   {

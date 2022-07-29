@@ -4,13 +4,22 @@
 #include "../Mario.hpp"
 #include "../../utils/Constants.hpp"
 
-static constexpr int sign(fixed32_t x) noexcept { return (0 < x) - (x < 0); }
+static constexpr int
+sign(fixed32_t x) noexcept
+{
+  return (0 < x) - (x < 0);
+}
 
 const SueloState SueloState::instance{};
 
-const SueloState *SueloState::getInstance() { return &instance; }
+const SueloState *
+SueloState::getInstance()
+{
+  return &instance;
+}
 
-void SueloState::update(Mario &mario, std::uint8_t controls) const
+void
+SueloState::update(Mario &mario, std::uint8_t controls) const
 {
   {
     const int y_direction = ((controls & UP) >> 1) - ((controls & DOWN) >> 2);

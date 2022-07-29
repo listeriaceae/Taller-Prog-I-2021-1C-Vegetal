@@ -6,7 +6,11 @@
 class BarrilVista
 {
 public:
-  constexpr void startRender() { update = 1; };
+  constexpr void
+  startRender()
+  {
+    update = 1;
+  };
   void mostrar(punto16_t pos);
 
 private:

@@ -9,9 +9,21 @@ class Interlude : public Scene
 {
 public:
   Interlude(bool gameOver_) : Scene{}, gameOver{ gameOver_ } {};
-  void update() override { ++ticks; };
-  LevelState getEstado() const override { return { {}, {}, gameOver }; };
-  bool isComplete() const override { return ticks > duration; };
+  void
+  update() override
+  {
+    ++ticks;
+  };
+  LevelState
+  getEstado() const override
+  {
+    return { {}, {}, gameOver };
+  };
+  bool
+  isComplete() const override
+  {
+    return ticks > duration;
+  };
 
 private:
   size_t ticks{};

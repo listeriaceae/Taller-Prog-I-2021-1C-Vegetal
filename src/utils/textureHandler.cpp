@@ -8,7 +8,8 @@ extern SDL_Renderer *renderer;
 extern SDL_Texture *texture;
 
 namespace textureHandler {
-void load()
+void
+load()
 {
   SDL_Surface *surface = IMG_Load("res/Images/DonkeyKong.png");
 

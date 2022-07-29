@@ -14,25 +14,30 @@
 class Tile
 {
 public:
-  inline void addPlatform(const Platform *platform)
+  inline void
+  addPlatform(const Platform *platform)
   {
     platforms.push_back(platform);
   }
-  inline void addPlatform(const MovingPlatform *platform)
+  inline void
+  addPlatform(const MovingPlatform *platform)
   {
     mplatforms.push_back(platform);
   }
-  inline void getPlatforms(std::unordered_set<const Platform *> &platforms_,
-    std::unordered_set<const MovingPlatform *> &mplatforms_) const
+  inline void
+  getPlatforms(std::unordered_set<const Platform *> &platforms_,
+               std::unordered_set<const MovingPlatform *> &mplatforms_) const
   {
     platforms_.insert(platforms.cbegin(), platforms.cend());
     mplatforms_.insert(mplatforms.cbegin(), mplatforms.cend());
   }
-  inline void setLadderBottom(Ladder ladder)
+  inline void
+  setLadderBottom(Ladder ladder)
   {
     ladderBottom.emplace(std::move(ladder));
   }
-  inline void setLadderTop(Ladder ladder)
+  inline void
+  setLadderTop(Ladder ladder)
   {
     ladderTop.emplace(std::move(ladder));
   }

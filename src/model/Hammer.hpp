@@ -9,11 +9,16 @@ class Hammer
 {
 public:
   constexpr Hammer(punto32_t pos_) noexcept : pos{ pos_ } {}
-  constexpr dimensions get_dimensions() const noexcept
+  constexpr dimensions
+  get_dimensions() const noexcept
   {
     return { pos.x + x_diff, pos.y + y_diff, pos.x + width, pos.y + height };
   }
-  constexpr void consume() noexcept { pos = {}; }
+  constexpr void
+  consume() noexcept
+  {
+    pos = {};
+  }
   punto32_t pos;
 
 private:

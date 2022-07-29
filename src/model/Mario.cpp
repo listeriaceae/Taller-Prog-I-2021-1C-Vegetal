@@ -5,21 +5,25 @@
 
 Mario::Mario() : state{ SueloState::getInstance() } {}
 
-void Mario::setStageAndReset(Stage *stage)
+void
+Mario::setStageAndReset(Stage *stage)
 {
   MarioState::resetStage(stage);
   this->reset();
 }
 
-void Mario::mover()
+void
+Mario::mover()
 {
   auto old = controls.fetch_and(~SPACE, std::memory_order_relaxed);
   this->state->update(*this, old);
 }
 
-void Mario::die()
+void
+Mario::die()
 {
-  if (ticks_dead != 0) return;
+  if (ticks_dead != 0)
+    return;
   ++ticks_dead;
   --lives;
   this->audioObserver.update(DEATH);

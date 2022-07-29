@@ -15,9 +15,21 @@ public:
     : type{ std::move(t) }, quantity{ q }
   {}
 
-  const std::string &getType() const & { return type; }
-  std::string getType() const && { return type; }
-  unsigned int getQuantity() const { return quantity; }
+  const std::string &
+  getType() const &
+  {
+    return type;
+  }
+  std::string
+  getType() const &&
+  {
+    return type;
+  }
+  unsigned int
+  getQuantity() const
+  {
+    return quantity;
+  }
 
 private:
   std::string type;
@@ -29,16 +41,41 @@ class GameConfiguration
 public:
   static const GameConfiguration &getInstance(const char *json_filename);
 
-  int getLogLevel() const { return logLevel; }
-  const std::vector<user_t> &getUsers() const & { return users; }
-  std::vector<user_t> getUsers() const && { return users; }
-  const std::vector<configuration::Enemy> &getEnemies() const &
+  int
+  getLogLevel() const
+  {
+    return logLevel;
+  }
+  const std::vector<user_t> &
+  getUsers() const &
+  {
+    return users;
+  }
+  std::vector<user_t>
+  getUsers() const &&
+  {
+    return users;
+  }
+  const std::vector<configuration::Enemy> &
+  getEnemies() const &
   {
     return enemies;
   }
-  std::vector<configuration::Enemy> getEnemies() const && { return enemies; }
-  std::size_t getMaxPlayers() const { return maxPlayers; }
-  bool getDefaultConfigFlag() const { return useDefaultConfig; }
+  std::vector<configuration::Enemy>
+  getEnemies() const &&
+  {
+    return enemies;
+  }
+  std::size_t
+  getMaxPlayers() const
+  {
+    return maxPlayers;
+  }
+  bool
+  getDefaultConfigFlag() const
+  {
+    return useDefaultConfig;
+  }
 
 private:
   GameConfiguration(const char *json_filename);
@@ -49,7 +86,7 @@ private:
   bool useDefaultConfig;
 
   static const Json::Value getJsonValue(const Json::Value &root,
-    std::string name);
+                                        std::string name);
   bool loadFromFile(const char *configFileName);
 };
 }// namespace configuration

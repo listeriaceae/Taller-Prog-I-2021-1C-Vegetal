@@ -3,7 +3,8 @@
 #include "AudioController.hpp"
 
 namespace MarioController {
-unsigned char getControls()
+unsigned char
+getControls()
 {
   const auto *const keyboard = SDL_GetKeyboardState(NULL);
 

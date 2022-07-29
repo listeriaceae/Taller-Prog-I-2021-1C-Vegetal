@@ -9,11 +9,13 @@ class Barril
 {
 public:
   void mover();
-  [[nodiscard]] constexpr bool out_of_bounds() const
+  [[nodiscard]] constexpr bool
+  out_of_bounds() const
   {
     return pos.x > to_fixed32(ANCHO_NIVEL);
   }
-  dimensions get_dimensions() const
+  dimensions
+  get_dimensions() const
   {
     static constexpr auto width = to_fixed32(ANCHO_BARRIL);
     static constexpr auto height = to_fixed32(ALTO_BARRIL);

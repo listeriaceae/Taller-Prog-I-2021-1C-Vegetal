@@ -5,9 +5,14 @@
 
 const MuriendoState MuriendoState::instance{};
 
-const MuriendoState *MuriendoState::getInstance() { return &instance; }
+const MuriendoState *
+MuriendoState::getInstance()
+{
+  return &instance;
+}
 
-void MuriendoState::reset(Mario &mario) const
+void
+MuriendoState::reset(Mario &mario) const
 {
   if (0 < mario.lives) {
     MarioState::reset(mario);
@@ -16,7 +21,8 @@ void MuriendoState::reset(Mario &mario) const
   }
 }
 
-void MuriendoState::update(Mario &mario, std::uint8_t) const
+void
+MuriendoState::update(Mario &mario, std::uint8_t) const
 {
   ++mario.ticks_dead;
   if (static constexpr decltype(mario.ticks_dead) respawn_ticks = 180;

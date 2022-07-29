@@ -6,9 +6,14 @@
 
 const AireState AireState::instance{};
 
-const AireState *AireState::getInstance() { return &instance; }
+const AireState *
+AireState::getInstance()
+{
+  return &instance;
+}
 
-void AireState::update(Mario &mario, std::uint8_t) const
+void
+AireState::update(Mario &mario, std::uint8_t) const
 {
   mario.estado = mario.vel.y > 0 ? Estado::SALTANDO : mario.estado;
   mario.vel.x -=

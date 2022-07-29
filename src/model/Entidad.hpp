@@ -11,7 +11,8 @@ concept has_pos = requires(T t)
 
 template<typename E>
 requires has_pos<E>
-constexpr punto16_t get_pos(const E &e) noexcept
+constexpr punto16_t
+get_pos(const E &e) noexcept
 {
   return { static_cast<fixed16_t>(e.pos.x), static_cast<fixed16_t>(e.pos.y) };
 }

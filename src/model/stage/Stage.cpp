@@ -9,7 +9,8 @@ static constexpr auto hitbox_width = to_fixed32(8);
 static constexpr auto mario_width = to_fixed32(ANCHO_MARIO);
 static constexpr auto mario_height = to_fixed32(ALTO_MARIO);
 
-void Stage::addLadder(Ladder ladder)
+void
+Stage::addLadder(Ladder ladder)
 {
   const std::size_t x = (ladder.x + mario_width / 2) / stage_width;
   {
@@ -21,16 +22,19 @@ void Stage::addLadder(Ladder ladder)
 }
 
 std::optional<Ladder>
-  Stage::getLadder(fixed32_t x, fixed32_t y, int direction) const
+Stage::getLadder(fixed32_t x, fixed32_t y, int direction) const
 {
   const std::size_t i =
     (y / stage_height) * grid_columns + (x + mario_width / 2) / stage_width;
-  if (0 < direction) return grid[i].ladderBottom;
-  if (direction < 0) return grid[i].ladderTop;
+  if (0 < direction)
+    return grid[i].ladderBottom;
+  if (direction < 0)
+    return grid[i].ladderTop;
   return std::nullopt;
 }
 
-void Stage::addPlatform(const Platform *platform)
+void
+Stage::addPlatform(const Platform *platform)
 {
   auto [x, max] = platform->getLimits();
   const auto j = (platform->y / stage_height) * grid_columns;
@@ -41,11 +45,13 @@ void Stage::addPlatform(const Platform *platform)
     x += ANCHO_TILE;
   } while (x < max);
 
-  if (i != (i = j + max / stage_width)) grid[i].addPlatform(platform);
+  if (i != (i = j + max / stage_width))
+    grid[i].addPlatform(platform);
 }
 
 
-void Stage::addPlatform(const MovingPlatform *mplatform)
+void
+Stage::addPlatform(const MovingPlatform *mplatform)
 {
   auto [x, max] = mplatform->getRange();
   const auto j = (mplatform->pos.y / stage_height) * grid_columns;
@@ -56,13 +62,12 @@ void Stage::addPlatform(const MovingPlatform *mplatform)
     x += ANCHO_TILE;
   } while (x < max);
 
-  if (i != (i = j + max / stage_width)) grid[i].addPlatform(mplatform);
+  if (i != (i = j + max / stage_width))
+    grid[i].addPlatform(mplatform);
 }
 
-bool Stage::collide(fixed32_t &x,
-  fixed32_t &y,
-  fixed32_t &dx,
-  fixed32_t &dy) const
+bool
+Stage::collide(fixed32_t &x, fixed32_t &y, fixed32_t &dx, fixed32_t &dy) const
 {
   std::unordered_set<const Platform *> platforms{ 3 };
   std::unordered_set<const MovingPlatform *> mplatforms{ 6 };

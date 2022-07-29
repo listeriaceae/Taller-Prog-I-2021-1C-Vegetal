@@ -17,7 +17,8 @@ MovingPlatform::MovingPlatform(int platform, int level)
     level0_y + (level / 2) * y_gap + (level % 2) * to_fixed32(ALTO_PLATAFORMA);
 }
 
-void MovingPlatform::move()
+void
+MovingPlatform::move()
 {
   pos.x += speed;
   if (pos.x < left_limit)

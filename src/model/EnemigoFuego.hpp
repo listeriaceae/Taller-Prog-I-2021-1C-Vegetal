@@ -10,7 +10,8 @@ class EnemigoFuego
 public:
   EnemigoFuego(punto32_t pos, int direccion, fixed32_t min, fixed32_t max);
   void mover();
-  dimensions get_dimensions() const
+  dimensions
+  get_dimensions() const
   {
     static constexpr auto x_diff = to_fixed32(2);
     static constexpr auto y_diff = to_fixed32(8);

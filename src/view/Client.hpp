@@ -22,7 +22,7 @@ private:
   int showStartPage();
   Login login(user_t user);
   std::unique_ptr<SceneVista> getSceneView(std::size_t sceneNumber,
-    std::size_t playerIndex);
+                                           std::size_t playerIndex);
   void processExit(ExitStatus clientExitStatus);
 
   char name[4] = "---";

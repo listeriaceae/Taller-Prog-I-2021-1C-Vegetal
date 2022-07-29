@@ -8,21 +8,22 @@
 extern SDL_Renderer *renderer;
 extern SDL_Texture *texture;
 
-void DonkeyKongVista::mostrar()
+void
+DonkeyKongVista::mostrar()
 {
   const int animate = ++counter < 96;
   const SDL_Rect srcRect{ DK_X_OFFSET + animate * DONKEYKONG_ANCHO,
-    DK_Y_OFFSET,
-    DONKEYKONG_ANCHO,
-    DONKEYKONG_ALTO };
+                          DK_Y_OFFSET,
+                          DONKEYKONG_ANCHO,
+                          DONKEYKONG_ALTO };
   static constexpr SDL_Rect dstRect{
     DONKEYKONG_POS_X, DONKEYKONG_POS_Y, DONKEYKONG_ANCHO, DONKEYKONG_ALTO
   };
   SDL_RenderCopyEx(renderer,
-    texture,
-    &srcRect,
-    &dstRect,
-    0.,
-    NULL,
-    static_cast<SDL_RendererFlip>(animate && (counter & 32)));
+                   texture,
+                   &srcRect,
+                   &dstRect,
+                   0.,
+                   NULL,
+                   static_cast<SDL_RendererFlip>(animate && (counter & 32)));
 }

@@ -7,7 +7,8 @@ extern SDL_Texture *texture;
 FuegoVista::FuegoVista(int x, int y) : dstRect{ x, y, ANCHO_FUEGO, ALTO_FUEGO }
 {}
 
-void FuegoVista::mostrar()
+void
+FuegoVista::mostrar()
 {
   static constexpr auto frame_duration = 4;
   static constexpr auto frame_count = 4;

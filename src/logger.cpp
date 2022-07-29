@@ -3,13 +3,15 @@
 #include "logger.hpp"
 
 namespace logger {
-Logger &Logger::getInstance()
+Logger &
+Logger::getInstance()
 {
   static Logger instance{};
   return instance;
 }
 
-void Logger::log(std::string_view message, std::string_view type) const
+void
+Logger::log(std::string_view message, std::string_view type) const
 {
   char mbstr[20];
   auto current_time =
@@ -20,7 +22,8 @@ void Logger::log(std::string_view message, std::string_view type) const
   file << mbstr << type << message << std::endl;
 }
 
-void Logger::logNewGame(void) const
+void
+Logger::logNewGame(void) const
 {
   logInformation(R"(
 -------------------------
@@ -28,7 +31,8 @@ void Logger::logNewGame(void) const
 -------------------------)");
 }
 
-void Logger::logGameOver(void) const
+void
+Logger::logGameOver(void) const
 {
   logInformation(R"(
 -------------------------

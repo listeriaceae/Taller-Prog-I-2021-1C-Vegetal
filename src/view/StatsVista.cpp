@@ -43,22 +43,24 @@ StatsVista::StatsVista()
   }
 }
 
-void StatsVista::mostrar(const PlayerInfo &estado, std::size_t nroJugador)
+void
+StatsVista::mostrar(const PlayerInfo &estado, std::size_t nroJugador)
 {
   const punto<int> top_left{ posiciones.at(nroJugador), MARGEN };
   const punto<int> score_pos{ top_left.x, top_left.y + OFFSET_SCORE_Y };
   const char score_str[7] = { '0',
-    static_cast<char>('0' + (estado.score / 100) % 10),
-    static_cast<char>('0' + (estado.score / 10) % 10),
-    static_cast<char>('0' + estado.score % 10),
-    '0',
-    '0' };
+                              static_cast<char>('0'
+                                                + (estado.score / 100) % 10),
+                              static_cast<char>('0' + (estado.score / 10) % 10),
+                              static_cast<char>('0' + estado.score % 10),
+                              '0',
+                              '0' };
 
   const SDL_Rect srcRect{ ICON_X_OFFSET
                             + static_cast<int>(nroJugador) * ANCHO_ICON,
-    ICON_Y_OFFSET,
-    ANCHO_ICON,
-    ALTO_ICON };
+                          ICON_Y_OFFSET,
+                          ANCHO_ICON,
+                          ALTO_ICON };
   SDL_Rect dstRect{ top_left.x + ANCHO_NOMBRE, 4, 7, 8 };
   for (int i = 0; i < estado.lives; ++i) {
     SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);

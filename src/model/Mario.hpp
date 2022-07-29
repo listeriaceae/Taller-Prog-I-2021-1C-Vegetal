@@ -13,7 +13,8 @@ class Mario
 {
 public:
   Mario();
-  inline void reset()
+  inline void
+  reset()
   {
     state->reset(*this);
     hammerUses = 0;
@@ -21,13 +22,19 @@ public:
   void setStageAndReset(Stage *stage);
   void mover();
   void die();
-  inline void disable()
+  inline void
+  disable()
   {
     isEnabled = false;
     controls = {};
   }
-  inline void enable() { isEnabled = true; }
-  inline dimensions get_dimensions() const
+  inline void
+  enable()
+  {
+    isEnabled = true;
+  }
+  inline dimensions
+  get_dimensions() const
   {
     static constexpr auto width = to_fixed32(ANCHO_MARIO);
     static constexpr auto height = to_fixed32(ALTO_MARIO);
@@ -35,11 +42,13 @@ public:
     static constexpr auto y_diff = to_fixed32(2);
 
     return { pos.x + x_diff,
-      pos.y + y_diff,
-      pos.x + (width - x_diff),
-      pos.y + (height - y_diff) };
+             pos.y + y_diff,
+             pos.x + (width - x_diff),
+             pos.y + (height - y_diff) };
   }
-  template<typename E> inline bool collide(const E &enemy)
+  template<typename E>
+  inline bool
+  collide(const E &enemy)
   {
     if (hammerUses > 0 && hammerHit(enemy)) {
       --hammerUses;
@@ -51,7 +60,8 @@ public:
       return false;
     }
   }
-  void grabHammer()
+  void
+  grabHammer()
   {
     hammerUses = 3;
     audioObserver.update(ITEM);
@@ -73,7 +83,9 @@ public:
   std::atomic<std::uint8_t> controls{ 0 };
 
 private:
-  template<typename E> bool hammerHit(const E &enemy) const
+  template<typename E>
+  bool
+  hammerHit(const E &enemy) const
   {
     const bool collidedWithHammer =
       ((direccion == Direccion::DERECHA) && (pos.x < enemy.pos.x))
@@ -83,22 +95,25 @@ private:
   }
 };
 
-inline bool isPlaying(const Mario &mario) noexcept
+inline bool
+isPlaying(const Mario &mario) noexcept
 {
   return mario.isEnabled && mario.state->isPlaying();
 }
-inline bool isAlive(const Mario &mario) noexcept
+inline bool
+isAlive(const Mario &mario) noexcept
 {
   return mario.isEnabled && mario.state->isAlive();
 }
 
-inline PlayerState get_state(const Mario &m) noexcept
+inline PlayerState
+get_state(const Mario &m) noexcept
 {
   return { get_pos(m),
-    m.isEnabled,
-    m.estado,
-    m.audioObserver.getState(),
-    m.hammerUses > 0 ? ColliderType::HAMMER : ColliderType::NORMAL };
+           m.isEnabled,
+           m.estado,
+           m.audioObserver.getState(),
+           m.hammerUses > 0 ? ColliderType::HAMMER : ColliderType::NORMAL };
 }
 
 #endif// MARIO_H

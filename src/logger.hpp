@@ -19,17 +19,29 @@ private:
 
 public:
   static Logger &getInstance();
-  void setLogLevel(int log_level_) { this->log_level = log_level_; }
+  void
+  setLogLevel(int log_level_)
+  {
+    this->log_level = log_level_;
+  }
   void logNewGame(void) const;
   void logGameOver(void) const;
-  inline void logError(std::string_view text) const { log(text, "[ERROR]"); }
-  inline void logInformation(std::string_view text) const
+  inline void
+  logError(std::string_view text) const
   {
-    if (log_level >= 1) log(text, "[INFO]");
+    log(text, "[ERROR]");
   }
-  inline void logDebug(std::string_view text) const
+  inline void
+  logInformation(std::string_view text) const
   {
-    if (log_level >= 2) log(text, "[DEBUG]");
+    if (log_level >= 1)
+      log(text, "[INFO]");
+  }
+  inline void
+  logDebug(std::string_view text) const
+  {
+    if (log_level >= 2)
+      log(text, "[DEBUG]");
   }
 };
 }// namespace logger

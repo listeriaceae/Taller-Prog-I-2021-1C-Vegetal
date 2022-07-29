@@ -19,7 +19,8 @@ InterludeVista::InterludeVista()
     }
 {}
 
-void InterludeVista::update(const GameState &estadoJuego)
+void
+InterludeVista::update(const GameState &estadoJuego)
 {
   punto<int> statsJugadorPos{ X_POS_USER, Y_POS_USER };
 
@@ -34,12 +35,14 @@ void InterludeVista::update(const GameState &estadoJuego)
     statsJugadorPos.y += Y_DIF_USERS;
     TextRenderer::renderText(
       statsJugadorPos, estadoJuego.players[i].name, 1.25f, Color::MAGENTA);
-    const char score_str[7] = { '0',
+    const char score_str[7] = {
+      '0',
       static_cast<char>('0' + (estadoJuego.players[i].score / 100) % 10),
       static_cast<char>('0' + (estadoJuego.players[i].score / 10) % 10),
       static_cast<char>('0' + estadoJuego.players[i].score % 10),
       '0',
-      '0' };
+      '0'
+    };
 
     TextRenderer::renderText(
       { statsJugadorPos.x + OFFSET_SCORE, statsJugadorPos.y },
