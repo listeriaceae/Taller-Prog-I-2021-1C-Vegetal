@@ -88,7 +88,4 @@ enum class Login {
   INVALID_USER
 };
 
-// Config
-const char CONFIG_FILE[] = "archivo.json";
-
 #endif// CONSTANTS_H

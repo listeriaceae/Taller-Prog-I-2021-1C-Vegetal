@@ -19,7 +19,7 @@ PKGS		:= $(shell command -v apt-get && echo install build-essential libsdl2-2.0 
 
 all: $(BIN)/$(EXE_S) $(BIN)/$(EXE_C)
 
-$(BIN)/$(EXE_S): $(SRC)/*.cpp $(SRC)/main/main_server.cpp $(SRC)/model/*.cpp $(SRC)/model/mario/*.cpp $(SRC)/model/stage/*.cpp $(SRC)/utils/dataTransfer.cpp
+$(BIN)/$(EXE_S): $(SRC)/*.cpp $(SRC)/main/main_server.cpp $(SRC)/model/*.cpp $(SRC)/model/mario/*.cpp $(SRC)/model/stage/*.cpp $(SRC)/utils/dataTransfer.cpp $(SRC)/utils/tcp_server.cpp
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $(WARNINGS) $^ -o $@ $(SLIBS) $(SCFLAGS)
  
 $(BIN)/$(EXE_C): $(SRC)/*.cpp $(SRC)/main/main_client.cpp $(SRC)/view/*.cpp $(SRC)/controller/*.cpp $(SRC)/utils/*.cpp

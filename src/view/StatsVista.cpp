@@ -25,8 +25,7 @@ extern SDL_Texture *texture;
 
 StatsVista::StatsVista()
 {
-  switch (configuration::GameConfiguration::getInstance(CONFIG_FILE)
-            .getMaxPlayers()) {
+  switch (configuration::getMaxPlayers()) {
   case 1:
     posiciones.assign({ POS_CENTER });
     break;

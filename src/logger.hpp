@@ -3,47 +3,18 @@
 
 #include <string_view>
 
-namespace logger {
-class Logger
+namespace logger
 {
-private:
-  Logger() = default;
-  ~Logger() = default;
-  Logger(const Logger &) = delete;
-  Logger &operator=(const Logger &) = delete;
+enum class LogLevel { ERROR, INFO, DEBUG };
 
-  std::string_view filepath{ "game.log" };
-  int log_level{};
+void setLogLevel(LogLevel log_level);
+void logNewGame(void);
+void logGameOver(void);
+void log(std::string_view message, std::string_view type);
 
-  void log(std::string_view message, std::string_view type) const;
-
-public:
-  static Logger &getInstance();
-  void
-  setLogLevel(int log_level_)
-  {
-    this->log_level = log_level_;
-  }
-  void logNewGame(void) const;
-  void logGameOver(void) const;
-  inline void
-  logError(std::string_view text) const
-  {
-    log(text, "[ERROR]");
-  }
-  inline void
-  logInformation(std::string_view text) const
-  {
-    if (log_level >= 1)
-      log(text, "[INFO]");
-  }
-  inline void
-  logDebug(std::string_view text) const
-  {
-    if (log_level >= 2)
-      log(text, "[DEBUG]");
-  }
+void logError(std::string_view text);
+void logInfo(std::string_view text);
+void logDebug(std::string_view text);
 };
-}// namespace logger
 
 #endif// LOGGER_H

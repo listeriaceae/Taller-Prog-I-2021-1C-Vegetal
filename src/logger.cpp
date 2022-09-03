@@ -3,40 +3,62 @@
 #include "logger.hpp"
 
 namespace logger {
-Logger &
-Logger::getInstance()
+static LogLevel log_level{ LogLevel::ERROR };
+
+void
+setLogLevel(LogLevel ll)
 {
-  static Logger instance{};
-  return instance;
+  log_level = ll;
 }
 
 void
-Logger::log(std::string_view message, std::string_view type) const
+log(std::string_view message, std::string_view type)
 {
   char mbstr[20];
   auto current_time =
     std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   strftime(mbstr, sizeof mbstr, "%Y-%m-%d %X", std::localtime(&current_time));
 
-  std::ofstream file(filepath.data(), std::ofstream::app);
+  std::ofstream file("game.log", std::ofstream::app);
   file << mbstr << type << message << std::endl;
 }
 
 void
-Logger::logNewGame(void) const
+logNewGame(void)
 {
-  logInformation(R"(
+  logInfo(R"(
 -------------------------
  STARTING DONKEY KONG II
 -------------------------)");
 }
 
 void
-Logger::logGameOver(void) const
+logGameOver(void)
 {
-  logInformation(R"(
+  logInfo(R"(
 -------------------------
   ENDING DONKEY KONG II
 -------------------------)");
 }
-}// namespace logger
+
+void
+logError(std::string_view text)
+{
+  log(text, "[ERROR]");
+}
+
+void
+logInfo(std::string_view text)
+{
+  if (log_level >= LogLevel::INFO)
+    log(text, "[INFO]");
+}
+
+void
+logDebug(std::string_view text)
+{
+  if (log_level >= LogLevel::DEBUG)
+    log(text, "[DEBUG]");
+}
+}
+// namespace logger

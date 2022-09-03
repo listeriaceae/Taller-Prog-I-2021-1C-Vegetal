@@ -1,6 +1,5 @@
 #include "Nivel2Vista.hpp"
 #include "HammerVista.hpp"
-#include "DefaultConfigVista.hpp"
 #include "../utils/Constants.hpp"
 
 extern SDL_Renderer *renderer;
@@ -25,9 +24,6 @@ Nivel2Vista::update(const GameState &state)
   paulineVista.mostrar();
   dkVista.mostrar();
   fuegoVista.mostrar();
-
-  if (defaultConfig)
-    DefaultConfigVista::mostrar();
 
   barrilVista.startRender();
   for (const auto lvl = std::get_if<lv2>(&state.level.v);

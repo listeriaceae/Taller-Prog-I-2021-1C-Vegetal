@@ -1,5 +1,7 @@
 #include <iostream>
 #include <charconv>
+#include "../configuration.hpp"
+#include "../logger.hpp"
 #include "../view/Client.hpp"
 
 int
@@ -9,6 +11,9 @@ main(int argc, char *argv[])
     std::cerr << "Use:" << argv[0] << "hostname port\n";
     return EXIT_FAILURE;
   }
+
+  configuration::init("archivo.json");
+  logger::setLogLevel(configuration::getLogLevel());
 
   std::uint16_t port;
   auto res = std::from_chars(argv[2], nullptr, port);

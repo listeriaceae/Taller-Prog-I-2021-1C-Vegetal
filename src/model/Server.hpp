@@ -6,16 +6,20 @@
 #include <mutex>
 #include <condition_variable>
 #include "../utils/player.hpp"
+#include "../utils/user.hpp"
+
+enum class Login;
 
 class Server
 {
 public:
   Server();
-  int startServer();
-
-  static int serverListen(std::uint16_t port);
+  ~Server();
+  void handleLogin(int client);
+  void startGame();
 
   std::unordered_map<std::string, std::string> users{};
+
   size_t maxPlayers{};
   struct
   {
@@ -29,7 +33,7 @@ public:
   } start_game_cv{};
 
 private:
-  void startGame();
+  Login validateUserLogin(int client);
 };
 
 #endif// SERVER_H

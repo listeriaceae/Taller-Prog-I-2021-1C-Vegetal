@@ -26,38 +26,38 @@ loadAudioFiles()
   if (Mix_OpenAudio(
         MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 512)
       < 0)
-    logger::Logger::getInstance().logError("Mixer initialization error");
+    logger::logError("Mixer initialization error");
 
   music = Mix_LoadMUS(MUSIC_FILE_NAME);
   if (music == nullptr)
-    logger::Logger::getInstance().logError(
+    logger::logError(
       fmt::format("Music file not found: '{}'", MUSIC_FILE_NAME));
 
   jumpSound = Mix_LoadWAV(JUMP_SOUND_FILE);
   if (jumpSound == nullptr)
-    logger::Logger::getInstance().logError(
+    logger::logError(
       fmt::format("jump sound effect file not found: '{}'", JUMP_SOUND_FILE));
 
   deathSound = Mix_LoadWAV(DEATH_SOUND_FILE);
   if (deathSound == nullptr)
-    logger::Logger::getInstance().logError(
+    logger::logError(
       fmt::format("death sound effect file not found: '{}'", DEATH_SOUND_FILE));
 
   finishedLevelSound = Mix_LoadWAV(FINISHED_LEVEL_SOUND_FILE);
   if (finishedLevelSound == NULL)
-    logger::Logger::getInstance().logError(
+    logger::logError(
       fmt::format("finished level sound effect file not found: '{}'",
                   FINISHED_LEVEL_SOUND_FILE));
   else
     finishedLevelSound->volume = 40;
   itemSound = Mix_LoadWAV(ITEM_SOUND_FILE);
   if (itemSound == nullptr)
-    logger::Logger::getInstance().logError(
+    logger::logError(
       fmt::format("item sound effect file not found: '{}'", ITEM_SOUND_FILE));
 
   enemyDeathSound = Mix_LoadWAV(ENEMY_DEATH_SOUND_FILE);
   if (deathSound == nullptr)
-    logger::Logger::getInstance().logError(fmt::format(
+    logger::logError(fmt::format(
       "enemy death sound effect file not found: '{}'", ENEMY_DEATH_SOUND_FILE));
 }
 

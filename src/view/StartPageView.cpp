@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <cctype>
+#include <cstring>
 #include "StartPageView.hpp"
 #include "TextRenderer.hpp"
 #include "../utils/Constants.hpp"
@@ -110,8 +111,8 @@ StartPage::getLoginUser()
   SDL_StopTextInput();
 
   user_t user{};
-  memcpy(user.username, username.c_str(), sizeof user.username);
-  memcpy(user.password, password.c_str(), sizeof user.password);
+  std::memcpy(user.username, username.c_str(), sizeof user.username);
+  std::memcpy(user.password, password.c_str(), sizeof user.password);
 
   return user;
 }
