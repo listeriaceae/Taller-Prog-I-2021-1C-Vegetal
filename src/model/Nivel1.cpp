@@ -1,6 +1,5 @@
 #include <random>
 #include <algorithm>
-#include <fmt/format.h>
 #include "Nivel1.hpp"
 #include "Entidad.hpp"
 #include "../configuration.hpp"
