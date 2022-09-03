@@ -209,6 +209,6 @@ update-format:
 	find src -name "*.[ch]pp" >.clang-files
 
 clean:
-	-rm ${BIN}/% ${OBJ}/%.o ${OBJ}/server/%.o ${OBJ}/client/%.o
+	-rm ${BIN}/* ${OBJ}/*.o ${OBJ}/server/*.o ${OBJ}/client/*.o
 
 .PHONY: all deps format update-format clean
