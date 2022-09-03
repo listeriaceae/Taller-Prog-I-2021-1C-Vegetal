@@ -55,7 +55,7 @@ ${OBJ}/server/EnemigoFuego.o: ${SRC}/model/EnemigoFuego.cpp ${SRC}/model/Enemigo
 ${OBJ}/server/Mario.o: ${SRC}/model/Mario.cpp ${SRC}/model/Mario.hpp ${SRC}/model/mario/SueloState.hpp ${SRC}/model/mario/MuriendoState.hpp ${SRC}/utils/Constants.hpp
 	${CXX} ${CXX_FLAGS} ${WARNINGS} -c $< -o $@
 
-${OBJ}/server/Nivel1.o: ${SRC}/model/Nivel1.cpp ${SRC}/model/Nivel1.hpp ${SRC}/model/Entidad.hpp ${SRC}/configuration.hpp ${SRC}/logger.hpp ${SRC}/utils/Constants.hpp
+${OBJ}/server/Nivel1.o: ${SRC}/model/Nivel1.cpp ${SRC}/model/Nivel1.hpp ${SRC}/model/Entidad.hpp ${SRC}/configuration.hpp ${SRC}/utils/Constants.hpp
 	${CXX} ${CXX_FLAGS} ${WARNINGS} -c $< -o $@
 
 ${OBJ}/server/Nivel2.o: ${SRC}/model/Nivel2.cpp ${SRC}/model/Nivel2.hpp ${SRC}/model/Entidad.hpp ${SRC}/utils/Constants.hpp
