@@ -49,6 +49,8 @@ src/configuration.hpp
 src/utils/punto.hpp
 src/utils/exitStatus.hpp
 src/utils/player.hpp
+src/utils/tcp_server.cpp
+src/utils/tcp_server.hpp
 src/utils/textureHandler.hpp
 src/utils/Constants.hpp
 src/utils/estadoJuego.hpp
@@ -85,9 +87,7 @@ src/view/StartPageView.hpp
 src/view/DonkeyKongVista.hpp
 src/view/MarioVista.cpp
 src/view/InterludeVista.cpp
-src/view/DefaultConfigVista.hpp
 src/view/SceneVista.hpp
-src/view/DefaultConfigVista.cpp
 src/view/PaulineVista.cpp
 src/view/showMessage.hpp
 src/view/Nivel1Vista.cpp

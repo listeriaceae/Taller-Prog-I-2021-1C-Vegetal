@@ -7,6 +7,6 @@ namespace Network {
 int listen_on(std::uint16_t port);
 int accept_from(int fd);
 int close_connection(int fd);
-}
+}// namespace Network
 
-#endif // TCP_SERVER_H
+#endif// TCP_SERVER_H

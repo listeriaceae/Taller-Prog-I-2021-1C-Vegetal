@@ -60,5 +60,5 @@ logDebug(std::string_view text)
   if (log_level >= LogLevel::DEBUG)
     log(text, "[DEBUG]");
 }
-}
+}// namespace logger
 // namespace logger

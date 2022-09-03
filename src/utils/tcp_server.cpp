@@ -25,7 +25,7 @@ listen_error(const char *err, int fd)
     close(fd);
   return -1;
 }
-}
+}// namespace
 
 int
 Network::listen_on(std::uint16_t port)
@@ -36,7 +36,7 @@ Network::listen_on(std::uint16_t port)
 
   if (bind_port(port, fd) == -1)
     return listen_error("ERROR on bind", fd);
-      
+
   if (listen(fd, 4) == -1)
     return listen_error("ERROR on listen", fd);
 

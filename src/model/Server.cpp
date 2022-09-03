@@ -33,14 +33,15 @@ static void receiveControls(Mario *mario, int clientSocket);
 static std::unordered_map<std::string, std::string>
 init_users(std::vector<std::pair<std::string, std::string>> u)
 {
-  return std::unordered_map<std::string, std::string>(std::begin(u), std::end(u));
+  return std::unordered_map<std::string, std::string>(std::begin(u),
+                                                      std::end(u));
 }
 
 Server::Server()
-: users{ init_users(configuration::getUsers()) },
-  maxPlayers{ configuration::getMaxPlayers() }
-{
-}
+  : users{ init_users(configuration::getUsers()) }, maxPlayers{
+      configuration::getMaxPlayers()
+    }
+{}
 
 Server::~Server()
 {
@@ -117,15 +118,13 @@ Server::validateUserLogin(int client)
 {
   user_t user;
   if (!dataTransfer::receiveData(client, &user, sizeof user)) {
-    logger::logInfo(
-      "[server] Lost connection to client");
+    logger::logInfo("[server] Lost connection to client");
     close(client);
     return Login::ABORTED;
   }
 
   if (this->users.find(user.username) == std::end(this->users)) {
-    logger::logInfo(
-      fmt::format("[server] invalid user: '{}'", user.username));
+    logger::logInfo(fmt::format("[server] invalid user: '{}'", user.username));
     return Login::INVALID_USER;
   }
 

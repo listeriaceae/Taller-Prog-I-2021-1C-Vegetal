@@ -119,23 +119,19 @@ Client::processExit(ExitStatus exitStatus)
 {
   switch (exitStatus) {
   case ExitStatus::CONNECTION_CLOSED:
-    logger::logInfo(
-      fmt::format("[{}] connection closed", this->name));
+    logger::logInfo(fmt::format("[{}] connection closed", this->name));
     showMessage::disconnection();
     break;
   case ExitStatus::GAME_OVER:
-    logger::logInfo(
-      fmt::format("[{}] game over", this->name));
+    logger::logInfo(fmt::format("[{}] game over", this->name));
     showMessage::gameOver();
     break;
   case ExitStatus::GAME_COMPLETE:
-    logger::logInfo(
-      fmt::format("[{}] game complete", this->name));
+    logger::logInfo(fmt::format("[{}] game complete", this->name));
     showMessage::gameComplete();
     break;
   case ExitStatus::QUIT_REQUESTED:
-    logger::logInfo(
-      fmt::format("[{}] quit requested", this->name));
+    logger::logInfo(fmt::format("[{}] quit requested", this->name));
     return;
   default:
     break;

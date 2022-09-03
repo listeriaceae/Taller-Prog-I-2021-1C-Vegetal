@@ -12,10 +12,8 @@ Nivel1::Nivel1(std::vector<Mario> *players_) : Nivel{ players_ }
   for (const auto enemy : configuration::getEnemies()) {
     if (enemy.type == configuration::Enemy::Type::FUEGO)
       this->addEnemies(enemy.quantity);
-    logger::logDebug(
-      fmt::format("Enemy type: '{}'", enemy.type));
-    logger::logDebug(
-      fmt::format("Enemy quantity: {}", enemy.quantity));
+    logger::logDebug(fmt::format("Enemy type: '{}'", enemy.type));
+    logger::logDebug(fmt::format("Enemy quantity: {}", enemy.quantity));
   }
   this->initPlatforms();
   this->initLadders();

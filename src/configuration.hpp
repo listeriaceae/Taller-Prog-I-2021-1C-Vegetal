@@ -6,14 +6,16 @@
 #include <vector>
 #include <fmt/format.h>
 
-namespace logger { enum class LogLevel; }
+namespace logger {
+enum class LogLevel;
+}
 
 namespace configuration {
 class Enemy
 {
 public:
   enum class Type { FUEGO };
-  Enemy() {};
+  Enemy() = default;
   Enemy(const std::string &t, unsigned int q);
 
   Type type;
@@ -28,8 +30,12 @@ std::vector<Enemy> getEnemies();
 std::vector<std::pair<std::string, std::string>> getUsers();
 }// namespace configuration
 
-template<> struct fmt::formatter<configuration::Enemy::Type> {
-  constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
+template<>
+struct fmt::formatter<configuration::Enemy::Type>
+{
+  constexpr auto
+  parse(format_parse_context &ctx) -> decltype(ctx.begin())
+  {
     auto it = ctx.begin(), end = ctx.end();
     if (it != end)
       throw format_error("invalid format");
