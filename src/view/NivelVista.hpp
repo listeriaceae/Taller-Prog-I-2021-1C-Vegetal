@@ -19,7 +19,6 @@ protected:
   DonkeyKongVista dkVista{};
   std::size_t playerIndex;
   std::vector<MarioVista> jugadoresVista;
-  bool defaultConfig;
 };
 
 #endif// NIVEL_VISTA_H

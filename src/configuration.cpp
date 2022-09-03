@@ -1,125 +1,133 @@
-#include <iostream>
-#include <fstream>
-#include <cstring>
+#include <algorithm>
 #include <fmt/format.h>
+#include <fstream>
+#include <json/json.h>
+#include <stdexcept>
+
 #include "configuration.hpp"
 #include "logger.hpp"
 
 namespace configuration {
-const GameConfiguration &
-GameConfiguration::getInstance(const char *jsonFileName)
+static Enemy::Type
+from_string(const std::string &t)
 {
-  static const GameConfiguration instance{ jsonFileName };
-  return instance;
+  if (t == "Fuego")
+    return Enemy::Type::FUEGO;
+  else
+    throw std::runtime_error(fmt::format("Unknown enemy: '{}'", t));
 }
 
-inline static bool
-exists(const char *filename)
+Enemy::Enemy(const std::string &t, unsigned int q)
+  : type{ from_string(t) }, quantity{ q }
+{}
+
+static Json::Value config;
+static Json::Value getJsonValue(const Json::Value &root, std::string name);
+
+template<typename Ret, typename Callable>
+Ret
+try_or_default(Callable f, Ret dfl)
 {
-  std::ifstream f(filename);
-  return f.good();
-}
+  try {
+    return f();
+  } catch (const std::exception &e) {
+    logger::logError(e.what());
 
-GameConfiguration::GameConfiguration(const char *jsonFileName)
-{
-  this->useDefaultConfig = true;
-
-  // Get configuration file name
-  if (exists(jsonFileName)) {
-    try {
-      this->useDefaultConfig = !loadFromFile(jsonFileName);
-    } catch (const std::exception &e) {
-      logger::Logger::getInstance().logError(
-        fmt::format("Configuration file corrupted: {}", e.what()));
-    }
-  } else {
-    logger::Logger::getInstance().logError(
-      fmt::format("Configuration file not found: '{}'", jsonFileName));
-  }
-
-  if (this->useDefaultConfig) {
-    logger::Logger::getInstance().logInformation("Using default configuration");
-    if (this->loadFromFile("default.json")) {
-      logger::Logger::getInstance().logInformation(
-        "Successfully loaded default configuration");
-    } else {
-      logger::Logger::getInstance().logError(
-        "[FATAL] "
-        "Unable to load default configuration");
-      throw std::runtime_error("Unable to load default configuration");
-    }
+    return dfl;
   }
 }
 
-bool
-GameConfiguration::loadFromFile(const char *configFileName)
+logger::LogLevel
+getLogLevel()
 {
-  Json::Value jsonRoot;
-  {
-    std::ifstream jsonFile(configFileName);
-    jsonFile >> jsonRoot;
-  }
-  // Get configuration
-  const auto configuration = getJsonValue(jsonRoot, "configuration");
-
-  // Get log
-  {
-    const auto log = getJsonValue(configuration, "log");
-
-    // Get log level
-    const auto logLevelString = getJsonValue(log, "level").asString();
-    if (logLevelString == "DEBUG")
-      this->logLevel = 2;
-    else if (logLevelString == "INFO")
-      this->logLevel = 1;
+  auto f = []() -> logger::LogLevel {
+    const auto logString = getJsonValue(config, "logLevel").asString();
+    if (logString == "ERROR")
+      return logger::LogLevel::ERROR;
+    else if (logString == "INFO")
+      return logger::LogLevel::INFO;
+    else if (logString == "DEBUG")
+      return logger::LogLevel::DEBUG;
     else
-      this->logLevel = 0;
-  }
+      throw std::runtime_error(
+        fmt::format("Unknown log level: '{}'", logString));
+  };
 
-  // Get max players
-  this->maxPlayers = getJsonValue(configuration, "players").asLargestUInt();
-  if (!(0 < maxPlayers && maxPlayers <= 4)) {
-    logger::Logger::getInstance().logError(
-      "Number of players must be between 1 and 4");
-    return false;
-  }
-
-  // Get enemies
-  for (const auto &enemy :
-       getJsonValue(getJsonValue(configuration, "game"), "enemies")) {
-    if (const auto enemy_quantity = getJsonValue(enemy, "quantity").asInt();
-        enemy_quantity < 0) {
-      logger::Logger::getInstance().logError(
-        "Enemy quantity must be positive or zero");
-      return false;
-    } else {
-      this->enemies.emplace_back(getJsonValue(enemy, "type").asString(),
-                                 enemy_quantity);
-    }
-  }
-
-  // Get Users
-  for (const auto &j : getJsonValue(configuration, "users")) {
-    user_t user;
-
-    strcpy(user.username, getJsonValue(j, "username").asCString());
-    strcpy(user.password, getJsonValue(j, "password").asCString());
-
-    this->users.emplace_back(user);
-  }
-
-  return true;
+  return try_or_default(f, logger::LogLevel::DEBUG);
 }
 
-const Json::Value
-GameConfiguration::getJsonValue(const Json::Value &root, std::string name)
+std::size_t
+getMaxPlayers()
+{
+  auto f = []() -> std::size_t {
+    const auto maxPlayers = getJsonValue(config, "players").asLargestUInt();
+    if (0 < maxPlayers && maxPlayers <= 4)
+      return maxPlayers;
+    else
+      throw std::runtime_error("Number of players must be between 1 and 4");
+  };
+
+  return try_or_default(f, 1ul);
+}
+
+std::vector<Enemy>
+getEnemies()
+{
+  auto f = []() -> std::vector<Enemy> {
+    const auto enemiesJSON = getJsonValue(config, "enemies");
+    std::vector<Enemy> out(enemiesJSON.size());
+    std::transform(std::begin(enemiesJSON),
+                   std::end(enemiesJSON),
+                   std::begin(out),
+                   [](auto e) {
+                     return Enemy{ getJsonValue(e, "type").asString(),
+                                   getJsonValue(e, "quantity").asUInt() };
+                   });
+    return out;
+  };
+
+  return try_or_default(f, std::vector<Enemy>{ Enemy{ "Fuego", 3u } });
+}
+
+std::vector<std::pair<std::string, std::string>>
+getUsers()
+{
+  auto f = []() -> std::vector<std::pair<std::string, std::string>> {
+    const auto usersJSON = getJsonValue(config, "users");
+    std::vector<std::pair<std::string, std::string>> out(usersJSON.size());
+    std::transform(
+      std::begin(usersJSON), std::end(usersJSON), std::begin(out), [](auto u) {
+        return std::make_pair(getJsonValue(u, "username").asString(),
+                              getJsonValue(u, "password").asString());
+      });
+    return out;
+  };
+
+  return try_or_default(f,
+                        std::vector<std::pair<std::string, std::string>>{
+                          std::make_pair("U1", ""),
+                          std::make_pair("U2", ""),
+                          std::make_pair("U3", ""),
+                          std::make_pair("U4", ""),
+                        });
+}
+
+void
+init(const char *configPath)
+{
+  try {
+    std::ifstream{ configPath } >> config;
+  } catch (const std::exception &e) {
+    logger::logError(e.what());
+  }
+}
+
+Json::Value
+getJsonValue(const Json::Value &root, std::string name)
 {
   const auto value = root[name];
-  if (value.empty()) {
-    const auto error_message = fmt::format("JSON value not found: '{}'", name);
-    logger::Logger::getInstance().logError(error_message);
-    throw std::runtime_error(error_message);
-  }
+  if (value.empty())
+    throw std::runtime_error(fmt::format("JSON value not found: '{}'", name));
   return value;
 }
 }// namespace configuration

@@ -119,23 +119,19 @@ Client::processExit(ExitStatus exitStatus)
 {
   switch (exitStatus) {
   case ExitStatus::CONNECTION_CLOSED:
-    logger::Logger::getInstance().logInformation(
-      fmt::format("[{}] connection closed", this->name));
+    logger::logInfo(fmt::format("[{}] connection closed", this->name));
     showMessage::disconnection();
     break;
   case ExitStatus::GAME_OVER:
-    logger::Logger::getInstance().logInformation(
-      fmt::format("[{}] game over", this->name));
+    logger::logInfo(fmt::format("[{}] game over", this->name));
     showMessage::gameOver();
     break;
   case ExitStatus::GAME_COMPLETE:
-    logger::Logger::getInstance().logInformation(
-      fmt::format("[{}] game complete", this->name));
+    logger::logInfo(fmt::format("[{}] game complete", this->name));
     showMessage::gameComplete();
     break;
   case ExitStatus::QUIT_REQUESTED:
-    logger::Logger::getInstance().logInformation(
-      fmt::format("[{}] quit requested", this->name));
+    logger::logInfo(fmt::format("[{}] quit requested", this->name));
     return;
   default:
     break;
@@ -152,8 +148,7 @@ Client::startGame()
 {
   AudioController::startMusic();
 
-  logger::Logger::getInstance().setLogLevel(
-    configuration::GameConfiguration::getInstance(CONFIG_FILE).getLogLevel());
+  logger::setLogLevel(configuration::getLogLevel());
 
   std::size_t currentScene{ std::numeric_limits<std::size_t>::max() };
   std::unique_ptr<SceneVista> vista{};
@@ -257,7 +252,7 @@ Client::showStartPage()
 
     response = login(user);
     if (response == Login::OK) {
-      memcpy(name, user.username, 3);
+      std::memcpy(name, user.username, 3);
       name[3] = '\0';
     } else {
       startPage.setResponse(response);

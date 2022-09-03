@@ -2,93 +2,57 @@
 #define CONFIGURATION_H
 
 #include <string>
+#include <utility>
 #include <vector>
-#include <json/json.h>
-#include "utils/user.hpp"
+#include <fmt/format.h>
+
+namespace logger {
+enum class LogLevel;
+}
 
 namespace configuration {
 class Enemy
 {
 public:
-  Enemy(const std::string &t, unsigned int q) : type{ t }, quantity{ q } {}
-  Enemy(std::string &&t, unsigned int q) noexcept
-    : type{ std::move(t) }, quantity{ q }
-  {}
+  enum class Type { FUEGO };
+  Enemy() = default;
+  Enemy(const std::string &t, unsigned int q);
 
-  const std::string &
-  getType() const &
-  {
-    return type;
-  }
-  std::string
-  getType() const &&
-  {
-    return type;
-  }
-  unsigned int
-  getQuantity() const
-  {
-    return quantity;
-  }
-
-private:
-  std::string type;
+  Type type;
   unsigned int quantity;
 };
 
-class GameConfiguration
-{
-public:
-  static const GameConfiguration &getInstance(const char *json_filename);
+void init(const char *configPath);
 
-  int
-  getLogLevel() const
-  {
-    return logLevel;
-  }
-  const std::vector<user_t> &
-  getUsers() const &
-  {
-    return users;
-  }
-  std::vector<user_t>
-  getUsers() const &&
-  {
-    return users;
-  }
-  const std::vector<configuration::Enemy> &
-  getEnemies() const &
-  {
-    return enemies;
-  }
-  std::vector<configuration::Enemy>
-  getEnemies() const &&
-  {
-    return enemies;
-  }
-  std::size_t
-  getMaxPlayers() const
-  {
-    return maxPlayers;
-  }
-  bool
-  getDefaultConfigFlag() const
-  {
-    return useDefaultConfig;
-  }
-
-private:
-  GameConfiguration(const char *json_filename);
-  int logLevel;
-  std::vector<user_t> users;
-  std::vector<Enemy> enemies;
-  std::size_t maxPlayers;
-  bool useDefaultConfig;
-
-  static const Json::Value getJsonValue(const Json::Value &root,
-                                        std::string name);
-  bool loadFromFile(const char *configFileName);
-};
+logger::LogLevel getLogLevel();
+std::size_t getMaxPlayers();
+std::vector<Enemy> getEnemies();
+std::vector<std::pair<std::string, std::string>> getUsers();
 }// namespace configuration
+
+template<>
+struct fmt::formatter<configuration::Enemy::Type>
+{
+  constexpr auto
+  parse(format_parse_context &ctx) -> decltype(ctx.begin())
+  {
+    auto it = ctx.begin(), end = ctx.end();
+    if (it != end)
+      throw format_error("invalid format");
+    return it;
+  }
+
+  template<typename FormatContext>
+  auto
+  format(configuration::Enemy::Type t, FormatContext &ctx)
+  {
+    switch (t) {
+    case configuration::Enemy::Type::FUEGO:
+      return fmt::format_to(ctx.out(), "Fuego");
+    default:
+      return fmt::format_to(ctx.out(), "Unknown");
+    }
+  }
+};
 
 #endif// CONFIGURATION_H

@@ -14,9 +14,7 @@
 #define OFFSET_SCORE 64
 
 InterludeVista::InterludeVista()
-  : SceneVista{}, maxPlayers{
-      configuration::GameConfiguration::getInstance(CONFIG_FILE).getMaxPlayers()
-    }
+  : SceneVista{}, maxPlayers{ configuration::getMaxPlayers() }
 {}
 
 void

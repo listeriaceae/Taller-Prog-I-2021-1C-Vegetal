@@ -1,35 +1,29 @@
 {
-    "configuration": {
-        "log": {
-            "level": "ERROR"
+    "logLevel": "ERROR",
+    "players": 1,
+    "enemies": [
+        {
+            "type": "Fuego",
+            "quantity": 3
+        }
+    ],
+    "users": [
+        {
+            "username": "NACHO",
+            "password": "QWERTY"
         },
-        "players": 1,
-        "game": {
-            "enemies": [
-                {
-                    "type": "Fuego",
-                    "quantity": 3
-                }
-            ]
+        {
+            "username": "TINCHO",
+            "password": "PASSWORD"
         },
-        "users": [
-            {
-                "username": "NACHO",
-                "password": "QWERTY"
-            },
-            {
-                "username": "TINCHO",
-                "password": "PASSWORD"
-            },
-            {
-                "username": "MANU",
-                "password": "INCORRECT"
-            },
-            {
-                "username": "FRAN",
-                "password": "123456"
-            }
-        ]
-    }
+        {
+            "username": "MANU",
+            "password": "INCORRECT"
+        },
+        {
+            "username": "FRAN",
+            "password": "123456"
+        }
+    ]
 }
 

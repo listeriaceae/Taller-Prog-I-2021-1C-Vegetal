@@ -1,7 +1,6 @@
 #include "Nivel1Vista.hpp"
 #include "PlataformaMovilVista.hpp"
 #include "HammerVista.hpp"
-#include "DefaultConfigVista.hpp"
 #include "../utils/Constants.hpp"
 
 extern SDL_Renderer *renderer;
@@ -34,9 +33,6 @@ Nivel1Vista::update(const GameState &state)
 
   paulineVista.mostrar();
   dkVista.mostrar();
-
-  if (defaultConfig)
-    DefaultConfigVista::mostrar();
 
   for (auto &polea : poleas)
     polea.mostrar();
