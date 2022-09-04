@@ -22,13 +22,13 @@ TextRenderer::renderText(punto<int> punto,
 
   SDL_Rect dstRect = { punto.x,
                        punto.y,
-                       static_cast<int>(round(resize * LETTER_WIDTH)),
-                       static_cast<int>(round(resize * LETTER_HEIGHT)) };
+                       static_cast<int>(lround(resize * LETTER_WIDTH)),
+                       static_cast<int>(lround(resize * LETTER_HEIGHT)) };
   char c;
   while ((c = *text++) != '\0') {
     srcRect.x = get_chars().find_first_of(c) * LETTER_X;
 
     SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
-    dstRect.x += round(resize * (LETTER_WIDTH + SPACING));
+    dstRect.x += lround(resize * (LETTER_WIDTH + SPACING));
   }
 }
