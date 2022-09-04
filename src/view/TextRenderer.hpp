@@ -8,14 +8,14 @@ enum Color { YELLOW, RED, WHITE, CYAN, LIME, MAGENTA, BLUE };
 
 namespace TextRenderer {
 constexpr std::string_view
-get_chars()
+available_chars()
 {
   return "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.- ";
 }
 constexpr bool
 includesCharacter(char character)
 {
-  return get_chars().find_first_of(character) != std::string_view::npos;
+  return available_chars().find_first_of(character) != std::string_view::npos;
 }
 
 void renderText(punto<int> punto,

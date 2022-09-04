@@ -27,7 +27,7 @@ TextRenderer::renderText(punto<int> punto,
 
   const int step = static_cast<int>(lround(resize * (LETTER_WIDTH + SPACING)));
   for (const auto c : text) {
-    srcRect.x = static_cast<int>(get_chars().find_first_of(c)) * LETTER_X;
+    srcRect.x = static_cast<int>(available_chars().find_first_of(c)) * LETTER_X;
 
     SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
     dstRect.x += step;
