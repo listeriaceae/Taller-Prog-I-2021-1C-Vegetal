@@ -31,11 +31,11 @@ main(int argc, char *argv[])
   Server server{};
   logger::logNewGame();
 
-  auto accept_loop = [&](int socket) {
+  auto accept_loop = [&](int fd) {
     server.start_game_cv.mtx.lock();
 
     int client;
-    while ((client = Network::accept_from(socket)) != -1)
+    while ((client = Network::accept_from(fd)) != -1)
       std::thread(&Server::handleLogin, &server, client).detach();
 
     if (errno != EBADF && errno != EINVAL) {

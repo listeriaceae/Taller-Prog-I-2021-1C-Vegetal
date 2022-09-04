@@ -13,22 +13,23 @@ extern SDL_Texture *texture;
 
 void
 TextRenderer::renderText(punto<int> punto,
-                         const char *text,
+                         std::string_view text,
                          float resize,
-                         Color color)
+                         enum Color color)
 {
   SDL_Rect srcRect{ 0, 336, LETTER_WIDTH, LETTER_HEIGHT };
-  srcRect.y = 336 + static_cast<int>(color) * LETTER_Y;
+  srcRect.y = 336 + color * LETTER_Y;
 
   SDL_Rect dstRect = { punto.x,
                        punto.y,
                        static_cast<int>(lround(resize * LETTER_WIDTH)),
                        static_cast<int>(lround(resize * LETTER_HEIGHT)) };
-  char c;
-  while ((c = *text++) != '\0') {
-    srcRect.x = get_chars().find_first_of(c) * LETTER_X;
+
+  const int step = static_cast<int>(lround(resize * (LETTER_WIDTH + SPACING)));
+  for (const auto c : text) {
+    srcRect.x = static_cast<int>(get_chars().find_first_of(c)) * LETTER_X;
 
     SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
-    dstRect.x += lround(resize * (LETTER_WIDTH + SPACING));
+    dstRect.x += step;
   }
 }

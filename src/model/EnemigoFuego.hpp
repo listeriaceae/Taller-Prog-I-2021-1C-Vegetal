@@ -24,7 +24,7 @@ public:
   }
 
   punto32_t pos;
-  std::uint32_t points{ 10 };
+  std::uint8_t points{ 10 };
   bool isEnabled = true;
 
 private:

@@ -24,7 +24,7 @@ public:
   }
 
   punto32_t pos{ to_fixed32(N2_POS_X_BARRIL), to_fixed32(N2_POS_Y_BARRIL) };
-  std::uint32_t points{ 5 };
+  std::uint8_t points{ 5 };
   bool isEnabled = true;
 
 private:

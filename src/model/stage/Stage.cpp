@@ -1,4 +1,5 @@
 #include <unordered_set>
+#include <utility>
 #include "Stage.hpp"
 
 static constexpr auto stage_width = to_fixed32(ANCHO_NIVEL / ANCHO_TILE);
@@ -45,8 +46,8 @@ Stage::addPlatform(const Platform *platform)
     x += ANCHO_TILE;
   } while (x < max);
 
-  if (i != (i = j + max / stage_width))
-    grid[i].addPlatform(platform);
+  if (std::cmp_not_equal(i, j + max / stage_width))
+    grid[j + max / stage_width].addPlatform(platform);
 }
 
 
@@ -62,8 +63,8 @@ Stage::addPlatform(const MovingPlatform *mplatform)
     x += ANCHO_TILE;
   } while (x < max);
 
-  if (i != (i = j + max / stage_width))
-    grid[i].addPlatform(mplatform);
+  if (std::cmp_not_equal(i, j + max / stage_width))
+    grid[j + max / stage_width].addPlatform(mplatform);
 }
 
 bool

@@ -33,10 +33,8 @@ Nivel2Vista::update(const GameState &state)
     barrilVista.mostrar(pos);
   }
 
-
-  std::size_t i = 0;
-  for (auto &player : this->jugadoresVista) {
-    player.setColor((i + 1) * state.level.players[i].isEnabled);
+  for (std::size_t i = 0; auto &player : this->jugadoresVista) {
+    player.setColor(state.level.players[i].isEnabled ? static_cast<int>(i) + 1: 0);
     if (i != playerIndex)
       player.mostrar(state.level.players[i]);
     statsVista.mostrar(state.players[i], i);

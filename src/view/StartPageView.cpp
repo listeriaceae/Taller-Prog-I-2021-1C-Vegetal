@@ -49,10 +49,19 @@ static constexpr SDL_Rect doneRect = {
 };
 
 static int
-setFocusColor(int focus)
+setFocusColor(bool focus)
 {
-  return SDL_SetRenderDrawColor(
-    renderer, 128 + focus * 127, (1 - focus) * 128, (1 - focus) * 128, 255);
+  const Uint8 r = focus ? 0xFF : 0x80;
+  const Uint8 g = focus ? 0x00 : 0x80;
+  const Uint8 b = focus ? 0x00 : 0x80;
+  const Uint8 a = 0xFF;
+  return SDL_SetRenderDrawColor(renderer, r, g, b, a);
+}
+
+static char
+to_upper_char(unsigned char c)
+{
+  return static_cast<char>(std::toupper(c));
 }
 
 namespace {
@@ -193,12 +202,13 @@ StartPage::handle(const SDL_Event &event)
       break;
     }
   } else if (event.type == SDL_TEXTINPUT) {
-    char in = toupper(*event.text.text);
-    if (TextRenderer::includesCharacter(in))
+    char in = to_upper_char(*event.text.text);
+    if (TextRenderer::includesCharacter(in)) {
       if (focus == 0 && username.size() < 10)
         username += in;
       else if (focus == 1 && password.size() < 10)
         password += in;
+    }
   }
   return false;
 }

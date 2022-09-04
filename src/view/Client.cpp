@@ -216,7 +216,7 @@ sendControls()
 static void
 receiveState(std::atomic<GameState> *lsh)
 {
-  GameState new_state{ { { "---" } } };
+  GameState new_state{ { { "---", 0, 0 } }, {} };
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
     if (!dataTransfer::receiveData(clientSocket, &new_state, sizeof new_state))
       serverOpen.store(false, std::memory_order_relaxed);

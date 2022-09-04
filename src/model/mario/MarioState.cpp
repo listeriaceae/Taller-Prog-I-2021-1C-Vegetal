@@ -4,7 +4,7 @@
 #include "../../utils/Constants.hpp"
 
 const Stage *MarioState::stage{ nullptr };
-unsigned char MarioState::points{ 4 };
+unsigned char MarioState::points{ 20 };
 
 void
 MarioState::reset(Mario &mario) const
@@ -30,5 +30,5 @@ void
 MarioState::resetStage(const Stage *stage_)
 {
   stage = stage_;
-  points = 4;
+  points = 20;
 }

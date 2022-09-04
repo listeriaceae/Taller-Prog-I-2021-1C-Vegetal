@@ -19,8 +19,8 @@ TrepandoState::update(Mario &mario, std::uint8_t controls) const
   if (mario.pos.y == mario.climbMin || mario.pos.y == mario.climbMax) {
     if (mario.pos.y == to_fixed32(TOP_LEVEL)) {
       mario.audioObserver.update(FINISHED_LEVEL);
-      mario.score += points * 5;
-      mario.pos.x -= (4 - points) * to_fixed32(13);
+      mario.score += points;
+      mario.pos.x -= (20 - points) * to_fixed32(2.6);
       points -= 1;
       mario.state = LevelCompletedState::getInstance();
     } else {

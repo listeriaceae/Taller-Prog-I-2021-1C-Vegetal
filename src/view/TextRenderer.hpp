@@ -4,7 +4,7 @@
 #include <string_view>
 #include "../utils/punto.hpp"
 
-enum class Color { YELLOW, RED, WHITE, CYAN, LIME, MAGENTA, BLUE };
+enum Color { YELLOW, RED, WHITE, CYAN, LIME, MAGENTA, BLUE };
 
 namespace TextRenderer {
 constexpr std::string_view
@@ -19,9 +19,9 @@ includesCharacter(char character)
 }
 
 void renderText(punto<int> punto,
-                const char *text,
+                std::string_view text,
                 float resize,
-                Color color = Color::YELLOW);
+                enum Color color = Color::YELLOW);
 }// namespace TextRenderer
 
 #endif// TEXT_RENDERER_H
