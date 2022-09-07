@@ -13,7 +13,7 @@ main(int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
-  configuration::init("archivo.json");
+  configuration::init("config.json");
   logger::setLogLevel(configuration::getLogLevel());
 
   std::uint16_t port;
