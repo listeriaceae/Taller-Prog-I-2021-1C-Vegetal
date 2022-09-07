@@ -1,8 +1,6 @@
-# executables
+# binaries
 /bin/
-
-###
-/.vscode/
+/obj/
 
 # Logs
 *.log
