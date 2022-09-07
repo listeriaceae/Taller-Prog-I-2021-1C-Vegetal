@@ -17,7 +17,6 @@
 #include "InterludeVista.hpp"
 #include "StartPageView.hpp"
 #include "showMessage.hpp"
-#include "../configuration.hpp"
 #include "../logger.hpp"
 #include "../controller/MarioController.hpp"
 #include "../controller/AudioController.hpp"
@@ -25,6 +24,7 @@
 #include "../utils/estadoJuego.hpp"
 #include "../utils/dataTransfer.hpp"
 #include "../utils/textureHandler.hpp"
+#include "../utils/network.hpp"
 
 #define SERVER_CONNECTION_SUCCESS 0
 #define START_PAGE_SUCCESS 0
@@ -32,45 +32,13 @@
 bool quitRequested{ false };
 SDL_Renderer *renderer{ nullptr };
 SDL_Texture *texture{ nullptr };
-static SDL_Window *window{ nullptr };
 
 static std::atomic<bool> serverOpen{ true };
 static int clientSocket{ -1 };
 
-static void receiveState(std::atomic<GameState> *lsh);
-static void sendControls();
-
-int
-Client::connectToServer(const char *serverIp, std::uint16_t port)
-{
-  std::cout << "Conectando al servidor: " << serverIp << " puerto: " << port
-            << '\n';
-
-  // socket
-  clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-  if (clientSocket == -1) {
-    perror("ERROR opening socket");
-    return EXIT_FAILURE;
-  }
-
-  struct sockaddr_in serverAddress;
-
-  memset(&serverAddress, 0, sizeof serverAddress);
-  serverAddress.sin_addr.s_addr = inet_addr(serverIp);
-  serverAddress.sin_family = AF_INET;
-  serverAddress.sin_port = htons(port);
-
-  // connect
-  if (connect(
-        clientSocket, (struct sockaddr *) &serverAddress, sizeof serverAddress)
-      != 0) {
-    perror("ERROR connecting");
-    close(clientSocket);
-    return EXIT_FAILURE;
-  }
-
-  return EXIT_SUCCESS;
-}
+static Login auth(int socket, user_t user);
+static void receiveState(int socket, std::atomic<GameState> *lsh);
+static void sendControls(int socket);
 
 Client::Client()
 {
@@ -84,8 +52,6 @@ Client::Client()
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
   textureHandler::load();
   AudioController::loadAudioFiles();
-
-  puts("Aplicación iniciada en modo cliente");
 }
 
 Client::~Client()
@@ -98,20 +64,12 @@ Client::~Client()
   SDL_Quit();
 }
 
-int
-Client::startClient()
+void
+Client::startClient(int socket)
 {
-  if (this->showStartPage() == EXIT_FAILURE)
-    return EXIT_FAILURE;
-
-  if (serverOpen.load(std::memory_order_relaxed)) {
-    showMessage::waitingLobby();
-    processExit(startGame());
-  } else {
-    processExit(ExitStatus::CONNECTION_CLOSED);
-  }
-  close(clientSocket);
-  return EXIT_SUCCESS;
+  showMessage::waitingLobby();
+  const auto status = startGame(socket);
+  processExit(status);
 }
 
 void
@@ -144,18 +102,15 @@ Client::processExit(ExitStatus exitStatus)
 }
 
 ExitStatus
-Client::startGame()
+Client::startGame(int socket)
 {
   AudioController::startMusic();
-
-  logger::setLogLevel(configuration::getLogLevel());
 
   std::size_t currentScene{ std::numeric_limits<std::size_t>::max() };
   std::unique_ptr<SceneVista> vista{};
   std::atomic<GameState> level_state{};
 
-  std::thread receiver{ receiveState, &level_state };
-  std::thread sender{ sendControls };
+  std::thread receiver{ receiveState, socket, &level_state };
 
   level_state.wait({}, std::memory_order_relaxed);
   const std::size_t playerIndex = [&]() {
@@ -166,6 +121,8 @@ Client::startGame()
         match = i;
     return match;
   }();
+
+  std::thread sender{ sendControls, socket };
 
   ExitStatus exitStatus = ExitStatus::CONNECTION_CLOSED;
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
@@ -192,15 +149,16 @@ Client::startGame()
 
     quitRequested = SDL_QuitRequested();
   }
-  shutdown(clientSocket, SHUT_RDWR);
+
+  Network::close_connection(socket);
   sender.join();
   receiver.join();
 
   return quitRequested ? ExitStatus::QUIT_REQUESTED : exitStatus;
 }
 
-static void
-sendControls()
+void
+sendControls(int socket)
 {
   unsigned char controls{};
 
@@ -208,17 +166,17 @@ sendControls()
     std::this_thread::sleep_for(std::chrono::milliseconds{ 10 });
     if (const auto aux = controls;
         aux != (controls = MarioController::getControls())
-        && !dataTransfer::sendData(clientSocket, &controls, sizeof controls))
+        && !dataTransfer::sendData(socket, &controls, sizeof controls))
       serverOpen.store(false, std::memory_order_relaxed);
   }
 }
 
-static void
-receiveState(std::atomic<GameState> *lsh)
+void
+receiveState(int socket, std::atomic<GameState> *lsh)
 {
   GameState new_state{ { { "---", 0, 0 } }, {} };
   while (!quitRequested && serverOpen.load(std::memory_order_relaxed)) {
-    if (!dataTransfer::receiveData(clientSocket, &new_state, sizeof new_state))
+    if (!dataTransfer::receiveData(socket, &new_state, sizeof new_state))
       serverOpen.store(false, std::memory_order_relaxed);
     lsh->store(new_state, std::memory_order_relaxed);
     lsh->notify_all();
@@ -240,34 +198,33 @@ Client::getSceneView(std::size_t sceneNumber, std::size_t playerIndex)
   }
 }
 
-int
-Client::showStartPage()
+Login
+Client::login(int socket)
 {
   StartPage startPage{};
   Login response;
   do {
     const auto user = startPage.getLoginUser();
     if (quitRequested)
-      return EXIT_FAILURE;
+      return Login::ABORTED;
 
-    response = login(user);
-    if (response == Login::OK) {
+    response = auth(socket, user);
+    if (response == Login::OK)
       std::memcpy(name, user.username, 3);
-      name[3] = '\0';
-    } else {
+    else
       startPage.setResponse(response);
-    }
-  } while (response != Login::OK && serverOpen);
+  } while (response != Login::OK && response != Login::ABORTED);
 
-  return EXIT_SUCCESS;
+  return response;
 }
 
 Login
-Client::login(user_t user)
+auth(int socket, user_t user)
 {
-  dataTransfer::sendData(clientSocket, &user, sizeof user);
   auto response = Login::ABORTED;
-  if (!dataTransfer::receiveData(clientSocket, &response, sizeof response))
-    serverOpen.store(false, std::memory_order_relaxed);
+
+  dataTransfer::sendData(socket, &user, sizeof user);
+  dataTransfer::receiveData(socket, &response, sizeof response);
+
   return response;
 }

@@ -3,12 +3,13 @@
 #include "../configuration.hpp"
 #include "../logger.hpp"
 #include "../view/Client.hpp"
+#include "../utils/network.hpp"
 
 int
 main(int argc, char *argv[])
 {
   if (argc < 3) {
-    std::cerr << "Use:" << argv[0] << "hostname port\n";
+    std::cerr << "Use: " << argv[0] << " ip port\n";
     return EXIT_FAILURE;
   }
 
@@ -22,11 +23,18 @@ main(int argc, char *argv[])
     std::cerr << "ERROR, invalid port\n";
     return EXIT_FAILURE;
   }
-  if (Client::connectToServer(argv[1], port) == EXIT_FAILURE)
+
+  int socket = Network::connect_to(argv[1], port);
+
+  if (socket == -1)
     return EXIT_FAILURE;
 
   Client client{};
-  client.startClient();
+
+  if (client.login(socket) == Login::OK)
+    client.startClient(socket);
+  else
+    Network::close_connection(socket);
 
   return 0;
 }

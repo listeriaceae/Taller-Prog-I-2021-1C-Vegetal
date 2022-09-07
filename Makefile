@@ -22,16 +22,15 @@ PKGS		:= $(shell command -v apt-get && \
 		   command -v pacman && \
 		   echo -S sdl2 sdl2_image sdl2_mixer jsoncpp)
 
-OBJS	:= ${OBJ}/configuration.o ${OBJ}/logger.o ${OBJ}/dataTransfer.o
+OBJS	:= ${OBJ}/configuration.o ${OBJ}/logger.o ${OBJ}/dataTransfer.o ${OBJ}/network.o
 OBJSS	:= ${OBJ}/server/main.o ${OBJ}/server/Server.o \
-	   ${OBJ}/server/tcp_server.o ${OBJ}/server/Barril.o \
-	   ${OBJ}/server/EnemigoFuego.o ${OBJ}/server/Mario.o \
-	   ${OBJ}/server/Nivel1.o ${OBJ}/server/Nivel2.o \
-	   ${OBJ}/server/AireState.o ${OBJ}/server/GameOverState.o \
-	   ${OBJ}/server/LevelCompletedState.o ${OBJ}/server/MarioState.o \
-	   ${OBJ}/server/MuriendoState.o ${OBJ}/server/SueloState.o \
-	   ${OBJ}/server/TrepandoState.o ${OBJ}/server/MovingPlatform.o \
-	   ${OBJ}/server/Stage.o
+	   ${OBJ}/server/Barril.o ${OBJ}/server/EnemigoFuego.o \
+	   ${OBJ}/server/Mario.o ${OBJ}/server/Nivel1.o \
+	   ${OBJ}/server/Nivel2.o ${OBJ}/server/AireState.o \
+	   ${OBJ}/server/GameOverState.o ${OBJ}/server/LevelCompletedState.o \
+	   ${OBJ}/server/MarioState.o ${OBJ}/server/MuriendoState.o \
+	   ${OBJ}/server/SueloState.o ${OBJ}/server/TrepandoState.o \
+	   ${OBJ}/server/MovingPlatform.o ${OBJ}/server/Stage.o
 OBJSC	:= ${OBJ}/client/main.o ${OBJ}/client/Client.o \
 	   ${OBJ}/client/textureHandler.o ${OBJ}/client/AudioController.o \
 	   ${OBJ}/client/MarioController.o ${OBJ}/client/BarrilVista.o \
@@ -50,7 +49,7 @@ logger				:= ${SRC}/logger.hpp
 utils-data-transfer	:= ${SRC}/utils/dataTransfer.hpp
 utils-player		:= ${SRC}/utils/player.hpp
 utils-fixed-point	:= ${SRC}/utils/fixed_point.hpp
-utils-tcp-server	:= ${SRC}/utils/tcp_server.hpp
+utils-network		:= ${SRC}/utils/network.hpp
 utils-texture-handler	:= ${SRC}/utils/textureHandler.hpp
 utils-user		:= ${SRC}/utils/user.hpp
 utils-exit-status	:= ${SRC}/utils/exitStatus.hpp
@@ -132,13 +131,13 @@ ${OBJ}/logger.o: ${SRC}/logger.cpp $(logger)
 ${OBJ}/dataTransfer.o: ${SRC}/utils/dataTransfer.cpp $(utils-data-transfer)
 	${CXX} ${CXX_FLAGS} ${WARNINGS} -c $< -o $@
 
-${OBJ}/server/main.o: ${SRC}/main/main_server.cpp $(configuration) $(logger) $(model-server) $(utils-tcp-server)
+${OBJ}/server/main.o: ${SRC}/main/main_server.cpp $(configuration) $(logger) $(model-server) $(utils-network)
 	${CXX} ${CXX_FLAGS} ${WARNINGS} -c $< -o $@
 
-${OBJ}/server/Server.o: ${SRC}/model/Server.cpp $(model-server) $(configuration) $(logger) $(model-interlude) $(model-nivel1) $(model-nivel2) $(model-mario) $(utils-constants) $(utils-data-transfer) $(utils-estado-juego) $(utils-player) $(utils-tcp-server)
+${OBJ}/server/Server.o: ${SRC}/model/Server.cpp $(model-server) $(configuration) $(logger) $(model-interlude) $(model-nivel1) $(model-nivel2) $(model-mario) $(utils-constants) $(utils-data-transfer) $(utils-estado-juego) $(utils-player) $(utils-network)
 	${CXX} ${CXX_FLAGS} ${WARNINGS} -c $< -o $@
 
-${OBJ}/server/tcp_server.o: ${SRC}/utils/tcp_server.cpp $(utils-tcp-server)
+${OBJ}/network.o: ${SRC}/utils/network.cpp $(utils-network)
 	${CXX} ${CXX_FLAGS} ${WARNINGS} -c $< -o $@
 
 ${OBJ}/server/Barril.o: ${SRC}/model/Barril.cpp $(model-barril)
@@ -183,10 +182,10 @@ ${OBJ}/server/MovingPlatform.o: ${SRC}/model/stage/MovingPlatform.cpp $(model-st
 ${OBJ}/server/Stage.o: ${SRC}/model/stage/Stage.cpp $(model-stage-stage)
 	${CXX} ${CXX_FLAGS} ${WARNINGS} -c $< -o $@
 
-${OBJ}/client/main.o: ${SRC}/main/main_client.cpp $(configuration) $(logger) $(view-client)
+${OBJ}/client/main.o: ${SRC}/main/main_client.cpp $(configuration) $(logger) $(view-client) $(utils-network)
 	${CXX} ${CXX_FLAGS} ${WARNINGS} -c $< -o $@
 
-${OBJ}/client/Client.o: ${SRC}/view/Client.cpp $(view-client) $(view-nivel1-vista) $(view-nivel2-vista) $(view-interlude-vista) $(view-start-page-view) $(view-show-message) $(configuration) $(logger) $(controller-audio-controller) $(controller-mario-controller) $(utils-constants) $(utils-estado-juego) $(utils-data-transfer) $(utils-texture-handler)
+${OBJ}/client/Client.o: ${SRC}/view/Client.cpp $(view-client) $(view-nivel1-vista) $(view-nivel2-vista) $(view-interlude-vista) $(view-start-page-view) $(view-show-message) $(configuration) $(logger) $(controller-audio-controller) $(controller-mario-controller) $(utils-constants) $(utils-estado-juego) $(utils-data-transfer) $(utils-texture-handler) $(utils-network)
 	${CXX} ${CXX_FLAGS} ${WARNINGS} -c $< -o $@
 
 ${OBJ}/client/textureHandler.o: ${SRC}/utils/textureHandler.cpp $(utils-texture-handler) $(logger) $(utils-constants)

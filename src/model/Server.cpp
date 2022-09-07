@@ -21,7 +21,7 @@
 #include "../utils/dataTransfer.hpp"
 #include "../utils/estadoJuego.hpp"
 #include "../utils/player.hpp"
-#include "../utils/tcp_server.hpp"
+#include "../utils/network.hpp"
 
 static std::unique_ptr<Scene> getNextScene(std::vector<Mario> *marios);
 static void getEstadoJugadores(GameState &estado,

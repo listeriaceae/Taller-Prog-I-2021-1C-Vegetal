@@ -7,25 +7,24 @@
 #include "SceneVista.hpp"
 
 enum class Login;
+typedef struct SDL_Window SDL_Window;
 
 class Client
 {
 public:
   Client();
   ~Client();
-  int startClient();
-
-  static int connectToServer(const char *serverIp, std::uint16_t port);
+  Login login(int socket);
+  void startClient(int socket);
 
 private:
-  ExitStatus startGame();
-  int showStartPage();
-  Login login(user_t user);
+  ExitStatus startGame(int socket);
   std::unique_ptr<SceneVista> getSceneView(std::size_t sceneNumber,
                                            std::size_t playerIndex);
   void processExit(ExitStatus clientExitStatus);
 
   char name[4] = "---";
+  SDL_Window *window{ nullptr };
 };
 
 #endif// CLIENT_H
