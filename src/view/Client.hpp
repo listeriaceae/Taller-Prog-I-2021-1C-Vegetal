@@ -1,7 +1,6 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <memory>
 #include "../utils/user.hpp"
 #include "../utils/exitStatus.hpp"
 #include "SceneVista.hpp"
@@ -19,9 +18,7 @@ public:
 
 private:
   ExitStatus startGame(int socket);
-  std::unique_ptr<SceneVista> getSceneView(std::size_t sceneNumber,
-                                           std::size_t playerIndex);
-  void processExit(ExitStatus clientExitStatus);
+  void processExit(ExitStatus status);
 
   char name[4] = "---";
   SDL_Window *window{ nullptr };

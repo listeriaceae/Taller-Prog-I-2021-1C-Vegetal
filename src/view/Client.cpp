@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <string>
+#include <memory>
 #include <mutex>
 #include <atomic>
 #include <thread>
@@ -34,11 +35,12 @@ SDL_Renderer *renderer{ nullptr };
 SDL_Texture *texture{ nullptr };
 
 static std::atomic<bool> serverOpen{ true };
-static int clientSocket{ -1 };
 
 static Login auth(int socket, user_t user);
 static void receiveState(int socket, std::atomic<GameState> *lsh);
 static void sendControls(int socket);
+static std::unique_ptr<SceneVista>
+getSceneView(std::size_t sceneNumber, std::size_t playerIndex);
 
 Client::Client()
 {
@@ -184,7 +186,7 @@ receiveState(int socket, std::atomic<GameState> *lsh)
 }
 
 std::unique_ptr<SceneVista>
-Client::getSceneView(std::size_t sceneNumber, std::size_t playerIndex)
+getSceneView(std::size_t sceneNumber, std::size_t playerIndex)
 {
   switch (sceneNumber) {
   case 1:
