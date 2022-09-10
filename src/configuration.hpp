@@ -19,7 +19,7 @@ public:
   Enemy(const std::string &t, unsigned int q);
 
   Type type;
-  unsigned int quantity;
+  unsigned int quantity{3};
 };
 
 void init(const char *configPath);

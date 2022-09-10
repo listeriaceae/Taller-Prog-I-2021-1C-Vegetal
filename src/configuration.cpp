@@ -86,7 +86,7 @@ getEnemies()
     return out;
   };
 
-  return try_or_default(f, std::vector<Enemy>{ Enemy{ "Fuego", 3u } });
+  return try_or_default(f, std::vector<Enemy>(1));
 }
 
 std::vector<std::pair<std::string, std::string>>
