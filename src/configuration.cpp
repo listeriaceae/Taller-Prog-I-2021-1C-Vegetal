@@ -8,45 +8,32 @@
 #include "logger.hpp"
 
 namespace configuration {
-static Enemy::Type
-from_string(const std::string &t)
-{
-  if (t == "Fuego")
-    return Enemy::Type::FUEGO;
-  else
-    throw std::runtime_error(fmt::format("Unknown enemy: '{}'", t));
-}
-
-Enemy::Enemy(const std::string &t, unsigned int q)
-  : type{ from_string(t) }, quantity{ q }
-{}
-
 static Json::Value config;
+
+static std::size_t getEnemyProperty(std::string enemy);
 static Json::Value getJsonValue(const Json::Value &root, std::string name);
 
 template<typename Ret, typename Callable>
 Ret
 try_or_default(Callable f, Ret dfl)
-{
-  try {
-    return f();
-  } catch (const std::exception &e) {
-    logger::logError(e.what());
+try {
+  return f();
+} catch (const std::exception &e) {
+  logger::logError(e.what());
 
-    return dfl;
-  }
+  return dfl;
 }
 
 logger::LogLevel
 getLogLevel()
 {
   auto f = []() -> logger::LogLevel {
-    const auto logString = getJsonValue(config, "logLevel").asString();
-    if (logString == "ERROR")
+    const auto logString = getJsonValue(config, "log").asString();
+    if (logString == "error")
       return logger::LogLevel::ERROR;
-    else if (logString == "INFO")
+    else if (logString == "info")
       return logger::LogLevel::INFO;
-    else if (logString == "DEBUG")
+    else if (logString == "debug")
       return logger::LogLevel::DEBUG;
     else
       throw std::runtime_error(
@@ -67,26 +54,25 @@ getMaxPlayers()
       throw std::runtime_error("Number of players must be between 1 and 4");
   };
 
-  return try_or_default(f, 1ul);
+  return try_or_default(f, 1ull);
 }
 
-std::vector<Enemy>
-getEnemies()
+std::size_t
+getEnemyProperty(std::string enemy)
 {
-  auto f = []() -> std::vector<Enemy> {
-    const auto enemiesJSON = getJsonValue(config, "enemies");
-    std::vector<Enemy> out(enemiesJSON.size());
-    std::transform(std::begin(enemiesJSON),
-                   std::end(enemiesJSON),
-                   std::begin(out),
-                   [](auto e) {
-                     return Enemy{ getJsonValue(e, "type").asString(),
-                                   getJsonValue(e, "quantity").asUInt() };
-                   });
-    return out;
-  };
+  return getJsonValue(getJsonValue(config, "enemies"), enemy).asLargestUInt();
+}
 
-  return try_or_default(f, std::vector<Enemy>(1));
+std::size_t
+getFireEnemies()
+{
+  return try_or_default([]{ return getEnemyProperty("fire"); }, 3ull);
+}
+
+std::size_t
+getBarrelFrequency()
+{
+  return try_or_default([]{ return getEnemyProperty("barrels"); }, 180ull);
 }
 
 std::vector<std::pair<std::string, std::string>>
@@ -96,7 +82,7 @@ getUsers()
     const auto usersJSON = getJsonValue(config, "users");
     std::vector<std::pair<std::string, std::string>> out(usersJSON.size());
     std::transform(
-      std::begin(usersJSON), std::end(usersJSON), std::begin(out), [](auto u) {
+      std::begin(usersJSON), std::end(usersJSON), std::begin(out), [](const auto &u) {
         return std::make_pair(getJsonValue(u, "username").asString(),
                               getJsonValue(u, "password").asString());
       });
@@ -114,12 +100,10 @@ getUsers()
 
 void
 init(const char *configPath)
-{
-  try {
-    std::ifstream{ configPath } >> config;
-  } catch (const std::exception &e) {
-    logger::logError(e.what());
-  }
+try {
+  std::ifstream{ configPath } >> config;
+} catch (const std::exception &e) {
+  logger::logError(e.what());
 }
 
 Json::Value

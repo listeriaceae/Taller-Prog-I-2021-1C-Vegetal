@@ -1,13 +1,19 @@
 {
-    "logLevel": "ERROR",
+    "log": "error",
     "players": 1,
-    "enemies": [
-        {
-            "type": "Fuego",
-            "quantity": 3
-        }
-    ],
+    "enemies": {
+        "barrel": 180,
+        "fire": 3
+    },
     "users": [
+        {
+            "username": "FRAN",
+            "password": "123456"
+        },
+        {
+            "username": "MANU",
+            "password": "INCORRECT"
+        },
         {
             "username": "NACHO",
             "password": "QWERTY"
@@ -15,15 +21,6 @@
         {
             "username": "TINCHO",
             "password": "PASSWORD"
-        },
-        {
-            "username": "MANU",
-            "password": "INCORRECT"
-        },
-        {
-            "username": "FRAN",
-            "password": "123456"
         }
     ]
 }
-

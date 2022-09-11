@@ -51,7 +51,7 @@ private:
   void initLadders();
   void initHammers();
 
-  void addEnemies(unsigned int amount);
+  void addEnemies(std::size_t amount);
   void checkCollisions();
 };
 

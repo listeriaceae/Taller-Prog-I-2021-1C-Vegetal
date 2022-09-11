@@ -7,10 +7,7 @@
 
 Nivel1::Nivel1(std::vector<Mario> *players_) : Nivel{ players_ }
 {
-  for (const auto enemy : configuration::getEnemies()) {
-    if (enemy.type == configuration::Enemy::Type::FUEGO)
-      this->addEnemies(enemy.quantity);
-  }
+  this->addEnemies(configuration::getFireEnemies());
   this->initPlatforms();
   this->initLadders();
   this->initHammers();
@@ -47,14 +44,14 @@ Nivel1::initHammers()
 }
 
 void
-Nivel1::addEnemies(unsigned int amount)
+Nivel1::addEnemies(std::size_t amount)
 {
   std::mt19937 mt{ std::random_device{}() };
-  std::uniform_int_distribution<int> int_rng{ 0, 10 };
+  std::uniform_int_distribution<std::size_t> index_rng{ 0, 10 };
   std::bernoulli_distribution bernoulli_rng;
   for (decltype(amount) i = 0; i < amount; ++i) {
-    const unsigned int j = int_rng(mt);
-    const Platform &platform = platforms[j];
+    const auto j = index_rng(mt);
+    const auto &platform = platforms[j];
     const auto pos = platform.getRandomPoint()
                      - punto32_t{ to_fixed32(ANCHO_ENEMIGO_FUEGO) / 2,
                                   to_fixed32(ALTO_ENEMIGO_FUEGO) };
