@@ -13,7 +13,7 @@ namespace configuration {
 void init(const char *configPath);
 
 logger::LogLevel getLogLevel();
-std::size_t getMaxPlayers();
+unsigned int getMaxPlayers();
 std::size_t getFireEnemies();
 std::size_t getBarrelFrequency();
 std::vector<std::pair<std::string, std::string>> getUsers();

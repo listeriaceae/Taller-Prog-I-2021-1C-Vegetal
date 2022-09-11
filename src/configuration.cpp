@@ -2,7 +2,6 @@
 #include <fmt/format.h>
 #include <fstream>
 #include <json/json.h>
-#include <stdexcept>
 
 #include "configuration.hpp"
 #include "logger.hpp"
@@ -10,108 +9,63 @@
 namespace configuration {
 static Json::Value config;
 
-static std::size_t getEnemyProperty(std::string enemy);
-static Json::Value getJsonValue(const Json::Value &root, std::string name);
-
-template<typename Ret, typename Callable>
-Ret
-try_or_default(Callable f, Ret dfl)
-try {
-  return f();
-} catch (const std::exception &e) {
-  logger::logError(e.what());
-
-  return dfl;
-}
-
 logger::LogLevel
 getLogLevel()
 {
-  auto f = []() -> logger::LogLevel {
-    const auto logString = getJsonValue(config, "log").asString();
-    if (logString == "error")
-      return logger::LogLevel::ERROR;
-    else if (logString == "info")
-      return logger::LogLevel::INFO;
-    else if (logString == "debug")
-      return logger::LogLevel::DEBUG;
-    else
-      throw std::runtime_error(
-        fmt::format("Unknown log level: '{}'", logString));
-  };
-
-  return try_or_default(f, logger::LogLevel::DEBUG);
+  const auto logString = config.get("log", "debug").asString();
+  if (logString == "error")
+    return logger::LogLevel::ERROR;
+  else if (logString == "info")
+    return logger::LogLevel::INFO;
+  else
+    return logger::LogLevel::DEBUG;
 }
 
-std::size_t
+unsigned int
 getMaxPlayers()
 {
-  auto f = []() -> std::size_t {
-    const auto maxPlayers = getJsonValue(config, "players").asLargestUInt();
-    if (0 < maxPlayers && maxPlayers <= 4)
-      return maxPlayers;
-    else
-      throw std::runtime_error("Number of players must be between 1 and 4");
-  };
-
-  return try_or_default(f, 1ull);
-}
-
-std::size_t
-getEnemyProperty(std::string enemy)
-{
-  return getJsonValue(getJsonValue(config, "enemies"), enemy).asLargestUInt();
+  const auto maxPlayers = config.get("players", 1).asUInt();
+  if (0 < maxPlayers && maxPlayers <= 4)
+    return std::min(maxPlayers, std::max(config["users"].size(), 1u));
+  else
+    return 1;
 }
 
 std::size_t
 getFireEnemies()
 {
-  return try_or_default([]{ return getEnemyProperty("fire"); }, 3ull);
+  return config["enemies"].get("fire", 3).asLargestUInt();
 }
 
 std::size_t
 getBarrelFrequency()
 {
-  return try_or_default([]{ return getEnemyProperty("barrels"); }, 180ull);
+  return config["enemies"].get("barrels", 180).asLargestUInt();
 }
 
 std::vector<std::pair<std::string, std::string>>
 getUsers()
 {
-  auto f = []() -> std::vector<std::pair<std::string, std::string>> {
-    const auto usersJSON = getJsonValue(config, "users");
-    std::vector<std::pair<std::string, std::string>> out(usersJSON.size());
-    std::transform(
-      std::begin(usersJSON), std::end(usersJSON), std::begin(out), [](const auto &u) {
-        return std::make_pair(getJsonValue(u, "username").asString(),
-                              getJsonValue(u, "password").asString());
-      });
-    return out;
-  };
+  std::vector<std::pair<std::string, std::string>> out;
 
-  return try_or_default(f,
-                        std::vector<std::pair<std::string, std::string>>{
-                          std::make_pair("U1", ""),
-                          std::make_pair("U2", ""),
-                          std::make_pair("U3", ""),
-                          std::make_pair("U4", ""),
-                        });
+  for (auto i = 1; const auto &user : config["users"]) {
+    const auto &name = user["username"];
+    const auto &pass = user["password"];
+    if (name.isString() && pass.isString())
+      out.emplace_back(name.asString(), pass.asString());
+    else
+      out.emplace_back(fmt::format("USER{}", i++), "PASS");
+  }
+
+  return out.empty() ? std::vector<std::pair<std::string, std::string>>{std::make_pair("USER1", "PASS")} : out;
 }
 
 void
-init(const char *configPath)
-try {
-  std::ifstream{ configPath } >> config;
-} catch (const std::exception &e) {
-  logger::logError(e.what());
-}
-
-Json::Value
-getJsonValue(const Json::Value &root, std::string name)
+init(const char *filename)
 {
-  const auto value = root[name];
-  if (value.empty())
-    throw std::runtime_error(fmt::format("JSON value not found: '{}'", name));
-  return value;
+  if (auto ifs = std::ifstream(filename); ifs.good())
+    ifs >> config;
+  else
+    logger::logError(fmt::format("failed to read '{}'", filename));
 }
 }// namespace configuration

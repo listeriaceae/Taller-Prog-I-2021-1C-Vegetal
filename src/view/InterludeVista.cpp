@@ -29,7 +29,7 @@ InterludeVista::update(const GameState &estadoJuego)
     1.25f,
     Color::YELLOW);
 
-  for (std::size_t i = 0; i < maxPlayers; ++i) {
+  for (unsigned int i = 0; i < maxPlayers; ++i) {
     statsJugadorPos.y += Y_DIF_USERS;
     TextRenderer::renderText(
       statsJugadorPos, estadoJuego.players[i].name, 1.25f, Color::MAGENTA);
