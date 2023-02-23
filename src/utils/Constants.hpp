@@ -78,7 +78,6 @@
 #define MARIO_LIVES 3
 #define TOP_LEVEL 40
 
-// Login
 enum class Login {
   OK,
   ABORTED,
