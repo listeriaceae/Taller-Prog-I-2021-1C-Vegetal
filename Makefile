@@ -1,5 +1,5 @@
 CXX		:= g++
-CXX_FLAGS	:= -std=c++20 -O3 -flto=auto
+CXX_FLAGS	:= -std=c++20 -O1
 
 SCFLAGS		:= $(shell pkg-config --cflags fmt jsoncpp) -fconcepts
 CCFLAGS		:= $(shell pkg-config --cflags \
