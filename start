@@ -1,21 +1,25 @@
 #!/bin/sh
 
 input=$1
-bindir='bin'
 
-while [ -z $target ]; do
-  case $input in
-    [Ss]*)
-      target='server';;
-    [Cc]*)
-      ip='127.0.0.1'
-      target='client';;
-    *) read -p "['client'/'server']: " input;;
-  esac
+while [ -z "$target" ]; do
+    case "$input" in
+        [Ss]*)
+            target=server
+            ;;
+        [Cc]*)
+            target=client
+            ip=127.0.0.1
+            ;;
+        *)
+            printf "What should we run? [client/server]: "
+            read -r input || { echo; exit; }
+            ;;
+    esac
 done
 
-if [ ! -x $bindir/$target ]; then
-  make $bindir/$target
+if [ ! -x bin/$target ]; then
+  make bin/$target
 fi
 
-$bindir/$target $ip 5555
+bin/$target $ip 5555
