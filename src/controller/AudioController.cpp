@@ -5,12 +5,12 @@
 #include "../logger.hpp"
 #include "../utils/marioStructs.hpp"
 
-static const char MUSIC_FILE_NAME[] = "res/Audio/backgroundMusic.wav";
-static const char JUMP_SOUND_FILE[] = "res/Audio/jump.wav";
-static const char DEATH_SOUND_FILE[] = "res/Audio/death.wav";
-static const char FINISHED_LEVEL_SOUND_FILE[] = "res/Audio/finishedLevel.wav";
-static const char ITEM_SOUND_FILE[] = "res/Audio/item.wav";
-static const char ENEMY_DEATH_SOUND_FILE[] = "res/Audio/enemyDeath.wav";
+static const char music_file[] = "res/Audio/backgroundMusic.wav";
+static const char jump_sound_file[] = "res/Audio/jump.wav";
+static const char death_sound_file[] = "res/Audio/death.wav";
+static const char finished_level_sound_file[] = "res/Audio/finishedLevel.wav";
+static const char item_sound_file[] = "res/Audio/item.wav";
+static const char enemy_death_sound_file[] = "res/Audio/enemyDeath.wav";
 
 namespace AudioController {
 static Mix_Music *music{ nullptr };
@@ -28,37 +28,37 @@ loadAudioFiles()
       < 0)
     logger::logError("Mixer initialization error");
 
-  music = Mix_LoadMUS(MUSIC_FILE_NAME);
+  music = Mix_LoadMUS(music_file);
   if (music == nullptr)
     logger::logError(
-      fmt::format("Music file not found: '{}'", MUSIC_FILE_NAME));
+      fmt::format("Music file not found: '{}'", music_file));
 
-  jumpSound = Mix_LoadWAV(JUMP_SOUND_FILE);
+  jumpSound = Mix_LoadWAV(jump_sound_file);
   if (jumpSound == nullptr)
     logger::logError(
-      fmt::format("jump sound effect file not found: '{}'", JUMP_SOUND_FILE));
+      fmt::format("jump sound effect file not found: '{}'", jump_sound_file));
 
-  deathSound = Mix_LoadWAV(DEATH_SOUND_FILE);
+  deathSound = Mix_LoadWAV(death_sound_file);
   if (deathSound == nullptr)
     logger::logError(
-      fmt::format("death sound effect file not found: '{}'", DEATH_SOUND_FILE));
+      fmt::format("death sound effect file not found: '{}'", death_sound_file));
 
-  finishedLevelSound = Mix_LoadWAV(FINISHED_LEVEL_SOUND_FILE);
+  finishedLevelSound = Mix_LoadWAV(finished_level_sound_file);
   if (finishedLevelSound == NULL)
     logger::logError(
       fmt::format("finished level sound effect file not found: '{}'",
-                  FINISHED_LEVEL_SOUND_FILE));
+                  finished_level_sound_file));
   else
     finishedLevelSound->volume = 40;
-  itemSound = Mix_LoadWAV(ITEM_SOUND_FILE);
+  itemSound = Mix_LoadWAV(item_sound_file);
   if (itemSound == nullptr)
     logger::logError(
-      fmt::format("item sound effect file not found: '{}'", ITEM_SOUND_FILE));
+      fmt::format("item sound effect file not found: '{}'", item_sound_file));
 
-  enemyDeathSound = Mix_LoadWAV(ENEMY_DEATH_SOUND_FILE);
+  enemyDeathSound = Mix_LoadWAV(enemy_death_sound_file);
   if (deathSound == nullptr)
     logger::logError(fmt::format(
-      "enemy death sound effect file not found: '{}'", ENEMY_DEATH_SOUND_FILE));
+      "enemy death sound effect file not found: '{}'", enemy_death_sound_file));
 }
 
 void
