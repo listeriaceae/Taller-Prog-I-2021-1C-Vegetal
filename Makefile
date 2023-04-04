@@ -1,116 +1,107 @@
-CXX		:= g++
-CXX_FLAGS	:= -std=c++20 -O1
+CXX        := g++
+CXX_FLAGS  := -std=c++20 -O1
 
-SCFLAGS		:= $(shell pkg-config --cflags fmt jsoncpp) -fconcepts
-CCFLAGS		:= $(shell pkg-config --cflags \
-		   sdl2 SDL2_mixer SDL2_image fmt jsoncpp) -fconcepts
-WARNINGS	:= 
+SCFLAGS   := -fconcepts
+CCFLAGS   := -D_REENTRANT -DHWY_SHARED_DEFINE -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -fconcepts
+WARNINGS  :=
 
-BIN		:= bin
-OBJ		:= obj
-SRC		:= src
+BIN  := bin
+OBJ  := obj
+SRC  := src
 
-SLIBS		:= $(shell pkg-config --libs fmt jsoncpp) -pthread
-CLIBS		:= $(shell pkg-config --libs sdl2 \
-		   SDL2_mixer SDL2_image fmt jsoncpp) -pthread -latomic
+SLIBS  := -lfmt -ljsoncpp -pthread
+CLIBS  := -lSDL2_mixer -lSDL2_image -lSDL2 -lfmt -ljsoncpp -latomic -pthread
 
-PKGS		:= $(shell command -v apt-get && \
-		   echo install build-essential \
-		   libsdl2-2.0 libsdl2-dev \
-		   libsdl2-image-2.0-0 libsdl2-image-dev \
-		   libsdl2-mixer-dev libjsoncpp-dev || \
-		   command -v pacman && \
-		   echo -S sdl2 sdl2_image sdl2_mixer jsoncpp)
+PKGS  := $(shell command -v apt-get && \
+           echo install build-essential \
+           libsdl2-2.0 libsdl2-dev \
+           libsdl2-image-2.0-0 libsdl2-image-dev \
+           libsdl2-mixer-dev libjsoncpp-dev || \
+           command -v pacman && \
+           echo -S sdl2 sdl2_image sdl2_mixer jsoncpp)
 
-OBJS	:= ${OBJ}/configuration.o ${OBJ}/logger.o ${OBJ}/dataTransfer.o ${OBJ}/network.o
-OBJSS	:= ${OBJ}/server/main.o ${OBJ}/server/Server.o \
-	   ${OBJ}/server/Barril.o ${OBJ}/server/EnemigoFuego.o \
-	   ${OBJ}/server/Mario.o ${OBJ}/server/Nivel1.o \
-	   ${OBJ}/server/Nivel2.o ${OBJ}/server/AireState.o \
-	   ${OBJ}/server/GameOverState.o ${OBJ}/server/LevelCompletedState.o \
-	   ${OBJ}/server/MarioState.o ${OBJ}/server/MuriendoState.o \
-	   ${OBJ}/server/SueloState.o ${OBJ}/server/TrepandoState.o \
-	   ${OBJ}/server/MovingPlatform.o ${OBJ}/server/Stage.o
-OBJSC	:= ${OBJ}/client/main.o ${OBJ}/client/Client.o \
-	   ${OBJ}/client/textureHandler.o ${OBJ}/client/AudioController.o \
-	   ${OBJ}/client/MarioController.o ${OBJ}/client/BarrilVista.o \
-	   ${OBJ}/client/DonkeyKongVista.o ${OBJ}/client/EnemigoFuegoVista.o \
-	   ${OBJ}/client/FuegoVista.o ${OBJ}/client/HammerVista.o \
-	   ${OBJ}/client/InterludeVista.o ${OBJ}/client/MarioVista.o \
-	   ${OBJ}/client/Nivel1Vista.o ${OBJ}/client/Nivel2Vista.o \
-	   ${OBJ}/client/NivelVista.o ${OBJ}/client/PaulineVista.o \
-	   ${OBJ}/client/PlataformaMovilVista.o ${OBJ}/client/PoleaVista.o \
-	   ${OBJ}/client/showMessage.o ${OBJ}/client/StartPageView.o \
-	   ${OBJ}/client/StatsVista.o ${OBJ}/client/TextRenderer.o
+OBJS   := configuration dataTransfer logger network
+OBJSS  := AireState Barril EnemigoFuego GameOverState LevelCompletedState \
+          Mario MarioState MovingPlatform MuriendoState Nivel1 Nivel2 \
+          Server Stage SueloState TrepandoState main
+OBJSC  := AudioController BarrilVista Client DonkeyKongVista \
+          EnemigoFuegoVista FuegoVista HammerVista InterludeVista \
+          MarioController MarioVista Nivel1Vista Nivel2Vista NivelVista \
+          PaulineVista PlataformaMovilVista PoleaVista StartPageView \
+          StatsVista TextRenderer main showMessage textureHandler
 
-configuration			:= ${SRC}/configuration.hpp
-logger				:= ${SRC}/logger.hpp
+OBJS   := $(patsubst %, ${OBJ}/%.o, $(OBJS))
+OBJSS  := $(patsubst %, ${OBJ}/server/%.o, $(OBJSS))
+OBJSC  := $(patsubst %, ${OBJ}/client/%.o, $(OBJSC))
 
-utils-data-transfer	:= ${SRC}/utils/dataTransfer.hpp
-utils-player		:= ${SRC}/utils/player.hpp
-utils-fixed-point	:= ${SRC}/utils/fixed_point.hpp
-utils-network		:= ${SRC}/utils/network.hpp
-utils-texture-handler	:= ${SRC}/utils/textureHandler.hpp
-utils-user		:= ${SRC}/utils/user.hpp
-utils-exit-status	:= ${SRC}/utils/exitStatus.hpp
-utils-constants		:= ${SRC}/utils/Constants.hpp
-utils-punto		:= ${SRC}/utils/punto.hpp $(utils-fixed-point)
-utils-dimensiones	:= ${SRC}/utils/dimensiones.hpp $(utils-fixed-point)
-utils-mario-structs	:= ${SRC}/utils/marioStructs.hpp $(utils-punto) $(utils-fixed-point)
-utils-estado-juego	:= ${SRC}/utils/estadoJuego.hpp $(utils-punto) $(utils-mario-structs) $(utils-constants)
+configuration  := ${SRC}/configuration.hpp
+logger         := ${SRC}/logger.hpp
 
-model-server			:= ${SRC}/model/Server.hpp $(utils-player) $(utils-user)
-model-barril			:= ${SRC}/model/Barril.hpp $(utils-constants) $(utils-dimensiones) $(utils-punto)
-model-enemigo-fuego		:= ${SRC}/model/EnemigoFuego.hpp $(utils-constants) $(utils-dimensiones) $(utils-punto)
-model-entidad			:= ${SRC}/model/Entidad.hpp $(utils-punto)
-model-hammer			:= ${SRC}/model/Hammer.hpp $(utils-fixed-point) $(utils-punto) $(utils-dimensiones)
-model-scene			:= ${SRC}/model/Scene.hpp $(utils-estado-juego)
-model-mario-audio-observer	:= ${SRC}/model/mario/AudioObserver.hpp $(utils-mario-structs)
-model-stage-ladder		:= ${SRC}/model/stage/Ladder.hpp $(utils-fixed-point)
-model-stage-moving-platform	:= ${SRC}/model/stage/MovingPlatform.hpp $(utils-constants) $(utils-punto)
-model-stage-platform		:= ${SRC}/model/stage/Platform.hpp $(utils-punto)
+utils-data-transfer    := ${SRC}/utils/dataTransfer.hpp
+utils-player           := ${SRC}/utils/player.hpp
+utils-fixed-point      := ${SRC}/utils/fixed_point.hpp
+utils-network          := ${SRC}/utils/network.hpp
+utils-texture-handler  := ${SRC}/utils/textureHandler.hpp
+utils-user             := ${SRC}/utils/user.hpp
+utils-exit-status      := ${SRC}/utils/exitStatus.hpp
+utils-constants        := ${SRC}/utils/Constants.hpp
+utils-punto            := ${SRC}/utils/punto.hpp $(utils-fixed-point)
+utils-dimensiones      := ${SRC}/utils/dimensiones.hpp $(utils-fixed-point)
+utils-mario-structs    := ${SRC}/utils/marioStructs.hpp $(utils-punto) $(utils-fixed-point)
+utils-estado-juego     := ${SRC}/utils/estadoJuego.hpp $(utils-punto) $(utils-mario-structs) $(utils-constants)
 
-model-interlude			:= ${SRC}/model/Interlude.hpp $(model-scene)
-model-stage-tile		:= ${SRC}/model/stage/Tile.hpp $(model-stage-ladder) $(model-stage-platform) $(model-stage-moving-platform)
-model-stage-stage		:= ${SRC}/model/stage/Stage.hpp $(model-stage-tile) $(model-stage-ladder) $(model-stage-platform) $(model-stage-moving-platform) $(utils-constants)
+model-server                 := ${SRC}/model/Server.hpp $(utils-player) $(utils-user)
+model-barril                 := ${SRC}/model/Barril.hpp $(utils-constants) $(utils-dimensiones) $(utils-punto)
+model-enemigo-fuego          := ${SRC}/model/EnemigoFuego.hpp $(utils-constants) $(utils-dimensiones) $(utils-punto)
+model-entidad                := ${SRC}/model/Entidad.hpp $(utils-punto)
+model-hammer                 := ${SRC}/model/Hammer.hpp $(utils-fixed-point) $(utils-punto) $(utils-dimensiones)
+model-scene                  := ${SRC}/model/Scene.hpp $(utils-estado-juego)
+model-mario-audio-observer   := ${SRC}/model/mario/AudioObserver.hpp $(utils-mario-structs)
+model-stage-ladder           := ${SRC}/model/stage/Ladder.hpp $(utils-fixed-point)
+model-stage-moving-platform  := ${SRC}/model/stage/MovingPlatform.hpp $(utils-constants) $(utils-punto)
+model-stage-platform         := ${SRC}/model/stage/Platform.hpp $(utils-punto)
 
-model-mario-mario-state		:= ${SRC}/model/mario/MarioState.hpp $(model-stage-stage)
-model-mario-aire-state		:= ${SRC}/model/mario/AireState.hpp $(model-mario-mario-state)
-model-mario-game-over-state	:= ${SRC}/model/mario/GameOverState.hpp $(model-mario-mario-state)
-model-mario-level-completed-state	:= ${SRC}/model/mario/LevelCompletedState.hpp $(model-mario-mario-state)
-model-mario-muriendo-state	:= ${SRC}/model/mario/MuriendoState.hpp $(model-mario-mario-state)
-model-mario-suelo-state		:= ${SRC}/model/mario/SueloState.hpp $(model-mario-mario-state)
-model-mario-trepando-state	:= ${SRC}/model/mario/TrepandoState.hpp $(model-mario-mario-state)
+model-interlude    := ${SRC}/model/Interlude.hpp $(model-scene)
+model-stage-tile   := ${SRC}/model/stage/Tile.hpp $(model-stage-ladder) $(model-stage-platform) $(model-stage-moving-platform)
+model-stage-stage  := ${SRC}/model/stage/Stage.hpp $(model-stage-tile) $(model-stage-ladder) $(model-stage-platform) $(model-stage-moving-platform) $(utils-constants)
 
-model-mario			:= ${SRC}/model/Mario.hpp $(model-mario-mario-state) $(model-mario-audio-observer) $(model-entidad) $(model-hammer) $(utils-mario-structs) $(utils-punto)
-model-nivel			:= ${SRC}/model/Nivel.hpp $(model-scene) $(model-stage-stage) $(model-mario) $(model-hammer)
-model-nivel1			:= ${SRC}/model/Nivel1.hpp $(model-stage-moving-platform) $(model-enemigo-fuego) $(model-nivel)
-model-nivel2			:= ${SRC}/model/Nivel2.hpp $(model-barril) $(model-nivel)
+model-mario-mario-state            := ${SRC}/model/mario/MarioState.hpp $(model-stage-stage)
+model-mario-aire-state             := ${SRC}/model/mario/AireState.hpp $(model-mario-mario-state)
+model-mario-game-over-state        := ${SRC}/model/mario/GameOverState.hpp $(model-mario-mario-state)
+model-mario-level-completed-state  := ${SRC}/model/mario/LevelCompletedState.hpp $(model-mario-mario-state)
+model-mario-muriendo-state         := ${SRC}/model/mario/MuriendoState.hpp $(model-mario-mario-state)
+model-mario-suelo-state            := ${SRC}/model/mario/SueloState.hpp $(model-mario-mario-state)
+model-mario-trepando-state         := ${SRC}/model/mario/TrepandoState.hpp $(model-mario-mario-state)
 
-controller-audio-controller	:= ${SRC}/controller/AudioController.hpp
-controller-mario-controller	:= ${SRC}/controller/MarioController.hpp
+model-mario   := ${SRC}/model/Mario.hpp $(model-mario-mario-state) $(model-mario-audio-observer) $(model-entidad) $(model-hammer) $(utils-mario-structs) $(utils-punto)
+model-nivel   := ${SRC}/model/Nivel.hpp $(model-scene) $(model-stage-stage) $(model-mario) $(model-hammer)
+model-nivel1  := ${SRC}/model/Nivel1.hpp $(model-stage-moving-platform) $(model-enemigo-fuego) $(model-nivel)
+model-nivel2  := ${SRC}/model/Nivel2.hpp $(model-barril) $(model-nivel)
 
-view-donkey-kong-vista		:= ${SRC}/view/DonkeyKongVista.hpp
-view-fuego-vista		:= ${SRC}/view/FuegoVista.hpp
-view-pauline-vista		:= ${SRC}/view/PaulineVista.hpp
-view-polea-vista		:= ${SRC}/view/PoleaVista.hpp
-view-show-message		:= ${SRC}/view/showMessage.hpp
+controller-audio-controller  := ${SRC}/controller/AudioController.hpp
+controller-mario-controller  := ${SRC}/controller/MarioController.hpp
 
-view-barril-vista		:= ${SRC}/view/BarrilVista.hpp $(utils-punto)
-view-enemigo-fuego-vista	:= ${SRC}/view/EnemigoFuegoVista.hpp $(utils-punto)
-view-hammer-vista		:= ${SRC}/view/HammerVista.hpp $(utils-punto)
-view-mario-vista		:= ${SRC}/view/MarioVista.hpp $(utils-mario-structs)
-view-plataforma-movil-vista	:= ${SRC}/view/PlataformaMovilVista.hpp $(utils-punto)
-view-scene-vista		:= ${SRC}/view/SceneVista.hpp $(utils-estado-juego)
-view-start-page-view		:= ${SRC}/view/StartPageView.hpp $(utils-user)
-view-stats-vista		:= ${SRC}/view/StatsVista.hpp $(utils-estado-juego) $(utils-constants)
-view-text-renderer		:= ${SRC}/view/TextRenderer.hpp $(utils-punto)
+view-donkey-kong-vista  := ${SRC}/view/DonkeyKongVista.hpp
+view-fuego-vista        := ${SRC}/view/FuegoVista.hpp
+view-pauline-vista      := ${SRC}/view/PaulineVista.hpp
+view-polea-vista        := ${SRC}/view/PoleaVista.hpp
+view-show-message       := ${SRC}/view/showMessage.hpp
 
-view-client			:= ${SRC}/view/Client.hpp $(utils-user) $(utils-exit-status) $(view-scene-vista)
-view-interlude-vista		:= ${SRC}/view/InterludeVista.hpp $(view-scene-vista)
-view-nivel-vista		:= ${SRC}/view/NivelVista.hpp $(view-scene-vista) $(view-mario-vista) $(view-stats-vista) $(view-pauline-vista) $(view-donkey-kong-vista)
-view-nivel1-vista		:= ${SRC}/view/Nivel1Vista.hpp $(view-nivel-vista) $(view-enemigo-fuego-vista) $(view-polea-vista) $(view-fuego-vista)
-view-nivel2-vista		:= ${SRC}/view/Nivel2Vista.hpp $(view-nivel-vista) $(view-barril-vista) $(view-fuego-vista)
+view-barril-vista            := ${SRC}/view/BarrilVista.hpp $(utils-punto)
+view-enemigo-fuego-vista     := ${SRC}/view/EnemigoFuegoVista.hpp $(utils-punto)
+view-hammer-vista            := ${SRC}/view/HammerVista.hpp $(utils-punto)
+view-mario-vista             := ${SRC}/view/MarioVista.hpp $(utils-mario-structs)
+view-plataforma-movil-vista  := ${SRC}/view/PlataformaMovilVista.hpp $(utils-punto)
+view-scene-vista             := ${SRC}/view/SceneVista.hpp $(utils-estado-juego)
+view-start-page-view         := ${SRC}/view/StartPageView.hpp $(utils-user)
+view-stats-vista             := ${SRC}/view/StatsVista.hpp $(utils-estado-juego) $(utils-constants)
+view-text-renderer           := ${SRC}/view/TextRenderer.hpp $(utils-punto)
+
+view-client           := ${SRC}/view/Client.hpp $(utils-user) $(utils-exit-status) $(view-scene-vista)
+view-interlude-vista  := ${SRC}/view/InterludeVista.hpp $(view-scene-vista)
+view-nivel-vista      := ${SRC}/view/NivelVista.hpp $(view-scene-vista) $(view-mario-vista) $(view-stats-vista) $(view-pauline-vista) $(view-donkey-kong-vista)
+view-nivel1-vista     := ${SRC}/view/Nivel1Vista.hpp $(view-nivel-vista) $(view-enemigo-fuego-vista) $(view-polea-vista) $(view-fuego-vista)
+view-nivel2-vista     := ${SRC}/view/Nivel2Vista.hpp $(view-nivel-vista) $(view-barril-vista) $(view-fuego-vista)
 
 all: ${BIN}/server ${BIN}/client
 
@@ -258,6 +249,6 @@ update-format:
 	find src -name "*.[ch]pp" >.clang-files
 
 clean:
-	-rm ${BIN}/* ${OBJ}/*.o ${OBJ}/server/*.o ${OBJ}/client/*.o
+	-rm -f ${BIN}/* ${OBJ}/*.o ${OBJ}/server/*.o ${OBJ}/client/*.o
 
 .PHONY: all deps format update-format clean
